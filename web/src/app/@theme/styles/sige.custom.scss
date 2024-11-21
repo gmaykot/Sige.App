@@ -1,0 +1,128 @@
+table {
+  width: 100%;
+}
+
+.icon-nb {
+  margin: 0 0.5rem;
+}
+
+.Ang-invalid {
+  border-color: #ff6b83;
+}
+
+.card-row {
+  display: flex;
+  margin: 0 -0.5rem;
+}
+
+.card-col {
+  flex: 1 0 calc(25% - 1rem);
+  margin: 0 0.5rem;
+}
+
+.card-col-right {
+  flex: 1 0 calc(50% - 1rem);
+  margin: 0 0.5rem;
+}
+
+.card-col-75 {
+  flex: 1 0 calc(75% - 1rem);
+  margin: 0 0.5rem;
+}
+
+.card-col-70 {
+  flex: 1 0 calc(70% - 1rem);
+  margin: 0 0.5rem;
+}
+
+.card-col-60 {
+  flex: 1 0 calc(60% - 1rem);
+  margin: 0 0.5rem;
+}
+
+.card-col-50 {
+  flex: 1 0 calc(50% - 1rem);
+  margin: 0 0.5rem;
+}
+
+.card-col-40 {
+  flex: 1 0 calc(40% - 1rem);
+  margin: 0 0.5rem;
+}
+
+.card-col-30 {
+  flex: 1 0 calc(30% - 1rem);
+  margin: 0 0.5rem;
+}
+
+.card-col-25 {
+  flex: 1 0 calc(25% - 1rem);
+  margin: 0 0.5rem;
+}
+
+.table-header {
+  margin-left: 15px;
+  margin-right: 15px;
+  //color: #1e6bb8;
+  //font-family: var(--tabset-tab-text-font-family);
+  //font-size: var(--tabset-tab-text-font-size);
+  //font-weight: var(--tabset-tab-text-font-weight);
+  //text-transform: var(--tabset-tab-text-transform);   
+}
+
+.float-right {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.h7 {
+  color: var(--card-header-text-color);
+  font-family: var(--card-header-text-font-family);
+  font-size: var(--card-header-text-font-size);
+  font-weight: var(--card-header-text-font-weight);
+  line-height: var(--card-header-text-line-height);
+}
+
+.card-subtitle {
+  padding: var(--card-padding);
+}
+
+.center {
+  text-align: center !important;
+}
+
+.no-border {
+  border: 0rem !important;
+}
+
+:host {
+  ::ng-deep .ng2-smart-actions {
+      width: 80px;
+  }
+}
+
+//:host {
+//  ::ng-deep ng2-smart-table tbody > tr > td {
+//    text-align: center;
+//  }  
+//}
+
+:host {
+  ::ng-deep .ng2-smart-titles {
+    text-align: center;
+  }
+}
+
+:host {
+  ::ng-deep .estado {
+    text-align: center !important;
+    width: 140px !important;
+  }  
+}
+
+:host {
+  ::ng-deep .cnpj {
+    text-align: center !important;
+    width: 180px !important;
+  }  
+}

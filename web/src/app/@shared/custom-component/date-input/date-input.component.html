@@ -1,0 +1,9 @@
+<input 
+  type="text" nbInput fullWidth
+  [placeholder]="full === 'true' ? 'DD/MM/AAAA' : 'MM/AAAA'"
+  [value]="dateValue"
+  [fieldSize]="fieldSize"
+  (blur)="onBlur()"
+  (input)="onInputChange($event)"
+  [dropSpecialCharacters]="false"
+  [mask]="full === 'true' ? 'd0/M0/0000' : 'M0/0000'">

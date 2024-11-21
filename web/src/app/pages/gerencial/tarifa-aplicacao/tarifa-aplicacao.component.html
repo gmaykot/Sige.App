@@ -1,0 +1,135 @@
+<form [formGroup]="control" *ngIf="edit">
+<div class="card-row">
+    <div class="card-col">
+        <nb-card>
+            <nb-card-body>   
+                <nb-tabset>
+                    <nb-tab tabTitle="Cadastro de Tarifa de Aplicação">     
+                        <nb-card style="border: 0rem;">
+                            <nb-card-body>
+                        <input hidden id="id" type="text" formControlName="id">
+                        <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                            <label for="inputFirstName" class="label">Concessionária*</label><br>
+                            <nb-select fullWidth formControlName="concessionariaId" >
+                                <nb-option *ngFor="let con of concessionarias" value="{{con.id}}">{{con.descricao}}</nb-option>
+                            </nb-select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                            <label for="inputFirstName" class="label">Sub-Grupo*</label><br>
+                            <nb-select fullWidth formControlName="subGrupo">
+                                <nb-option *ngFor="let obj of subgrupos" value="{{obj.id}}">{{obj.desc}}</nb-option>
+                            </nb-select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                            <label for="inputFirstName" class="label">Modalidade*</label><br>
+                            <nb-select fullWidth formControlName="modalidade">
+                                <nb-option *ngFor="let obj of modalidades" value="{{obj.id}}">{{obj.desc}}</nb-option>
+                            </nb-select>
+                            </div>
+                        </div>                  
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                            <label for="inputEmail" class="label">Último Reajuste*</label>
+                            <app-date-input formControlName="dataUltimoReajuste" full="true"></app-date-input>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                            <label for="inputLastName" class="label">Nº Resolução*</label>
+                            <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="numeroResolucao">
+                            </div>
+                        </div>
+                        </div>
+                        <div class="row">                                        
+                            <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="inputLastName" class="label">kW Ponta*</label>
+                                <input type="number" nbInput fullWidth formControlName="kwPonta">
+                            </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="inputLastName" class="label">kW Fora Ponta*</label>
+                                    <input type="number" nbInput fullWidth formControlName="kwForaPonta">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="inputLastName" class="label">kWh Ponta - TUSD*</label>
+                                    <input type="number" nbInput fullWidth formControlName="kWhPontaTUSD">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="inputLastName" class="label">kWh Fora Ponta - TUSD</label>
+                                    <input type="number" nbInput fullWidth formControlName="kWhForaPontaTUSD">
+                                </div>
+                            </div>      
+                        </div>
+                        <div class="row">                                        
+                            <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="inputLastName" class="label">kWh Ponta - TE*</label>
+                                <input type="number" nbInput fullWidth formControlName="kWhPontaTE">
+                            </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="inputLastName" class="label">kWh Fora Ponta - TE*</label>
+                                    <input type="number" nbInput fullWidth formControlName="kWhForaPontaTE">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="inputLastName" class="label">Reat. kWh P+F. Ponta-TE=*</label>
+                                    <input type="number" nbInput fullWidth formControlName="reatKWhPFTE">
+                                </div>
+                            </div>   
+                        </div>     
+                        </nb-card-body>
+                        <nb-card-footer>
+                            <button type="submit" nbButton status="info"  (click)="onSubmitCustom()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+                            <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDelete()">Excluir</button>
+                            <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="clearForm()">Voltar</button> 
+                          </nb-card-footer>                         
+                        </nb-card>        
+                    </nb-tab>
+                </nb-tabset>           
+              </nb-card-body>              
+        </nb-card>    
+    </div>
+</div>
+</form>
+
+<div class="card-row" [nbSpinner]="loading">
+    <div class="card-col">
+      <nb-card>
+        <nb-card-header>
+          <div class="row">
+            <div class="table-header">
+                Tarifas de Aplicação Cadastrados
+            </div>
+            <div *ngIf="!edit && habilitaOperacoes">
+              <div class="form-group">
+                <nb-actions size="small">
+                  <nb-action icon="plus-outline" (click)="onEdit()"></nb-action>
+                </nb-actions>
+              </div>
+            </div>
+          </div>
+        </nb-card-header>
+  
+        <nb-card-body>
+          <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelectCustom($event)">
+          </ng2-smart-table>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </div>

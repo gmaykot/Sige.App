@@ -1,0 +1,62 @@
+<nb-alert *ngIf="showMessages.error && errors?.length && !submitted" outline="danger" role="alert">
+  <p class="alert-title"><b>Atenção!</b></p>
+  <ul class="alert-message-list">
+    <li *ngFor="let error of errors" class="alert-message">{{ error }}</li>
+  </ul>
+</nb-alert>
+
+<nb-alert *ngIf="showMessages.success && messages?.length && !submitted" outline="success" role="alert">
+  <p class="alert-title"><b>Sucesso!</b></p>
+  <ul class="alert-message-list">
+    <li *ngFor="let message of messages" class="alert-message">Login efetuado com sucesso.</li>
+  </ul>
+</nb-alert>
+
+<form (ngSubmit)="login()" #form="ngForm" aria-labelledby="title">
+  <div class="form-control-group">
+    <img src="/assets/images/logo.png" alt="image" class="logo">
+  </div>  
+  <div class="form-control-group">
+    <label class="label" for="input-email">Usuário:</label>
+    <input nbInput
+           fullWidth
+           [(ngModel)]="user.email"
+           #email="ngModel"
+           name="email"
+           id="input-email"
+           placeholder="Usuário"
+           autofocus
+           [attr.aria-invalid]="email.invalid && email.touched ? true : null">
+    <ng-container *ngIf="email.invalid && email.touched">
+      <p class="error-message" *ngIf="email.errors?.required">
+        O campo Usuário é obrigatório!
+      </p>
+    </ng-container>
+  </div>
+
+  <div class="form-control-group">
+    <label class="label" for="input-password">Senha:</label>
+    <input nbInput
+           fullWidth
+           [(ngModel)]="user.password"
+           #password="ngModel"
+           name="password"
+           type="password"
+           id="input-password"
+           placeholder="Senha">
+    <ng-container *ngIf="password.invalid && password.touched ">
+      <p class="error-message" *ngIf="password.errors?.required">
+        O campo Senha é obrigatório!
+      </p>
+    </ng-container>
+  </div>
+
+  <button nbButton
+          fullWidth
+          status="success"          
+          [class.btn-pulse]="submitted"
+          [nbSpinner]="loading" nbSpinnerStatus="info"
+          [disabled]="loading">
+    Acessar
+  </button>
+</form>

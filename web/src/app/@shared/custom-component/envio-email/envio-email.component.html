@@ -1,0 +1,49 @@
+<form [formGroup]="control">
+<nb-card accent="warning" size="medium">
+    <nb-card-header>
+      <div class="row">
+        <div class="col-sm-5">
+            Contatos para Envio
+        </div>
+        <div class="float-right">
+          <div class="form-group">
+            <nb-actions size="small">
+              <nb-action [icon]="disabledIconConfig" (click)="onContatoDelete()" disabled="{{contatosChecked.length == 0}}"></nb-action>
+            </nb-actions>
+          </div>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-sm-12">
+                <ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
+            </div>            
+        </div><br/><br/>
+        <label class="h7">Contatos Adicionais</label><br/>
+        <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="inputFirstName" class="label">Nome*</label>
+                <input type="text" nbInput fullWidth id="inputFirstName" formControlName="nomeContato">
+              </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                  <label class="label">Email*</label>
+                  <input type="text" nbInput fullWidth id="inputFirstName" formControlName="emailContato">
+                </div>
+            </div>         
+            <div class="col-sm-2">
+                <button nbButton status="info" style="margin-top: 1.7rem;" (click)="onContatoConfirm()">Adicionar</button>
+            </div>                
+          </div>     
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="text-center">
+        <button nbButton status="info" (click)="submit()">Enviar Email</button>
+        <button nbButton status="basic" style="margin-left: 2.5rem;" (click)="cancel()" >Cancelar</button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+  </form>

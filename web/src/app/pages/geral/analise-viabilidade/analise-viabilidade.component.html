@@ -1,0 +1,146 @@
+<div class="steppers-container row">
+  <div class="col-md-12 col-lg-12 col-xxxl-12">
+    <nb-card size="giant">
+      <nb-card-header>Análise de Viabilidade</nb-card-header>
+      <nb-card-body>
+        <nb-stepper orientation="vertical">
+          <nb-step label="Passo 1">
+            <form [formGroup]="passo1">
+            <nb-card-body>   
+              <input hidden id="id" type="text" formControlName="id">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label for="inputFirstName" class="label">Empresa*</label><br>
+                    <nb-select fullWidth formControlName="clienteId">
+                      <nb-option *ngFor="let emp of empresas" value="{{emp.id}}">{{emp.nome}}</nb-option>
+                    </nb-select>
+                  </div>
+                </div>                
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="inputFirstName" class="label">Concessionária*</label><br>
+                    <nb-select fullWidth formControlName="concessionariaId">
+                      <nb-option *ngFor="let con of concessionarias" value="{{con.id}}">{{con.nome}}</nb-option>
+                    </nb-select>
+                  </div>
+                </div>
+                <div class="col-sm-2" style="display: none;">
+                  <div class="form-group">
+                    <label for="inputEmail" class="label">Tipo de THS*</label>
+                    <nb-select fullWidth formControlName="tipoThs">
+                      <nb-option></nb-option>
+                      <nb-option value="azul">AZUL</nb-option>
+                      <nb-option value="verde">VERDE</nb-option>
+                    </nb-select>
+                  </div>
+                </div>                
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="inputLastName" class="label">Tipo de Conexão*</label>
+                    <nb-select fullWidth formControlName="tipoConexao">
+                      <nb-option value="1">A4 (13.8 - 23 KV)</nb-option>
+                    </nb-select>
+                  </div>
+                </div>
+              </div>
+            </nb-card-body> 
+            <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)" (createConfirm)="onCreate($event)">
+            </ng2-smart-table> 
+          </form>  
+          <br><br>   
+            <button nbButton nbStepperNext>
+              Próximo
+            </button>
+            <br><br>
+          </nb-step>
+          <nb-step label="Passo 2">
+            <form [formGroup]="passo2">
+              <div class="row">
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="inputEmail" class="label">kWh Ponta*</label>
+                    <input type="number" nbInput fullWidth formControlName="kWhPta" fullWidth>              
+                    <nb-datepicker #formpicker></nb-datepicker>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="inputEmail" class="label">kWh F Ponta%*</label>
+                    <input type="number" nbInput fullWidth formControlName="kWhFPta" fullWidth>              
+                    <nb-datepicker #formpicker></nb-datepicker>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="inputEmail" class="label">Dem Ponta*</label>
+                    <input type="number" nbInput fullWidth formControlName="demPta" fullWidth>              
+                    <nb-datepicker #formpicker></nb-datepicker>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="inputEmail" class="label">Dem F Ponta*</label>
+                    <input type="number" nbInput fullWidth formControlName="demFPta" fullWidth>              
+                    <nb-datepicker #formpicker></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="inputEmail" class="label">Preço PCH kWh 0%*</label>
+                    <input type="number" nbInput fullWidth formControlName="pchKWhFornecedorZero" fullWidth>              
+                    <nb-datepicker #formpicker></nb-datepicker>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="inputEmail" class="label">Preço PCH kWh 50%*</label>
+                    <input type="number" nbInput fullWidth formControlName="pchKWhFornecedorCinquenta" fullWidth>              
+                    <nb-datepicker #formpicker></nb-datepicker>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="inputEmail" class="label">Preço PCH kWh 100%*</label>
+                    <input type="number" nbInput fullWidth formControlName="pchKWhFornecedorCem" fullWidth>              
+                    <nb-datepicker #formpicker></nb-datepicker>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="inputEmail" class="label">Encargo Conexão*</label>
+                    <input type="number" nbInput fullWidth formControlName="encConexao" fullWidth>              
+                    <nb-datepicker #formpicker></nb-datepicker>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="inputEmail" class="label">Enc. Serv. Sistema*</label>
+                    <input type="number" nbInput fullWidth formControlName="essEncServicoSist" fullWidth>              
+                    <nb-datepicker #formpicker></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <button nbButton nbStepperNext>Anterior</button>
+            <button nbButton nbStepperNext style="margin-left: 0.5rem" (click)="onClickAnalisar()">Analisar</button>
+          </nb-step>
+          <nb-step label="Resultado Análise">
+            <form [formGroup]="passo2">
+              <nb-card-body>
+                <div>
+                  <ng2-smart-table [settings]="settingsResponseAzul" [source]="sourceResponseAzul">
+                  </ng2-smart-table> 
+                  <ng2-smart-table [settings]="settingsResponseVerde" [source]="sourceResponseVerde">
+                  </ng2-smart-table> 
+                </div>
+              </nb-card-body>
+            </form>
+          </nb-step>
+        </nb-stepper>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

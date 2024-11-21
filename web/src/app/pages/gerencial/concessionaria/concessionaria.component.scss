@@ -1,0 +1,7 @@
+@import '/src/app/@theme/styles/sige.custom.scss';
+
+:host {
+    ::ng-deep .ng2-smart-row td:nth-child(2) {
+        text-align: center;
+    }
+}

@@ -1,0 +1,36 @@
+<form [formGroup]="control">
+    <nb-card accent="warning" class="dialogMenu">
+        <input hidden id="id" type="text" formControlName="id">
+        <nb-card-header>Cadastro Menus de Acesso</nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="inputFirstName" class="label">Menu Sistema*</label>
+                        <nb-select fullWidth multiple placeholder="Selecione os Menus" formControlName="menusSistema">
+                            <nb-option-group *ngFor="let obj of menusSistema" title="{{obj.descricao}}">
+                                <nb-option *ngFor="let subObj of showSubMenu(obj.subGrupo)" value="{{subObj.id}}">{{subObj.descricao}}</nb-option>
+                            </nb-option-group>
+                        </nb-select>
+                    </div>
+                </div>          
+            </div>
+            <div class="row">       
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="inputFirstName" class="label">Tipo Perfil*</label>
+                        <nb-select fullWidth placeholder="Selecione o Perfil" formControlName="tipoPerfil">
+                            <nb-option *ngFor="let obj of perfilMenu" value="{{obj.id}}">{{obj.desc}}</nb-option>
+                        </nb-select>                    
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="text-center">
+                <button nbButton status="warning" (click)="submit()" [disabled]="!control.valid">Confirmar</button>
+                <button nbButton status="basic" style="margin-left: 2.5rem;" (click)="cancel()">Cancelar</button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</form>

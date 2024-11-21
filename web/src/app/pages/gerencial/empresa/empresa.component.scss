@@ -1,0 +1,17 @@
+@import '/src/app/@theme/styles/sige.custom.scss';
+
+.custom-card {
+    height: 510px;
+}
+
+:host {
+    ::ng-deep .ng2-smart-row td:nth-child(3) {
+        text-align: center;
+    }
+}
+
+:host {
+    ::ng-deep .ng2-smart-row td:nth-child(5) {
+        text-align: center;
+    }
+}

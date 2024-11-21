@@ -1,0 +1,197 @@
+<div class="row" *ngIf="!selected">
+    <div class="col-md-12">
+        <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+            <nb-card-header>Relatório de Medição</nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="inputEmail" class="label">Competência</label><br />
+                            <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+                                <nb-option>Selecione</nb-option>
+                                <nb-option *ngFor="let mes of getMeses()"
+                                    value="{{mes.id}}">{{mes.descricao}}</nb-option>
+                            </nb-select>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <label class="h7">Relatórios Emitidos</label><br />
+                <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+                </ng2-smart-table>
+            </nb-card-body>
+        </nb-card>
+    </div>
+</div>
+<form [formGroup]="control" *ngIf="selected">
+    <div class="row">
+        <div class="col-md-12">
+            <nb-card accent="warning" [nbSpinner]="loading">
+                <nb-card-header>Relatório de Medição {{relatorioEconomia.competencia ? relatorioEconomia.competencia : competencia | date:
+                    'MM/yyyy'}}</nb-card-header>
+                <nb-card-body>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="subtitle sub-med">Grupo</div>
+                            <div class="h7">{{relatorioEconomia.descGrupo}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Contrato</div>
+                            <div class="h7">{{relatorioEconomia.numContrato}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Fornecedor</div>
+                            <div class="h7">{{relatorioEconomia.descFornecedor}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Fase Atual</div>
+                            <div class="h7">{{getStatusFase()}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Data Emissão</div>
+                            <div class="h7">{{relatorioEconomia.dataEmissao ? relatorioEconomia.dataEmissao : dataAtual | date : 'dd/MM/yyyy'}}</div>
+                        </div>
+                    </div>
+                    <div class="row top-up">
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Vigência Inicial</div>
+                            <div class="h7">{{relatorioEconomia.dataVigenciaInicial | date : 'dd/MM/yyyy'}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Vigência Final</div>
+                            <div class="h7">{{relatorioEconomia.dataVigenciaFinal | date : 'dd/MM/yyyy'}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Energia Contratada</div>
+                            <div class="h7">{{relatorioEconomia.energiaContratada | number:'2.3-3':'pt'}} MWh</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Horas/Mês</div>
+                            <div class="h7">{{relatorioEconomia.horasMes}} hs</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Flex -{{relatorioEconomia.takeMinimo}}%</div>
+                            <div class="h7">{{valores.takeMinimo | number:'2.3-3':'pt'}} MWh</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Flex +{{relatorioEconomia.takeMaximo}}%</div>
+                            <div class="h7">{{valores.takeMaximo | number:'2.3-3':'pt'}} MWh</div>
+                        </div>
+                    </div>
+                </nb-card-body>
+            </nb-card>
+        </div>
+    </div>
+
+    <div class="card-row" [nbSpinner]="loading">
+        <div class="card-col">
+            <nb-card accent="{{valores.dentroTake ? 'success' : 'danger'}}">
+                <nb-card-body>
+                    <nb-tabset>
+                        <nb-tab tabTitle="Resultado da Medição">
+                            <nb-card style="border: 0rem;">
+                                <nb-card-body>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">Total Medido CCEE</div>
+                                            <div class="h7">{{relatorioEconomia.totalMedido | number:'2.3-3':'pt'}} kWh
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">Perdas 3% (+)</div>
+                                            <div class="h7">{{valores.valorPerdas | number:'2.3-3':'pt'}} MWh</div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">PROINFA</div>
+                                            <div class="h7">{{relatorioEconomia.proinfa | number:'2.2-2':'pt'}}
+                                            </div>
+                                        </div> 
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">ICMS</div>
+                                            <div class="h7">{{relatorioEconomia.icms | number:'2.2-2':'pt'}}
+                                            </div>
+                                        </div>                                                                                                                                                                
+                                    </div>
+                                    <div class="row top-up">  
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">Dentro do Take</div>
+                                            <div class="h7" style="color: #e5003d;" *ngIf="!valores.dentroTake">NÃO
+                                            </div>
+                                            <div class="h7" style="color: var(--color-success-500);" *ngIf="valores.dentroTake">SIM</div>
+                                        </div>                                                                              
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">À faturar a longo prazo</div>
+                                            <div class="h7">{{valores.faturarLongoPrazo | number:'2.3-3':'pt'}} MWh
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">À comprar a curto prazo</div>
+                                            <div class="h7">{{valores.comprarCurtoPrazo | number:'2.3-3':'pt'}} MWh
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">À vender a curto prazo</div>
+                                            <div class="h7">{{valores.venderCurtoPrazo | number:'2.3-3':'pt'}} MWh</div>
+                                        </div>
+                                    </div>
+                                    <div class="row top-up">    
+                                        <div class="col-md-3">
+                                            <div class="subtitle">Consumo Total</div>
+                                            <div class="h6">{{valores.valorConsumoTotal | number:'2.3-3':'pt'}} MWh
+                                            </div>
+                                        </div>                                                                          
+                                    </div>
+                                </nb-card-body>
+                            </nb-card>
+                        </nb-tab>
+                        <nb-tab tabTitle="Previsão de Faturamento" *ngIf="sourceResultadoAnalitico.count() > 1">
+                            <nb-card style="border: 0rem;">
+                                <nb-card-body>
+                                    <ng2-smart-table [settings]="settingsResultadoAnalitico"
+                                    [source]="sourceResultadoAnalitico"></ng2-smart-table>
+                                </nb-card-body>
+                            </nb-card>
+                        </nb-tab>
+                    </nb-tabset>
+                </nb-card-body>
+            </nb-card>
+        </div>
+    </div>
+    <div class="row" *ngIf="selected" [nbSpinner]="loading">
+        <div class="col-md-12">
+            <nb-card accent="primary">
+                <nb-card-body>
+                    <nb-tabset>
+                        <nb-tab tabTitle="Previsão de Faturamento Total do Grupo">
+                            <nb-card style="border: 0rem;">
+                                <nb-card-body>
+                                    <ng2-smart-table [settings]="settingsResultado"
+                                    [source]="sourceResultado"></ng2-smart-table>
+                                    <br><br>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="subtitle sub-med">Observação</div>
+                                                <textarea nbInput fullWidth></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </nb-card-body>
+                            </nb-card>
+                        </nb-tab>
+                    </nb-tabset>
+                    
+                </nb-card-body>
+                <nb-card-footer>
+                    <button type="submit" nbButton status="basic" (click)="clear()">Voltar</button>
+                    <button type="submit" nbButton status="info" style="margin-left: 0.5rem;" *ngIf="habilitaOperacoes">Salvar</button>
+                    <button type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;" *ngIf="habilitaValidar && habilitaOperacoes">Validar</button>
+                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsCsv()">Exportar Medições CSV</button>
+                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" hidden>Relatório de Economia</button>
+                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsPdf()">Gerar PDF</button>
+                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="onSendEmail()">Enviar E-mail</button>
+                </nb-card-footer>
+            </nb-card>
+        </div>
+    </div>
+</form>

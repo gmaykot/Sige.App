@@ -1,0 +1,134 @@
+<form [formGroup]="control" *ngIf="!selected">
+  <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+    <nb-card-header>Coletar Medições</nb-card-header>      
+    <nb-card-body>
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="form-group">
+            <label class="label">Competência</label><br />
+            <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+              <nb-option>Selecione</nb-option>
+              <nb-option *ngFor="let mes of getMeses()" value="{{mes.id}}">{{mes.descricao}}</nb-option>
+          </nb-select>
+          </div>
+        </div>
+        <div class="col-sm-8">
+          <div class="form-group">
+            <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" [disabled]="colectAll || !competencia || competencia === null || medicoesChecked.length === 0" *ngIf="habilitaOperacoes" (click)="onColect()">Coletar Selecionadas</button>
+            <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" status="warning" [disabled]="colectAll || !competencia || competencia === null" *ngIf="habilitaOperacoes" (click)="onColectAll()">Coletar Todas</button>
+            <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" status="warning" [disabled]="colectAll || !competencia || competencia === null"  (click)="onStatusMedicao()">Status das Medições</button>
+          </div>
+        </div>          
+      </div>        
+    </nb-card-body>      
+  </nb-card>
+</form>
+<form [formGroup]="controlEdit">
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info" *ngIf="!selected">
+  <nb-card-header>Coletas Efetuadas</nb-card-header>      
+  <nb-card-body>    
+    <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="selecionarColeta($event)">
+    </ng2-smart-table>
+  </nb-card-body>  
+</nb-card>
+<div class="row" #dataToExport [nbSpinner]="loading" *ngIf="selected">
+  <div class="col-md-3">
+      <nb-card size="medium" accent="warning">
+          <nb-card-header>Medições {{medicaoSelected.periodo | date: 'MM/yyyy'}}</nb-card-header>
+          <nb-card-body>
+              <div class="progress-info">
+                  <div class="row">
+                      <div class="col-md-6">
+                          <div class="subtitle sub-med">Medição</div>
+                          <div class="h7">{{medicaoSelected.dataMedicao | date: 'dd/MM/yyyy'}}</div>
+                      </div>                        
+                      <div class="col-md-6">
+                          <div class="subtitle sub-med">Status</div>
+                          <div class="h7">{{getStatusMedicao()}}</div>
+                      </div>
+                  </div>
+              </div>                 
+              <div class="progress-info">
+                  <div class="subtitle sub-med">Empresa</div>
+                  <div class="h7">{{medicaoSelected.descEmpresa}}</div>
+              </div>
+              <div class="progress-info">
+                  <div class="subtitle sub-med">Cod. Ponto</div>
+                  <div class="h7">{{medicaoSelected.pontoMedicao}}</div>
+              </div> 
+              <div class="progress-info">
+                  <div class="subtitle sub-med">Ponto de Medição</div>
+                  <div class="h7">{{medicaoSelected.descPontoMedicao}}</div>
+              </div>                                   
+          </nb-card-body>
+      </nb-card>
+  </div>
+  <div class="col-md-3">
+      <nb-card size="medium" accent="warning" [nbSpinner]="false">
+          <nb-card-header>Consumo ATIVO</nb-card-header>
+          <nb-card-body>
+              <div class="progress-info">
+                  <div class="subtitle sub-med">Total Consumo HCC</div>
+                  <div class="h7">{{totais?.totalConsumoHCC | number:'2.3-3':'pt'}} kWh</div>
+              </div>
+              <div class="progress-info">
+                  <div class="subtitle sub-med">Total Consumo HIF</div>
+                  <div class="h7">{{totais?.totalConsumoHIF | number:'2.3-3':'pt'}} kWh</div>
+              </div>
+              <div class="progress-info">
+                <div class="form-group">
+                    <div class="subtitle sub-med">ICMS (%)*</div>
+                    <input type="number" nbInput fieldSize="small" fullWidth id="inputFirstName" formControlName="icms">
+                </div>
+              </div> 
+              <div class="progress-info top-up">
+                <div class="form-group">
+                    <div class="subtitle sub-med">PROINFA (MWh)*</div>
+                    <input type="number" nbInput fieldSize="small" fullWidth id="inputFirstName" formControlName="proinfa">
+                  </div>
+              </div>                    
+          </nb-card-body>
+      </nb-card>
+  </div>
+  <div class="col-md-6">
+      <nb-card size="medium" accent="warning" [nbSpinner]="false">
+          <nb-card-header>Consumo kWh Diário  - HCC ({{totais?.diasConsumoHCC | number:'1.0-0':'pt'}} dias) vs. HIF ({{totais?.diasConsumoHIF | number:'1.0-0':'pt'}} dias)</nb-card-header>
+          <nb-card-body>
+              <div class="row">
+                  <div class="col-md-12">  
+                      <ngx-chartjs-bar [valores]="valores"></ngx-chartjs-bar>
+                  </div>
+              </div>
+          </nb-card-body>
+      </nb-card>
+  </div>     
+</div>
+</form>
+<div class="row" [nbSpinner]="loading" *ngIf="selected">
+  <div class="col-md-12">
+      <nb-card accent="primary">
+          <nb-card-body>
+            <nb-tabset>
+                <nb-tab tabTitle="Resultado da Medição">
+                    <div class="col-md-12">
+                        <ng2-smart-table [settings]="settingsMedicao" [source]="sourceMedicao"></ng2-smart-table>
+                    </div>
+                  </nb-tab>
+                <nb-tab tabTitle="Coletas Incompletas" *ngIf="medicaoSelected.statusMedicao === 18">
+                    <div class="col-md-12">
+                        <ng2-smart-table [settings]="settingsMedicao" [source]="sourceMedicaoIcompletas"></ng2-smart-table>
+                    </div>
+                </nb-tab>
+            </nb-tabset>
+          </nb-card-body>
+          <nb-card-footer>
+              <button type="submit" nbButton status="basic" (click)="limparFormulario()">Voltar</button>
+              <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="salvar()" *ngIf="habilitaOperacoes && totais && totais !== null">Salvar</button>
+              <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="coletarNovamente()" *ngIf="habilitaOperacoes">Coletar Novamente</button>
+              <button type="submit" *ngIf="medicaoSelected.statusMedicao === 18" nbButton status="danger" style="margin-left: 0.5rem;" >Validar Incompletas</button>
+              <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadCSV()">Exportar CSV</button>
+              <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="historicoMedicao()">Histórico de Medição</button>
+          </nb-card-footer>             
+      </nb-card>       
+  </div>
+</div>
