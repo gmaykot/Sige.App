@@ -1,0 +1,46 @@
+@import '/src/app/@theme/styles/sige.custom.scss';
+@import '/src/app/@theme/styles/themes';
+
+$shadow-green: #00977e;
+
+  .progress-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 2rem;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .description {
+    margin-top: 0.5rem;
+  }
+
+  .top-up {
+    margin-top: 1.2rem;
+  }
+
+  .sub-med {
+    font-weight: normal !important;
+  }
+
+  :host {
+    ::ng-deep .ng2-smart-row td:nth-child(3) {
+        text-align: center;
+    }
+  }
+
+  :host {
+    ::ng-deep .ng2-smart-row td:nth-child(4) {
+        text-align: center;
+    }
+  }
+
+  :host {
+    ::ng-deep .ng2-smart-row td:nth-child(5) {
+        text-align: center;
+    }
+  }
+  

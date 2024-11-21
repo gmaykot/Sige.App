@@ -1,0 +1,49 @@
+<div class="row show-grid">
+    <div class="col-12 col-md-4" *ngFor="let statusCard of statusCards">
+      <a>
+        <ngx-status-card
+          [title]="statusCard.title"
+          [type]="statusCard.type"
+          [link]="statusCard.link"
+        >
+          <i [ngClass]="statusCard.iconClass"></i>
+        </ngx-status-card>
+      </a>
+    </div>
+</div>
+<div class="card-row" *ngIf="false">
+  <div class="col-sm-6" >
+    <nb-card accent="info">
+      <nb-card-header>Medições Coletadas</nb-card-header>
+      <nb-card-body>
+        <ngx-echarts-pie></ngx-echarts-pie>
+      </nb-card-body>    
+    </nb-card>
+  </div>
+  <div class="col-sm-6">
+    <nb-card accent="info">
+      <nb-card-header>Consumo Geral kWh Mês</nb-card-header>
+      <nb-card-body>
+        <ngx-echarts-bar></ngx-echarts-bar>
+      </nb-card-body>    
+    </nb-card>
+  </div>
+</div>
+<div class="card-row"  *ngIf="false">
+  <div class="col-sm-6" >
+    <nb-card accent="info">
+      <nb-card-header>Status Medições</nb-card-header>
+      <nb-card-body>
+        <ngx-echarts-pie></ngx-echarts-pie>
+      </nb-card-body>    
+    </nb-card>
+  </div>
+  <div class="col-sm-6">
+    <nb-card accent="info">
+      <nb-card-header>Contratos Fim Vigência</nb-card-header>
+      <nb-card-body>
+        <ngx-echarts-bar></ngx-echarts-bar>
+      </nb-card-body>    
+    </nb-card>
+  </div>
+</div>

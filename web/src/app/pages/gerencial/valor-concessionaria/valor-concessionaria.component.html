@@ -1,0 +1,221 @@
+<nb-alert status="success" closable (close)="onClose()" *ngIf="successMesage">
+    {{successMesage}}
+  </nb-alert>
+  
+<form [formGroup]="control">
+<div class="card-row">
+    <div class="card-col-75">
+        <nb-card>
+            <nb-card-header>Valores por Concessionária</nb-card-header>
+            <nb-card-body>   
+                <input hidden id="id" type="text" formControlName="id">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="inputFirstName" class="label">Concessionária*</label><br>
+                      <nb-select fullWidth formControlName="concessionariaId" size="small" >
+                        <nb-option *ngFor="let con of concessionarias" value="{{con.id}}">{{con.descricao}}</nb-option>
+                      </nb-select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="inputFirstName" class="label">Sub-Grupo*</label><br>
+                      <nb-select fullWidth size="small" formControlName="subGrupo">
+                        <nb-option value="A4_138_23KV">A4 (13.8 - 23 KV)</nb-option>
+                      </nb-select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="inputEmail" class="label">Último Reajuste*</label>
+                      <input nbInput fullWidth [nbDatepicker]="formpicker" fieldSize="small" formControlName="dataUltimoReajuste">              
+                      <nb-datepicker #formpicker></nb-datepicker>
+                    </div>
+                  </div>
+                  
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label for="inputLastName" class="label">Nº Resolução*</label>
+                      <input type="text" nbInput fullWidth fieldSize="small" id="inputLastName" placeholder="" formControlName="numeroResolucao">
+                    </div>
+                  </div>
+                </div>
+              </nb-card-body>
+    </nb-card>    
+    </div>
+    <div class="card-col">
+        <nb-card accent="warning">
+            <nb-card-header>Valor BT <nb-icon icon="bulb-outline" pack="eva" status="warning" nbTooltip="Descrição do que é BT"  class="icon-nb"></nb-icon></nb-card-header>
+            <nb-card-body>
+                <div class="col-sm-8">
+                <div class="form-group">
+                    <label for="inputLastName" class="label">kWh*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="kWhBT">
+                </div>
+            </div>
+            </nb-card-body>
+        </nb-card>    
+    </div>
+</div>
+<div class="card-row">
+    <div class="card-col">
+        <nb-card size="tiny" accent="success">
+        <nb-card-header>THS Verde <nb-icon icon="flag" pack="eva" status="success" nbTooltip="Tarifa Horosazonal Verde" class="icon-nb"></nb-icon>
+        </nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">kWh P S*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="kWhPSVerde">
+                </div>          
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">kWh FP S*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="kWhFPSVerde">
+                </div>          
+            </div>          
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Dem*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="demVerde">
+                </div>                   
+            </div>          
+        </nb-card-body>
+        </nb-card>
+    </div>
+    <div class="card-col">
+        <nb-card size="tiny" accent="success">
+        <nb-card-header>Mercado Livre Verde 0%  <nb-icon icon="flag" pack="eva" status="success" class="icon-nb"></nb-icon></nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Tusd FP - kWh*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="tusdPKWhCalcVerde0">
+                </div>          
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Tusd P*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="tusdPVerde0">
+                </div>          
+            </div>   
+        </nb-card-body>
+        </nb-card>
+    </div>
+    <div class="card-col">
+        <nb-card size="tiny" accent="success">
+        <nb-card-header>Mercado Livre Verde 50%  <nb-icon icon="flag" pack="eva" status="success" class="icon-nb"></nb-icon></nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Cusd Verde P*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="cusdPCalcVerde50">
+                </div>                  
+            </div>   
+        </nb-card-body>        
+        </nb-card>
+    </div>
+    <div class="card-col">
+        <nb-card size="tiny" accent="success">
+        <nb-card-header>Mercado Livre Verde 100%  <nb-icon icon="flag" pack="eva" status="success" class="icon-nb"></nb-icon></nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Tusd*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="tusdVerde100">
+                </div>                   
+            </div>   
+        </nb-card-body>        
+        </nb-card>
+    </div>
+</div>
+
+<div class="card-row">
+    <div class="card-col">
+        <nb-card size="tiny" accent="info">
+        <nb-card-header>THS Azul <nb-icon icon="flag" pack="eva" status="info" nbTooltip="Tarifa Horosazonal Azul" class="icon-nb"></nb-icon></nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">kWh P S*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="kWhPSAzul">
+                </div>          
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">kWh FP S*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="kWhFPSAzul">
+                </div>          
+            </div>          
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Dem P*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="demPAzul">
+                </div>  
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Dem FP*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="demFPAzul">
+                </div>                                   
+            </div>          
+        </nb-card-body>        
+        </nb-card>
+    </div>
+    <div class="card-col">
+        <nb-card size="tiny" accent="info">
+        <nb-card-header>Mercado Livre Azul 0%  <nb-icon icon="flag" pack="eva" status="info" class="icon-nb"></nb-icon></nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Tusd FP - kWh*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="tusdFPKWhAzul0">
+                </div>                   
+            </div>   
+        </nb-card-body>         
+        </nb-card>
+    </div>
+    <div class="card-col">
+        <nb-card size="tiny" accent="info">
+        <nb-card-header>Mercado Livre Azul 50%  <nb-icon icon="flag" pack="eva" status="info" class="icon-nb"></nb-icon></nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Cusd FP*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="cusdFPAzul50">
+                </div>                   
+            </div>   
+        </nb-card-body>         
+        </nb-card>
+    </div>
+    <div class="card-col">
+        <nb-card size="tiny" accent="info">
+        <nb-card-header>Mercado Livre Azul 100%  <nb-icon icon="flag" pack="eva" status="info" class="icon-nb"></nb-icon></nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Tusd FP*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="tusdFPAzul100">
+                </div>                   
+                <div class="col-sm-6">
+                    <label for="inputLastName" class="label">Tusd P*</label>
+                    <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="tusdPAzul100">
+                </div>                   
+            </div>   
+        </nb-card-body>         
+        </nb-card>
+    </div>
+</div>
+<nb-card>
+    <nb-card-footer>
+        <button type="submit" nbButton status="info"  (click)="onSubmit()" [disabled]="!control.valid">{{edit ? 'Alterar' : 'Cadastrar'}}</button>
+        <button type="submit" *ngIf="edit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()">Excluir</button>
+        <button type="submit" *ngIf="edit" nbButton style="margin-left: 0.5rem;" (click)="limparFormulario()">Limpar</button>
+      </nb-card-footer> 
+</nb-card>
+</form>
+
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+  <nb-card-header>
+    Valores de Concessionárias Cadastrados
+  </nb-card-header>
+
+  <nb-card-body>
+      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+      </ng2-smart-table>
+  </nb-card-body>
+</nb-card>

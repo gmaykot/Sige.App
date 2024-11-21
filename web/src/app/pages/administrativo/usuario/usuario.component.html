@@ -1,0 +1,96 @@
+<form [formGroup]="control">    
+  <div class="card-row" *ngIf="edit || true" [nbSpinner]="loading">
+    <div class="card-col">
+      <nb-card>
+        <nb-card-body>
+          <nb-tabset>
+            <nb-tab tabTitle="Cadastro de Usuário">
+              <nb-card style="border: 0rem;">
+                <nb-card-body>
+                  <input hidden id="id" type="text" formControlName="id">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label for="inputFirstName" class="label">Nome*</label>
+                        <input type="text" nbInput fullWidth id="inputFirstName" formControlName="nome">
+                      </div>
+                    </div>   
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label for="inputFirstName" class="label">Apelido*</label>
+                        <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="apelido">
+                      </div>
+                    </div>  
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label for="inputFirstName" class="label">Login*</label>
+                        <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="email">
+                      </div>
+                    </div>                              
+                  </div>    
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputFirstName" class="label">Senha*</label>
+                        <input type="text" nbInput fullWidth id="inputFirstName" formControlName="senha">
+                      </div>
+                    </div>          
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                        <label for="inputFirstName" class="label">Repetir Senha*</label>
+                        <input type="text" nbInput fullWidth id="inputFirstName" formControlName="contraSenha">
+                      </div>
+                    </div>                  
+                    <div class="col-sm-4">
+                      <div class="form-group">                        
+                        <nb-toggle style="margin-top: 2rem;" labelPosition="end" formControlName="ativo">Ativo*</nb-toggle>
+                      </div>
+                    </div>                  
+                  </div>
+                </nb-card-body>
+                <nb-card-footer>
+                  <button type="submit" disabled="{{!control.valid}}" nbButton status="info" (click)="onSubmit()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+                  <button type="submit" *ngIf="selected && habilitaOperacoes && habilitaValidarRelatorio" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDelete()" >Excluir</button>
+                  <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="clearForm()">Voltar</button>
+                </nb-card-footer>          
+              </nb-card>                
+            </nb-tab>
+          <nb-tab tabTitle="Menus de Acesso">
+            <nb-card style="border: 0rem;">                 
+              <nb-card-body>         
+                <ng2-smart-table [settings]="settingsMenus" [source]="sourceMenu" (deleteConfirm)="onSelectMenu($event)">
+                </ng2-smart-table>
+              </nb-card-body>
+              <nb-card-footer>
+                <button type="submit" nbButton status="info" (click)="onConfirmMenu()" *ngIf="habilitaOperacoes">Cadastrar</button>
+                <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeletMenu()" *ngIf="habilitaOperacoes" [disabled]="checked.length === 0">Excluir</button>
+              </nb-card-footer>                  
+            </nb-card>                 
+          </nb-tab>
+          </nb-tabset>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </div>
+</form>
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+  <nb-card-header>
+    <div class="row">
+      <div class="table-header">
+          Usuários Cadastrados
+      </div>
+      <div *ngIf="!edit && habilitaOperacoes">
+        <div class="form-group">
+          <nb-actions size="small">
+            <nb-action icon="plus-outline" (click)="onEdit()"></nb-action>
+          </nb-actions>
+        </div>
+      </div>
+    </div> 
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table [settings]="settingsUsuario" [source]="source" (deleteConfirm)="onSelect($event)">
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,50 @@
+<form [formGroup]="control">
+  <nb-card *ngIf="edit">
+  <nb-card-header>Cadastro de Concessionária</nb-card-header>
+  <nb-card-body>
+    <input hidden id="id" type="text" formControlName="id">
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="form-group">
+          <label for="inputFirstName" class="label">Nome*</label>
+          <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="nome">
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label for="inputLastName" class="label">Estado*</label>
+          <nb-select fullWidth placeholder="Selecione" formControlName="estado">
+            <nb-option *ngFor="let uf of estados" value="{{uf.sigla}}">{{uf.sigla}}</nb-option>
+          </nb-select>
+        </div>
+      </div>   
+    </div>    
+  </nb-card-body>
+  <nb-card-footer>
+    <button type="submit" nbButton status="info" (click)="onSubmit()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+    <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()">Excluir</button>
+    <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="limparFormulario()">Voltar</button>
+  </nb-card-footer>
+</nb-card>
+</form>
+
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+  <nb-card-header>
+    <div class="row">
+      <div class="table-header">
+          Concessionárias Cadastradas
+      </div>
+      <div *ngIf="!edit && habilitaOperacoes">
+        <div class="form-group">
+          <nb-actions size="small">
+            <nb-action icon="plus-outline" (click)="onEdit()"></nb-action>
+          </nb-actions>
+        </div>
+      </div>
+    </div>   </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>

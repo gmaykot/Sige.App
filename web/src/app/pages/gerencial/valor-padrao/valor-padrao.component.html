@@ -1,0 +1,68 @@
+<form [formGroup]="control">
+    <nb-card *ngIf="edit">
+        <nb-card-header>Cadastro de Valor Padrão</nb-card-header>
+        <nb-card-body>
+            <input hidden id="id" type="text" formControlName="id">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="inputFirstName" class="label">Competência*</label>
+                        <app-date-input formControlName="competencia" full="false"></app-date-input>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="inputLastName" class="label">PIS</label>
+                        <input type="number" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="valorPis">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="inputLastName" class="label">COFINS</label>
+                        <input type="number" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="valorCofins">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="inputLastName" class="label">Bandeira</label>
+                        <nb-select fullWidth placeholder="Selecione" formControlName="bandeira">
+                            <nb-option *ngFor="let band of bandeiras" value="{{band.id}}">{{band.desc}}</nb-option>
+                        </nb-select>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="inputLastName" class="label">Valor Bandeira</label>
+                        <input type="number" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="valorBandeira">
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <button type="submit" nbButton status="info" (click)="onSubmit()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+            <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDelete()">Excluir</button>
+            <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="clearForm()">Voltar</button>
+        </nb-card-footer>
+    </nb-card>
+</form>
+
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+    <nb-card-header>
+      <div class="row">
+        <div class="table-header">
+            Valores Padrões Cadastrados
+        </div>
+        <div *ngIf="!edit && habilitaOperacoes">
+          <div class="form-group">
+            <nb-actions size="small">
+              <nb-action icon="plus-outline" (click)="onEdit()"></nb-action>
+            </nb-actions>
+          </div>
+        </div>
+      </div>   </nb-card-header>
+  
+    <nb-card-body>
+      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelectCustom($event)">
+      </ng2-smart-table>
+    </nb-card-body>
+  </nb-card>

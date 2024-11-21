@@ -1,0 +1,23 @@
+@import '/src/app/@theme/styles/sige.custom.scss';
+@import '/src/app/@theme/styles/themes';
+
+$shadow-green: #00977e;
+
+  .progress-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 2rem;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .description {
+    margin-top: 0.5rem;
+  }
+
+  .top-up {
+    margin-top: 0.7rem;
+  }

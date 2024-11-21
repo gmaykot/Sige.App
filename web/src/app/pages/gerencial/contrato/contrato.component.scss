@@ -1,0 +1,28 @@
+@import '/src/app/@theme/styles/sige.custom.scss';
+
+:host {
+    ::ng-deep .ng2-smart-row td:nth-child(2) {
+        width: 150px;
+    }
+}
+
+:host {
+    ::ng-deep .ng2-smart-row td:nth-child(4) {
+        text-align: center;
+        width: 140px;
+    }
+}
+
+:host {
+    ::ng-deep .ng2-smart-row td:nth-child(5) {
+        text-align: center;
+        width: 140px;
+    }
+}
+
+:host {
+    ::ng-deep .ng2-smart-row td:nth-child(7) {
+        text-align: center;
+        width: 140px;
+    }
+}

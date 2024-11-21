@@ -1,0 +1,68 @@
+@import '/src/app/@theme/styles/sige.custom.scss';
+@import '/src/app/@theme/styles/themes';
+
+$shadow-green: #00977e;
+
+  .progress-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 2rem;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .description {
+    margin-top: 0.5rem;
+  }
+
+  .top-up {
+    margin-top: 0.7rem;
+  }
+
+  .sub-med {
+    font-weight: normal !important;
+  }
+
+@include nb-install-component() {
+  ngx-chartjs-bar,
+  ngx-chartjs-bar-horizontal ,
+  ngx-chartjs-radar {
+    display: block;
+    height: 370px;
+    width: 100%;
+
+    ::ng-deep chart {
+      display: block;
+      height: 90%;
+      width: 100%;
+    }
+
+    ::ng-deep nb-layout-column {
+      height: 130vw;
+    }
+  }
+}
+
+:host {
+  ::ng-deep .ng2-smart-row td:nth-child(4) {
+      text-align: center;
+  }
+}
+:host {
+  ::ng-deep .ng2-smart-row td:nth-child(5) {
+      text-align: center;
+  }
+}
+:host {
+  ::ng-deep .ng2-smart-row td:nth-child(6) {
+      text-align: center;
+  }
+}
+:host {
+  ::ng-deep .ng2-smart-row td:nth-child(7) {
+      text-align: center;
+  }
+}

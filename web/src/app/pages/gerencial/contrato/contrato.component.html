@@ -1,0 +1,187 @@
+<form [formGroup]="control">
+  <div class="card-row" *ngIf="edit" [nbSpinner]="loading">
+    <div class="card-col">
+      <nb-card>
+        <nb-card-body>
+          <nb-tabset>
+            <nb-tab tabTitle="Cadastro de Contrato">
+              <nb-card style="border: 0rem;">
+                <nb-card-body>
+                  <input hidden id="id" type="text" formControlName="id">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label for="inputFirstName" class="label">Número*</label>
+                        <input type="text" nbInput fullWidth id="inputFirstName" placeholder=""
+                          formControlName="numero">
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="label">Data Base*</label>
+                        <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____" [dropSpecialCharacters]="false"
+                          fieldSize="small" formControlName="dataBase">
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="label">Vigência Inicial*</label>
+                        <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
+                          [dropSpecialCharacters]="false" fieldSize="small" formControlName="dataVigenciaInicial">
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="label">Vigência Final*</label>
+                        <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
+                          [dropSpecialCharacters]="false" fieldSize="small" formControlName="dataVigenciaFinal">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label for="inputFirstName" class="label">Take Mínimo (%)*</label>
+                        <input type="number" nbInput fullWidth id="inputFirstName" placeholder=""
+                          formControlName="takeMinimo">
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label for="inputFirstName" class="label">Take Máximo (%)*</label>
+                        <input type="number" nbInput fullWidth id="inputFirstName" placeholder=""
+                          formControlName="takeMaximo">
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label for="inputLastName" class="label">Status*</label>
+                        <nb-select fullWidth placeholder="Selecione" formControlName="status">
+                          <nb-option *ngFor="let sta of status" value="{{sta.id}}">{{sta.desc}}</nb-option>
+                        </nb-select>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label for="inputLastName" class="label">Tipo de Energia*</label>
+                        <nb-select fullWidth placeholder="Selecione" formControlName="tipoEnergia">
+                          <nb-option *ngFor="let ene of tipoEnergia" value="{{ene.id}}">{{ene.desc}}</nb-option>
+                        </nb-select>
+                      </div>
+                    </div>                    
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="inputLastName" class="label">Fornecedor*</label>
+                        <nb-select fullWidth placeholder="Selecione" formControlName="fornecedorId">
+                          <nb-option *ngFor="let forn of fornecedores"
+                            value="{{forn.id}}">{{forn.descricao}}</nb-option>
+                        </nb-select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="inputLastName" class="label">Concessionária*</label>
+                        <nb-select fullWidth placeholder="Selecione" formControlName="concessionariaId">
+                          <nb-option *ngFor="let con of concessionarias"
+                            value="{{con.id}}">{{con.descricao}}</nb-option>
+                        </nb-select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="inputFirstName" class="label">Descrição Grupo de Empresas*</label>
+                        <input type="text" nbInput fullWidth id="inputFirstName" placeholder=""
+                          formControlName="dscGrupo">
+                      </div>
+                    </div>
+                  </div>
+                </nb-card-body>
+                <nb-card-footer>
+                  <button type="submit" nbButton status="info" (click)="onSubmit()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+                  <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()">Excluir</button>
+                  <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="limparFormulario()">Voltar</button>
+                </nb-card-footer>
+              </nb-card>
+            </nb-tab>
+            <nb-tab tabTitle="Grupo de Empresas" *ngIf="selected">
+              <nb-card style="border: 0rem;">
+                <nb-card-body>
+                  <div class="form-group col-md-12">
+                    <ng2-smart-table [settings]="settingsEmpresa" [source]="sourceEmpresas"
+                      (deleteConfirm)="onSelect($event)">
+                    </ng2-smart-table>
+                  </div>
+                </nb-card-body>
+                <nb-card-footer>
+                  <button type="button" nbButton status="info" (click)="onGrupoEmpresaConfirm()" [disabled]="!selected" *ngIf="habilitaOperacoes">Cadastrar</button>
+                  <button type="button" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onGrupoEmpresaDelete()" *ngIf="habilitaOperacoes" [disabled]="empresasChecked.length == 0">Excluir</button>
+                </nb-card-footer>
+              </nb-card>
+            </nb-tab>
+            <nb-tab tabTitle="Valores Anuais" *ngIf="selected">
+              <nb-card style="border: 0rem;">
+                <nb-card-body>
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <ng2-smart-table [settings]="settingsAnual" [source]="sourceValoresAnuais"
+                        (deleteConfirm)="onSelect($event)">
+                      </ng2-smart-table>
+                    </div>
+                  </div>
+                </nb-card-body>
+                <nb-card-footer>
+                  <button type="button" nbButton status="info" *ngIf="valoresAnuaisChecked.length == 0 && habilitaOperacoes" (click)="onValorAnualConfirm()" [disabled]="!selected">Cadastrar</button>
+                  <button type="button" nbButton status="info" *ngIf="valoresAnuaisChecked.length >= 1 && habilitaOperacoes" (click)="onValorAnualEdit()" [disabled]="valoresAnuaisChecked.length != 1">Alterar</button>
+                  <button type="button" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onValorAnualDelete()" [disabled]="valoresAnuaisChecked.length == 0" *ngIf="habilitaOperacoes">Excluir</button>
+                </nb-card-footer>
+              </nb-card>
+            </nb-tab>
+            <nb-tab tabTitle="Valores Mensais" *ngIf="sourceValoresAnuais.count() > 0">
+              <nb-card style="border: 0rem;">
+                <nb-card-body>
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <ng2-smart-table [settings]="settingsMensal" [source]="sourceValoresMensais"
+                        (deleteConfirm)="onSelect($event)">
+                      </ng2-smart-table>
+                    </div>
+                  </div>
+                </nb-card-body>
+                <nb-card-footer>
+                  <button type="button" nbButton status="info" *ngIf="valoresMensaisChecked.length == 0 && habilitaOperacoes" (click)="onValorMensalConfirm()" [disabled]="!selected">Cadastrar</button>
+                  <button type="button" nbButton status="info" *ngIf="valoresMensaisChecked.length >= 1 && habilitaOperacoes" (click)="onValorMensalEdit()" [disabled]="valoresMensaisChecked.length != 1">Alterar</button>
+                  <button type="button" nbButton status="danger" *ngIf="habilitaOperacoes" style="margin-left: 0.5rem;" (click)="onValorMensalDelete()" [disabled]="valoresMensaisChecked.length == 0">Excluir</button>
+                </nb-card-footer>
+              </nb-card>
+            </nb-tab>
+          </nb-tabset>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </div>
+  <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+    <nb-card-header>
+      <div class="row">
+        <div class="table-header">
+          Contratos Cadastrados
+        </div>
+        <div *ngIf="!edit && habilitaOperacoes">
+          <div class="form-group">
+            <nb-actions size="small">
+              <nb-action icon="plus-outline" (click)="onEdit()"></nb-action>
+            </nb-actions>
+          </div>
+        </div>
+      </div>
+    </nb-card-header>
+
+    <nb-card-body>
+      <ng2-smart-table [settings]="settingsContrato" [source]="source" (deleteConfirm)="onSelect($event)">
+      </ng2-smart-table>
+    </nb-card-body>
+  </nb-card>
+</form>

@@ -1,0 +1,72 @@
+<nb-alert status="success" closable (close)="onClose()" *ngIf="successMesage">
+  {{successMesage}}
+</nb-alert>
+<form [formGroup]="control">
+  <nb-card>
+  <nb-card-header>Cadastro de Menus do Sistema</nb-card-header>
+  <nb-card-body>
+    <input hidden id="id" type="text" formControlName="id">
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label for="inputFirstName" class="label">Título*</label>
+          <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="title">
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label for="inputLastName" class="label">Predecessor*</label>
+          <nb-select fullWidth placeholder="Selecione" formControlName="menuPredecessorId">
+            <nb-option *ngFor="let menu of menus" value="{{menu.id}}">{{menu.title}}</nb-option>
+          </nb-select>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label for="inputFirstName" class="label">Link*</label>
+          <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="link">
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label for="inputFirstName" class="label">Ícone*</label>
+          <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="icon">
+        </div>
+      </div>
+      <div class="col-sm-1">
+        <div class="form-group">
+          <label for="inputFirstName" class="label">Ordem*</label>
+          <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="ordem">
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label for="inputFirstName" class="label">Expandido*</label>
+          <nb-select fullWidth placeholder="Selecione" formControlName="expanded">
+            <nb-option [value]="false">Não</nb-option>
+            <nb-option [value]="true">Sim</nb-option>
+          </nb-select>
+        </div>
+      </div>
+    </div>    
+  </nb-card-body>
+  <nb-card-footer>
+    <button type="submit" nbButton status="info"  (click)="onSubmit()">{{edit ? 'Alterar' : 'Cadastrar'}}</button>
+    <button type="submit" *ngIf="edit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()">Excluir</button>
+    <button type="submit" *ngIf="edit" nbButton style="margin-left: 0.5rem;" (click)="limparFormulario()">Limpar</button>
+  </nb-card-footer>
+</nb-card>
+</form>
+
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+  <nb-card-header> Menus do Sistema </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table
+      [settings]="settings"
+      [source]="source"
+      (deleteConfirm)="onSelect($event)"
+    >
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>

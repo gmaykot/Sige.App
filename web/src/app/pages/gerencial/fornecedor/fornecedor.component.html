@@ -1,0 +1,86 @@
+  <form [formGroup]="control">    
+    <div class="card-row" *ngIf="edit" [nbSpinner]="loading">
+      <div class="card-col">
+        <nb-card>
+          <nb-card-body>
+            <nb-tabset>
+              <nb-tab tabTitle="Cadastro de Fornecedor">
+                <nb-card style="border: 0rem;">
+                  <nb-card-body>
+                    <input hidden id="id" type="text" formControlName="id">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="inputFirstName" class="label">CNPJ*</label>
+                          <input type="text" mask="00.000.000/0000-00" [dropSpecialCharacters]="false" placeholder="00.000.000/0000-00" nbInput fullWidth id="inputFirstName" formControlName="cnpj">
+                        </div>
+                      </div>   
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="inputFirstName" class="label">Nome*</label>
+                          <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="nome">
+                        </div>
+                      </div>          
+                    </div>    
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="inputFirstName" class="label">Telefone Contato*</label>
+                          <input type="text" [mask]="control.get('telefoneContato').value?.length > 10 ? '(00) 00000-0000' : '(00) 0000-00009'" nbInput fullWidth id="inputFirstName" placeholder="(00) 0000-0000" formControlName="telefoneContato">
+                        </div>
+                      </div>          
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="inputFirstName" class="label">Telefone Alternativo</label>
+                          <input type="text" [mask]="control.get('telefoneAlternativo').value?.length > 10 ? '(00) 00000-0000' : '(00) 0000-00009'" nbInput fullWidth id="inputFirstName" placeholder="(00) 0000-0000" formControlName="telefoneAlternativo">
+                        </div>
+                      </div>                  
+                    </div>
+                  </nb-card-body>
+                  <nb-card-footer>
+                    <button type="submit" disabled="{{!control.valid}}" nbButton status="info" (click)="onSubmit()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+                    <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()" >Excluir</button>
+                    <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="limparFormulario()">Voltar</button>
+                  </nb-card-footer>          
+                </nb-card>                
+              </nb-tab>
+            <nb-tab tabTitle="Grupo de Contatos" *ngIf="selected">
+              <nb-card style="border: 0rem;">                 
+                <nb-card-body>
+                  <ng2-smart-table [settings]="settingsContato" [source]="sourceContato" (deleteConfirm)="onSelect($event)">
+                  </ng2-smart-table>
+                </nb-card-body>
+                <nb-card-footer>
+                  <button type="submit" nbButton status="info" (click)="onContatoConfirm()" *ngIf="contatosChecked.length == 0 && habilitaOperacoes">Cadastrar</button>
+                  <button type="submit" nbButton status="info" (click)="onContatoEdit()" *ngIf="contatosChecked.length == 1 && habilitaOperacoes">Alterar</button>
+                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onContatoDelete()" *ngIf="habilitaOperacoes" [disabled]="contatosChecked.length == 0">Excluir</button>
+                </nb-card-footer>                  
+              </nb-card>                 
+            </nb-tab>
+            </nb-tabset>
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </div>
+  </form>
+  <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+    <nb-card-header>
+      <div class="row">
+        <div class="table-header">
+            Fornecedores Cadastrados
+        </div>
+        <div *ngIf="!selected && habilitaOperacoes">
+          <div class="form-group">
+            <nb-actions size="small">
+              <nb-action icon="plus-outline" (click)="onEdit()"></nb-action>
+            </nb-actions>
+          </div>
+        </div>
+      </div> 
+    </nb-card-header>
+  
+    <nb-card-body>
+      <ng2-smart-table [settings]="settingsFornecedor" [source]="source" (deleteConfirm)="onSelect($event)">
+      </ng2-smart-table>
+    </nb-card-body>
+  </nb-card>
