@@ -1,4 +1,4 @@
-name: Database Dump PRD - OLD >> NEW
+name: Database Restore PRD
 
 on:
   workflow_dispatch:
