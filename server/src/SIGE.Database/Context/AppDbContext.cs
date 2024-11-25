@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Converter;
-using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Sistema;
+using SIGE.Core.Models.Sistema.BandeiraTarifaria;
 using SIGE.Core.Models.Sistema.Ccee;
 using SIGE.Core.Models.Sistema.Concessionaria;
 using SIGE.Core.Models.Sistema.Contrato;
 using SIGE.Core.Models.Sistema.Empresa;
 using SIGE.Core.Models.Sistema.Fornecedor;
-using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Medicao;
 using SIGE.Core.Models.Sistema.Menus;
 using SIGE.Core.Models.Sistema.RelatorioEconomia;
@@ -51,7 +50,7 @@ namespace SIGE.DataAccess.Context
         public DbSet<RelatorioEconomiaModel> RelatoriosEconomia { get; set; }
         public DbSet<LogModel> Logs { get; set; }
         public DbSet<ContratoEmpresaModel> ContratoEmpresas { get; set; }
-        public DbSet<ValorPadraoModel> ValoresPadroes { get; set; }
         public DbSet<TarifaAplicacaoModel> TarifasAplicacao { get; set; }
+        public DbSet<BandeiraTarifariaModel> BandeirasTarifarias { get; set; }
     }
 }

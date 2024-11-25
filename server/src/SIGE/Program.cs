@@ -32,11 +32,11 @@ if (app.Environment.IsProduction() && false)
     app.UseSerilogRequestLogging();
 }
 
+if (app.Environment.IsDevelopment())
+    builder.WebHost.UseUrls("http://localhost:5263");
 if (app.Environment.IsStaging())
     builder.WebHost.UseUrls("https://0.0.0.0:5001");
 if (app.Environment.IsProduction())
     builder.WebHost.UseUrls("https://0.0.0.0:5000");
-if (app.Environment.IsDevelopment())
-    builder.WebHost.UseUrls("http://localhost:5263");
 
 app.Run();

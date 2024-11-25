@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.TarifaAplicacao;
-using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.TarifaAplicacao;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;

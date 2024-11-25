@@ -17,8 +17,8 @@ import { ContratoComponent } from './gerencial/contrato/contrato.component';
 import { FornecedorComponent } from './gerencial/fornecedor/fornecedor.component';
 import { ValorConcessionariaComponent } from './gerencial/valor-concessionaria/valor-concessionaria.component';
 import { RelatorioMedicaoComponent } from './geral/relatorio-medicao/relatorio-medicao.component';
-import { ValorPadraoComponent } from './gerencial/valor-padrao/valor-padrao.component';
 import TarifaAplicacaoComponent from './gerencial/tarifa-aplicacao/tarifa-aplicacao.component';
+import { BandeiraTarifariaComponent } from './gerencial/bandeira-tarifaria/bandeira-tarifaria.component';
 
 const routes: Routes = [{
   path: '',
@@ -26,44 +26,44 @@ const routes: Routes = [{
   canActivate: [ GeralGuard ],
   children: [
     {
+      path: 'alterar-senha',
+      component: AlterarSenhaComponent,
+    },
+    {
+      path: 'analise-viabilidade',
+      component: AnaliseViabilidadeComponent,
+    },
+    {
+      path: 'bandeira-tarifaria',
+      component: BandeiraTarifariaComponent,
+    },
+    {
+      path: 'concessionarias',
+      component: ConcessionariaComponent,
+    },
+    {
+      path: 'contratos',
+      component: ContratoComponent,
+    },
+    {
       path: 'dashboard',
       component: DashboardComponent,
     },
     {
       path: 'empresas',
       component: EmpresaComponent,
-    },  
+    },
     {
       path: 'fornecedores',
       component: FornecedorComponent,
-    },  
-    {
-      path: 'contratos',
-      component: ContratoComponent,
-    },  
-    {
-      path: 'concessionarias',
-      component: ConcessionariaComponent,
     },
     {
-      path: 'usuarios',
-      component: UsuarioComponent,
+      path: 'medicao',
+      component: MedicaoComponent,
     },
     {
-      path: 'valores-concessionarias',
-      component: ValorConcessionariaComponent,
-    },
-    {
-      path: 'valores-padroes',
-      component: ValorPadraoComponent,
-    },
-    {
-      path: 'tarifas-aplicacao',
-      component: TarifaAplicacaoComponent,
-    },
-    {
-      path: 'analise-viabilidade',
-      component: AnaliseViabilidadeComponent,
+      path: 'menu-sistema',
+      component: MenuSistemaComponent,
     },
     {
       path: 'relatorio-economia',
@@ -74,16 +74,16 @@ const routes: Routes = [{
       component: RelatorioMedicaoComponent,
     },
     {
-      path: 'alterar-senha',
-      component: AlterarSenhaComponent,
+      path: 'tarifas-aplicacao',
+      component: TarifaAplicacaoComponent,
     },
     {
-      path: 'menu-sistema',
-      component: MenuSistemaComponent,
+      path: 'usuarios',
+      component: UsuarioComponent,
     },
     {
-      path: 'medicao',
-      component: MedicaoComponent,
+      path: 'valores-concessionarias',
+      component: ValorConcessionariaComponent,
     },
     {
       path: '',
