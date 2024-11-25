@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Geral;
+using SIGE.Core.Models.Dto.BandeiraTarifaria;
+using SIGE.Core.Models.Dto.TarifaAplicacao;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller
 {
     [ApiController]
-    [Route("valor-padrao")]
-    public class ValorPadraoController(IValorPadraoService service) : ControllerBase
+    [Route("bandeira-tarifaria")]
+    public class BandeiraTarifariaController(IBandeiraTarifariaService service) : ControllerBase
     {
-        private readonly IValorPadraoService _service = service;
+        private readonly IBandeiraTarifariaService _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Inclui no sistema.")]
@@ -18,7 +19,7 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Incluir([FromBody] ValorPadraoDto req) =>
+        public async Task<IActionResult> Incluir([FromBody] BandeiraTarifariaDto req) =>
             Ok(await _service.Incluir(req));
 
         [HttpPut()]
@@ -27,7 +28,7 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Alterar([FromBody] ValorPadraoDto req) =>
+        public async Task<IActionResult> Alterar([FromBody] BandeiraTarifariaDto req) =>
             Ok(await _service.Alterar(req));
 
         [HttpDelete("{id}")]

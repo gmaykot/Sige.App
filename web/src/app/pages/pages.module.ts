@@ -43,10 +43,10 @@ import { AlertService } from '../@core/services/util/alert.service';
 import { ValidacaoMedicaoComponent } from '../@shared/custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
 import { GrupoEmpresaComponent } from '../@shared/custom-component/grupo-empresa.component';
 import { DateFilterComponent } from '../@shared/custom-component/filters/date-filter.component';
-import { ValorPadraoComponent } from './gerencial/valor-padrao/valor-padrao.component';
 import TarifaAplicacaoComponent from './gerencial/tarifa-aplicacao/tarifa-aplicacao.component';
 import { DateInputComponent } from '../@shared/custom-component/date-input/date-input.component';
 import { MenuUsuarioComponent } from '../@shared/custom-component/menu-usuario/menu-usuario.component';
+import { BandeiraTarifariaComponent } from './gerencial/bandeira-tarifaria/bandeira-tarifaria.component';
 
 @NgModule({
   imports: [
@@ -119,10 +119,10 @@ import { MenuUsuarioComponent } from '../@shared/custom-component/menu-usuario/m
     ValidacaoMedicaoComponent,
     GrupoEmpresaComponent,
     DateFilterComponent,
-    ValorPadraoComponent,
     TarifaAplicacaoComponent,
     DateInputComponent,
-    MenuUsuarioComponent
+    MenuUsuarioComponent,
+    BandeiraTarifariaComponent
   ],
   providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService]
 })
