@@ -17,14 +17,16 @@ export class DefaultServiceUtil<T> {
     }
 
     protected transformMesReferencia(data: any): any {
-        if (Array.isArray(data)) {
-            // Se o dado for uma lista
-            return data.map((item) => {
-                return this.transformItem(item);
-            });
-        } else {
-            // Se for um único objeto
-            return this.transformItem(data);
+        if (data) {
+            if (Array.isArray(data)) {
+                // Se o dado for uma lista
+                return data.map((item) => {
+                    return this.transformItem(item);
+                });
+            } else {
+                // Se for um único objeto
+                return this.transformItem(data);
+            }    
         }
     }
 
