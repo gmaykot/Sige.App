@@ -11,13 +11,12 @@ import { FornecedorService } from '../../../@core/services/gerencial/fornecedor.
 import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
 import { ValorAnualContratoService } from '../../../@core/services/gerencial/valor-anual-contrato';
 import { ValorMensalContratoService } from '../../../@core/services/gerencial/valor-mensal-contrato';
-import { STATUS_CONTRATO, TIPO_ENERGIA } from '../../../@core/enum/status-contrato';
+import { SEGMENTO, STATUS_CONTRATO, TIPO_ENERGIA } from '../../../@core/enum/status-contrato';
 import { IDropDown } from '../../../@core/data/drop-down';
 import { DatePipe } from '@angular/common';
 import { ContratoConfigSettings } from './contrato.config.settings';
 import { IValorAnual } from '../../../@core/data/valor-anual';
 import { IValorMensal } from '../../../@core/data/valor-mensal';
-import { IAlertMessage } from '../../../@core/data/alert-message';
 import { IEmpresa } from '../../../@core/data/empresa';
 import { IContratoEmpresas } from '../../../@core/data/contrato-empresas';
 import { ValorAnualComponent } from '../../../@shared/custom-component/valor-anual.component';
@@ -44,6 +43,7 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
   public selected = false;
   status = STATUS_CONTRATO;
   tipoEnergia = TIPO_ENERGIA;
+  segmento = SEGMENTO
   source: LocalDataSource = new LocalDataSource();
   sourceValoresAnuais: LocalDataSource = new LocalDataSource();
   sourceValoresMensais: LocalDataSource = new LocalDataSource();

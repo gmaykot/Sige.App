@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Concessionaria;
 using SIGE.Core.Models.Dto.Empresa;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
@@ -9,12 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("empresa")]
-    public class EmpresaController : ControllerBase
+    public class EmpresaController(IBaseInterface<EmpresaDto> empresaService) : ControllerBase
     {
-        private readonly IBaseInterface<EmpresaDto> _empresaService;
-
-        public EmpresaController(IBaseInterface<EmpresaDto> empresaService) =>
-            _empresaService = empresaService;
+        private readonly IBaseInterface<EmpresaDto> _empresaService = empresaService;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Cadastro da empresa ao sistema.")]

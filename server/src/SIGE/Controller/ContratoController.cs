@@ -8,12 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("contrato")]
-    public class ContratoController : ControllerBase
+    public class ContratoController(IContratoService contratoService) : ControllerBase
     {
-        private readonly IContratoService _contratoService;
-
-        public ContratoController(IContratoService contratoService) =>
-            _contratoService = contratoService;
+        private readonly IContratoService _contratoService = contratoService;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Efetua a inclusão de um contrato sistema.")]

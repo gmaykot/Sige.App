@@ -8,12 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("concessionaria")]
-    public class ConcessioanriaController : ControllerBase
+    public class ConcessioanriaController(IBaseInterface<ConcessionariaDto> concessionariaService) : ControllerBase
     {
-        private readonly IBaseInterface<ConcessionariaDto> _concessionariaService;
-
-        public ConcessioanriaController(IBaseInterface<ConcessionariaDto> concessionariaService) =>
-            _concessionariaService = concessionariaService;
+        private readonly IBaseInterface<ConcessionariaDto> _concessionariaService = concessionariaService;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Cadastro da empresa ao sistema.")]

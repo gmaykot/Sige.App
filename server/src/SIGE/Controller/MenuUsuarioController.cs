@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Concessionaria;
 using SIGE.Core.Models.Dto.Menus;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;

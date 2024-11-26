@@ -14,6 +14,7 @@ namespace SIGE.Core.Models.Dto.Contrato
         public required decimal TakeMaximo { get; set; }
         public required EStatusContrato Status { get; set; }
         public required ETipoEnergia TipoEnergia { get; set; }
+        public required ETipoSegmentoContrato Segmento { get; set; }
         public Guid? FornecedorId { get; set; }
         public string? DescFornecedor { get; set; }
         public Guid? ConcessionariaId { get; set; }

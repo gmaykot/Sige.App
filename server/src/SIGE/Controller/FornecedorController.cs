@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Concessionaria;
 using SIGE.Core.Models.Dto.Fornecedor;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
@@ -9,12 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("fornecedor")]
-    public class FornecedorController : ControllerBase
+    public class FornecedorController(IBaseInterface<FornecedorDto> fornecedorService) : ControllerBase
     {
-        private readonly IBaseInterface<FornecedorDto> _fornecedorService;
-
-        public FornecedorController(IBaseInterface<FornecedorDto> fornecedorService) =>
-            _fornecedorService = fornecedorService;
+        private readonly IBaseInterface<FornecedorDto> _fornecedorService = fornecedorService;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Cadastro do fornecedor ao sistema.")]

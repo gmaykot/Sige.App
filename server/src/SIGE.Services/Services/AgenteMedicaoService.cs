@@ -10,8 +10,7 @@ using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services
 {
-    public class AgenteMedicaoService(AppDbContext appDbContext, IMapper mapper)
-        : IBaseInterface<AgenteMedicaoDto>
+    public class AgenteMedicaoService(AppDbContext appDbContext, IMapper mapper): IBaseInterface<AgenteMedicaoDto>
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
