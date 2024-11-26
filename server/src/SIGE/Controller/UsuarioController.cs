@@ -8,12 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("usuario")]
-    public class UsuarioController : ControllerBase
+    public class UsuarioController(IUsuarioService usuarioService) : ControllerBase
     {
-        private readonly IUsuarioService _usuarioService;
-
-        public UsuarioController(IUsuarioService usuarioService) =>
-            _usuarioService = usuarioService;
+        private readonly IUsuarioService _usuarioService = usuarioService;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Efetua o cadastro do usuário ao sistema.")]

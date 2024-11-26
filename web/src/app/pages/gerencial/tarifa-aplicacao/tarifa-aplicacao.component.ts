@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { IDropDown } from '../../../@core/data/drop-down';
 import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { settingsTarifaAplicacao } from '../../../@shared/table-config/tarifa-aplicacao.config';
 import { TarifaAplicacaoService } from '../../../@core/services/gerencial/tarifa-aplicacao.service';
 import { ITarifaAplicacao } from '../../../@core/data/tarifa-aplicacao';
@@ -46,7 +46,7 @@ export default class TarifaAplicacaoComponent extends DefaultComponent<ITarifaAp
     this.loading = true;
     await this.concessionariaService
       .getDropDown()
-      .then((response: IResponseIntercace<IDropDown[]>) => {
+      .then((response: IResponseInterface<IDropDown[]>) => {
         if (response.success) {
           this.concessionarias = response.data;
         }         

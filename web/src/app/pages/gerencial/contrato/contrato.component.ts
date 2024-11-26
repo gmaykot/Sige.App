@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { ContratoService } from '../../../@core/services/gerencial/contrato.service';
 import { IContrato } from '../../../@core/data/contrato';
@@ -11,13 +11,12 @@ import { FornecedorService } from '../../../@core/services/gerencial/fornecedor.
 import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
 import { ValorAnualContratoService } from '../../../@core/services/gerencial/valor-anual-contrato';
 import { ValorMensalContratoService } from '../../../@core/services/gerencial/valor-mensal-contrato';
-import { STATUS_CONTRATO, TIPO_ENERGIA } from '../../../@core/enum/status-contrato';
+import { SEGMENTO, STATUS_CONTRATO, TIPO_ENERGIA } from '../../../@core/enum/status-contrato';
 import { IDropDown } from '../../../@core/data/drop-down';
 import { DatePipe } from '@angular/common';
 import { ContratoConfigSettings } from './contrato.config.settings';
 import { IValorAnual } from '../../../@core/data/valor-anual';
 import { IValorMensal } from '../../../@core/data/valor-mensal';
-import { IAlertMessage } from '../../../@core/data/alert-message';
 import { IEmpresa } from '../../../@core/data/empresa';
 import { IContratoEmpresas } from '../../../@core/data/contrato-empresas';
 import { ValorAnualComponent } from '../../../@shared/custom-component/valor-anual.component';
@@ -32,7 +31,7 @@ import { SessionStorageService } from '../../../@core/services/util/session-stor
   templateUrl: './contrato.component.html',
   styleUrls: ['./contrato.component.scss']
 })
-export class ContratoComponent extends ContratoConfigSettings {
+export class ContratoComponent extends ContratoConfigSettings implements OnInit {
   valoresAnuais = [];
   valoresMensais = [];
   concessionarias = [];
@@ -44,6 +43,7 @@ export class ContratoComponent extends ContratoConfigSettings {
   public selected = false;
   status = STATUS_CONTRATO;
   tipoEnergia = TIPO_ENERGIA;
+  segmento = SEGMENTO
   source: LocalDataSource = new LocalDataSource();
   sourceValoresAnuais: LocalDataSource = new LocalDataSource();
   sourceValoresMensais: LocalDataSource = new LocalDataSource();
@@ -95,7 +95,7 @@ export class ContratoComponent extends ContratoConfigSettings {
     this.loading = true;
     await this.fornecedorService
       .getDropDown()
-      .then((response: IResponseIntercace<IDropDown[]>) => {
+      .then((response: IResponseInterface<IDropDown[]>) => {
         if (response.success) {
           this.fornecedores = response.data;
         }
@@ -107,7 +107,7 @@ export class ContratoComponent extends ContratoConfigSettings {
     this.loading = true;
     await this.concessionariaService
       .getDropDown()
-      .then((response: IResponseIntercace<IDropDown[]>) => {
+      .then((response: IResponseInterface<IDropDown[]>) => {
         if (response.success) {
           this.concessionarias = response.data;
         }                
@@ -119,7 +119,7 @@ export class ContratoComponent extends ContratoConfigSettings {
     this.loading = true;
     await this.empresaService
       .getDropDown()
-      .then((response: IResponseIntercace<IDropDown[]>) => {
+      .then((response: IResponseInterface<IDropDown[]>) => {
         if (response.success) {
           this.empresaDropdown = response.data; 
         }                        
@@ -130,7 +130,7 @@ export class ContratoComponent extends ContratoConfigSettings {
   async getEmpresas()
   {
     await this.empresaService.get()
-    .then( (response: IResponseIntercace<IEmpresa[]>) =>
+    .then( (response: IResponseInterface<IEmpresa[]>) =>
     {
       if (response.success) {
         this.grupoEmpresas = response.data;
@@ -142,7 +142,7 @@ export class ContratoComponent extends ContratoConfigSettings {
     this.loading = true;
     await this.contratoService
       .get()
-      .then((response: IResponseIntercace<IContrato[]>) => {
+      .then((response: IResponseInterface<IContrato[]>) => {
         if (response.success) {
           this.source.load(response.data);
         } else {
@@ -234,7 +234,7 @@ export class ContratoComponent extends ContratoConfigSettings {
   }
 
   private async post(contrato: IContrato) {
-    await this.contratoService.post(contrato).then(async (res: IResponseIntercace<IContrato>) =>
+    await this.contratoService.post(contrato).then(async (res: IResponseInterface<IContrato>) =>
     {
       this.onSelect(res);
       await this.getContratos();
@@ -264,7 +264,7 @@ export class ContratoComponent extends ContratoConfigSettings {
       .open(GrupoEmpresaComponent, { context: { contratoId: this.getContrato()?.id, valor: {} as IContratoEmpresas, grupoEmpresas: this.grupoEmpresas, empresaDropdown: this.empresaDropdown } })
       .onClose.subscribe(async (valor) => {
         if(valor) {
-          this.contratoService.vinculaEmpresa(valor).then(async (response: IResponseIntercace<IContratoEmpresas>) => 
+          this.contratoService.vinculaEmpresa(valor).then(async (response: IResponseInterface<IContratoEmpresas>) => 
             {
               if (response.success){
                 valor.id = response.data.id;
@@ -307,7 +307,7 @@ export class ContratoComponent extends ContratoConfigSettings {
     .open(ValorAnualComponent, { context: { contratoId: this.getContrato()?.id, valor: {} as IValorAnual, dateService: this.dateService} })
       .onClose.subscribe(async (valor) => {
         if (valor) {
-        this.valorAnualContratoService.post(valor).then(async (response: IResponseIntercace<IValorAnual>) =>
+        this.valorAnualContratoService.post(valor).then(async (response: IResponseInterface<IValorAnual>) =>
         {
           if (response.success){
             valor.id = response.data.id;
@@ -373,7 +373,7 @@ export class ContratoComponent extends ContratoConfigSettings {
     .open(ValorMensalComponent, { context: { valor: { } as IValorMensal, valoresAnuais: this.valoresAnuais, datePipe: this.datePipe, dateService: this.dateService } })
       .onClose.subscribe(async (valor) => {
         if (valor) {
-        this.valorMensalContratoService.post(valor).then(async (res: IResponseIntercace<IValorMensal>) =>
+        this.valorMensalContratoService.post(valor).then(async (res: IResponseInterface<IValorMensal>) =>
         {
           valor.id = res.data.id;
           this.valoresMensais.push(valor);

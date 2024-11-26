@@ -8,12 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("fornecedor")]
-    public class FornecedorController : ControllerBase
+    public class FornecedorController(IBaseInterface<FornecedorDto> fornecedorService) : ControllerBase
     {
-        private readonly IFornecedorService _fornecedorService;
-
-        public FornecedorController(IFornecedorService fornecedorService) =>
-            _fornecedorService = fornecedorService;
+        private readonly IBaseInterface<FornecedorDto> _fornecedorService = fornecedorService;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Cadastro do fornecedor ao sistema.")]

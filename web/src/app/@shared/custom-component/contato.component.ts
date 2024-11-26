@@ -4,7 +4,7 @@ import { FormBuilder } from '@angular/forms';
 import { IContato } from '../../@core/data/contato';
 
 @Component({
-  selector: 'nb-name-prompt',
+  selector: 'ngx-contato-component',
   template: `
 <form [formGroup]="control">
     <nb-card accent="warning">

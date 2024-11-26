@@ -10,8 +10,7 @@ using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services
 {
-    public class AgenteMedicaoService(AppDbContext appDbContext, IMapper mapper)
-        : IAgenteMedicaoService
+    public class AgenteMedicaoService(AppDbContext appDbContext, IMapper mapper): IBaseInterface<AgenteMedicaoDto>
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
@@ -67,6 +66,11 @@ namespace SIGE.Services.Services
 
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
+        }
+
+        public Task<Response> ObterDropDown()
+        {
+            throw new NotImplementedException();
         }
     }
 }

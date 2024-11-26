@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IResponseIntercace } from '../../data/response.interface';
+import { IResponseInterface } from '../../data/response.interface';
 import { IAnaliseViabilidade } from '../../data/analise-viabilidade';
 import { HttpService } from '../util/http.service';
 
@@ -8,8 +8,8 @@ export class AnailseViabilidadeService {
    
     constructor(private http: HttpService) {}
 
-    public async post(analise: IAnaliseViabilidade): Promise<IResponseIntercace<IAnaliseViabilidade[]>[]>
+    public async post(analise: IAnaliseViabilidade): Promise<IResponseInterface<IAnaliseViabilidade[]>[]>
     {
-        return await this.http.post<IResponseIntercace<IAnaliseViabilidade[]>[]>("/analise-viabilidade", analise);
+        return await this.http.post<IResponseInterface<IAnaliseViabilidade[]>[]>("/analise-viabilidade", analise);
     }
 }

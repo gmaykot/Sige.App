@@ -5,7 +5,7 @@ import { IAgenteMedicao } from '../../@core/data/agente-medicao';
 import { FormBuilder } from '@angular/forms';
 
 @Component({
-  selector: 'nb-name-prompt',
+  selector: 'ngx-ponto-medicao-component',
   template: `
   <form [formGroup]="control">
   <nb-card accent="warning">

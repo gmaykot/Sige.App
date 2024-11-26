@@ -8,7 +8,7 @@ using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services
 {
-    public class MenuUsuarioService(AppDbContext appDbContext, IMapper mapper) : IMenuUsuarioService
+    public class MenuUsuarioService(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<MenuUsuarioDto>
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;

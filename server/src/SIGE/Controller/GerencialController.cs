@@ -7,16 +7,9 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace SIGE.Controller
 {
     [ApiController]
-    public class GerencialController : ControllerBase
+    public class GerencialController(IAnaliseViabilidadeService analiseViabilidadeService, IRelatorioEconomiaService relatorioEconomiaService) : ControllerBase
     {
-        private readonly IAnaliseViabilidadeService _analiseViabilidadeService;
-        private readonly IRelatorioEconomiaService _relatorioEconomiaService;
-
-        public GerencialController(IAnaliseViabilidadeService analiseViabilidadeService, IRelatorioEconomiaService relatorioEconomiaService)
-        {
-            _analiseViabilidadeService = analiseViabilidadeService;
-            _relatorioEconomiaService = relatorioEconomiaService;
-        }
+        private readonly IAnaliseViabilidadeService _analiseViabilidadeService = analiseViabilidadeService;
 
         [HttpPost("analise-viabilidade")]
         [SwaggerOperation(Description = "Obtém o cálculo da análise de viabilidade.")]

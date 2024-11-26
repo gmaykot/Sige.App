@@ -17,7 +17,7 @@ namespace SIGE.Services.Services
         AppDbContext appDbContext,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor
-    ) : IEmpresaService
+    ) : IBaseInterface<EmpresaDto>
     {
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly AppDbContext _appDbContext = appDbContext;

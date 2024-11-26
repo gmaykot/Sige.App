@@ -51,9 +51,9 @@
                   </ng2-smart-table>
                 </nb-card-body>
                 <nb-card-footer>
-                  <button type="submit" nbButton status="info" (click)="onContatoConfirm()" *ngIf="contatosChecked.length == 0 && habilitaOperacoes">Cadastrar</button>
-                  <button type="submit" nbButton status="info" (click)="onContatoEdit()" *ngIf="contatosChecked.length == 1 && habilitaOperacoes">Alterar</button>
-                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onContatoDelete()" *ngIf="habilitaOperacoes" [disabled]="contatosChecked.length == 0">Excluir</button>
+                  <button type="submit" nbButton status="info" (click)="onContatoConfirm()" *ngIf="contatosChecked.length === 0 && habilitaOperacoes">Cadastrar</button>
+                  <button type="submit" nbButton status="info" (click)="onContatoEdit()" *ngIf="contatosChecked.length === 1 && habilitaOperacoes">Alterar</button>
+                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onContatoDelete()" *ngIf="habilitaOperacoes" [disabled]="contatosChecked.length === 0">Excluir</button>
                 </nb-card-footer>                  
               </nb-card>                 
             </nb-tab>

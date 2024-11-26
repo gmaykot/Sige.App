@@ -39,14 +39,14 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                       <div class="form-group">
                         <label for="inputFirstName" class="label">Take Mínimo (%)*</label>
                         <input type="number" nbInput fullWidth id="inputFirstName" placeholder=""
                           formControlName="takeMinimo">
                       </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                       <div class="form-group">
                         <label for="inputFirstName" class="label">Take Máximo (%)*</label>
                         <input type="number" nbInput fullWidth id="inputFirstName" placeholder=""
@@ -58,6 +58,14 @@
                         <label for="inputLastName" class="label">Status*</label>
                         <nb-select fullWidth placeholder="Selecione" formControlName="status">
                           <nb-option *ngFor="let sta of status" value="{{sta.id}}">{{sta.desc}}</nb-option>
+                        </nb-select>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label for="inputLastName" class="label">Segmento*</label>
+                        <nb-select fullWidth placeholder="Selecione" formControlName="status">
+                          <nb-option *ngFor="let sg of segmento" value="{{sg.id}}">{{sg.desc}}</nb-option>
                         </nb-select>
                       </div>
                     </div>
@@ -118,7 +126,7 @@
                 </nb-card-body>
                 <nb-card-footer>
                   <button type="button" nbButton status="info" (click)="onGrupoEmpresaConfirm()" [disabled]="!selected" *ngIf="habilitaOperacoes">Cadastrar</button>
-                  <button type="button" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onGrupoEmpresaDelete()" *ngIf="habilitaOperacoes" [disabled]="empresasChecked.length == 0">Excluir</button>
+                  <button type="button" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onGrupoEmpresaDelete()" *ngIf="habilitaOperacoes" [disabled]="empresasChecked.length === 0">Excluir</button>
                 </nb-card-footer>
               </nb-card>
             </nb-tab>
@@ -134,9 +142,9 @@
                   </div>
                 </nb-card-body>
                 <nb-card-footer>
-                  <button type="button" nbButton status="info" *ngIf="valoresAnuaisChecked.length == 0 && habilitaOperacoes" (click)="onValorAnualConfirm()" [disabled]="!selected">Cadastrar</button>
-                  <button type="button" nbButton status="info" *ngIf="valoresAnuaisChecked.length >= 1 && habilitaOperacoes" (click)="onValorAnualEdit()" [disabled]="valoresAnuaisChecked.length != 1">Alterar</button>
-                  <button type="button" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onValorAnualDelete()" [disabled]="valoresAnuaisChecked.length == 0" *ngIf="habilitaOperacoes">Excluir</button>
+                  <button type="button" nbButton status="info" *ngIf="valoresAnuaisChecked.length === 0 && habilitaOperacoes" (click)="onValorAnualConfirm()" [disabled]="!selected">Cadastrar</button>
+                  <button type="button" nbButton status="info" *ngIf="valoresAnuaisChecked.length >= 1 && habilitaOperacoes" (click)="onValorAnualEdit()" [disabled]="valoresAnuaisChecked.length !== 1">Alterar</button>
+                  <button type="button" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onValorAnualDelete()" [disabled]="valoresAnuaisChecked.length === 0" *ngIf="habilitaOperacoes">Excluir</button>
                 </nb-card-footer>
               </nb-card>
             </nb-tab>
@@ -152,9 +160,9 @@
                   </div>
                 </nb-card-body>
                 <nb-card-footer>
-                  <button type="button" nbButton status="info" *ngIf="valoresMensaisChecked.length == 0 && habilitaOperacoes" (click)="onValorMensalConfirm()" [disabled]="!selected">Cadastrar</button>
-                  <button type="button" nbButton status="info" *ngIf="valoresMensaisChecked.length >= 1 && habilitaOperacoes" (click)="onValorMensalEdit()" [disabled]="valoresMensaisChecked.length != 1">Alterar</button>
-                  <button type="button" nbButton status="danger" *ngIf="habilitaOperacoes" style="margin-left: 0.5rem;" (click)="onValorMensalDelete()" [disabled]="valoresMensaisChecked.length == 0">Excluir</button>
+                  <button type="button" nbButton status="info" *ngIf="valoresMensaisChecked.length === 0 && habilitaOperacoes" (click)="onValorMensalConfirm()" [disabled]="!selected">Cadastrar</button>
+                  <button type="button" nbButton status="info" *ngIf="valoresMensaisChecked.length >= 1 && habilitaOperacoes" (click)="onValorMensalEdit()" [disabled]="valoresMensaisChecked.length !== 1">Alterar</button>
+                  <button type="button" nbButton status="danger" *ngIf="habilitaOperacoes" style="margin-left: 0.5rem;" (click)="onValorMensalDelete()" [disabled]="valoresMensaisChecked.length === 0">Excluir</button>
                 </nb-card-footer>
               </nb-card>
             </nb-tab>

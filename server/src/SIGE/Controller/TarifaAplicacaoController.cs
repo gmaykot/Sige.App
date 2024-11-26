@@ -8,9 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("tarifa-aplicacao")]
-    public class TarifaAplicacaoController(ITarifaAplicacaoService service) : ControllerBase
+    public class TarifaAplicacaoController(IBaseInterface<TarifaAplicacaoDto> service) : ControllerBase
     {
-        private readonly ITarifaAplicacaoService _service = service;
+        private readonly IBaseInterface<TarifaAplicacaoDto> _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Inclui no sistema.")]

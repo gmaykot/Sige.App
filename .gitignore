@@ -402,3 +402,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+web/src/environments/environment.hmg.ts

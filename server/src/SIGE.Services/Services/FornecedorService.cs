@@ -13,7 +13,7 @@ using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services
 {
-    public class FornecedorService(AppDbContext appDbContext, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IFornecedorService
+    public class FornecedorService(AppDbContext appDbContext, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IBaseInterface<FornecedorDto>
     {
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly AppDbContext _appDbContext = appDbContext;

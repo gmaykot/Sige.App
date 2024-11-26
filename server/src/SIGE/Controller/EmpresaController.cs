@@ -8,12 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("empresa")]
-    public class EmpresaController : ControllerBase
+    public class EmpresaController(IBaseInterface<EmpresaDto> empresaService) : ControllerBase
     {
-        private readonly IEmpresaService _empresaService;
-
-        public EmpresaController(IEmpresaService empresaService) =>
-            _empresaService = empresaService;
+        private readonly IBaseInterface<EmpresaDto> _empresaService = empresaService;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Cadastro da empresa ao sistema.")]

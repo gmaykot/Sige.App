@@ -8,12 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("medicao")]
-    public class MedicaoController : ControllerBase
+    public class MedicaoController(IMedicaoService medicaoService) : ControllerBase
     {
-        private readonly IMedicaoService _medicaoService;
-
-        public MedicaoController(IMedicaoService medicaoService) =>
-            _medicaoService = medicaoService;
+        private readonly IMedicaoService _medicaoService = medicaoService;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Obtém o cálculo da medição do relatório de economia")]

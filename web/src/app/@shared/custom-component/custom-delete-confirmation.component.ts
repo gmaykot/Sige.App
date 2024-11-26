@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 
 @Component({
-  selector: 'nb-name-prompt',
+  selector: 'ngx-custom-delete-component',
   template: `
     <nb-card accent="{{accent || 'danger'}}">
       <nb-card-header><h6>Atenção!</h6></nb-card-header>

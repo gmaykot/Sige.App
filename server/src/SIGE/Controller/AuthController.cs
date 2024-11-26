@@ -9,14 +9,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("auth")]
-    public class AuthController : ControllerBase
+    public class AuthController(IAuthService authService) : ControllerBase
     {
-        private readonly IAuthService _authService;  
-       
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }         
+        private readonly IAuthService _authService = authService;
 
         [AllowAnonymous]
         [HttpGet("hc")]
@@ -34,19 +29,6 @@ namespace SIGE.Controller
         public async Task<IActionResult> Login([FromBody] LoginRequest login)
         {
             var res = await _authService.Login(login);
-            return Ok(res);
-        }
-
-        [AllowAnonymous]
-        [HttpPost("/setup")]
-        [SwaggerOperation(Description = "Efetua o setup inicial do sistema.")]
-        [ProducesResponseType(typeof(Response), 200)]
-        [ProducesResponseType(typeof(Response), 400)]
-        [ProducesResponseType(typeof(Response), 401)]
-        [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Setup([FromBody] string password)
-        {
-            var res = await _authService.SetupSige(password);
             return Ok(res);
         }
     }

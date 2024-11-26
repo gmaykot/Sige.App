@@ -4,7 +4,7 @@ import { of as observableOf, Observable } from "rxjs";
 import { JwtService } from "../util/jwt.service";
 import { DefaultService } from "../default-service";
 import { HttpService } from "../util/http.service";
-import { IResponseIntercace } from "../../data/response.interface";
+import { IResponseInterface } from "../../data/response.interface";
 
 @Injectable({ providedIn: "root" })
 export class UsuarioService  extends DefaultService<IUsuario> {
@@ -23,8 +23,8 @@ export class UsuarioService  extends DefaultService<IUsuario> {
     return observableOf(this.usuario);
   }
 
-  public async alterarSenha(req: IUsuarioSenha): Promise<IResponseIntercace<any>> {
-    return await this.http.put<IResponseIntercace<any>>(`/${this.urlBase}/senha`, req);
+  public async alterarSenha(req: IUsuarioSenha): Promise<IResponseInterface<any>> {
+    return await this.http.put<IResponseInterface<any>>(`/${this.urlBase}/senha`, req);
   }
 
 }

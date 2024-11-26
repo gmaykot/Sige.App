@@ -8,12 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("email")]
-    public class EMailController : ControllerBase
+    public class EMailController(IEmailService service) : ControllerBase
     {
-        private readonly IEmailService _service;
-
-        public EMailController(IEmailService service) =>
-            _service = service;
+        private readonly IEmailService _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Envia E-mail")]

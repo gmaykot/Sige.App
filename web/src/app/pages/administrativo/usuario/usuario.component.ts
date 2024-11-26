@@ -3,7 +3,7 @@ import { EmpresaService } from '../../../@core/services/gerencial/empresa.servic
 import { ContratoService } from '../../../@core/services/gerencial/contrato.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IDropDown } from '../../../@core/data/drop-down';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { IContratoEmpresas } from '../../../@core/data/contrato-empresas';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { IUsuario, Usuario } from '../../../@core/data/usuario';

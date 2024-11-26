@@ -3,18 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
-import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
-import { ContratoService } from '../../../@core/services/gerencial/contrato.service';
-import { EmpresaService } from '../../../@core/services/gerencial/empresa.service';
-import { FornecedorService } from '../../../@core/services/gerencial/fornecedor.service';
-import { ValorAnualContratoService } from '../../../@core/services/gerencial/valor-anual-contrato';
-import { ValorMensalContratoService } from '../../../@core/services/gerencial/valor-mensal-contrato';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { DateService } from '../../../@core/services/util/date.service';
 import { BandeiraTarifariaConfigSettings } from './bandeira-tarifaria.config.settings';
 import { BandeiraTarifariaService } from '../../../@core/services/gerencial/bandeira-tarifaria.service';
 import { IBandeiraTarifaria } from '../../../@core/data/bandeira-tarifaria';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 
@@ -33,7 +27,7 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
   public control = this.formBuilder.group({
     id: '', 
     dataVigenciaInicial: ["", Validators.required],
-    dataVigenciaFinal: ["", Validators.required],
+    dataVigenciaFinal: [""],
     valorBandeiraVerde: [0, Validators.required],
     valorBandeiraAmarela: [0, Validators.required],
     valorBandeiraVermelha1: [0, Validators.required],
@@ -62,7 +56,7 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
     this.loading = true;
     await this.service
       .get()
-      .then((response: IResponseIntercace<IBandeiraTarifaria[]>) => {
+      .then((response: IResponseInterface<IBandeiraTarifaria[]>) => {
         if (response.success) {
           this.source.load(response.data);
         } else {
@@ -142,7 +136,7 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
   }
 
   private async post(bandeira: IBandeiraTarifaria) {
-    await this.service.post(bandeira).then(async (res: IResponseIntercace<IBandeiraTarifaria>) =>
+    await this.service.post(bandeira).then(async (res: IResponseInterface<IBandeiraTarifaria>) =>
     {
       this.onSelect(res);
       await this.getBandeiras();

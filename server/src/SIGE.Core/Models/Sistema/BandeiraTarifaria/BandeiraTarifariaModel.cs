@@ -9,6 +9,6 @@ namespace SIGE.Core.Models.Sistema.BandeiraTarifaria
         public required double ValorBandeiraVermelha1 { get; set; }
         public required double ValorBandeiraVermelha2 { get; set; }
         public required DateTime DataVigenciaInicial { get; set; }
-        public required DateTime DataVigenciaFinal { get; set; }
+        public DateTime? DataVigenciaFinal { get; set; }
     }
 }

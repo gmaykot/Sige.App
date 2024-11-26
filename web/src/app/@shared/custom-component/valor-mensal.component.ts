@@ -7,7 +7,7 @@ import { DatePipe } from "@angular/common";
 import { DateService } from "../../@core/services/util/date.service";
 
 @Component({
-  selector: "nb-name-prompt",
+  selector: "ngx-valor-mensal-component",
   template: `
     <form [formGroup]="control">
       <nb-card accent="warning">

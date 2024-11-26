@@ -1,10 +1,7 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { IDropDown } from "../../@core/data/drop-down";
-import { DatePipe } from "@angular/common";
-import { FormControl } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'select-status',
+  selector: 'ngx-select-status',
   template: `
     <nb-select fullWidth placeholder="Selecione">
         <nb-option>Selecione</nb-option>
@@ -17,9 +14,5 @@ import { FormControl } from "@angular/forms";
   `,
 })
 
-export class SelectStatusComponent implements OnInit {
-
-    ngOnInit(): void {
-        
-    }
+export class SelectStatusComponent {
 }

@@ -9,7 +9,7 @@ using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services
 {
-    public class BandeiraTarifariaService(AppDbContext appDbContext, IMapper mapper) : IBandeiraTarifariaService
+    public class BandeiraTarifariaService(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<BandeiraTarifariaDto>
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
@@ -62,6 +62,11 @@ namespace SIGE.Services.Services
 
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
+        }
+
+        public Task<Response> ObterDropDown()
+        {
+            throw new NotImplementedException();
         }
     }
 }

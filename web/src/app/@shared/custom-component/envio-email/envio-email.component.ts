@@ -9,7 +9,7 @@ import { CustomDeleteConfirmationComponent } from "../custom-delete-confirmation
 
 
 @Component({
-  selector: "nb-envio-email",
+  selector: "ngx-envio-email-component",
   templateUrl: "./envio-email.component.html",
   styleUrls: ["./envio-email.component.scss"],
 })

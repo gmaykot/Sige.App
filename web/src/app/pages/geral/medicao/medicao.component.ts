@@ -5,7 +5,7 @@ import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
 import { IIntegracaoCCEE, IIntegracaoCCEETotais, IValoresGrafico } from '../../../@core/data/integracao-ccee.response';
 import { IColetaMedicao, IMedicao } from '../../../@core/data/medicao';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { settingsMedicao } from '../../../@shared/table-config/medicoes.config';
@@ -126,7 +126,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       }
       await this.medicaoService
       .coletar(coleta)
-      .then(async (response: IResponseIntercace<IIntegracaoCCEE>) => {
+      .then(async (response: IResponseInterface<IIntegracaoCCEE>) => {
         if (response.data && response.success && response.data.totais) {
           this.totais = response.data.totais;
           this.valores = response.data.listaValoresGrafico;
@@ -149,7 +149,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
     var valores = this.controlEdit.value as IMedicaoValores;
     await this.medicaoService
     .postValores(valores)
-    .then(async (response: IResponseIntercace<any>) => {
+    .then(async (response: IResponseInterface<any>) => {
       if (response.success) {        
         this.alertService.showSuccess('Valores alterados com sucesso.')
         this.scroolService.scrollTo(0,0);
@@ -168,7 +168,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   ) {
     await this.medicaoService
       .get(empresaId, periodo, fase, status)
-      .then((response: IResponseIntercace<IMedicao[]>) => {
+      .then((response: IResponseInterface<IMedicao[]>) => {
         if (response.success) {
           this.medicoes = response.data;
           this.source.load(response.data);
@@ -228,7 +228,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
         });        
         await this.medicaoService
         .coletarResultado(this.medicaoSelected)
-        .then(async (response: IResponseIntercace<IIntegracaoCCEE>) => {
+        .then(async (response: IResponseInterface<IIntegracaoCCEE>) => {
           if (response.data && response.success) {
             this.totais = response.data.totais;
             this.valores = response.data.listaValoresGrafico;

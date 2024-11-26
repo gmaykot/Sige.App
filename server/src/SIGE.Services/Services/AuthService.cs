@@ -5,15 +5,12 @@ using SIGE.Core.Models.Requests;
 using SIGE.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SIGE.DataAccess.Context;
-using SIGE.Core.Setup;
-using SIGE.Core.Models.Sistema.Usuario;
 using SIGE.Core.Models.Dto.Usuario;
 using AutoMapper;
 using SIGE.Core.Extensions;
 using SIGE.Services.Custom;
 using Microsoft.Extensions.Logging;
 using SIGE.Core.Models.Dto.Menus;
-using SIGE.Core.Models.Sistema.Menus;
 
 namespace SIGE.Services.Services
 {
@@ -72,54 +69,6 @@ namespace SIGE.Services.Services
            };
 
             return ret.SetOk().SetData(token).SetMessage("Login efetuado com sucesso.");
-        }
-
-        public async Task<Response> SetupSige(string password)
-        {
-            var ret = new Response<TokenDto>();
-            if (string.IsNullOrEmpty(password) || !password.Equals(_config.GetSection("System:Config:SetupPassoword").Value))
-                return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "A senha de setup deve ser fornecida corretamente.");
-
-            var gestorId = Guid.NewGuid();
-            var gestor = AppSetupSige.Gestor(gestorId);
-            await _appDbContext.AddAsync(gestor);
-
-            var menuDashboard = new MenuSistemaModel() { Titulo = "Dashboard", Link = "/pages/dashboard", Home = true, Icone = "home-outline" };
-            var menuGerencial = new MenuSistemaModel() { Titulo = "Gerencial", Icone = "settings-outline" };
-            var menuGeral = new MenuSistemaModel() { Titulo = "Geral", Icone= "folder-outline" };
-            var menuAdm = new MenuSistemaModel() { Titulo = "Administrativo", Icone = "lock-outline" };
-            var menusGerais = new List<MenuSistemaModel> { menuDashboard, menuGerencial, menuGeral, menuAdm };
-            await _appDbContext.AddRangeAsync(menusGerais);
-
-            var menusSistema = new List<MenuSistemaModel>
-            {
-                new() { Titulo = "Empresas", Link = "/pages/empresas", Icone = "briefcase-outline", MenuPredecessorId = menuGerencial.Id },
-                new() { Titulo = "Fornecedores", Link = "/pages/fornecedores", Icone = "people", MenuPredecessorId = menuGerencial.Id },
-                new() { Titulo = "Contratos", Link = "/pages/contratos", Icone = "credit-card-outline", MenuPredecessorId = menuGerencial.Id },
-                new() { Titulo = "Concessionarias", Link = "/pages/concessionarias", Icone = "flash", MenuPredecessorId = menuGerencial.Id},
-                new() { Titulo = "Valores Concessionárias", Link = "/pages/valores-concessionarias", Icone = "keypad-outline", MenuPredecessorId = menuGerencial.Id },
-                new() { Titulo = "Análise de Viabilidade", Link = "/pages/analise-viabilidade", Icone = "file-text-outline", MenuPredecessorId = menuGeral.Id, Ativo = false },
-                new() { Titulo = "Medição", Link = "/pages/medicao", Icone = "file-text-outline", MenuPredecessorId = menuGeral.Id },
-                new() { Titulo = "Relatório de Economia", Link = "/pages/relatorio-economia", Icone = "file-text-outline", MenuPredecessorId = menuGeral.Id },
-                new() { Titulo = "Credenciais CCEE", Link = "/pages/credenciais-ccee", Icone = "bulb-outline", MenuPredecessorId = menuAdm.Id },
-                new() { Titulo = "Usuários", Link = "/pages/usuarios", Icone = "people-outline", MenuPredecessorId = menuAdm.Id },
-            };
-            await _appDbContext.AddRangeAsync(menusSistema);
-
-            var usuarios = new List<UsuarioModel>
-            {
-                AppSetupSige.Usuario(gestorId, "ASBServices", "asbservices", "Admin ASBServices", "asb@services2024"),
-                AppSetupSige.Usuario(gestorId, "Conel-DE", "coenel", "Coenel-DE Acessoria em Energia Elétrica", "coenel@de2024")
-            };
-            await _appDbContext.AddRangeAsync(usuarios);
-
-            menusGerais.AddRange(menusSistema);
-            var menusUsuarios = menusGerais.SelectMany(m => usuarios.Select(u => AppSetupSige.MenuUsuario(u.Id, m.Id)));
-            await _appDbContext.AddRangeAsync(menusUsuarios);
-
-            await _appDbContext.SaveChangesAsync();
-
-            return ret.SetOk().SetMessage($"Setup incial para '{gestor.Nome}' finalizado com sucesso.");
-        }
+        }        
     }
 }
