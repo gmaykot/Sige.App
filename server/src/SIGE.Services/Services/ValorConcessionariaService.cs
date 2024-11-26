@@ -71,5 +71,10 @@ namespace SIGE.Services.Services
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, "Não existe valor de concessionária ativo.");
         }
+
+        public Task<Response> ObterDropDown()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

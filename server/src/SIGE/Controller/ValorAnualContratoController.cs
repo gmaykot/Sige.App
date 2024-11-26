@@ -8,9 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("valor-anual")]
-    public class ValorAnualContratoController(IValorAnualContratoService service) : ControllerBase
+    public class ValorAnualContratoController(IBaseInterface<ValorAnualContratoDto> service) : ControllerBase
     {
-        private readonly IValorAnualContratoService _service = service;
+        private readonly IBaseInterface<ValorAnualContratoDto> _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Inclui no sistema.")]

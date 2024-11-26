@@ -8,9 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("agente-medicao")]
-    public class AgenteMedicaoController(IAgenteMedicaoService service) : ControllerBase
+    public class AgenteMedicaoController(IBaseInterface<AgenteMedicaoDto> service) : ControllerBase
     {
-        private readonly IAgenteMedicaoService _service = service;
+        private readonly IBaseInterface<AgenteMedicaoDto> _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Inclui no sistema.")]

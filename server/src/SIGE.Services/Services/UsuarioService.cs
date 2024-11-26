@@ -140,5 +140,10 @@ namespace SIGE.Services.Services
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe usuário ativo.");
         }
+
+        public Task<Response> ObterDropDown()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

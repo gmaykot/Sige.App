@@ -10,6 +10,7 @@ namespace SIGE.Core.Models.Sistema.Concessionaria
         public ETipoEstado Estado { get; set; }
         public Guid GestorId { get; set; }
         public virtual GestorModel? Gestor { get; set; }
+        public virtual IEnumerable<ImpostoConcessionariaModel>? ImpostosConcessinaria { get; set; }
         public virtual IEnumerable<ValorConcessionariaModel>? ValoresConcessionaria { get; set; }
         public virtual IEnumerable<ContratoModel>? Contratos { get; set; }
     }

@@ -10,9 +10,9 @@ namespace SIGE.Controller
     [Route("concessionaria")]
     public class ConcessioanriaController : ControllerBase
     {
-        private readonly IConcessionariaService _concessionariaService;
+        private readonly IBaseInterface<ConcessionariaDto> _concessionariaService;
 
-        public ConcessioanriaController(IConcessionariaService concessionariaService) =>
+        public ConcessioanriaController(IBaseInterface<ConcessionariaDto> concessionariaService) =>
             _concessionariaService = concessionariaService;
 
         [HttpPost()]

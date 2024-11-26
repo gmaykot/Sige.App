@@ -30,6 +30,8 @@ namespace SIGE.Core.Mapper
 
             CreateMap<ValorConcessionariaModel, CalculoValoresConcessionariaDto>()
                 .ForMember(dst => dst.DescConcessionaria, map => map.MapFrom(src => src.Concessionaria.Nome));
+
+            CreateMap<ImpostoConcessionariaDto, ImpostoConcessionariaModel>();
         }
     }
 }

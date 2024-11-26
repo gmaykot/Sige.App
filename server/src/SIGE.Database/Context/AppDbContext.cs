@@ -52,5 +52,6 @@ namespace SIGE.DataAccess.Context
         public DbSet<ContratoEmpresaModel> ContratoEmpresas { get; set; }
         public DbSet<TarifaAplicacaoModel> TarifasAplicacao { get; set; }
         public DbSet<BandeiraTarifariaModel> BandeirasTarifarias { get; set; }
+        public DbSet<ImpostoConcessionariaModel> ImpostosConcessionarias { get; set; }
     }
 }

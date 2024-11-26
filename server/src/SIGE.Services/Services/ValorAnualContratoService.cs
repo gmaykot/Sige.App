@@ -9,7 +9,7 @@ using SIGE.DataAccess.Context;
 
 namespace SIGE.Services.Interfaces
 {
-    public class ValorAnualContratoService(AppDbContext appDbContext, IMapper mapper) : IValorAnualContratoService
+    public class ValorAnualContratoService(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<ValorAnualContratoDto>
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
@@ -65,6 +65,11 @@ namespace SIGE.Services.Interfaces
 
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
+        }
+
+        public Task<Response> ObterDropDown()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -10,7 +10,7 @@ using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services
 {
-    public class PontoMedicaoService(AppDbContext appDbContext, IMapper mapper) : IPontoMedicaoService
+    public class PontoMedicaoService(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<PontoMedicaoDto>
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
@@ -64,6 +64,11 @@ namespace SIGE.Services.Services
                 return ret.SetOk().SetData(_mapper.Map<IEnumerable<PontoMedicaoDto>>(res));
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
+        }
+
+        public Task<Response> ObterDropDown()
+        {
+            throw new NotImplementedException();
         }
     }
 }

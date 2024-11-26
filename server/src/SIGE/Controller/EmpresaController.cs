@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Dto.Concessionaria;
 using SIGE.Core.Models.Dto.Empresa;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
@@ -10,9 +11,9 @@ namespace SIGE.Controller
     [Route("empresa")]
     public class EmpresaController : ControllerBase
     {
-        private readonly IEmpresaService _empresaService;
+        private readonly IBaseInterface<EmpresaDto> _empresaService;
 
-        public EmpresaController(IEmpresaService empresaService) =>
+        public EmpresaController(IBaseInterface<EmpresaDto> empresaService) =>
             _empresaService = empresaService;
 
         [HttpPost()]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Dto.Concessionaria;
 using SIGE.Core.Models.Dto.Menus;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
@@ -8,9 +9,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("menu-usuario")]
-    public class MenuUsuarioController(IMenuUsuarioService service) : ControllerBase
+    public class MenuUsuarioController(IBaseInterface<MenuUsuarioDto> service) : ControllerBase
     {
-        private readonly IMenuUsuarioService _service = service;
+        private readonly IBaseInterface<MenuUsuarioDto> _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Inclui no sistema.")]

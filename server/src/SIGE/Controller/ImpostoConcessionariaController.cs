@@ -1,56 +1,52 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Concessionaria;
-using SIGE.Core.Models.Dto.Fornecedor;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller
 {
     [ApiController]
-    [Route("fornecedor")]
-    public class FornecedorController : ControllerBase
+    [Route("imposto-concessionaria")]
+    public class ImpostoConcessionariaController(IBaseInterface<ImpostoConcessionariaDto> service) : ControllerBase
     {
-        private readonly IBaseInterface<FornecedorDto> _fornecedorService;
-
-        public FornecedorController(IBaseInterface<FornecedorDto> fornecedorService) =>
-            _fornecedorService = fornecedorService;
+        private readonly IBaseInterface<ImpostoConcessionariaDto> _service = service;
 
         [HttpPost()]
-        [SwaggerOperation(Description = "Cadastro do fornecedor ao sistema.")]
+        [SwaggerOperation(Description = "Inclui no sistema.")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Incluir([FromBody] FornecedorDto fornecedor) =>
-            Ok(await _fornecedorService.Incluir(fornecedor));
+        public async Task<IActionResult> Incluir([FromBody] ImpostoConcessionariaDto req) =>
+            Ok(await _service.Incluir(req));
 
         [HttpPut()]
-        [SwaggerOperation(Description = "Altera as informações do fornecedor ao sistema.")]
+        [SwaggerOperation(Description = "Altera os dados no sistema.")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Alterar([FromBody] FornecedorDto fornecedor) =>
-            Ok(await _fornecedorService.Alterar(fornecedor));
+        public async Task<IActionResult> Alterar([FromBody] ImpostoConcessionariaDto req) =>
+            Ok(await _service.Alterar(req));
 
         [HttpDelete("{id}")]
-        [SwaggerOperation(Description = "Exclui o fornecedor do sistema.")]
+        [SwaggerOperation(Description = "Exclui os dados do sistema.")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> Excluir([FromRoute] Guid Id) =>
-            Ok(await _fornecedorService.Excluir(Id));
+            Ok(await _service.Excluir(Id));
 
         [HttpGet("{id}")]
-        [SwaggerOperation(Description = "Obtém um fornecedor com todos os dados.")]
+        [SwaggerOperation(Description = "Obtém um com todos os dados.")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> Obter([FromRoute] Guid Id) =>
-            Ok(await _fornecedorService.Obter(Id));
+            Ok(await _service.Obter(Id));
 
         [HttpGet()]
         [SwaggerOperation(Description = "Obtém a lista com todos os dados.")]
@@ -59,15 +55,6 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> Obter() =>
-            Ok(await _fornecedorService.Obter());
-
-        [HttpGet("drop-down")]
-        [SwaggerOperation(Description = "Obtém a lista apenas com os campos 'Id' e 'Descrição'")]
-        [ProducesResponseType(typeof(Response), 200)]
-        [ProducesResponseType(typeof(Response), 400)]
-        [ProducesResponseType(typeof(Response), 401)]
-        [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ObterDropDown() =>
-            Ok(await _fornecedorService.ObterDropDown());     
+            Ok(await _service.Obter());
     }
 }

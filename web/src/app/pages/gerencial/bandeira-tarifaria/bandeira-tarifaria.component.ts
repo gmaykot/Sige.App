@@ -3,12 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
-import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
-import { ContratoService } from '../../../@core/services/gerencial/contrato.service';
-import { EmpresaService } from '../../../@core/services/gerencial/empresa.service';
-import { FornecedorService } from '../../../@core/services/gerencial/fornecedor.service';
-import { ValorAnualContratoService } from '../../../@core/services/gerencial/valor-anual-contrato';
-import { ValorMensalContratoService } from '../../../@core/services/gerencial/valor-mensal-contrato';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { DateService } from '../../../@core/services/util/date.service';
 import { BandeiraTarifariaConfigSettings } from './bandeira-tarifaria.config.settings';
@@ -33,7 +27,7 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
   public control = this.formBuilder.group({
     id: '', 
     dataVigenciaInicial: ["", Validators.required],
-    dataVigenciaFinal: ["", Validators.required],
+    dataVigenciaFinal: [""],
     valorBandeiraVerde: [0, Validators.required],
     valorBandeiraAmarela: [0, Validators.required],
     valorBandeiraVermelha1: [0, Validators.required],

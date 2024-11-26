@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.BandeiraTarifaria;
-using SIGE.Core.Models.Dto.TarifaAplicacao;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -9,9 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("bandeira-tarifaria")]
-    public class BandeiraTarifariaController(IBandeiraTarifariaService service) : ControllerBase
+    public class BandeiraTarifariaController(IBaseInterface<BandeiraTarifariaDto> service) : ControllerBase
     {
-        private readonly IBandeiraTarifariaService _service = service;
+        private readonly IBaseInterface<BandeiraTarifariaDto> _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Inclui no sistema.")]

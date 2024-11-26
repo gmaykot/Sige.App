@@ -72,6 +72,11 @@ namespace SIGE.Services.Services
                 .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
         }
 
+        public Task<Response> ObterDropDown()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Response> ObterPorFornecedor(Guid Id)
         {
             var ret = new Response();

@@ -1,4 +1,4 @@
-export const concessioanriaSettings = {
+export const concessionariaSettings = {
     add: {
       addButtonContent: '<i class="nb-plus"></i>',
       createButtonContent: '<i class="nb-checkmark"></i>',
