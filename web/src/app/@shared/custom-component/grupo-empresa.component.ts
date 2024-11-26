@@ -8,7 +8,7 @@ import { IDropDown } from '../../@core/data/drop-down';
 import { IContratoEmpresas } from '../../@core/data/contrato-empresas';
 
 @Component({
-  selector: 'nb-name-prompt',
+  selector: 'ngx-grupo-empresa-component',
   template: `
 <form [formGroup]="control">
     <nb-card accent="warning">

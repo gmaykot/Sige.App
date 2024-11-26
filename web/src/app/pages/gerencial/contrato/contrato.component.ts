@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
@@ -32,7 +32,7 @@ import { SessionStorageService } from '../../../@core/services/util/session-stor
   templateUrl: './contrato.component.html',
   styleUrls: ['./contrato.component.scss']
 })
-export class ContratoComponent extends ContratoConfigSettings {
+export class ContratoComponent extends ContratoConfigSettings implements OnInit {
   valoresAnuais = [];
   valoresMensais = [];
   concessionarias = [];

@@ -4,7 +4,7 @@ import { DatePipe } from "@angular/common";
 import { FormControl } from "@angular/forms";
 
 @Component({
-  selector: 'select-periodo',
+  selector: 'ngx-select-periodo',
   template: `
     <nb-select fullWidth placeholder="Selecione">
         <nb-option *ngFor="let mes of meses" value="{{mes.id}}">{{mes.descricao}}</nb-option>

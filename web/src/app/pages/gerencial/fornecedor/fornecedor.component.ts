@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
@@ -19,7 +19,7 @@ import { SessionStorageService } from '../../../@core/services/util/session-stor
   templateUrl: './fornecedor.component.html',
   styleUrls: ['./fornecedor.component.scss']
 })
-export class FornecedorComponent extends FornecedorConfigSettings{
+export class FornecedorComponent extends FornecedorConfigSettings implements OnInit {
   settingsFornecedor = settingsFornecedor; 
   contatos = [];
   public edit = false;

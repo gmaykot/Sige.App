@@ -10,7 +10,7 @@ import { CustomDeleteConfirmationComponent } from "../custom-delete-confirmation
 import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
-  selector: "app-contatos",
+  selector: "ngx-subcontato-component",
   templateUrl: "./contato.subcomponent.html",
   styleUrls: ["./contato.subcomponent.scss"],
 })

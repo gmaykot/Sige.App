@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'date-filter',
+  selector: 'ngx-date-filter-component',
   template: `
     <input type="date" (change)="onDateChange($event)" class="form-control" />
   `,

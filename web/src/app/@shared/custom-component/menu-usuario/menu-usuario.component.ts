@@ -9,7 +9,7 @@ import { IDropDown } from "../../../@core/data/drop-down";
 import { IResponseIntercace } from "../../../@core/data/response.interface";
 
 @Component({
-  selector: "app-menu-usuario",
+  selector: "ngx-menu-usuario",
   templateUrl: "./menu-usuario.component.html",
   styleUrls: ["./menu-usuario.component.scss"],
 })
