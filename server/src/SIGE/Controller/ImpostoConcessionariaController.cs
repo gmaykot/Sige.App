@@ -8,9 +8,9 @@ namespace SIGE.Controller
 {
     [ApiController]
     [Route("imposto-concessionaria")]
-    public class ImpostoConcessionariaController(IBaseInterface<ImpostoConcessionariaDto> service) : ControllerBase
+    public class ImpostoConcessionariaController(IImpostoConcessionariaService service) : ControllerBase
     {
-        private readonly IBaseInterface<ImpostoConcessionariaDto> _service = service;
+        private readonly IImpostoConcessionariaService _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Inclui no sistema.")]
@@ -56,5 +56,14 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> Obter() =>
             Ok(await _service.Obter());
+
+        [HttpGet("concessionaria/{id}")]
+        [SwaggerOperation(Description = "Obtém filtrado com todos os dados.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ObterPorConcessionaria([FromRoute] Guid Id) =>
+            Ok(await _service.ObterPorConcessionaria(Id));
     }
 }

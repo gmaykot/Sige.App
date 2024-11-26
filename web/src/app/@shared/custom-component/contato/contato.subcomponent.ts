@@ -3,7 +3,7 @@ import { NbDialogRef, NbDialogService } from "@nebular/theme";
 import { ContatosSettings } from "./contato.subcomponent.settings";
 import { LocalDataSource } from "ng2-smart-table";
 import { IContato } from "../../../@core/data/contato";
-import { IResponseIntercace } from "../../../@core/data/response.interface";
+import { IResponseInterface } from "../../../@core/data/response.interface";
 import { ContatoComponent } from "../contato.component";
 import { ContatoService } from "../../../@core/services/gerencial/contato.service";
 import { CustomDeleteConfirmationComponent } from "../custom-delete-confirmation.component";
@@ -48,7 +48,7 @@ export class ListaContatoComponent extends ContatosSettings implements OnInit {
     .open(ContatoComponent, { context: { contato: { fornecedorId: this.fornecedorId, empresaId: this.empresaId } as IContato }, })
     .onClose.subscribe(async (ret: IContato) => {
       if (ret) {
-        await this.contatoService.post(ret).then(async (res: IResponseIntercace<IContato>) =>
+        await this.contatoService.post(ret).then(async (res: IResponseInterface<IContato>) =>
         {
           this.source.append(ret);
           this.alertEvent.emit({ message: "Contrato cadastrado com sucesso.", type: 'success' });
@@ -75,12 +75,12 @@ export class ListaContatoComponent extends ContatosSettings implements OnInit {
             .open(ContatoComponent, { context: { contato: contato }, })
             .onClose.subscribe(async (ret: IContato) => {
               if (ret) {
-                await this.contatoService.put(ret).then(async (res: IResponseIntercace<IContato>) =>
+                await this.contatoService.put(ret).then(async (res: IResponseInterface<IContato>) =>
                 {
                   this.source.update(contato, res);
                   this.alertEvent.emit({ message: "Contrato atualizado com sucesso.", type: 'success' });
                   this.refreshEvent.emit(true);
-                }).catch(async (res: IResponseIntercace<any>) =>
+                }).catch(async (res: IResponseInterface<any>) =>
                     {
                         this.alertEvent.emit(res.errors?.map((x) => `- ${x.value}`).join("<br>"));
                         this.refreshEvent.emit(false);      

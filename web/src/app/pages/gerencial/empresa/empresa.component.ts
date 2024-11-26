@@ -4,7 +4,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { UF } from "../../../@core/data/estados";
 import { EmpresaService } from "../../../@core/services/gerencial/empresa.service";
 import { IEmpresa } from "../../../@core/data/empresa";
-import { IResponseIntercace } from "../../../@core/data/response.interface";
+import { IResponseInterface } from "../../../@core/data/response.interface";
 import { NbDialogService, NbIconConfig, NbLayoutScrollService } from "@nebular/theme";
 import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
 import { IAgenteMedicao } from "../../../@core/data/agente-medicao";
@@ -97,7 +97,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     this.loading = true;
     await this.medicaoService
       .getAgentes(empresaId)
-      .then((response: IResponseIntercace<IAgenteMedicao[]>) => {
+      .then((response: IResponseInterface<IAgenteMedicao[]>) => {
         this.agentes = response.data;
         this.sourceAgenteMedicao.load(response.data);
         this.getPontosMedicao(response.data);
@@ -118,7 +118,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     this.loading = true;
     await this.empresaService
       .get()
-      .then((response: IResponseIntercace<IEmpresa[]>) => {
+      .then((response: IResponseInterface<IEmpresa[]>) => {
         if (response.success) {
           this.source.load(response.data);
           response.data.filter(e => e.empresaMatrizId == null || e.empresaMatrizId == '').map(e => this.empresasMatriz.push({ id: e.id, descricao: e.nomeFantasia}))
@@ -218,7 +218,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
       .open(CustomDeleteConfirmationComponent)
       .onClose.subscribe(async (excluir) => {
         if (excluir) {
-          await this.empresaService.delete(this.getEmpresa().id).then(async (res: IResponseIntercace<any>) => {
+          await this.empresaService.delete(this.getEmpresa().id).then(async (res: IResponseInterface<any>) => {
             if (res.success){
               this.limparFormulario();
               await this.getEmpresas();
@@ -247,7 +247,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
 
   private async post(empresa: IEmpresa) {
     empresa.agentesMedicao = [];
-    await this.empresaService.post(empresa).then(async (res: IResponseIntercace<IEmpresa>) =>
+    await this.empresaService.post(empresa).then(async (res: IResponseInterface<IEmpresa>) =>
     {
       this.onSelect(res);
       await this.getEmpresas();
@@ -277,7 +277,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
       })
       .onClose.subscribe(async (agente) => {
         if (agente) {
-          this.agenteMedicaoService.post(agente).then(async (res: IResponseIntercace<IAgenteMedicao>) =>
+          this.agenteMedicaoService.post(agente).then(async (res: IResponseInterface<IAgenteMedicao>) =>
           {
             agente.id = res.data.id
             this.agentes = this.agentes.filter(a => a.id != agente.id);
@@ -295,7 +295,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     .open(PontoMedicaoComponent, { context: { ponto: {} as IPontoMedicao, agentes: await this.sourceAgenteMedicao.getAll() } })
     .onClose.subscribe(async (ponto) => {
         if (ponto) {
-          this.pontoMedicaoService.post(ponto).then(async (res: IResponseIntercace<IPontoMedicao>) =>
+          this.pontoMedicaoService.post(ponto).then(async (res: IResponseInterface<IPontoMedicao>) =>
           {
             ponto.id = res.data.id
             this.pontos.push(ponto);
@@ -354,7 +354,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
         if (excluir){
           var erroExcluir = false;
           this.agentesChecked.forEach(agente => {
-            this.agenteMedicaoService.delete(agente.id).then(async (res: IResponseIntercace<any>) => {
+            this.agenteMedicaoService.delete(agente.id).then(async (res: IResponseInterface<any>) => {
               if (res.success){
                 this.agentes = this.agentes.filter(a => a.id != agente.id);
                 this.sourceAgenteMedicao.load(this.agentes);         
@@ -396,7 +396,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     .open(ContatoComponent, { context: { contato: { empresaId: empresa.id, fornecedorId: null } as IContato }, })
     .onClose.subscribe(async (contato) => {
       if (contato) {   
-        await this.contatoService.post(contato).then(async (res: IResponseIntercace<IContato>) =>
+        await this.contatoService.post(contato).then(async (res: IResponseInterface<IContato>) =>
         {
           contato.id = res.data.id;
           this.contatos = this.contatos.filter(a => a.id != contato.id);

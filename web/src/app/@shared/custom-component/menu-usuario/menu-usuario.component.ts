@@ -6,7 +6,7 @@ import { IMenuSistema } from "../../../@core/data/menu-sistema";
 import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
 import { MenuSistemaService } from "../../../@core/services/administrativo/menu-sistema.service";
 import { IDropDown } from "../../../@core/data/drop-down";
-import { IResponseIntercace } from "../../../@core/data/response.interface";
+import { IResponseInterface } from "../../../@core/data/response.interface";
 
 @Component({
   selector: "ngx-menu-usuario",
@@ -36,7 +36,7 @@ export class MenuUsuarioComponent implements OnInit {
     });
     await this.menuSistemaService
       .getDropDownEstruturado()
-      .then((response: IResponseIntercace<IDropDown[]>) => {
+      .then((response: IResponseInterface<IDropDown[]>) => {
         if (response.success) {
           this.menusSistema = response.data.filter(
             (d) => d.subGrupo != null && d.subGrupo.length > 0

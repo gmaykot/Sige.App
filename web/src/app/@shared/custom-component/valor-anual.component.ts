@@ -1,9 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { FormBuilder, Validators } from '@angular/forms';
-import { IContato } from '../../@core/data/contato';
 import { IValorAnual } from '../../@core/data/valor-anual';
-import { DatePipe } from '@angular/common';
 import { DateService } from '../../@core/services/util/date.service';
 
 @Component({

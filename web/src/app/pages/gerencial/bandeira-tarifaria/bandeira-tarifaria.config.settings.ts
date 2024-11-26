@@ -41,22 +41,26 @@ export class BandeiraTarifariaConfigSettings {
           valorBandeiraVerde: {
             title: "Valor Verde",
             type: "number",
-            valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 5, minimumFractionDigits: 2 }).format(value) }
+            valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 5, minimumFractionDigits: 2 }).format(value) },
+            filter: null
           },
           valorBandeiraAmarela: {
             title: "Valor Amarela",
             type: "number",
-            valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 5, minimumFractionDigits: 2 }).format(value) }
+            valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 5, minimumFractionDigits: 2 }).format(value) },
+            filter: null
           },
           valorBandeiraVermelha1: {
             title: "Valor Vermelha I",
             type: "number",
-            valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 5, minimumFractionDigits: 2 }).format(value) }
+            valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 5, minimumFractionDigits: 2 }).format(value) },
+            filter: null
           },
           valorBandeiraVermelha2: {
             title: "Valor Vermelha II",
             type: "number",
-            valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 5, minimumFractionDigits: 2 }).format(value) }
+            valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 5, minimumFractionDigits: 2 }).format(value) },
+            filter: null
           },
         },
         actions: {

@@ -38,8 +38,6 @@ export class FormBuilderService {
       formGroup[key] = new FormControl(defaults[key], defaultValues[key][1]);
     });
 
-    console.log(formGroup);
-
     return this.fb.group(formGroup);
   }
 }
@@ -82,6 +80,13 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     nome: ['', [Validators.required]],
     estado: ['', [Validators.required]],
     ativo: [true, null]
+  },
+  ImpostoConcessionaria: {
+    id: ['', null],
+    concessionariaId: ['', null],
+    descConcessionaria: ['', null],
+    mesReferencia: ['', [Validators.required]],
+    valorPis: [0, [Validators.required]],
+    valorCofins: [0, [Validators.required]]
   }
 };
-

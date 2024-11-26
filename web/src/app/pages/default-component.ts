@@ -1,12 +1,12 @@
 import { LocalDataSource } from "ng2-smart-table";
 import { FormBuilderService } from "../@core/services/util/form-builder.service";
 import { SessionStorageService } from "../@core/services/util/session-storage.service";
-import { DefaultService } from "../@core/services/default-service";
-import { IResponseIntercace } from "../@core/data/response.interface";
+import { IResponseInterface } from "../@core/data/response.interface";
 import { AlertService } from "../@core/services/util/alert.service";
 import { NbDialogService, NbLayoutScrollService } from "@nebular/theme";
 import { Component, Inject, OnInit } from "@angular/core";
 import { CustomDeleteConfirmationComponent } from "../@shared/custom-component/custom-delete-confirmation.component";
+import { DefaultService } from "../@core/services/default-service";
 
 @Component({
   template: ''
@@ -59,7 +59,7 @@ export class DefaultComponent<T> implements OnInit {
     this.loading = true;
     await this.service
       .get()
-      .then((response: IResponseIntercace<T[]>) => {
+      .then((response: IResponseInterface<T[]>) => {
         if (response.success) {
           this.source.load(response.data);
         } else {
@@ -117,7 +117,7 @@ export class DefaultComponent<T> implements OnInit {
   }
 
   private async post(req: T) {
-    await this.service.post(req).then(async (res: IResponseIntercace<T>) =>
+    await this.service.post(req).then(async (res: IResponseInterface<T>) =>
     {
       this.onSelect(res);
       await this.loadSource();

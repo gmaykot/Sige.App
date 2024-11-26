@@ -7,7 +7,7 @@ import { RelatorioEconomiaService } from '../../../@core/services/geral/relatori
 import { ContatoService } from '../../../@core/services/gerencial/contato.service';
 import { DatePipe } from '@angular/common';
 import { NbDialogService, NbGlobalPhysicalPosition } from '@nebular/theme';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { CalculoEconomiaService } from '../../../@core/services/geral/calculo-economia.service';
 import { EmailService } from '../../../@core/services/util/email.service';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
@@ -119,7 +119,7 @@ export class RelatorioMedicaoComponent implements OnInit {
     } else {
       await this.relatorioEconomiaService
       .get(this.relatorio.contratoId, this.competencia)
-      .then((response: IResponseIntercace<IRelatorioEconomia>) => {
+      .then((response: IResponseInterface<IRelatorioEconomia>) => {
         if (response.success) {
           this.relatorioEconomia = response.data;
           this.atualizaValoresEconomia();
@@ -159,7 +159,7 @@ export class RelatorioMedicaoComponent implements OnInit {
     };
     await this.relatorioEconomiaService
       .getRelatorios(relatorio)
-      .then((response: IResponseIntercace<IRelatorioEconomiaList[]>) => {
+      .then((response: IResponseInterface<IRelatorioEconomiaList[]>) => {
         if (response.success) {
           this.source.load(response.data);
         } else {
@@ -174,7 +174,7 @@ export class RelatorioMedicaoComponent implements OnInit {
   private async getContatos(idFornecedor: string) {
     await this.contatoService
     .getPorFornecedor(idFornecedor)
-    .then((response: IResponseIntercace<IContato[]>) => {
+    .then((response: IResponseInterface<IContato[]>) => {
       if (response.success) {
         this.contatos = response.data
       } else {
@@ -213,7 +213,7 @@ export class RelatorioMedicaoComponent implements OnInit {
     var medicoes = [];
     this.medicaoService
     .medicaoPorContrato(this.relatorioEconomia.contratoId, this.relatorioEconomia.competencia || this.competencia)
-    .then((response: IResponseIntercace<any>) => {
+    .then((response: IResponseInterface<any>) => {
       if (response.success) {
         response.data.forEach(med => {
           medicoes.push({

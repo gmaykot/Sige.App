@@ -9,7 +9,7 @@ using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services
 {
-    public class ImpostoConcessionariaService(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<ImpostoConcessionariaDto>
+    public class ImpostoConcessionariaService(AppDbContext appDbContext, IMapper mapper) : IImpostoConcessionariaService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
@@ -67,6 +67,17 @@ namespace SIGE.Services.Services
         public Task<Response> ObterDropDown()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<Response> ObterPorConcessionaria(Guid Id)
+        {
+            var ret = new Response();
+            var res = await _appDbContext.ImpostosConcessionarias.Where(i => i.ConcessionariaId == Id).ToListAsync();
+            if (res.Count > 0)
+                return ret.SetOk().SetData(_mapper.Map<IEnumerable<ImpostoConcessionariaDto>>(res));
+
+            return ret.SetNotFound()
+                .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
         }
     }
 }

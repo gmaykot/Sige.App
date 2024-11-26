@@ -47,6 +47,7 @@ import TarifaAplicacaoComponent from './gerencial/tarifa-aplicacao/tarifa-aplica
 import { DateInputComponent } from '../@shared/custom-component/date-input/date-input.component';
 import { MenuUsuarioComponent } from '../@shared/custom-component/menu-usuario/menu-usuario.component';
 import { BandeiraTarifariaComponent } from './gerencial/bandeira-tarifaria/bandeira-tarifaria.component';
+import { ImpostoConcessionariaComponent } from '../@shared/custom-component/imposto-concessionaria/imposto-concessionaria.component';
 
 @NgModule({
   imports: [
@@ -122,7 +123,8 @@ import { BandeiraTarifariaComponent } from './gerencial/bandeira-tarifaria/bande
     TarifaAplicacaoComponent,
     DateInputComponent,
     MenuUsuarioComponent,
-    BandeiraTarifariaComponent
+    BandeiraTarifariaComponent,
+    ImpostoConcessionariaComponent
   ],
   providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService]
 })
