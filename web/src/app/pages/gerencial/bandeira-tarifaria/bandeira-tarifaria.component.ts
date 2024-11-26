@@ -129,10 +129,10 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
   }
 
   onSubmit(): void {
-    this.changeContrato();
+    this.change();
   }
 
-  private async changeContrato() {
+  private async change() {
     const bandeira = this.getBandeira();
     if (bandeira.id == null || bandeira.id == "") {
       await this.post(bandeira);
