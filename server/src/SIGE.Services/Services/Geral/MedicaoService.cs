@@ -117,7 +117,6 @@ namespace SIGE.Services.Services.Geral
                 {
                     consumo.StatusMedicao = EStatusMedicao.ERRO_LEITURA;
                     res.Errors.Select(e => ret.AddError(e.Key, e.Value));
-
                     ret.AddError("LeituraCCEE", "Não foi possível a leitura dos dados junto a CCEE");
                 }
 
