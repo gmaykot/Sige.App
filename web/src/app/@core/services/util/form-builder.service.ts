@@ -91,7 +91,8 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
   },
   FaturamentoCoenel: {
     id: ['', null],
-    descEmpresa: ['', [Validators.required]],
+    empresaId: ['', null],
+    descEmpresa: ['', null],
     pontoMedicaoId: ['', [Validators.required]],
     descPontoMedicao: ['', null],
     vigenciaInicial: ['', [Validators.required]],

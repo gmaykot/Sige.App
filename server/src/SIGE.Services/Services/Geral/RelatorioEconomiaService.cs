@@ -37,7 +37,7 @@ namespace SIGE.Services.Services.Geral
                 var res = await _appDbContext.Database.SqlQueryRaw<RelatorioEconomiaDto>(RelatorioEconomiaFactory.ValoresRelatoriosEconomia(contratoId, competencia, null)).FirstOrDefaultAsync();
                 if (res == null)
                     return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Verifique se a medição da competência foram efetuadas.")
-                                            .AddError(ETipoErro.INFORMATIVO, $"Verifique os valores contratuais cadastrados.");
+                                            .AddError(ETipoErro.INFORMATIVO, $"Verifique se os valores contratuais estão cadastrados.");
 
                 res.ValoresAnaliticos = [];
                 res.ContratoId = contratoId;
@@ -72,7 +72,7 @@ namespace SIGE.Services.Services.Geral
                     Conexao = "A4",
                     Concessao = "RGE Sul",
                     DataAnalise = DateTime.Now,
-                    MesAno = "Outubro/24",
+                    MesReferencia = "Outubro/24",
                     NumerorDiasMes = 31,
                     PeriodoHoroSazonal = "Bandeira Verde"
                 },

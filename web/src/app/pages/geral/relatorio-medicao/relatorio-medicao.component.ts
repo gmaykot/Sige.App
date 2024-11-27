@@ -269,8 +269,8 @@ export class RelatorioMedicaoComponent implements OnInit {
             var emailData: IEmailData = {
               contratoId: this.relatorioEconomia.contratoId,
               contato: contato,
-              competencia: this.datePipe.transform(this.competencia, "MM/yyyy"),
-              descCompetencia: this.datePipe.transform(this.competencia, "MMyy"),
+              mesReferencia: this.datePipe.transform(this.competencia, "MM/yyyy"),
+              descMesReferencia: this.datePipe.transform(this.competencia, "MMyy"),
               descEmpresa: this.relatorioEconomia.descGrupo,
               totalNota: Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(this.relatorioEconomia.totalMedido),
               relatorios: [result],
