@@ -2,15 +2,16 @@
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Empresa;
 using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Gerencial;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller.Gerencial
 {
     [ApiController]
     [Route("ponto-medicao")]
-    public class PontoMedicaoController(IBaseInterface<PontoMedicaoDto> service) : ControllerBase
+    public class PontoMedicaoController(IPontoMedicaoService service) : ControllerBase
     {
-        private readonly IBaseInterface<PontoMedicaoDto> _service = service;
+        private readonly IPontoMedicaoService _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Inclui no sistema.")]
@@ -56,5 +57,23 @@ namespace SIGE.Controller.Gerencial
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> Obter() =>
             Ok(await _service.Obter());
+
+        [HttpGet("drop-down")]
+        [SwaggerOperation(Description = "Obtém dropdown.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ObterDropDown() =>
+            Ok(await _service.ObterDropDown());
+
+        [HttpGet("drop-down/empresa/{id}")]
+        [SwaggerOperation(Description = "Obtém dropdown filtrado.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ObterDropDown(Guid Id) =>
+            Ok(await _service.ObterDropDownPorEmpresa(Id));
     }
 }

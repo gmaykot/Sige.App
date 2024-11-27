@@ -22,7 +22,11 @@ namespace SIGE.Core.Mapper
                 .ForMember(dst => dst.Estado, map => map.MapFrom(src => Enum.Parse(typeof(ETipoEstado), src.Estado)));
 
             CreateMap<AgenteMedicaoDto, AgenteMedicaoModel>().ReverseMap();
+
             CreateMap<PontoMedicaoDto, PontoMedicaoModel>().ReverseMap();
+            CreateMap<PontoMedicaoModel, DropDownDto>()
+                .ForMember(dst => dst.Id, map => map.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Descricao, map => map.MapFrom(src => $"{src.Nome} ({src.Codigo})"));
         }
     }
 }

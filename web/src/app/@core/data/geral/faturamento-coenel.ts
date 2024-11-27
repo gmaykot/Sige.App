@@ -1,4 +1,9 @@
 export interface IFaturamentoCoenel {
     id: string;
-    mesReferencia: string;
+    pontoMedicaoId: string;
+    vigenciaInicial: string;
+    vigenciaFinal: string;
+    valorFixo: number;
+    qtdeSalarios: number;
+    porcentagem: number;
 }

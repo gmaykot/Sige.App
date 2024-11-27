@@ -1,3 +1,5 @@
+import { DatePipe } from "@angular/common";
+
 export const faturamentoSettings = {
     add: {
       addButtonContent: '<i class="nb-plus"></i>',
@@ -15,14 +17,37 @@ export const faturamentoSettings = {
       confirmDelete: true,
     },
     columns: {
-      nome: {
-        title: "Nome",
+        descEmpresa: {
+        title: "Empresa",
         type: "string",
       },
-      estado: {
-        title: "Estado",
+      descPontoMedicao: {
+        title: "Ponto Medição",
+        type: "string"
+      },
+      vigenciaInicial: {
+        title: "Vigência Inicial",
         type: "string",
-        class: "estado",
+        valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
+      },
+      vigenciaFinal: {
+        title: "Vigência Final",
+        type: "string",
+        valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
+      },
+      valorFixo: {
+        title: "Valor Fixo",
+        type: "string",
+        valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) },
+      },
+      qtdeSalarios: {
+        title: "Qtde. Salários",
+        type: "string"
+      },
+      porcentagem: {
+        title: "Porcentagem",
+        type: "string",
+        valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 3, minimumFractionDigits: 2 }).format(value) },
       },
     },
     actions: {

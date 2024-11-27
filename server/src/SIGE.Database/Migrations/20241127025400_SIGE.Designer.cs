@@ -12,7 +12,7 @@ using SIGE.DataAccess.Context;
 namespace SIGE.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241127005518_SIGE")]
+    [Migration("20241127025400_SIGE")]
     partial class SIGE
     {
         /// <inheritdoc />
@@ -484,6 +484,46 @@ namespace SIGE.DataAccess.Migrations
                     b.HasIndex("GestorId");
 
                     b.ToTable("Empresas");
+                });
+
+            modelBuilder.Entity("SIGE.Core.Models.Sistema.Faturamento.FaturamentoCoenelModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("DataExclusao")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("DataRegistro")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("PontoMedicaoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<double>("Porcentagem")
+                        .HasColumnType("double");
+
+                    b.Property<double>("QtdeSalarios")
+                        .HasColumnType("double");
+
+                    b.Property<double>("ValorFixo")
+                        .HasColumnType("double");
+
+                    b.Property<DateTime>("VigenciaFinal")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("VigenciaInicial")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PontoMedicaoId");
+
+                    b.ToTable("FaturamentosCoenel");
                 });
 
             modelBuilder.Entity("SIGE.Core.Models.Sistema.Fornecedor.ContatoModel", b =>
@@ -1177,6 +1217,17 @@ namespace SIGE.DataAccess.Migrations
                     b.Navigation("EmpresaMatriz");
 
                     b.Navigation("Gestor");
+                });
+
+            modelBuilder.Entity("SIGE.Core.Models.Sistema.Faturamento.FaturamentoCoenelModel", b =>
+                {
+                    b.HasOne("SIGE.Core.Models.Sistema.Medicao.PontoMedicaoModel", "PontoMedicao")
+                        .WithMany()
+                        .HasForeignKey("PontoMedicaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PontoMedicao");
                 });
 
             modelBuilder.Entity("SIGE.Core.Models.Sistema.Fornecedor.ContatoModel", b =>

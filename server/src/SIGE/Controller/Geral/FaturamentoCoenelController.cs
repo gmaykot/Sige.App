@@ -2,15 +2,16 @@
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.FaturmentoCoenel;
 using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Geral;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller.Geral
 {
     [ApiController]
     [Route("faturamento-coenel")]
-    public class FaturamentoCoenelController(IBaseInterface<FaturmentoCoenelDto> service) : ControllerBase
+    public class FaturamentoCoenelController(IFaturamentoCoenelService service) : ControllerBase
     {
-        private readonly IBaseInterface<FaturmentoCoenelDto> _service = service;
+        private readonly IFaturamentoCoenelService _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Inclui no sistema.")]
@@ -18,7 +19,7 @@ namespace SIGE.Controller.Geral
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Incluir([FromBody] FaturmentoCoenelDto req) =>
+        public async Task<IActionResult> Incluir([FromBody] FaturamentoCoenelDto req) =>
             Ok(await _service.Incluir(req));
 
         [HttpPut()]
@@ -27,7 +28,7 @@ namespace SIGE.Controller.Geral
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Alterar([FromBody] FaturmentoCoenelDto req) =>
+        public async Task<IActionResult> Alterar([FromBody] FaturamentoCoenelDto req) =>
             Ok(await _service.Alterar(req));
 
         [HttpDelete("{id}")]
@@ -56,5 +57,14 @@ namespace SIGE.Controller.Geral
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> Obter() =>
             Ok(await _service.Obter());
+
+        [HttpGet("ponto-medicao/{id}")]
+        [SwaggerOperation(Description = "Obtém um com todos os dados por ponto medição.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ObterPorPontoMedicao([FromRoute] Guid Id) =>
+            Ok(await _service.ObterPorPontoMedicao(Id));
     }
 }
