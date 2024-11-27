@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { IFaturamentoCoenel } from "../../../@core/data/geral/faturamento-coenel";
 import { CheckboxComponent } from "../../../@shared/custom-component/checkbox-component";
 import { DefaultComponent } from "../../../@shared/custom-component/default/default-component";
@@ -52,11 +53,13 @@ export class FaturamentoCoenelConfigSettings extends DefaultComponent<IFaturamen
               },
             vigenciaInicial: {
                 title: "Vigência Inicial",
-                type: "string"
+                type: "string",
+                valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
             },
-            vigenciaFianl: {
+            vigenciaFinal: {
                 title: "Vigência Final",
-                type: "string"
+                type: "string",
+                valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
             },
             valorFixo: {
                 title: "Valor Fixo",
