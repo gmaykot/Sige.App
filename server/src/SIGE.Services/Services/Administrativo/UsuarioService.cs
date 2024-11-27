@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Usuario;
 using SIGE.DataAccess.Context;
-using SIGE.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using SIGE.Core.Models.Sistema.Usuario;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using SIGE.Core.Models.Sistema.Menus;
+using SIGE.Services.Interfaces.Administrativo;
+using SIGE.Core.Models.Sistema.Administrativo;
+using SIGE.Core.Models.Dto.Administrativo.Usuario;
 
 namespace SIGE.Services.Services.Administrativo
 {

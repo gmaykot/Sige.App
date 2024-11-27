@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using SIGE.Core.Models.Dto.Menus;
-using SIGE.Core.Models.Sistema.Usuario;
+using SIGE.Core.Models.Dto.Administrativo;
+using SIGE.Core.Models.Sistema.Administrativo;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;

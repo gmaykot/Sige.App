@@ -11,9 +11,16 @@
                             <div class="row">                                        
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label class="label">Mês Referência*</label>
-                                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____"
-                                          [dropSpecialCharacters]="false" formControlName="mesReferencia">
+                                        <label class="label">Vigência Inicial*</label>
+                                        <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
+                                          [dropSpecialCharacters]="false" formControlName="vigenciaInicial">
+                                      </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="label">Vigência Final</label>
+                                        <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
+                                          [dropSpecialCharacters]="false" formControlName="vigenciaFinal">
                                       </div>
                                 </div>
                                 <div class="col-sm-3">

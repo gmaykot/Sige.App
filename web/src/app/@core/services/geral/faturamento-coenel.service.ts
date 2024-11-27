@@ -12,7 +12,7 @@ export class FaturamentoCoenelService extends DefaultService<IFaturamentoCoenel>
 
   public async getByPontoMedicao(id: string): Promise<IResponseInterface<IFaturamentoCoenel[]>> {
     const ret = await this.http.get<IResponseInterface<IFaturamentoCoenel[]>>(`/${this.urlBase}/ponto-medicao/${id}`);
-    const formattedReq = this.transformMesReferencia(ret.data);
+    const formattedReq = this.formatPosGet(ret.data);
     return { ...ret, data: formattedReq };
   }
 }

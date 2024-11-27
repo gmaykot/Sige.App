@@ -3,7 +3,6 @@ using SIGE.Core.Models.Defaults;
 using SIGE.Core.Options;
 using SIGE.Services.HttpConfiguration.Ccee;
 using SIGE.Services.HttpConfiguration;
-using SIGE.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Text;
 using Newtonsoft.Json;
@@ -11,8 +10,9 @@ using System.Xml.Linq;
 using SIGE.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using SIGE.Core.Models.Dto.Ccee;
 using SIGE.Core.Extensions;
+using SIGE.Services.Interfaces.Externo;
+using SIGE.Core.Models.Dto.Administrativo.Ccee;
 
 namespace SIGE.Services.Services.Externo
 {

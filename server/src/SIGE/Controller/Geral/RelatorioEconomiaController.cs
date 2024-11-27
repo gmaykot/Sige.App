@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Requests;
-using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Geral;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller.Geral

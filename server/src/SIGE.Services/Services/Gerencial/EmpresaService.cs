@@ -6,8 +6,8 @@ using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
-using SIGE.Core.Models.Dto.Empresa;
-using SIGE.Core.Models.Sistema.Empresa;
+using SIGE.Core.Models.Dto.Gerencial.Empresa;
+using SIGE.Core.Models.Sistema.Gerencial;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 

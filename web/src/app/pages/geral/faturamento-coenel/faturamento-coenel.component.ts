@@ -9,10 +9,9 @@ import { EmpresaService } from "../../../@core/services/gerencial/empresa.servic
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { IDropDown } from "../../../@core/data/drop-down";
 import { Observable, of } from "rxjs";
-import { debounceTime, filter, map, startWith } from 'rxjs/operators';
+import { debounceTime, filter, map } from 'rxjs/operators';
 import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-medicao.service";
 import { LocalDataSource } from "ng2-smart-table";
-import { IPontoMedicao } from "../../../@core/data/ponto-medicao";
 import { IFaturamentoCoenel } from "../../../@core/data/geral/faturamento-coenel";
 
 @Component({
@@ -39,15 +38,18 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
     super(Classes.FATURAMENTO_COENEL, formBuilderService, service, alertService, scroolService, dialogService);
   }
 
-  async onSelect(event: any) {
+  async onSelectCustom(event: any) {
     super.onSelect(event);
-    await this.loadSourceHistorico(event.data.pontoMedicaoId);
+    await this.getPontosMedicao(event.data.empresaId);
+    await this.onEmpresaChange();
   }
 
   async ngOnInit() {
+    if (this.isSuperUsuario){
+      this.settingsHistoricos.columns.id.hide = false;
+    }
     await super.ngOnInit();
     await this.getEmpresas();
-    this.onEmpresaChange();
   }
 
   private async getEmpresas() {
@@ -71,20 +73,25 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
     });    
   }
 
+  async onEdit() {
+    super.onEdit();
+    this.onEmpresaChange();
+  }
+
   async onEmpresaChange() {
     this.options = this.empresas.map((x: any) => x.descricao);
     this.filteredControlOptions$ = of(this.options);
 
     const idMap = new Map(this.empresas.map(x => [x.descricao, x.id]));
     
-    this.filteredControlOptions$ = this.control.get('empresaId').valueChanges
+    this.filteredControlOptions$ = this.control.get('descEmpresa').valueChanges
       .pipe(
         debounceTime(300),
         filter((value: any) => value && value.length > 2),
         map((filterString: string) => this.filter(filterString))
       );
 
-    this.control.get('empresaId').valueChanges.subscribe(async value => {
+    this.control.get('descEmpresa').valueChanges.subscribe(async value => {
       this.pontosMedicao = [];
       this.control.patchValue({ pontoMedicaoId: '' }, { emitEvent: false });
       const id = idMap.get(value);

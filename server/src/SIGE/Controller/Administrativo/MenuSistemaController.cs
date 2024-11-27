@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Menus;
-using SIGE.Services.Interfaces;
+using SIGE.Core.Models.Dto.Administrativo;
+using SIGE.Services.Interfaces.Administrativo;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller.Administrativo

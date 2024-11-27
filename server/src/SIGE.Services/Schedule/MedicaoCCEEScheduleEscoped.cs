@@ -2,11 +2,12 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Extensions;
-using SIGE.Core.Models.Dto.Mail;
-using SIGE.Core.Models.Dto.Medicao;
+using SIGE.Core.Models.Dto.Administrativo.Email;
+using SIGE.Core.Models.Dto.Geral.Medicao;
 using SIGE.Core.Models.Sistema;
 using SIGE.Services.Custom;
-using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Externo;
+using SIGE.Services.Interfaces.Geral;
 
 namespace SIGE.Services.Schedule
 {

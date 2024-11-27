@@ -46,6 +46,7 @@ export const settingsTarifaAplicacao = {
       edit: false,
       delete: true,
       position: 'right',
+      columnTitle: "",
     },
     hideSubHeader: true,
     noDataMessage: 'Nenhum registro encontrado.'

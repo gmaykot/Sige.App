@@ -27,16 +27,14 @@ export const faturamentoSettings = {
       },
       vigenciaInicial: {
         title: "Vigência Inicial",
-        type: "string",
-        valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
+        type: "string"
       },
       vigenciaFinal: {
         title: "Vigência Final",
-        type: "string",
-        valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
+        type: "string"
       },
       valorFixo: {
-        title: "Valor Fixo",
+        title: "Valor Fixo (R$)",
         type: "string",
         valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) },
       },
@@ -45,7 +43,7 @@ export const faturamentoSettings = {
         type: "string"
       },
       porcentagem: {
-        title: "Porcentagem",
+        title: "Porcentagem (%)",
         type: "string",
         valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 3, minimumFractionDigits: 2 }).format(value) },
       },

@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Contrato;
-using SIGE.Core.Models.Sistema.Contrato;
+using SIGE.Core.Models.Dto.Gerencial.Contrato;
+using SIGE.Core.Models.Sistema.Gerencial.Contrato;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 

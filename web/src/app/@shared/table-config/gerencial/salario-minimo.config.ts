@@ -15,8 +15,12 @@ export const salarioMinimoSettings = {
       confirmDelete: true,
     },
     columns: {
-      mesReferencia: {
-        title: "Mês Referência",
+      vigenciaInicial: {
+        title: "Vigência Inicial",
+        type: "string",
+      },
+      vigenciaFinal: {
+        title: "Vigência Final",
         type: "string",
       },
       valor: {

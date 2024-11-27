@@ -1,4 +1,4 @@
-﻿using SIGE.Core.Models.Dto.Medicao;
+﻿using SIGE.Core.Models.Dto.Geral.Medicao;
 
 namespace SIGE.Calculos.RelatorioMedicao
 {

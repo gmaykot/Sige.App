@@ -29,6 +29,8 @@ namespace SIGE.Services
             services.AddAutoMapper(typeof(FornecedorMapper));
             services.AddAutoMapper(typeof(UsuarioMapper));
             services.AddAutoMapper(typeof(GerencialMapper));
+            services.AddAutoMapper(typeof(ContratoMapper));
+            services.AddAutoMapper(typeof(GeralMapper));
 
             return services;
         }

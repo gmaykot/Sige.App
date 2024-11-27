@@ -14,10 +14,11 @@ import { DefaultService } from "../../../@core/services/default-service";
 export class DefaultComponent<T> implements OnInit {
   public control = null;
   public edit = false;
-  public loading = true;
-  public selected = false;
   public habilitaOperacoes: boolean = false;
   public habilitaValidarRelatorio: boolean = false;
+  public isSuperUsuario: boolean = false;
+  public loading = true;
+  public selected = false;
   public source: LocalDataSource = new LocalDataSource();
 
   constructor(
@@ -29,6 +30,7 @@ export class DefaultComponent<T> implements OnInit {
     protected dialogService: NbDialogService
   ) {
     this.control = this.createControl();
+    this.isSuperUsuario = SessionStorageService.isSuperUsuario();
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
     this.habilitaValidarRelatorio = SessionStorageService.habilitaValidarRelatorio();   
   }
@@ -96,11 +98,10 @@ export class DefaultComponent<T> implements OnInit {
         await this.service
         .delete(this.loadObject().id)
         .then();
-      {
-        this.clearForm()
+        
+        this.clearForm();
         this.alertService.showSuccess("Registro excluído com sucesso.");
         await this.loadSource();
-      }
       }
     });
   }

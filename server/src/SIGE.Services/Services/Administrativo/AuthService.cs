@@ -2,15 +2,15 @@
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Requests;
-using SIGE.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SIGE.DataAccess.Context;
-using SIGE.Core.Models.Dto.Usuario;
 using AutoMapper;
 using SIGE.Core.Extensions;
 using SIGE.Services.Custom;
 using Microsoft.Extensions.Logging;
-using SIGE.Core.Models.Dto.Menus;
+using SIGE.Services.Interfaces.Administrativo;
+using SIGE.Core.Models.Dto.Administrativo;
+using SIGE.Core.Models.Dto.Administrativo.Usuario;
 
 namespace SIGE.Services.Services.Administrativo
 {
@@ -46,7 +46,9 @@ namespace SIGE.Services.Services.Administrativo
             var menuSistemaDto = new List<MenuSistemaDto>();
             foreach (var menu in menusUsuario.Where(m => m.MenuSistema.MenuPredecessorId == null).OrderBy(m => m.MenuSistema.Ordem))
             {
-                menuSistemaDto.Add(_mapper.Map<MenuSistemaDto>(menu.MenuSistema));
+                var menuSistema = _mapper.Map<MenuSistemaDto>(menu.MenuSistema);
+                menuSistema.Perfil = menu.TipoPerfil;
+                menuSistemaDto.Add(menuSistema);
             }
 
             foreach (var menu in menusUsuario.Where(m => m.MenuSistema.MenuPredecessorId != null).OrderBy(m => m.MenuSistema.Ordem))
@@ -57,7 +59,9 @@ namespace SIGE.Services.Services.Administrativo
                 if (menuUsu != null)
                 {
                     menuUsu.children ??= new List<MenuSistemaDto>();
-                    menuUsu.children.Add(_mapper.Map<MenuSistemaDto>(menu.MenuSistema));
+                    var menuSistema = _mapper.Map<MenuSistemaDto>(menu.MenuSistema);
+                    menuSistema.Perfil = menu.TipoPerfil;
+                    menuUsu.children.Add(menuSistema);
                 }
             }
 

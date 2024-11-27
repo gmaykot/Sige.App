@@ -12,13 +12,10 @@
                                 <div class="col-md-6">
                                   <div class="form-group">
                                     <label for="inputLastName" class="label">Empresa*</label>
-                                    <input
-                                        fullWidth
-                                        formControlName="empresaId"
-                                        nbInput
-                                        type="text"
-                                        placeholder="Pesquise pelo nome da empresa"
-                                        [nbAutocomplete]="autoControl" />
+                                    <input style="margin-top: -10px;" *ngIf="selected" fullWidth formControlName="descEmpresa" nbInput class="no-border no-background" type="text" [readonly]="selected"/>
+
+                                    <input *ngIf="!selected" fullWidth formControlName="empresaId" nbInput type="text"
+                                        placeholder="Pesquise pelo nome da empresa" [readonly]="selected" [nbAutocomplete]="autoControl" />
             
                                   <nb-autocomplete #autoControl>
                                     <nb-option *ngFor="let option of filteredControlOptions$ | async" [value]="option">
@@ -30,7 +27,9 @@
                                 <div class="col-md-6">
                                   <div class="form-group">
                                     <label for="inputLastName" class="label">Ponto de Medição*</label>
-                                    <nb-select fullWidth placeholder="Selecione" formControlName="pontoMedicaoId">
+                                    <input style="margin-top: -10px;" *ngIf="selected" fullWidth formControlName="descPontoMedicao" nbInput [class]="selected ? 'no-border no-background' : ''"
+                                        type="text" placeholder="Pesquise pelo nome da empresa" [readonly]="selected" [disabled]="selected"/>
+                                    <nb-select *ngIf="!selected" fullWidth placeholder="Selecione" formControlName="pontoMedicaoId">
                                       <nb-option *ngFor="let ponto of pontosMedicao"
                                         value="{{ponto.id}}">{{ ponto.descricao | uppercase}}</nb-option>
                                     </nb-select>
@@ -66,7 +65,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="form-group">
-                                        <label for="inputLastName" class="label">Porcentagem</label>
+                                        <label for="inputLastName" class="label">Porcentagem %</label>
                                         <input type="number" nbInput fullWidth formControlName="porcentagem">
                                     </div>
                                 </div>                                
@@ -85,7 +84,7 @@
                                   <ng2-smart-table [settings]="settingsHistoricos" [source]="sourceHistoricos">
                                   </ng2-smart-table>
                                 </nb-card-body>
-                                <nb-card-footer>
+                                <nb-card-footer *ngIf="isSuperUsuario">
                                   <button type="submit" nbButton status="info" (click)="onHistoricoConfirm()" *ngIf="historicosChecked.length === 0 && habilitaOperacoes">Cadastrar</button>
                                   <button type="submit" nbButton status="info" (click)="onHistoricoEdit()" *ngIf="historicosChecked.length === 1 && habilitaOperacoes">Alterar</button>
                                   <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onHistoricoDelete()" *ngIf="habilitaOperacoes" [disabled]="historicosChecked.length === 0">Excluir</button>
@@ -115,7 +114,7 @@
       </div>   </nb-card-header>
   
     <nb-card-body>
-      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelectCustom($event)">
       </ng2-smart-table>
     </nb-card-body>
   </nb-card>

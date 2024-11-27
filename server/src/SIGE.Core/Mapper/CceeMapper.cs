@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SIGE.Core.Models.Dto.Ccee;
+using SIGE.Core.Models.Dto.Administrativo.Ccee;
 
 namespace SIGE.Core.Mapper
 {

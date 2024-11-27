@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Menus;
-using SIGE.Core.Models.Sistema.Menus;
+using SIGE.Core.Models.Dto.Administrativo;
+using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 

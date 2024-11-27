@@ -4,10 +4,10 @@ using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Fornecedor;
-using SIGE.Core.Models.Sistema.Fornecedor;
+using SIGE.Core.Models.Dto.Gerencial;
+using SIGE.Core.Models.Sistema.Gerencial;
 using SIGE.DataAccess.Context;
-using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Gerencial;
 
 namespace SIGE.Services.Services.Gerencial
 {

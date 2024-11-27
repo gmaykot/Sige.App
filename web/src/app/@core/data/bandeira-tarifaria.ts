@@ -1,7 +1,7 @@
 export interface IBandeiraTarifaria {
     id?: string, 
-    dataVigenciaInicial: string,
-    dataVigenciaFinal?: string,
+    vigenciaInicial: string,
+    vigenciaFinal?: string,
     takeMinimo: number,
     valorBandeiraVerde: number,
     valorBandeiraAmarela: number,

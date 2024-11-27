@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Requests;
-using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Administrativo;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller.Administrativo

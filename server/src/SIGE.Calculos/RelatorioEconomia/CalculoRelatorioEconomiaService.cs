@@ -1,4 +1,4 @@
-﻿using SIGE.Core.Models.Dto.RelatorioEconomia;
+﻿using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
 
 namespace SIGE.Calculos.RelatorioEconomia
 {
