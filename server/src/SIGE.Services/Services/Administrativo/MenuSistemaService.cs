@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Dto.Administrativo;
 using SIGE.Core.Models.Dto.Default;
-using SIGE.Core.Models.Dto.Menus;
-using SIGE.Core.Models.Sistema.Menus;
+using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.DataAccess.Context;
-using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Administrativo;
 
 namespace SIGE.Services.Services.Administrativo
 {

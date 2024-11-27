@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.FaturmentoCoenel;
-using SIGE.Services.Interfaces;
+using SIGE.Core.Models.Dto.Geral;
 using SIGE.Services.Interfaces.Geral;
 using Swashbuckle.AspNetCore.Annotations;
 

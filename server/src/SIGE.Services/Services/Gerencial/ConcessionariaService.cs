@@ -5,9 +5,9 @@ using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Concessionaria;
 using SIGE.Core.Models.Dto.Default;
-using SIGE.Core.Models.Sistema.Concessionaria;
+using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
+using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 

@@ -1,4 +1,4 @@
-﻿using SIGE.Core.Models.Dto.Medicao;
+﻿using SIGE.Core.Models.Dto.Geral.Medicao;
 using System.Text;
 
 namespace SIGE.Core.SQLFactory

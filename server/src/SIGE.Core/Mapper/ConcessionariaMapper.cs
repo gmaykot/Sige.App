@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
-using SIGE.Core.Models.Dto.Concessionaria;
 using SIGE.Core.Models.Dto.Default;
-using SIGE.Core.Models.Sistema.Concessionaria;
+using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
+using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 
 namespace SIGE.Core.Mapper
 {

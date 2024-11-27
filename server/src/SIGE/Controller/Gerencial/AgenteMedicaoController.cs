@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Empresa;
+using SIGE.Core.Models.Dto.Gerencial.Empresa;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 

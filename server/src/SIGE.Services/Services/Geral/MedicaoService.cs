@@ -5,15 +5,16 @@ using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Ccee;
-using SIGE.Core.Models.Dto.Contrato;
-using SIGE.Core.Models.Dto.Empresa;
-using SIGE.Core.Models.Dto.Medicao;
-using SIGE.Core.Models.Sistema.Medicao;
+using SIGE.Core.Models.Dto.Administrativo.Ccee;
+using SIGE.Core.Models.Dto.Geral.Medicao;
+using SIGE.Core.Models.Dto.Gerencial.Contrato;
+using SIGE.Core.Models.Dto.Gerencial.Empresa;
+using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Custom;
-using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Externo;
+using SIGE.Services.Interfaces.Geral;
 
 namespace SIGE.Services.Services.Geral
 {

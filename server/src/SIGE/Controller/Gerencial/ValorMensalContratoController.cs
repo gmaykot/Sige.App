@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Contrato;
+using SIGE.Core.Models.Dto.Gerencial.Contrato;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 

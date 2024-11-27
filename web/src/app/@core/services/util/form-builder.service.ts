@@ -91,17 +91,19 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
   },
   FaturamentoCoenel: {
     id: ['', null],
-    empresaId: ['', [Validators.required]],
+    descEmpresa: ['', [Validators.required]],
     pontoMedicaoId: ['', [Validators.required]],
+    descPontoMedicao: ['', null],
     vigenciaInicial: ['', [Validators.required]],
-    vigenciaFinal: ['', [Validators.required]],
+    vigenciaFinal: ['', null],
     valorFixo: [0, [Validators.required]],
     qtdeSalarios: [0, [Validators.required]],
     porcentagem: [0, [Validators.required]]
   },
   SalarioMinimo: {
     id: ['', null],
-    mesReferencia: ['', [Validators.required]],
+    vigenciaInicial: ['', [Validators.required]],
+    vigenciaFinal: ['', null],
     valor: [0, [Validators.required]]
   }
 };

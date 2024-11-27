@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Menus;
+using SIGE.Core.Models.Dto.Administrativo;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 

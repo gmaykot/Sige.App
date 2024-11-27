@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.TarifaAplicacao;
+using SIGE.Core.Models.Dto.Gerencial;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 

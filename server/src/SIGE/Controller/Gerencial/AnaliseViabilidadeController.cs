@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Concessionaria;
-using SIGE.Services.Interfaces;
+using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
+using SIGE.Services.Interfaces.Geral;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller.Gerencial

@@ -26,8 +26,8 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
 
   public control = this.formBuilder.group({
     id: '', 
-    dataVigenciaInicial: ["", Validators.required],
-    dataVigenciaFinal: [""],
+    vigenciaInicial: ["", Validators.required],
+    vigenciaFinal: [""],
     valorBandeiraVerde: [0, Validators.required],
     valorBandeiraAmarela: [0, Validators.required],
     valorBandeiraVermelha1: [0, Validators.required],
@@ -71,8 +71,6 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
 
   private getBandeira(): IBandeiraTarifaria {
     var bandeira = this.control.value as IBandeiraTarifaria;
-    bandeira.dataVigenciaInicial = this.dateService.ptBrStringToUsString(bandeira.dataVigenciaInicial);
-    bandeira.dataVigenciaFinal = this.dateService.ptBrStringToUsString(bandeira.dataVigenciaFinal);
     return bandeira
   }
 
@@ -87,8 +85,8 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
     const band = event.data as IBandeiraTarifaria;
     this.control = this.formBuilder.group({
       id: band.id, 
-      dataVigenciaFinal: [this.datePipe.transform(band.dataVigenciaFinal, 'dd/MM/yyyy')],
-      dataVigenciaInicial: [this.datePipe.transform(band.dataVigenciaInicial, 'dd/MM/yyyy')],
+      vigenciaFinal: band.vigenciaFinal,
+      vigenciaInicial: band.vigenciaInicial,
       valorBandeiraVerde: band.valorBandeiraVerde,
       valorBandeiraAmarela: band.valorBandeiraAmarela,
       valorBandeiraVermelha1: band.valorBandeiraVermelha1,

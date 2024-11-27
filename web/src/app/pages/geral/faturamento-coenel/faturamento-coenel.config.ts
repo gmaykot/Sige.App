@@ -41,7 +41,8 @@ export class FaturamentoCoenelConfigSettings extends DefaultComponent<IFaturamen
                     type: 'custom',
                     class: 'checkbox',
                     component: CheckboxComponent
-                }
+                },
+                hide: true
             },
             descEmpresa: {
                 title: "Empresa",
@@ -53,16 +54,14 @@ export class FaturamentoCoenelConfigSettings extends DefaultComponent<IFaturamen
               },
             vigenciaInicial: {
                 title: "Vigência Inicial",
-                type: "string",
-                valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
+                type: "string"
             },
             vigenciaFinal: {
                 title: "Vigência Final",
-                type: "string",
-                valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
+                type: "string"
             },
             valorFixo: {
-                title: "Valor Fixo",
+                title: "Valor Fixo (R$)",
                 type: "string",
                 valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) },
             },
@@ -71,7 +70,7 @@ export class FaturamentoCoenelConfigSettings extends DefaultComponent<IFaturamen
                 type: "string"
             },
             porcentagem: {
-                title: "Porcentagem",
+                title: "Porcentagem (%)",
                 type: "string",
                 valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 3, minimumFractionDigits: 2 }).format(value) },
             },

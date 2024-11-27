@@ -1,46 +1,66 @@
-import { DateService } from "./date.service";
-
 export class DefaultServiceUtil<T> {
 
-    protected formatMesReferencia(item: T): T {
-        const datePattern = /^[0-9]{2}\/[0-9]{4}$/; // Validação do formato M0/0000
-        // Verificar e formatar a propriedade "mesReferencia" se existir
-        if ((item as any).mesReferencia && typeof (item as any).mesReferencia === 'string') {
-            const value = (item as any).mesReferencia;
-            if (datePattern.test(value)) {
-                const ptBrString = `01/${value}`;
-                const [dia, mes, ano] = ptBrString.split("/");
-                (item as any).mesReferencia = `${ano}-${mes}-${dia}`;                
-            }
-        }
+    private datePatternMesANo = /^[0-9]{2}\/[0-9]{4}$/; // Validação do formato MM/yyyy
+    private datePatternFullUs = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/; // Validação do formato dd/MM/yyyy
+    private datePatternFullBr = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/; // Validação do formato yyyy-MM-dd
+
+    protected formatPrePost(item: T): T {
+        this.transformPrePostField(item, 'mesReferencia', 'mesAno');
+        this.transformPrePostField(item, 'vigenciaInicial', 'fullDate');
+        this.transformPrePostField(item, 'vigenciaFinal', 'fullDate');
         return item;
     }
 
-    protected transformMesReferencia(data: any): any {
+    protected formatPosGet(data: any): any {
         if (data) {
             if (Array.isArray(data)) {
-                // Se o dado for uma lista
                 return data.map((item) => {
                     return this.transformItem(item);
                 });
             } else {
-                // Se for um único objeto
                 return this.transformItem(data);
             }    
         }
     }
 
-    protected transformItem(item: any): any {
-        const datePattern = /^(\d{4})-(\d{2})-(\d{2})(T\d{2}:\d{2}:\d{2})?$/;
+    private transformItem(item: any): any {
+        this.transformDateField(item, 'mesReferencia', 'mesAno');
+        this.transformDateField(item, 'vigenciaInicial', 'fullDate');
+        this.transformDateField(item, 'vigenciaFinal', 'fullDate');
+        return item;
+    }
 
-        // Verificar e formatar a propriedade "mesReferencia" se existir
-        if ((item as any).mesReferencia && typeof (item as any).mesReferencia === 'string') {
-            const value = (item as any).mesReferencia;
-            if (datePattern.test(value)) {
-                const [ano, mes, dia] = value.split("-");
-                (item as any).mesReferencia = `${mes}/${ano}`;
+    private transformDateToIso(value: string, formatType: 'mesAno' | 'fullDate'): string {
+        if (this.datePatternFullBr.test(value)) {
+            const [dia, mes, ano] = value.split("/");
+            return `${ano}-${mes}-${dia}`;
+        }
+
+        if (formatType === 'mesAno' && this.datePatternMesANo.test(value)) {
+            const [mes, ano] = value.split("/");
+            return `${ano}-${mes}-01`;
+        }
+
+        return value;
+    }
+
+    private transformPrePostField(item: any, fieldName: string, formatType: 'mesAno' | 'fullDate'): void {
+        if (item[fieldName] && typeof item[fieldName] === 'string') {
+            item[fieldName] = this.transformDateToIso(item[fieldName], formatType);
+        }
+    }
+
+    private transformDateField(item: any, fieldName: string, formatType: 'mesAno' | 'fullDate'): void {
+        if (item[fieldName] && typeof item[fieldName] === 'string') {
+            const value = item[fieldName];
+            if (this.datePatternFullUs.test(value)) {
+                const datePart = value.split("T")[0];
+                const [ano, mes, dia] = datePart.split("-");
+                
+                item[fieldName] = formatType === 'mesAno' 
+                    ? `${mes}/${ano}`
+                    : `${dia}/${mes}/${ano}`;
             }
         }
-        return item;
     }
 }

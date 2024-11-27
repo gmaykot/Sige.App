@@ -1,5 +1,5 @@
 ﻿using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Empresa;
+using SIGE.Core.Models.Dto.Gerencial.Empresa;
 
 namespace SIGE.Services.Interfaces.Gerencial
 {

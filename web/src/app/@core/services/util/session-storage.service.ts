@@ -16,6 +16,10 @@ export class SessionStorageService {
         return SessionStorageService.getPerfil() !== ETipoPerfil.CONSULTIVO;
     }
 
+    public static isSuperUsuario() {
+        return SessionStorageService.getPerfil() === ETipoPerfil.SUPERUSUARIO;
+    }
+
     public static getPerfil(): ETipoPerfil {
         var codPerfil: number = +sessionStorage.getItem('selectedMenuPerfil');
         return codPerfil as ETipoPerfil;

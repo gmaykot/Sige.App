@@ -2,11 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.RelatorioEconomia;
+using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
+using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
 using SIGE.Core.Models.Requests;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
-using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Geral;
 
 namespace SIGE.Services.Services.Geral
 {

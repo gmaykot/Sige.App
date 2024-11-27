@@ -4,8 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
-using SIGE.Core.Models.Dto.Empresa;
-using SIGE.Core.Models.Sistema.Medicao;
+using SIGE.Core.Models.Dto.Gerencial.Empresa;
+using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Gerencial;
 

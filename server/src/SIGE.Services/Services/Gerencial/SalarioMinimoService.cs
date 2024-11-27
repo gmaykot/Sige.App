@@ -58,7 +58,7 @@ namespace SIGE.Services.Services.Gerencial
             var ret = new Response();
             var res = await _appDbContext.SalariosMinimos.ToListAsync();
             if (res.Count > 0)
-                return ret.SetOk().SetData(_mapper.Map<IEnumerable<SalarioMinimoDto>>(res).OrderByDescending(s => s.MesReferencia));
+                return ret.SetOk().SetData(_mapper.Map<IEnumerable<SalarioMinimoDto>>(res).OrderByDescending(s => s.VigenciaFinal));
 
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");

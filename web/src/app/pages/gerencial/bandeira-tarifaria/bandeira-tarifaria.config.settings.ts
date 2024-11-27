@@ -20,19 +20,17 @@ export class BandeiraTarifariaConfigSettings {
           confirmDelete: true,
         },
         columns: {
-          dataVigenciaInicial: {
+          vigenciaInicial: {
             title: "Vigência Inicial",
             type: "string",
-            valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
             filter: {
               type: 'custom',
               component: DateFilterComponent,
             }
           },
-          dataVigenciaFinal: {
+          vigenciaFinal: {
             title: "Vigência Final",
             type: "string",
-            valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
             filter: {
               type: 'custom',
               component: DateFilterComponent,

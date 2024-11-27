@@ -13,7 +13,7 @@ export class ImpostoConcessionariaService extends DefaultService<IImpostoConcess
   public async obterPorConcessionaria(id: string): Promise<IResponseInterface<IImpostoConcessionaria[]>> 
   {
     const ret = await this.http.get<IResponseInterface<IImpostoConcessionaria[]>>(`/imposto-concessionaria/concessionaria/${id}`);
-    const formattedReq = this.transformMesReferencia(ret.data);
+    const formattedReq = this.formatPosGet(ret.data);
     return { ...ret, data: formattedReq };
   }
 }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SIGE.Core.Models.Dto.Default;
-using SIGE.Core.Models.Dto.Fornecedor;
-using SIGE.Core.Models.Sistema.Fornecedor;
+using SIGE.Core.Models.Dto.Gerencial;
+using SIGE.Core.Models.Sistema.Gerencial;
 
 namespace SIGE.Core.Mapper
 {

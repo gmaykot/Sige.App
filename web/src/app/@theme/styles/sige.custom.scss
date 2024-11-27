@@ -99,6 +99,10 @@ input, select {
   border: 0rem !important;
 }
 
+.no-background {
+  background-color: transparent !important;
+}
+
 :host {
   ::ng-deep .ng2-smart-actions {
       width: 80px;
