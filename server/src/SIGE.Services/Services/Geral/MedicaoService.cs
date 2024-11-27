@@ -157,6 +157,9 @@ namespace SIGE.Services.Services.Geral
                     };
                 ret.SetData(resCcee);
             }
+            if (ret.Errors.Any())
+                return ret.SetBadRequest().SetMessage("Ocorreu algum erro no processamento das medições.");
+
             return ret.SetOk().SetMessage("Consumos coletados com sucesso.");
         }
 
