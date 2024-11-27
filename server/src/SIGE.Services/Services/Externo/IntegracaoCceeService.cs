@@ -124,15 +124,15 @@ namespace SIGE.Services.Services.Externo
 
                     var resXml = JsonConvert.DeserializeObject<IntegracaoCceeXmlDto>(json);
                     if (resXml == null || resXml.ListaMedidas == null || !resXml.ListaMedidas.Any())
-                        return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Nenhuma medida listada no serviço.");
+                        return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Nenhuma medida listada no período.");
 
                     medicoes.AddRange(_mapper.Map<IEnumerable<IntegracaoCceeMedidasDto>>(resXml.ListaMedidas.OrderBy(n => n.PeriodoFinal).ToList()));
                 }
                 else
                 {
                     return ret.SetBadRequest().AddError(ETipoErro.ERRO, "Erro ao executar a integração com a Ccee")
-                                    .AddError("Message", res.RequestMessage.ToString())
-                                    .AddError("InnerException", res.ReasonPhrase);
+                                    .AddError("RequestMessage", res.RequestMessage.ToString())
+                                    .AddError("ReasonPhrase", res.ReasonPhrase);
                 }
             }
             catch (Exception ex)
@@ -150,6 +150,7 @@ namespace SIGE.Services.Services.Externo
                 ListaMedidas = medicoes.OrderBy(m => m.PontoMedicao).ThenBy(m => m.PeriodoFinal)
             };
             if (resCcee.ListaMedidas.Any())
+            {
                 resCcee.Totais = new IntegracaoCceeTotaisDto()
                 {
                     MediaConsumoAtivo = resCcee.ListaMedidas.Average(m => m.ConsumoAtivo),
@@ -157,6 +158,10 @@ namespace SIGE.Services.Services.Externo
                     SomaConsumoAtivo = resCcee.ListaMedidas.Sum(m => m.ConsumoAtivo),
                     SomaConsumoReativo = resCcee.ListaMedidas.Sum(m => m.ConsumoReativo)
                 };
+            } else
+            {
+                return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "SemNenhuma medida listada no período.");
+            }                
 
             return ret.SetOk().SetData(resCcee).SetMessage("Integração efetuada com sucesso.");
         }

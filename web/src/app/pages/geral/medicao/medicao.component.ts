@@ -136,12 +136,13 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
           this.valores = response.data.listaValoresGrafico;
           this.sourceMedicao.load(response.data.listaMedidas);
           this.sourceMedicaoIcompletas.load(response.data.listaMedidas.filter(m => m.consumoAtivo === 0 && (m.status === 'HCC' || m.status === 'HE')));
-          this.medicoesChecked = [];          
-        } 
+          this.alertService.showSuccess('Coleta efetuada com sucesso.')
+        } else {
+          response.errors.map((x) => this.alertService.showError(`${x.key} - ${x.value}`));
+        }
       });
     }
     await this.getMedicoes("", null, "", "");
-    this.alertService.showSuccess('Coleta efetuada com sucesso.')
 
     this.loading = false;
     this.coletando = false;
