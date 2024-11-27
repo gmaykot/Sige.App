@@ -5,7 +5,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { Classes } from '../../../@core/enum/classes.const';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
-import { DefaultDialogComponent } from '../../../pages/default-dialog-component';
+import { DefaultDialogComponent } from '../default/default-dialog-component';
 
 @Component({
   selector: 'ngx-imposto-concessionaria',

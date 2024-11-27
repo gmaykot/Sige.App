@@ -7,7 +7,7 @@ import { settingsTarifaAplicacao } from '../../../@shared/table-config/tarifa-ap
 import { TarifaAplicacaoService } from '../../../@core/services/gerencial/tarifa-aplicacao.service';
 import { ITarifaAplicacao } from '../../../@core/data/tarifa-aplicacao';
 import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
-import { DefaultComponent } from '../../default-component';
+import { DefaultComponent } from '../../../@shared/custom-component/default/default-component';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { Classes } from '../../../@core/enum/classes.const';
 import { DateService } from '../../../@core/services/util/date.service';

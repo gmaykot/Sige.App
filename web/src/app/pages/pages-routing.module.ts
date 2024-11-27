@@ -19,6 +19,8 @@ import { ValorConcessionariaComponent } from './gerencial/valor-concessionaria/v
 import { RelatorioMedicaoComponent } from './geral/relatorio-medicao/relatorio-medicao.component';
 import TarifaAplicacaoComponent from './gerencial/tarifa-aplicacao/tarifa-aplicacao.component';
 import { BandeiraTarifariaComponent } from './gerencial/bandeira-tarifaria/bandeira-tarifaria.component';
+import { FaturamentoCoenelComponent } from './geral/faturamento-coenel/faturamento-coenel.component';
+import { SalarioMinimoComponent } from './gerencial/salario-minimo/salario-minimo.component';
 
 const routes: Routes = [{
   path: '',
@@ -54,6 +56,10 @@ const routes: Routes = [{
       component: EmpresaComponent,
     },
     {
+      path: 'faturamento-coenel',
+      component: FaturamentoCoenelComponent,
+    },
+    {
       path: 'fornecedores',
       component: FornecedorComponent,
     },
@@ -72,6 +78,10 @@ const routes: Routes = [{
     {
       path: 'relatorio-medicao',
       component: RelatorioMedicaoComponent,
+    },
+    {
+      path: 'salario-minimo',
+      component: SalarioMinimoComponent,
     },
     {
       path: 'tarifas-aplicacao',

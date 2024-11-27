@@ -7,6 +7,7 @@ using SIGE.Core.Models.Sistema.Concessionaria;
 using SIGE.Core.Models.Sistema.Contrato;
 using SIGE.Core.Models.Sistema.Empresa;
 using SIGE.Core.Models.Sistema.Fornecedor;
+using SIGE.Core.Models.Sistema.Gerencial;
 using SIGE.Core.Models.Sistema.Medicao;
 using SIGE.Core.Models.Sistema.Menus;
 using SIGE.Core.Models.Sistema.RelatorioEconomia;
@@ -53,5 +54,6 @@ namespace SIGE.DataAccess.Context
         public DbSet<TarifaAplicacaoModel> TarifasAplicacao { get; set; }
         public DbSet<BandeiraTarifariaModel> BandeirasTarifarias { get; set; }
         public DbSet<ImpostoConcessionariaModel> ImpostosConcessionarias { get; set; }
+        public DbSet<SalarioMinimoModel> SalariosMinimos { get; set; }
     }
 }

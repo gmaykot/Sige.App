@@ -1,0 +1,64 @@
+<form [formGroup]="control" *ngIf="edit">
+    <div class="card-row">
+        <div class="card-col">
+            <nb-card>
+                <nb-card-body>   
+                    <nb-tabset>
+                        <nb-tab tabTitle="Cadastro de Salário Mínimo">     
+                            <nb-card style="border: 0rem;">
+                            <nb-card-body>
+                            <input hidden id="id" type="text" formControlName="id">
+                            <div class="row">                                        
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="label">Mês Referência*</label>
+                                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____"
+                                          [dropSpecialCharacters]="false" formControlName="mesReferencia">
+                                      </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Valor (R$)</label>
+                                        <input type="number" nbInput fullWidth formControlName="valor">
+                                    </div>
+                                </div>
+                            </div>     
+                            </nb-card-body>
+                            <nb-card-footer>
+                                <button type="submit" nbButton status="info"  (click)="onSubmit()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+                                <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDelete()">Excluir</button>
+                                <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="clearForm()">Voltar</button> 
+                              </nb-card-footer>                         
+                            </nb-card>        
+                        </nb-tab>
+                    </nb-tabset>           
+                  </nb-card-body>              
+            </nb-card>    
+        </div>
+    </div>
+</form>
+
+<div class="card-row" [nbSpinner]="loading">
+    <div class="card-col">
+      <nb-card>
+        <nb-card-header>
+          <div class="row">
+            <div class="table-header">
+                Salários Mínimos Cadastrados
+            </div>
+            <div *ngIf="!edit && habilitaOperacoes">
+              <div class="form-group">
+                <nb-actions size="small">
+                  <nb-action icon="plus-outline" (click)="onEdit()"></nb-action>
+                </nb-actions>
+              </div>
+            </div>
+          </div>
+        </nb-card-header>  
+        <nb-card-body>
+          <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+          </ng2-smart-table>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </div>

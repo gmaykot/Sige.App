@@ -403,3 +403,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 web/src/environments/environment.hmg.ts
+/server/src/SIGE/appsettings.Development.json
