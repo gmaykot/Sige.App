@@ -26,7 +26,7 @@ namespace SIGE.Services.Services.Externo
             {
                 using (var mensagem = new MimeMessage())
                 {
-                    mensagem.Subject = string.Format("Relatório de Medição - {0} - {1}", req.Competencia, req.DescEmpresa);
+                    mensagem.Subject = string.Format("Relatório de Medição - {0} - {1}", req.MesReferencia, req.DescEmpresa);
                     mensagem.InReplyTo = _opt.ContactMail;
 
                     var emailFrom = new MailboxAddress(_opt.SenderName, _opt.SenderEmail);
@@ -38,7 +38,7 @@ namespace SIGE.Services.Services.Externo
 
                     var builder = new BodyBuilder
                     {
-                        HtmlBody = EmailExtensions.GetEmailTemplate(req.Contato.NomeContato, req.Competencia, _opt.ContactPhone, _opt.ContactMail, req.DescEmpresa)
+                        HtmlBody = EmailExtensions.GetEmailTemplate(req.Contato.NomeContato, req.MesReferencia, _opt.ContactPhone, _opt.ContactMail, req.DescEmpresa)
                     };
 
                     if (req.Relatorios != null)
@@ -46,13 +46,13 @@ namespace SIGE.Services.Services.Externo
                         req.Relatorios.ForEach(async r =>
                         {
                             byte[] byteArray = Convert.FromBase64String(r.Split("base64,")[1]);
-                            builder.Attachments.Add(string.Format("relatorio_medicao_{0}_{1}.pdf", req.DescCompetencia, req.DescEmpresa).ToLower(), byteArray);
+                            builder.Attachments.Add(string.Format("relatorio_medicao_{0}_{1}.pdf", req.DescMesReferencia, req.DescEmpresa).ToLower(), byteArray);
                         });
 
                         StringBuilder stringBuilder = new StringBuilder("Empresa;Dia Medição;Agente Medição, Ponto Medição;Sub Tipo;Status;Consumo Ativo;Consumo Reativo");
                         stringBuilder.AppendLine();
 
-                        var res = await _medicaoService.ListaMedicoesPorContrato(req.ContratoId.ToGuid(), req.Competencia.GetPeriodo());
+                        var res = await _medicaoService.ListaMedicoesPorContrato(req.ContratoId.ToGuid(), req.MesReferencia.GetPeriodo());
 
                         if (res.Success)
                         {
@@ -74,7 +74,7 @@ namespace SIGE.Services.Services.Externo
                         }
 
                         var byteArray = Encoding.GetEncoding("ISO-8859-1").GetBytes(stringBuilder.ToString());
-                        builder.Attachments.Add(string.Format("relatorio_medicao_{0}_{1}.csv", req.DescCompetencia, req.DescEmpresa).ToLower(), byteArray);
+                        builder.Attachments.Add(string.Format("relatorio_medicao_{0}_{1}.csv", req.DescMesReferencia, req.DescEmpresa).ToLower(), byteArray);
                     }
 
 

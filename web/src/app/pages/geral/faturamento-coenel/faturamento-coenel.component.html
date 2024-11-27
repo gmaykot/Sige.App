@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="col-sm-3">
                                     <div class="form-group">
-                                        <label class="label">Vigência Final*</label>
+                                        <label class="label">Vigência Final</label>
                                         <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
                                             [dropSpecialCharacters]="false" formControlName="vigenciaFinal">
                                       </div>
@@ -84,9 +84,9 @@
                                   <ng2-smart-table [settings]="settingsHistoricos" [source]="sourceHistoricos">
                                   </ng2-smart-table>
                                 </nb-card-body>
-                                <nb-card-footer *ngIf="isSuperUsuario">
-                                  <button type="submit" nbButton status="info" (click)="onHistoricoConfirm()" *ngIf="historicosChecked.length === 0 && habilitaOperacoes">Cadastrar</button>
-                                  <button type="submit" nbButton status="info" (click)="onHistoricoEdit()" *ngIf="historicosChecked.length === 1 && habilitaOperacoes">Alterar</button>
+                                <nb-card-footer>
+                                  <button type="submit" nbButton status="info" (click)="onHistoricoConfirm()" *ngIf="isSuperUsuario && historicosChecked.length === 0 && habilitaOperacoes">Cadastrar</button>
+                                  <button type="submit" nbButton status="info" (click)="onHistoricoEdit()" *ngIf="isSuperUsuario && historicosChecked.length === 1 && habilitaOperacoes">Alterar</button>
                                   <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onHistoricoDelete()" *ngIf="habilitaOperacoes" [disabled]="historicosChecked.length === 0">Excluir</button>
                                 </nb-card-footer>                 
                               </nb-card>  

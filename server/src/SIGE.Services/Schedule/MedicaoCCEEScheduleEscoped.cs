@@ -59,7 +59,7 @@ namespace SIGE.Services.Schedule
 
                 EmailFullDataDto email = new()
                 {
-                    Competencia = DateTime.Now.ToString(),
+                    MesReferencia = DateTime.Now.ToString(),
                     Contato = new ContatoEmailDto()
                     {
                         EmailContato = "gmaykot@gmail.com",

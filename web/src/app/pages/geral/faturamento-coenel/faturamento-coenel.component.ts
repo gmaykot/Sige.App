@@ -13,6 +13,7 @@ import { debounceTime, filter, map } from 'rxjs/operators';
 import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-medicao.service";
 import { LocalDataSource } from "ng2-smart-table";
 import { IFaturamentoCoenel } from "../../../@core/data/geral/faturamento-coenel";
+import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
 
 @Component({
   selector: 'ngx-faturamento-coenel',
@@ -41,6 +42,7 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
   async onSelectCustom(event: any) {
     super.onSelect(event);
     await this.getPontosMedicao(event.data.empresaId);
+    await this.loadSourceHistorico(event.data.pontoMedicaoId);
     await this.onEmpresaChange();
   }
 
@@ -50,6 +52,7 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
     }
     await super.ngOnInit();
     await this.getEmpresas();
+    await this.onEmpresaChange();
   }
 
   private async getEmpresas() {
@@ -84,14 +87,14 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
 
     const idMap = new Map(this.empresas.map(x => [x.descricao, x.id]));
     
-    this.filteredControlOptions$ = this.control.get('descEmpresa').valueChanges
+    this.filteredControlOptions$ = this.control.get(this.selected ? 'descEmpresa' : 'empresaId').valueChanges
       .pipe(
         debounceTime(300),
         filter((value: any) => value && value.length > 2),
         map((filterString: string) => this.filter(filterString))
       );
 
-    this.control.get('descEmpresa').valueChanges.subscribe(async value => {
+    this.control.get(this.selected ? 'descEmpresa' : 'empresaId').valueChanges.subscribe(async value => {
       this.pontosMedicao = [];
       this.control.patchValue({ pontoMedicaoId: '' }, { emitEvent: false });
       const id = idMap.get(value);
@@ -116,7 +119,28 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
     return this.options.filter(optionValue => optionValue.toLowerCase().includes(filterValue));
   }
 
-  onHistoricoConfirm(){}
-  onHistoricoEdit(){}
-  onHistoricoDelete(){}
+  async onHistoricoDelete() {
+    if (this.historicosChecked.length > 0){
+      this.dialogService
+      .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir os históricos selecionados?'} })
+      .onClose.subscribe(async (excluir) => {
+        if (excluir){
+          var erroExcluir = false;
+          this.historicosChecked.forEach(historico => {
+            this.service.delete(historico.id).then(async (res: IResponseInterface<any>) => {
+              if (res.success){
+                this.loadSourceHistorico(this.control.get('pontoMedicaoId').value);
+                this.historicosChecked = [];      
+                this.alertService.showSuccess("Histórico excluído com sucesso.");
+              } else 
+              {
+                erroExcluir = true;
+                res.errors.map((x) => this.alertService.showError(`Histórico ${historico.id} - ${x.value}`));
+              }
+            });            
+          });
+        }
+      });          
+    }
+  }
 }
