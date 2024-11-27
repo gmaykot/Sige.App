@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NbMenuItem, NbMenuService } from '@nebular/theme';
 import { JwtService } from '../@core/services/util/jwt.service';
-import { ETipoPerfil } from '../@core/enum/ETipoPerfil';
 
 @Component({
   selector: 'ngx-pages',

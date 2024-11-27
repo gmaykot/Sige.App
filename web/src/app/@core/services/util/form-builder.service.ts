@@ -88,5 +88,18 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     mesReferencia: ['', [Validators.required]],
     valorPis: [0, [Validators.required]],
     valorCofins: [0, [Validators.required]]
+  },
+  FaturamentoCoenel: {
+    id: ['', null],
+    concessionariaId: ['', null],
+    descConcessionaria: ['', null],
+    mesReferencia: ['', [Validators.required]],
+    valorPis: [0, [Validators.required]],
+    valorCofins: [0, [Validators.required]]
+  },
+  SalarioMinimo: {
+    id: ['', null],
+    mesReferencia: ['', [Validators.required]],
+    valor: [0, [Validators.required]]
   }
 };

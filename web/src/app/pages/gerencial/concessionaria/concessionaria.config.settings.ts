@@ -2,7 +2,7 @@ import { IConcessionaria } from "../../../@core/data/concessionarias";
 import { UF } from "../../../@core/data/estados";
 import { CheckboxComponent } from "../../../@shared/custom-component/checkbox-component";
 import { concessionariaSettings } from "../../../@shared/table-config/concessionaria.config";
-import { DefaultComponent } from "../../default-component";
+import { DefaultComponent } from "../../../@shared/custom-component/default/default-component";
 
 export class ConcessionariaConfigSettings extends DefaultComponent<IConcessionaria> {
     public settings = concessionariaSettings;

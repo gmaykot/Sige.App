@@ -1,5 +1,3 @@
-import { CheckboxComponent } from "../custom-component/checkbox-component";
-
 export const concessionariaSettings = {
   add: {
     addButtonContent: '<i class="nb-plus"></i>',

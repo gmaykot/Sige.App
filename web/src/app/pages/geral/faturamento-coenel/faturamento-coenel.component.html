@@ -1,0 +1,20 @@
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+    <nb-card-header>
+      <div class="row">
+        <div class="table-header">
+            Faturmentos Coenel Cadastrados
+        </div>
+        <div *ngIf="!edit && habilitaOperacoes">
+          <div class="form-group">
+            <nb-actions size="small">
+              <nb-action icon="plus-outline" (click)="onEdit()"></nb-action>
+            </nb-actions>
+          </div>
+        </div>
+      </div>   </nb-card-header>
+  
+    <nb-card-body>
+      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+      </ng2-smart-table>
+    </nb-card-body>
+  </nb-card>

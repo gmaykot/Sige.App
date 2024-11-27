@@ -48,6 +48,8 @@ import { DateInputComponent } from '../@shared/custom-component/date-input/date-
 import { MenuUsuarioComponent } from '../@shared/custom-component/menu-usuario/menu-usuario.component';
 import { BandeiraTarifariaComponent } from './gerencial/bandeira-tarifaria/bandeira-tarifaria.component';
 import { ImpostoConcessionariaComponent } from '../@shared/custom-component/imposto-concessionaria/imposto-concessionaria.component';
+import { FaturamentoCoenelComponent } from './geral/faturamento-coenel/faturamento-coenel.component';
+import { SalarioMinimoComponent } from './gerencial/salario-minimo/salario-minimo.component';
 
 @NgModule({
   imports: [
@@ -124,7 +126,9 @@ import { ImpostoConcessionariaComponent } from '../@shared/custom-component/impo
     DateInputComponent,
     MenuUsuarioComponent,
     BandeiraTarifariaComponent,
-    ImpostoConcessionariaComponent
+    ImpostoConcessionariaComponent,
+    FaturamentoCoenelComponent,
+    SalarioMinimoComponent
   ],
   providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService]
 })
