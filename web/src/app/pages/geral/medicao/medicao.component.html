@@ -1,3 +1,4 @@
+<nb-progress-bar [value]="percentual" status="warning" [displayValue]="true" *ngIf="coletando" style="margin-bottom: 20px;" size="large"></nb-progress-bar>
 <form [formGroup]="control" *ngIf="!selected">
   <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
     <nb-card-header>Coletar Medições</nb-card-header>      

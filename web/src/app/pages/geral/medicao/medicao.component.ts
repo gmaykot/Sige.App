@@ -31,6 +31,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   public sourceMedicaoIcompletas: LocalDataSource = new LocalDataSource();
   public medicaoSelected : IMedicao;
   public loading: boolean = false;
+  public coletando: boolean = false;
   public selected: boolean = false;
   public colectAll: boolean = false;
   public periodoMenosUm: string;
@@ -38,6 +39,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   public totais: IIntegracaoCCEETotais;
   public valores: IValoresGrafico[];
   public habilitaOperacoes: boolean = false;
+  public percentual: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -108,6 +110,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       periodo: periodo ? periodo : this.periodoMenosUm
     }
     this.loading = true;
+    this.coletando = true;
     this.sourceMedicao.load([]);
     this.sourceMedicaoIcompletas.load([]);
     var tamanhoDoLote = 15; // Tamanho do lote
@@ -118,7 +121,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       lotes.push(loteAtual);
     }
     for (let i = 0; i < lotes.length; i += 1) {
-      this.alertService.showWarning("Processando lote "+(i+1)+" de "+lotes.length);
+      this.percentual = ((i + 1) / lotes.length) * 100;
+      //this.alertService.showWarning("Processando lote "+(i+1)+" de "+lotes.length);
       var coleta: IColetaMedicao =
       {
         medicoes: lotes[i],
@@ -140,8 +144,9 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
     this.alertService.showSuccess('Coleta efetuada com sucesso.')
 
     this.loading = false;
-    
+    this.coletando = false;
     this.medicoesChecked = [];
+    this.percentual = 0;
   }
 
   async salvar()
