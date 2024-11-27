@@ -38,7 +38,5 @@ export class DefaultService<T> extends DefaultServiceUtil<T> {
     return await this.http.get<IResponseInterface<IDropDown[]>>(
       `/${this.urlBase}/drop-down`
     );
-  }
-
-  
+  }  
 }

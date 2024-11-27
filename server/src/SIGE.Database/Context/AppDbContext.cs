@@ -6,6 +6,7 @@ using SIGE.Core.Models.Sistema.Ccee;
 using SIGE.Core.Models.Sistema.Concessionaria;
 using SIGE.Core.Models.Sistema.Contrato;
 using SIGE.Core.Models.Sistema.Empresa;
+using SIGE.Core.Models.Sistema.Faturamento;
 using SIGE.Core.Models.Sistema.Fornecedor;
 using SIGE.Core.Models.Sistema.Gerencial;
 using SIGE.Core.Models.Sistema.Medicao;
@@ -55,5 +56,6 @@ namespace SIGE.DataAccess.Context
         public DbSet<BandeiraTarifariaModel> BandeirasTarifarias { get; set; }
         public DbSet<ImpostoConcessionariaModel> ImpostosConcessionarias { get; set; }
         public DbSet<SalarioMinimoModel> SalariosMinimos { get; set; }
+        public DbSet<FaturamentoCoenelModel> FaturamentosCoenel { get; set; }
     }
 }

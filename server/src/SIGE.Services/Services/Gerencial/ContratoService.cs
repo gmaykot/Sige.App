@@ -107,7 +107,7 @@ namespace SIGE.Services.Services.Gerencial
             var ret = new Response();
             var res = await _appDbContext.Contratos.ToListAsync();
             if (res.Count > 0)
-                return ret.SetOk().SetData(_mapper.Map<IEnumerable<DropDownDto>>(res));
+                return ret.SetOk().SetData(_mapper.Map<IEnumerable<DropDownDto>>(res).OrderBy(d => d.Descricao));
 
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, "Não existe fornecedor ativa.");

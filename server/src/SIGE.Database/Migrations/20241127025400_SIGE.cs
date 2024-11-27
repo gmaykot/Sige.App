@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -643,6 +644,33 @@ namespace SIGE.DataAccess.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "FaturamentosCoenel",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    VigenciaInicial = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    VigenciaFinal = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ValorFixo = table.Column<double>(type: "double", nullable: false),
+                    QtdeSalarios = table.Column<double>(type: "double", nullable: false),
+                    Porcentagem = table.Column<double>(type: "double", nullable: false),
+                    PontoMedicaoId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Ativo = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    DataExclusao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    DataRegistro = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FaturamentosCoenel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FaturamentosCoenel_PontosMedicao_PontoMedicaoId",
+                        column: x => x.PontoMedicaoId,
+                        principalTable: "PontosMedicao",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "ValoresMensaisContrato",
                 columns: table => new
                 {
@@ -802,6 +830,11 @@ namespace SIGE.DataAccess.Migrations
                 column: "GestorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FaturamentosCoenel_PontoMedicaoId",
+                table: "FaturamentosCoenel",
+                column: "PontoMedicaoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Fornecedores_GestorId",
                 table: "Fornecedores",
                 column: "GestorId");
@@ -891,6 +924,9 @@ namespace SIGE.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "CredenciaisCcee");
+
+            migrationBuilder.DropTable(
+                name: "FaturamentosCoenel");
 
             migrationBuilder.DropTable(
                 name: "ImpostosConcessionarias");
