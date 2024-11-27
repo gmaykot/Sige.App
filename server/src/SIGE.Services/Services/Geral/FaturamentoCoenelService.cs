@@ -57,11 +57,10 @@ namespace SIGE.Services.Services.Geral
 
         public async Task<Response> Obter()
         {
-            //TODO SQL nativa, trazer apenas o último registro
             var ret = new Response();
             var res = await _appDbContext.FaturamentosCoenel.Include(f => f.PontoMedicao).ThenInclude(p => p.AgenteMedicao).ThenInclude(a => a.Empresa).ToListAsync();
             if (res.Count > 0)
-                return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturamentoCoenelDto>>(res).OrderBy(f => f.DescEmpresa).ThenBy(f => f.DescPontoMedicao).ThenBy(f => f.VigenciaInicial));
+                return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturamentoCoenelDto>>(res).OrderBy(f => f.DescEmpresa).ThenBy(f => f.DescPontoMedicao).ThenByDescending(f => f.VigenciaFinal).DistinctBy(f => f.PontoMedicaoId));
 
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
@@ -77,7 +76,7 @@ namespace SIGE.Services.Services.Geral
             var ret = new Response();
             var res = await _appDbContext.FaturamentosCoenel.Include(f => f.PontoMedicao).ThenInclude(p => p.AgenteMedicao).ThenInclude(a => a.Empresa).Where(f => f.PontoMedicaoId.Equals(Id)).ToListAsync();
             if (res != null)
-                return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturamentoCoenelDto>>(res).OrderBy(f => f.DescEmpresa).ThenBy(f => f.DescPontoMedicao).ThenBy(f => f.VigenciaInicial));
+                return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturamentoCoenelDto>>(res).OrderBy(f => f.DescEmpresa).ThenBy(f => f.DescPontoMedicao).ThenByDescending(f => f.VigenciaFinal));
 
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, $"Não existe registro com o ponto de medição {Id}.");
