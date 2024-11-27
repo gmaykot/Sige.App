@@ -6,7 +6,7 @@
         public required Guid? EmpresaId { get; set; }
         public string? DescEmpresa { get; set; }
         public required DateTime VigenciaInicial { get; set; }
-        public required DateTime VigenciaFinal { get; set; }
+        public DateTime? VigenciaFinal { get; set; }
         public required double ValorFixo { get; set; }
         public required double QtdeSalarios { get; set; }
         public required double Porcentagem { get; set; }
