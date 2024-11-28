@@ -68,7 +68,6 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
     }
     await super.ngOnInit();
     await this.getEmpresas();
-    this.edit = true;
   }
 
   private async getEmpresas() {

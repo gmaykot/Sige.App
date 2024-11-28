@@ -13,15 +13,18 @@ using AutoMapper;
 using SIGE.Core.Extensions;
 using SIGE.Services.Interfaces.Externo;
 using SIGE.Core.Models.Dto.Administrativo.Ccee;
+using SIGE.Services.Custom;
+using Microsoft.Extensions.Logging;
 
 namespace SIGE.Services.Services.Externo
 {
-    public class IntegracaoCceeService(IHttpClient<CceeHttpClient> httpClient, IConfiguration config, AppDbContext appDbContext, IMapper mapper) : IIntegracaoCceeService
+    public class IntegracaoCceeService(IHttpClient<CceeHttpClient> httpClient, IConfiguration config, AppDbContext appDbContext, IMapper mapper, ICustomLoggerService loggerService) : IIntegracaoCceeService
     {
         public readonly IMapper _mapper = mapper;
         public readonly IHttpClient<CceeHttpClient> _httpClient = httpClient;
         public readonly CceeOptions? _cceeOptions = config.GetSection("Services:Ccee").Get<CceeOptions>();
         private readonly AppDbContext _appDbContext = appDbContext;
+        private readonly ICustomLoggerService _loggerService = loggerService;
 
         public async Task<Response> ListarMedicoes(IntegracaoCceeBaseDto req)
         {
@@ -43,6 +46,7 @@ namespace SIGE.Services.Services.Externo
                 foreach (var ponto in pontosMedicao)
                 {
                     var xmlEnvelope = req.TipoMedicao.CreateSoapEnvelope(agente.CodigoPerfilAgente, credenciais.AuthUsername, credenciais.AuthPassword, ponto.Codigo, req.Periodo.GetPrimeiraHoraMes(), req.Periodo.GetUltimaHoraMes());
+                    await _loggerService.LogAsync(LogLevel.Critical, xmlEnvelope);
                     var httpContent = new StringContent(xmlEnvelope, Encoding.UTF8, "text/xml");
                     httpContent.Headers.Add("SOAPAction", _cceeOptions.ListarMedidas.SoapAction);
                     try
