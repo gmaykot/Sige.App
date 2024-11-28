@@ -3,6 +3,7 @@
     public class CceeOptions
     {
         public required string CertificateValue { get; set; }
+        public required string CertificatePass { get; set; }
         public required string BaseUrl { get; set; }
         public required CceeServicesOptions ListarMedidas { get; set; }
     }
