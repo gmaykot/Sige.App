@@ -122,6 +122,7 @@ namespace SIGE.Services.Services.Externo
                 if (res.IsSuccessStatusCode)
                 {
                     var content = await res.Content.ReadAsStringAsync();
+                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(content));
                     if (string.IsNullOrEmpty(content))
                         return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Retorno do serviço 'Listar Medidas' inválido.");
 
@@ -129,7 +130,9 @@ namespace SIGE.Services.Services.Externo
                     var medidas = doc.DescendantNodes().FirstOrDefault(n => n.ToString().Contains("bmmedidas"));
                     var json = JsonConvert.SerializeXNode(medidas, Formatting.None, true);
 
+                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(json));
                     var resXml = JsonConvert.DeserializeObject<IntegracaoCceeXmlDto>(json);
+                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(resXml));
                     if (resXml == null || resXml.ListaMedidas == null || !resXml.ListaMedidas.Any())
                         return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Nenhuma medida listada no período.");
 
