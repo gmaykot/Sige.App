@@ -21,7 +21,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                     {
                         ClientCertificateOptions = ClientCertificateOption.Manual,
                         SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13,
-                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                        ServerCertificateCustomValidationCallback = (sender, certificate, chaim, errors) => true
                     };
 
                     X509Certificate2 certificate = null;
