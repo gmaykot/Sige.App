@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - hmg
+      - entrega-2
     paths:
       - 'server/**'      
   workflow_dispatch:
