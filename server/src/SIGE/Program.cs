@@ -33,7 +33,7 @@ if (app.Environment.IsProduction() && false)
 }
 
 if (app.Environment.IsDevelopment())
-    builder.WebHost.UseUrls("https://localhost:5263");
+    builder.WebHost.UseUrls("http://localhost:5263");
 if (app.Environment.IsStaging())
     builder.WebHost.UseUrls("https://0.0.0.0:5001");
 if (app.Environment.IsProduction())

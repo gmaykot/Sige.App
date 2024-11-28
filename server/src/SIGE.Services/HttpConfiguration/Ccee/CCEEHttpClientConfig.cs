@@ -30,18 +30,11 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                     {
                         Console.WriteLine("##SUCCESS: Certificate Injected");
                         byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
-                        certificate = new X509Certificate2(certBytes);
-                        Console.WriteLine("##SUCCESS: Certificate1 {0}", certificate.SerialNumber);
-
-                        string certPath = "/root/work/asbservices.pfx";
-                        string certPassword = "Fodax@2024";
-
-                        certificate = new X509Certificate2(certPath, certPassword);
-                        Console.WriteLine("##SUCCESS: Certificate2 {0}", certificate.SerialNumber);
+                        certificate = new X509Certificate2(certBytes, "Fodax@2024");
 
                         if (certificate != null)
                         {
-                            Console.WriteLine("##SUCCESS: Certificate {0}", certificate.SerialNumber);
+                            Console.WriteLine("##SUCCESS: Certificate {0} - {1}", certificate.SerialNumber, certificate.FriendlyName);
                             handler.ClientCertificates.Add(certificate);
                         }                            
                     } else
