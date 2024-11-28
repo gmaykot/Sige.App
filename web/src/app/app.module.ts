@@ -18,7 +18,6 @@ import {
   NbMenuModule,
   NbSidebarModule,
   NbButtonModule,
-  NbListModule
 } from '@nebular/theme';
 import { registerLocaleData } from '@angular/common';
 

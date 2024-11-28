@@ -10,28 +10,21 @@
                             <input hidden id="id" type="text" formControlName="id">
                             <div class="row">
                                 <div class="col-md-6">
-                                  <div class="form-group">
-                                    <label for="inputLastName" class="label">Empresa*</label>
-                                    <input style="margin-top: -10px;" *ngIf="selected" fullWidth formControlName="descEmpresa" nbInput class="no-border no-background" type="text" [readonly]="selected"/>
-
-                                    <input *ngIf="!selected" fullWidth formControlName="empresaId" nbInput type="text"
-                                        placeholder="Pesquise pelo nome da empresa" [readonly]="selected" [nbAutocomplete]="autoControl" />
-            
-                                  <nb-autocomplete #autoControl>
-                                    <nb-option *ngFor="let option of filteredControlOptions$ | async" [value]="option">
-                                      {{ option | uppercase }}
-                                    </nb-option>
-                                  </nb-autocomplete>
-                                  </div>
+                                  <ngx-auto-complete
+                                    [label]="'Empresa'"
+                                    [items]="empresas"
+                                    [editLabel]="editLabel"
+                                    (itemSelected)="onItemSelected($event)"
+                                  ></ngx-auto-complete>
                                 </div>
                                 <div class="col-md-6">
                                   <div class="form-group">
                                     <label for="inputLastName" class="label">Ponto de Medição*</label>
-                                    <input style="margin-top: -10px;" *ngIf="selected" fullWidth formControlName="descPontoMedicao" nbInput [class]="selected ? 'no-border no-background' : ''"
-                                        type="text" placeholder="Pesquise pelo nome da empresa" [readonly]="selected" [disabled]="selected"/>
-                                    <nb-select *ngIf="!selected" fullWidth placeholder="Selecione" formControlName="pontoMedicaoId">
+                                    <input style="margin-top: -10px;" *ngIf="selected" fullWidth [value]="tempPontoLabel" nbInput [class]="'no-border no-background'"
+                                        type="text" [readonly]="selected"/>
+                                    <nb-select *ngIf="!selected" fullWidth placeholder="Selecione" formControlName="pontoMedicaoId" (selectedChange)="onSearch($event)">
                                       <nb-option *ngFor="let ponto of pontosMedicao"
-                                        value="{{ponto.id}}">{{ ponto.descricao | uppercase}}</nb-option>
+                                        [value]="ponto">{{ ponto.descricao | uppercase}}</nb-option>
                                     </nb-select>
                                   </div>
                                 </div>

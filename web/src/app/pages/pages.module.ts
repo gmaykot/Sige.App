@@ -50,6 +50,7 @@ import { BandeiraTarifariaComponent } from './gerencial/bandeira-tarifaria/bande
 import { ImpostoConcessionariaComponent } from '../@shared/custom-component/imposto-concessionaria/imposto-concessionaria.component';
 import { FaturamentoCoenelComponent } from './geral/faturamento-coenel/faturamento-coenel.component';
 import { SalarioMinimoComponent } from './gerencial/salario-minimo/salario-minimo.component';
+import { AutoCompleteComponent } from '../@shared/custom-component/auto-complete/auto-complete.component';
 
 @NgModule({
   imports: [
@@ -89,7 +90,7 @@ import { SalarioMinimoComponent } from './gerencial/salario-minimo/salario-minim
     NbTabsetModule,
     NbButtonGroupModule,
     NbAutocompleteModule,
-    NbProgressBarModule
+    NbProgressBarModule,
   ],
   declarations: [
     PagesComponent,
@@ -129,7 +130,8 @@ import { SalarioMinimoComponent } from './gerencial/salario-minimo/salario-minim
     BandeiraTarifariaComponent,
     ImpostoConcessionariaComponent,
     FaturamentoCoenelComponent,
-    SalarioMinimoComponent
+    SalarioMinimoComponent,
+    AutoCompleteComponent
   ],
   providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService]
 })
