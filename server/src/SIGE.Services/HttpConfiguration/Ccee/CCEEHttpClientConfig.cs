@@ -32,8 +32,8 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                         byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
                         certificate = new X509Certificate2(certBytes);
 
-                        if (certificate != null)
-                            handler.ClientCertificates.Add(certificate);
+                        //if (certificate != null)
+                            //handler.ClientCertificates.Add(certificate);
                     } else
                     {
                         Console.WriteLine("##ERRO: Certificate Injected => {0}", cceeOptions?.CertificateValue);
