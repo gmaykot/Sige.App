@@ -29,7 +29,7 @@ namespace SIGE.Services.Services.Externo
         public async Task<Response> ListarMedicoes(IntegracaoCceeBaseDto req)
         {
             var ret = new Response();
-
+            await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(req));
             var empresa = await _appDbContext.Empresas.AsNoTracking().Include(e => e.AgentesMedicao).FirstOrDefaultAsync(e => e.Id == req.EmpresaId);
             if (empresa == null)
                 return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "A empresa selecionada não existe.");
@@ -42,9 +42,12 @@ namespace SIGE.Services.Services.Externo
 
             foreach (var agente in empresa.AgentesMedicao)
             {
+                await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(agente));
                 var pontosMedicao = await _appDbContext.PontosMedicao.AsNoTracking().Where(p => p.AgenteMedicao.Id == agente.Id).ToListAsync();
                 foreach (var ponto in pontosMedicao)
                 {
+                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(credenciais));
+                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(ponto));
                     var xmlEnvelope = req.TipoMedicao.CreateSoapEnvelope(agente.CodigoPerfilAgente, credenciais.AuthUsername, credenciais.AuthPassword, ponto.Codigo, req.Periodo.GetPrimeiraHoraMes(), req.Periodo.GetUltimaHoraMes());
                     await _loggerService.LogAsync(LogLevel.Critical, xmlEnvelope);
                     var httpContent = new StringContent(xmlEnvelope, Encoding.UTF8, "text/xml");
