@@ -8,8 +8,7 @@ import { FormBuilderService } from "../../../@core/services/util/form-builder.se
 import { EmpresaService } from "../../../@core/services/gerencial/empresa.service";
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { IDropDown } from "../../../@core/data/drop-down";
-import { Observable, of } from "rxjs";
-import { debounceTime, filter, map } from 'rxjs/operators';
+import { Observable } from "rxjs";
 import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-medicao.service";
 import { LocalDataSource } from "ng2-smart-table";
 import { IFaturamentoCoenel } from "../../../@core/data/geral/faturamento-coenel";
@@ -23,32 +22,44 @@ import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-compo
 export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings implements OnInit {
   public empresas: Array<IDropDown> = []
   public pontosMedicao: Array<IDropDown> = []
-  public options: string[];
-  public filteredControlOptions$: Observable<string[]>;
   public sourceHistoricos: LocalDataSource = new LocalDataSource();
+  public editLabel: string = null;
+  private tempLabel: string = null;
+  private tempPontoLabel: string = null;
+
   constructor(
     protected service: FaturamentoCoenelService,
     protected formBuilderService: FormBuilderService,
     protected alertService: AlertService,
     protected scroolService: NbLayoutScrollService,
     protected dialogService: NbDialogService,
-    private empresaSrvice: EmpresaService,
+    private empresaService: EmpresaService,
     private pontoMedicaoService: PontoMedicaoService
   ) 
   {
     super(Classes.FATURAMENTO_COENEL, formBuilderService, service, alertService, scroolService, dialogService);
   }
-  
-  async onSubmitCustom(event: any) {
-    this.control.patchValue({ empresaId: null }, { emitEvent: false });
+
+  async onSubmitCustom() {
+    if (!this.selected)
+      this.control.patchValue({ pontoMedicaoId: this.control.get('pontoMedicaoId').value.id }, { emitEvent: false });
+
     super.onSubmit();
+    this.editLabel = this.tempLabel;
+    this.control.patchValue({ descPontoMedicao: this.tempPontoLabel }, { emitEvent: false });
+  }
+
+  onSearch(event: IDropDown) {
+    this.tempPontoLabel = event.descricao;    
   }
 
   async onSelectCustom(event: any) {
     super.onSelect(event);
+    this.editLabel = event.data.descEmpresa;
+    this.tempLabel = event.data.descEmpresa;
+    this.tempPontoLabel = event.data.descPontoMedicao;
     await this.getPontosMedicao(event.data.empresaId);
     await this.loadSourceHistorico(event.data.pontoMedicaoId);
-    await this.onEmpresaChange();
   }
 
   async ngOnInit() {
@@ -57,11 +68,11 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
     }
     await super.ngOnInit();
     await this.getEmpresas();
-    await this.onEmpresaChange();
+    this.edit = true;
   }
 
   private async getEmpresas() {
-    await this.empresaSrvice
+    await this.empresaService
     .getDropDown()
     .then((response: IResponseInterface<IDropDown[]>) => {
       if (response.success) {
@@ -82,31 +93,16 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
   }
 
   async onEdit() {
+    this.editLabel = null;
     super.onEdit();
-    this.onEmpresaChange();
   }
 
-  async onEmpresaChange() {
-    this.options = this.empresas.map((x: any) => x.descricao);
-    this.filteredControlOptions$ = of(this.options);
-
-    const idMap = new Map(this.empresas.map(x => [x.descricao, x.id]));
-    
-    this.filteredControlOptions$ = this.control.get(this.selected ? 'descEmpresa' : 'empresaId').valueChanges
-      .pipe(
-        debounceTime(300),
-        filter((value: any) => value && value.length > 2),
-        map((filterString: string) => this.filter(filterString))
-      );
-
-    this.control.get(this.selected ? 'descEmpresa' : 'empresaId').valueChanges.subscribe(async value => {
-      this.pontosMedicao = [];
-      this.control.patchValue({ pontoMedicaoId: '' }, { emitEvent: false });
-      const id = idMap.get(value);
-      if (id) {
-        await this.getPontosMedicao(id);
-      }
-    });
+  onItemSelected(selectedItem: IDropDown) {
+    this.control.get('pontoMedicaoId').setValue(null);
+    if (selectedItem) {
+      this.tempLabel = selectedItem.descricao;
+      this.getPontosMedicao(selectedItem.id);    
+    }
   }
 
   async getPontosMedicao(empresaId: string) {
@@ -117,11 +113,6 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
           this.pontosMedicao = response.data;
         }
       });
-  }
-
-  private filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.options.filter(optionValue => optionValue.toLowerCase().includes(filterValue));
   }
 
   async onHistoricoDelete() {

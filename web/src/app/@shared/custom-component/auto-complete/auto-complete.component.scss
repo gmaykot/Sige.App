@@ -1,0 +1,27 @@
+@import '/src/app/@theme/styles/sige.custom.scss';
+
+.autocomplete {
+    position: relative;
+  
+    .suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      border: 1px solid #d3d3d3;
+      border-radius: 5px;
+      background-color: #fff;
+  
+      .suggestion-item {
+        padding: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+  
+        &:hover {
+          background-color: #f0f0f0;
+        }
+      }
+    }
+  }
+  

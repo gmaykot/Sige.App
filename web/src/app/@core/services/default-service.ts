@@ -10,28 +10,37 @@ export class DefaultService<T> extends DefaultServiceUtil<T> {
 
   public async get(): Promise<IResponseInterface<T[]>> {
     const ret = await this.http.get<IResponseInterface<T[]>>(`/${this.urlBase}`)
-    const formattedReq = this.formatPosGet(ret.data);
+    const formattedReq = this.formatPosGet(ret?.data);
     return { ...ret, data: formattedReq };
   }
 
   public async getBy(id: string): Promise<IResponseInterface<T>> {
     const ret = await this.http.get<IResponseInterface<T>>(`/${this.urlBase}/${id}`);
-    const formattedReq = this.formatPosGet(ret.data);
+    const formattedReq = this.formatPosGet(ret?.data);
     return { ...ret, data: formattedReq };
   }
 
   public async post(req: T): Promise<IResponseInterface<T>> {
     const formattedReq = this.formatPrePost(req);
-    return await this.http.post<IResponseInterface<T>>(`/${this.urlBase}`, formattedReq);
+    const ret = await this.http.post<IResponseInterface<T>>(`/${this.urlBase}`, formattedReq);
+    
+    const formattedRet = this.formatPosGet(ret?.data);
+    return { ...ret, data: formattedRet };
   }
 
   public async put(req: T): Promise<IResponseInterface<T>> {
     const formattedReq = this.formatPrePost(req);
-    return await this.http.put<IResponseInterface<T>>(`/${this.urlBase}`, formattedReq);
+    const ret = await this.http.put<IResponseInterface<T>>(`/${this.urlBase}`, formattedReq);
+
+    const formattedRet = this.formatPosGet(ret?.data);
+    return { ...ret, data: formattedRet };
   }
 
   public async delete(id: string): Promise<IResponseInterface<T>> {
-    return await this.http.delete<IResponseInterface<T>>(`/${this.urlBase}/${id}`);
+    const ret = await this.http.delete<IResponseInterface<T>>(`/${this.urlBase}/${id}`);
+
+    const formattedRet = this.formatPosGet(ret?.data);
+    return { ...ret, data: formattedRet };
   }
 
   public async getDropDown(): Promise<IResponseInterface<IDropDown[]>> {
