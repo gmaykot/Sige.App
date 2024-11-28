@@ -36,7 +36,7 @@ jobs:
       run: |
         echo "CONNECTION_STRING=${{ secrets.CONNECTION_STRING }}" >> $GITHUB_ENV
         echo "JWT_SECURITY_TOKEN=${{ secrets.JWT_SECURITY_TOKEN }}" >> $GITHUB_ENV
-        echo "CERTIFICATE_VALUE=${{ secrets.CERTIFICATE_VALUE }}" >> $GITHUB_ENV
+        echo "CERTIFICATE_VALUE=${{ vars.CERTIFICATE_VALUE }}" >> $GITHUB_ENV
         echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> $GITHUB_ENV
     - name: Replace variables in appsettings.Staging.json
       working-directory: server/out
