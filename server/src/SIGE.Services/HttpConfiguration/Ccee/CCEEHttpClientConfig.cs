@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using SIGE.Core.Options;
 using System.Net.Http.Headers;
 using System.Security.Authentication;
@@ -29,8 +30,9 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                     if (!string.IsNullOrEmpty(cceeOptions?.CertificateValue) && !cceeOptions.CertificateValue.Equals("${CERTIFICATE_VALUE}"))
                     {
                         Console.WriteLine("##SUCCESS: Certificate Injected");
+                        Console.WriteLine("##SUCCESS: Certificate Pass {0}", JsonConvert.SerializeObject(cceeOptions));
                         byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
-                        certificate = new X509Certificate2(certBytes, "Fodax@2024");
+                        certificate = new X509Certificate2(certBytes, cceeOptions.CertificatePass);
 
                         if (certificate != null)
                         {
