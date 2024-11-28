@@ -28,7 +28,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee
 
                     if (!string.IsNullOrEmpty(cceeOptions?.CertificateValue) && !cceeOptions.CertificateValue.Equals("${CERTIFICATE_VALUE}"))
                     {
-                        Console.WriteLine("Certificate Injected => {0}", cceeOptions?.CertificateValue);
+                        Console.WriteLine("##SUCCESS: Certificate Injected");
                         byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
                         certificate = new X509Certificate2(certBytes);
 
@@ -36,7 +36,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                             handler.ClientCertificates.Add(certificate);
                     } else
                     {
-                        Console.Error.WriteLine("## ERRO: Certificate Injected => {0}", cceeOptions?.CertificateValue);
+                        Console.WriteLine("##ERRO: Certificate Injected => {0}", cceeOptions?.CertificateValue);
                     }
                     return handler;
                 })
