@@ -5,6 +5,7 @@ namespace SIGE.Services.Custom
 {
     public interface ICustomLoggerService
     {
+        Task LogAsync(LogLevel logLevel, string message, string? query);
         Task LogAsync(LogLevel logLevel, string message);
         Task LogAsync(LogModel log);
     }

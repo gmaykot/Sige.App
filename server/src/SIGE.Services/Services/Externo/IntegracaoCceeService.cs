@@ -98,7 +98,7 @@ namespace SIGE.Services.Services.Externo
         public async Task<Response> ListarMedicoesPorPonto(IntegracaoCceeBaseDto req)
         {
             var ret = new Response();
-            await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(req));
+            await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(req), "req");
 
             var empresa = await _appDbContext.Empresas.AsNoTracking().Include(e => e.AgentesMedicao).FirstOrDefaultAsync(e => e.Id == req.EmpresaId);
             if (empresa == null)
@@ -108,21 +108,23 @@ namespace SIGE.Services.Services.Externo
             if (credenciais == null)
                 return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Sem credenciais cadastradas no sistema.");
 
-            await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(credenciais));
+            await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(credenciais), "credenciais");
 
             var medicoes = new List<IntegracaoCceeMedidasDto>();
 
             var xmlEnvelope = req.TipoMedicao.CreateSoapEnvelope(req.CodAgente.Trim(), credenciais.AuthUsername.Trim(), credenciais.AuthPassword.Trim(), req.PontoMedicao.Trim(), req.Periodo.GetPrimeiraHoraMes(), req.Periodo.GetUltimaHoraMes());
-            await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(xmlEnvelope));
+            await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(xmlEnvelope), "xmlEnvelope");
             var httpContent = new StringContent(xmlEnvelope, Encoding.UTF8, "text/xml");
             httpContent.Headers.Add("SOAPAction", _cceeOptions.ListarMedidas.SoapAction);
             try
             {
+                await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(httpContent), "httpContent");
                 var res = await _httpClient.PostAsync(_cceeOptions.ListarMedidas.Url, httpContent);
+                await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(res), "res");
                 if (res.IsSuccessStatusCode)
                 {
                     var content = await res.Content.ReadAsStringAsync();
-                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(content));
+                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(content), "content");
                     if (string.IsNullOrEmpty(content))
                         return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Retorno do serviço 'Listar Medidas' inválido.");
 
@@ -130,9 +132,9 @@ namespace SIGE.Services.Services.Externo
                     var medidas = doc.DescendantNodes().FirstOrDefault(n => n.ToString().Contains("bmmedidas"));
                     var json = JsonConvert.SerializeXNode(medidas, Formatting.None, true);
 
-                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(json));
+                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(json), "json");
                     var resXml = JsonConvert.DeserializeObject<IntegracaoCceeXmlDto>(json);
-                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(resXml));
+                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(resXml), "resXml");
                     if (resXml == null || resXml.ListaMedidas == null || !resXml.ListaMedidas.Any())
                         return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Nenhuma medida listada no período.");
 
@@ -140,7 +142,6 @@ namespace SIGE.Services.Services.Externo
                 }
                 else
                 {
-                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(res));
                     return ret.SetBadRequest().AddError(ETipoErro.ERRO, "Erro ao executar a integração com a Ccee")
                                     .AddError("RequestMessage", res.RequestMessage.ToString())
                                     .AddError("ReasonPhrase", res.ReasonPhrase);
