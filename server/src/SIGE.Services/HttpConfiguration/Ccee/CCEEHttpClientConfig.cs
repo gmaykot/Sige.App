@@ -19,9 +19,9 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                 {
                     var handler = new HttpClientHandler()
                     {
-                        ClientCertificateOptions = ClientCertificateOption.Automatic,
+                        ClientCertificateOptions = ClientCertificateOption.Manual,
                         SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13,
-                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                        ServerCertificateCustomValidationCallback = (sender, certificate, chaim, errors) => true
                     };
 
                     X509Certificate2 certificate = null;
@@ -32,11 +32,16 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                         byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
                         certificate = new X509Certificate2(certBytes);
 
-                        //if (certificate != null)
-                            //handler.ClientCertificates.Add(certificate);
+                        string certPath = "/root/work/asbservices.pfx";
+                        string certPassword = "Fodax@2024";
+
+                        certificate = new X509Certificate2(certPath, certPassword);
+
+                        if (certificate != null)
+                            handler.ClientCertificates.Add(certificate);
                     } else
                     {
-                        Console.WriteLine("##ERRO: Certificate Injected => {0}", cceeOptions?.CertificateValue);
+                        Console.WriteLine("##ERRO: Certificate Value => {0}", cceeOptions?.CertificateValue);
                     }
                     return handler;
                 })
