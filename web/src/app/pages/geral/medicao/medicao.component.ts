@@ -120,6 +120,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       const loteAtual = coletaMedicao.medicoes.slice(i, i + tamanhoDoLote);
       lotes.push(loteAtual);
     }
+    var erro = false;
     for (let i = 0; i < lotes.length; i += 1) {
       this.percentual = ((i + 1) / lotes.length) * 100;
       //this.alertService.showWarning("Processando lote "+(i+1)+" de "+lotes.length);
@@ -136,12 +137,17 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
           this.valores = response.data.listaValoresGrafico;
           this.sourceMedicao.load(response.data.listaMedidas);
           this.sourceMedicaoIcompletas.load(response.data.listaMedidas.filter(m => m.consumoAtivo === 0 && (m.status === 'HCC' || m.status === 'HE')));
-          this.alertService.showSuccess('Coleta efetuada com sucesso.')
         } else {
-          response.errors.map((x) => this.alertService.showError(`${x.key} - ${x.value}`));
+          if (medicao)
+            response.errors.map((x) => this.alertService.showError(`${x.key} - ${x.value}`));
+          erro = true;
         }
       });
     }
+    if (erro)
+      this.alertService.showWarning('Ocorreu erro em alguma das coletas. Verifique.')
+    else
+      this.alertService.showSuccess('Coleta efetuada com sucesso.')
     await this.getMedicoes("", null, "", "");
 
     this.loading = false;
