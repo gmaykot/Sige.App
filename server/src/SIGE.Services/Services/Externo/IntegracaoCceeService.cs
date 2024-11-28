@@ -119,7 +119,17 @@ namespace SIGE.Services.Services.Externo
             try
             {
                 await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(httpContent), "httpContent");
+                try
+                {
+                    var tr = await _httpClient.PostAsync(_cceeOptions.ListarMedidas.Url, httpContent);
+                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(tr), "try");
+                } catch (Exception ex)
+                {
+                    await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(ex), "ex");
+                }                
+                
                 var res = await _httpClient.PostAsync(_cceeOptions.ListarMedidas.Url, httpContent);
+
                 await _loggerService.LogAsync(LogLevel.Critical, JsonConvert.SerializeObject(res), "res");
                 if (res.IsSuccessStatusCode)
                 {
