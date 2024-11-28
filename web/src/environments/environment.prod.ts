@@ -10,7 +10,7 @@
 
 export const environment = {
   production: true,
-  base_api_url: 'https://sige-server.marcozero.tech',
+  base_api_url: 'https://server.marcozero.tech',
   base_cep_url: 'https://viacep.com.br/ws/{cep}/json/',  
   gestor: 'COENEL-DE'
 };
