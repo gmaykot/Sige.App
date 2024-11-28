@@ -72,7 +72,7 @@
                             </div>     
                             </nb-card-body>
                             <nb-card-footer>
-                                <button type="submit" nbButton status="info"  (click)="onSubmit()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+                                <button type="submit" nbButton status="info"  (click)="onSubmitCustom()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
                                 <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDelete()">Excluir</button>
                                 <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="clearForm()">Voltar</button> 
                               </nb-card-footer>                         

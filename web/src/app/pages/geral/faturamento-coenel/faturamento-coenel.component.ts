@@ -38,6 +38,11 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
   {
     super(Classes.FATURAMENTO_COENEL, formBuilderService, service, alertService, scroolService, dialogService);
   }
+  
+  async onSubmitCustom(event: any) {
+    this.control.patchValue({ empresaId: null }, { emitEvent: false });
+    super.onSubmit();
+  }
 
   async onSelectCustom(event: any) {
     super.onSelect(event);
