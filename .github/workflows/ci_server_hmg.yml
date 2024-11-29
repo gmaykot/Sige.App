@@ -29,7 +29,7 @@ jobs:
       working-directory: server
       run: |
         echo "Running dotnet publish..."
-        dotnet publish -c Release --no-restore -r linux-x64 --self-contained false -o ./out /p:Culture=pt-BR
+        dotnet publish -c Release --no-restore -o ./out
         echo "Publishing completed."
     - name: Set environment variables
       working-directory: server/out
