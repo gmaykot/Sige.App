@@ -25,20 +25,33 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                         ServerCertificateCustomValidationCallback = (sender, certificate, chaim, errors) => true
                     };
 
-                    X509Certificate2 certificate = null;
 
                     if (!string.IsNullOrEmpty(cceeOptions?.CertificateValue) && !cceeOptions.CertificateValue.Equals("${CERTIFICATE_VALUE}"))
                     {
                         Console.WriteLine("##SUCCESS: Certificate Injected");
                         Console.WriteLine("##SUCCESS: Certificate Options {0}", JsonConvert.SerializeObject(cceeOptions));
                         byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
-                        certificate = new X509Certificate2(certBytes, cceeOptions.CertificatePass);
+                        var certificatePem = new X509Certificate2(certBytes, cceeOptions.CertificatePass);
+                        var certificadoCrt = X509Certificate2.CreateFromPemFile("/root/work/certificado.crt", "/root/work/chave.key");
+                        var certificadoPfx = new X509Certificate2("/root/work/asbservices.pfx", cceeOptions.CertificatePass);
 
-                        if (certificate != null)
+                        if (certificadoPfx != null)
                         {
-                            Console.WriteLine("##SUCCESS: Certificate {0} - {1}", certificate.SerialNumber, certificate.FriendlyName);
-                            handler.ClientCertificates.Add(certificate);
-                        }                            
+                            Console.WriteLine("##SUCCESS: certificadoPfx {0} - {1}", certificadoPfx.SerialNumber, certificadoPfx.IssuerName);
+                            handler.ClientCertificates.Add(certificadoPfx);
+                        }
+
+                        if (certificadoCrt != null)
+                        {
+                            Console.WriteLine("##SUCCESS: certificadoCrt {0} - {1}", certificadoCrt.SerialNumber, certificadoCrt.IssuerName);
+                            handler.ClientCertificates.Add(certificadoCrt);
+                        }
+
+                        if (certificatePem != null)
+                        {
+                            Console.WriteLine("##SUCCESS: certificatePem {0} - {1}", certificatePem.SerialNumber, certificatePem.IssuerName);
+                            handler.ClientCertificates.Add(certificatePem);
+                        }
                     } else
                     {
                         Console.WriteLine("##ERRO: Certificate Value => {0}", cceeOptions?.CertificateValue);
