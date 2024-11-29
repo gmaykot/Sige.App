@@ -29,7 +29,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                     if (!string.IsNullOrEmpty(cceeOptions?.CertificateValue) && !cceeOptions.CertificateValue.Equals("${CERTIFICATE_VALUE}"))
                     {
                         Console.WriteLine("##SUCCESS: Certificate Injected");
-                        Console.WriteLine("##SUCCESS: Certificate Options {0}", JsonConvert.SerializeObject(cceeOptions));
+                        //Console.WriteLine("##SUCCESS: Certificate Options {0}", JsonConvert.SerializeObject(cceeOptions));
                         byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
                         var certificatePem = new X509Certificate2(certBytes, cceeOptions.CertificatePass);
                         var certificadoCrt = X509Certificate2.CreateFromPemFile("/root/work/certificado.crt", "/root/work/chave.key");
