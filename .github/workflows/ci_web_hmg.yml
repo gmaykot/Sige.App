@@ -1,0 +1,43 @@
+name: SIGE Web - CI/HMG
+
+on:
+  push:
+    branches:
+      - hmg
+    paths:
+      - 'web/**'
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      working-directory: web
+      run: npm install --legacy-peer-deps
+
+    - name: Set environment variables
+      run: |
+        echo "BASE_API_URL=${{ vars.BASE_API_URL }}" >> $GITHUB_ENV
+    - name: Replace variables in appsettings.Staging.json
+      working-directory: web/src/environments
+      run: |
+        # Usando envsubst para substituir todas as variáveis no arquivo environment.staging.ts
+        envsubst < environment.staging.ts > environment.staging.temp.ts
+        mv environment.staging.temp.ts environment.staging.ts
+    - name: Build the project
+      working-directory: web
+      run: npm run build -- --configuration=staging
+
+    - name: Deploy to VPS
+      env:
+        HOST: ${{ vars.VPS_HOST }}
+        USERNAME: ${{ vars.VPS_USERNAME }}
+        PASSWORD: ${{ secrets.VPS_PASSWORD }}
+      run: |
+        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "rm -rf /var/www/web/hmg/*"
+        sshpass -p "$PASSWORD" scp -r web/dist/* $USERNAME@$HOST:/var/www/web/hmg/

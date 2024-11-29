@@ -1,0 +1,41 @@
+name: Database Restore HMG
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dump-and-restore:
+    runs-on: ubuntu-latest
+    env:
+        VPS_USERNAME: ${{ vars.VPS_USERNAME }}
+        VPS_HOST: ${{ vars.VPS_HOST }}
+        VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+        DB_HOST_PRD: ${{ vars.DB_HOST }}
+        DB_USER_PRD: ${{ vars.DB_USER_PRD }}
+        DB_PASS_PRD: ${{ secrets.DB_PASS_PRD }}
+        DB_HOST_HMG: ${{ vars.DB_HOST }}
+        DB_USER_HMG: ${{ vars.DB_USER_HMG }}
+        DB_PASS_HMG: ${{ secrets.DB_PASS_HMG }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up MySQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-client
+      - name: Dump coenel-prd database
+        run: |
+          mysqldump --no-tablespaces -h $DB_HOST_PRD -u $DB_USER_PRD -p$DB_PASS_PRD coenel-prd > dump_coenel_prd.sql
+      - name: Upload dump to VPS
+        run: |
+          sshpass -p "$VPS_PASSWORD" scp -o StrictHostKeyChecking=no dump_coenel_prd.sql $VPS_USERNAME@$VPS_HOST:/tmp/dump_coenel_prd.sql
+      - name: Restore dump to coenel-hmg
+        run: |
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST \
+          "mysql -h '$DB_HOST_HMG' -u '$DB_USER_HMG' -p'$DB_PASS_HMG' coenel-hmg < /tmp/dump_coenel_prd.sql"
+      
+      - name: Clean up
+        run: |
+          rm dump_coenel_prd.sql
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST "rm /tmp/dump_coenel_prd.sql"

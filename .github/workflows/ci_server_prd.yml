@@ -1,0 +1,65 @@
+name: SIGE Server - CI/PRD
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/**'      
+  workflow_dispatch:
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+
+    - name: Set up .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0'
+
+    - name: Restore dependencies
+      working-directory: server
+      run: dotnet restore -r linux-x64
+
+    - name: Build the project
+      working-directory: server
+      run: |
+        echo "Running dotnet publish..."
+        dotnet publish -c Release -r linux-x64 --self-contained false -o ./out /p:Culture=pt-BR
+        echo "Publishing completed."
+    - name: Set environment variables
+      working-directory: server/out
+      run: |
+        echo "CONNECTION_STRING=${{ secrets.CONNECTION_STRING }}" >> $GITHUB_ENV
+        echo "JWT_SECURITY_TOKEN=${{ secrets.JWT_SECURITY_TOKEN }}" >> $GITHUB_ENV
+        echo "CERTIFICATE_VALUE=${{ secrets.CERTIFICATE_VALUE }}" >> $GITHUB_ENV
+        echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> $GITHUB_ENV
+    - name: Replace variables in appsettings.json
+      working-directory: server/out
+      run: |
+        # Usando envsubst para substituir todas as variáveis no arquivo appsettings.json
+        envsubst < appsettings.json > appsettings.temp.json
+        mv appsettings.temp.json appsettings.json
+    - name: Display the modified appsettings.json
+      working-directory: server/out
+      run: |
+        echo $CONNECTION_STRING
+        #cat appsettings.json
+    - name: Deploy to VPS
+      env:
+        HOST: ${{ vars.VPS_HOST }}
+        USERNAME: ${{ vars.VPS_USERNAME }}
+        PASSWORD: ${{ secrets.VPS_PASSWORD }}
+      run: |
+        echo "Stopping application and clearing previous files on VPS..."
+        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "systemctl stop sige-dotnet-prd.service"
+        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "rm -rf /var/www/api/prd/*"
+        echo "Copying new files to VPS..."
+        sshpass -p "$PASSWORD" scp -r server/out/* $USERNAME@$HOST:/var/www/api/prd/
+        
+        echo "Starting the application on VPS..."
+        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "systemctl start sige-dotnet-prd.service"
