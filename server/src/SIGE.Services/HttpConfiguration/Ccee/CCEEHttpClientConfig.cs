@@ -38,7 +38,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                         if (certificadoPfx != null)
                         {
                             Console.WriteLine("##SUCCESS: certificadoPfx {0} - {1}", certificadoPfx.SerialNumber, certificadoPfx.IssuerName);
-                            handler.ClientCertificates.Add(certificadoPfx);
+                           // handler.ClientCertificates.Add(certificadoPfx);
                         }
 
                         if (certificadoCrt != null)
@@ -50,8 +50,10 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                         if (certificatePem != null)
                         {
                             Console.WriteLine("##SUCCESS: certificatePem {0} - {1}", certificatePem.SerialNumber, certificatePem.IssuerName);
-                            handler.ClientCertificates.Add(certificatePem);
+                            //handler.ClientCertificates.Add(certificatePem);
                         }
+
+                        Console.WriteLine("##SUCCESS: ClientCertificates Size {0)", handler.ClientCertificates.Count);
                     } else
                     {
                         Console.WriteLine("##ERRO: Certificate Value => {0}", cceeOptions?.CertificateValue);
