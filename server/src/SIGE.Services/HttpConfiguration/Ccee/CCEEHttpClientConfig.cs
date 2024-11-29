@@ -53,7 +53,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                             //handler.ClientCertificates.Add(certificatePem);
                         }
 
-                        Console.WriteLine("##SUCCESS: ClientCertificates Size {0)", handler.ClientCertificates.Count);
+                        Console.WriteLine("##SUCCESS: ClientCertificates Size {0}", handler.ClientCertificates.Count);
                     } else
                     {
                         Console.WriteLine("##ERRO: Certificate Value => {0}", cceeOptions?.CertificateValue);
