@@ -35,9 +35,9 @@ jobs:
 
     - name: Deploy to VPS
       env:
-        HOST: ${{ vars.VPS_HOST }}
-        USERNAME: ${{ vars.VPS_USERNAME }}
-        PASSWORD: ${{ secrets.VPS_PASSWORD }}
+        HOST: ${{ secrets.SSH_HOST }}
+        USERNAME: ${{ secrets.SSH_USERNAME }}
+        PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
         sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "rm -rf /var/www/web/hmg/*"
         sshpass -p "$PASSWORD" scp -r web/dist/* $USERNAME@$HOST:/var/www/web/hmg/
