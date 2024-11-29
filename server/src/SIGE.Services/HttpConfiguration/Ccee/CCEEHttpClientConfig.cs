@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
+using Org.BouncyCastle.Tls;
 using SIGE.Core.Options;
 using System.Net.Http.Headers;
 using System.Security.Authentication;
@@ -32,25 +34,11 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                         //Console.WriteLine("##SUCCESS: Certificate Options {0}", JsonConvert.SerializeObject(cceeOptions));
                         byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
                         var certificatePem = new X509Certificate2(certBytes, cceeOptions.CertificatePass);
-                        var certificadoCrt = X509Certificate2.CreateFromPemFile("/root/work/certificado.crt", "/root/work/chave.key");
-                        var certificadoPfx = new X509Certificate2("/root/work/asbservices.pfx", cceeOptions.CertificatePass);
-
-                        if (certificadoPfx != null)
-                        {
-                            Console.WriteLine("##SUCCESS: certificadoPfx {0} - {1}", certificadoPfx.SerialNumber, certificadoPfx.IssuerName);
-                           // handler.ClientCertificates.Add(certificadoPfx);
-                        }
-
-                        if (certificadoCrt != null)
-                        {
-                            Console.WriteLine("##SUCCESS: certificadoCrt {0} - {1}", certificadoCrt.SerialNumber, certificadoCrt.IssuerName);
-                            handler.ClientCertificates.Add(certificadoCrt);
-                        }
 
                         if (certificatePem != null)
                         {
                             Console.WriteLine("##SUCCESS: certificatePem {0} - {1}", certificatePem.SerialNumber, certificatePem.IssuerName);
-                            //handler.ClientCertificates.Add(certificatePem);
+                            handler.ClientCertificates.Add(certificatePem);
                         }
 
                         Console.WriteLine("##SUCCESS: ClientCertificates Size {0}", handler.ClientCertificates.Count);
@@ -65,8 +53,11 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                 {
                     client.Timeout = TimeSpan.FromMinutes(5);
                     client.BaseAddress = new Uri(cceeOptions.BaseUrl);
+                    byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
+                    var certificatePem = new X509Certificate2(certBytes, cceeOptions.CertificatePass);
 
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Convert.ToBase64String(certificatePem.Export(X509ContentType.Cert)));
                 });
 
             return services;
