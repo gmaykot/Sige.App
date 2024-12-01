@@ -30,18 +30,15 @@ namespace SIGE.Services.HttpConfiguration.Ccee
 
                     if (!string.IsNullOrEmpty(cceeOptions?.CertificateValue) && !cceeOptions.CertificateValue.Equals("${CERTIFICATE_VALUE}"))
                     {
-                        Console.WriteLine("##SUCCESS: Certificate Injected");
-                        //Console.WriteLine("##SUCCESS: Certificate Options {0}", JsonConvert.SerializeObject(cceeOptions));
                         byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
                         var certificatePem = new X509Certificate2(certBytes, cceeOptions.CertificatePass);
 
                         if (certificatePem != null)
                         {
-                            Console.WriteLine("##SUCCESS: certificatePem {0} - {1}", certificatePem.SerialNumber, certificatePem.IssuerName);
+                            Console.WriteLine("##SUCCESS: Certificate Injected");
                             handler.ClientCertificates.Add(certificatePem);
                         }
 
-                        Console.WriteLine("##SUCCESS: ClientCertificates Size {0}", handler.ClientCertificates.Count);
                     } else
                     {
                         Console.WriteLine("##ERRO: Certificate Value => {0}", cceeOptions?.CertificateValue);
@@ -53,25 +50,10 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                 {
                     client.Timeout = TimeSpan.FromMinutes(5);
                     client.BaseAddress = new Uri(cceeOptions.BaseUrl);
-                    byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
-                    var certificatePem = new X509Certificate2(certBytes, cceeOptions.CertificatePass);
-
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Convert.ToBase64String(certificatePem.Export(X509ContentType.Cert)));
                 });
 
             return services;
-        }
-
-        //Buscar certificados instalados na máquina local
-        public static X509Certificate2? GetCurrentUserCertificates(string serialNumber)
-        {
-            var certificates = new List<X509Certificate2>();
-            var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-            store.Open(OpenFlags.OpenExistingOnly);
-            var cert = store.Certificates.FirstOrDefault(c => c.GetSerialNumberString().Equals(serialNumber));
-            store.Close();
-            return cert;
         }
     }
 }
