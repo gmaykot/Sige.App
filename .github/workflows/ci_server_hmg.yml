@@ -52,9 +52,9 @@ jobs:
       run: |
         echo "Stopping application and clearing previous files on VPS..."
         sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "systemctl stop sige-dotnet-hmg.service"
-        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "rm -rf /var/www/api/hmg/*"
+        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "rm -rf /var/www/hmg/api/*"
         echo "Copying new files to VPS..."
-        sshpass -p "$PASSWORD" scp -r server/out/* $USERNAME@$HOST:/var/www/api/hmg/
+        sshpass -p "$PASSWORD" scp -r server/out/* $USERNAME@$HOST:/var/www/hmg/api/
         
         echo "Starting the application on VPS..."
         sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "systemctl start sige-dotnet-hmg.service"
