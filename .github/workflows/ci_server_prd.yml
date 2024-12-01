@@ -3,7 +3,7 @@ name: SIGE Server - CI/PRD
 on:
   push:
     branches:
-      - hmg
+      - main
     paths:
       - 'server/**'      
   workflow_dispatch:
