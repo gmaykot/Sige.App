@@ -34,6 +34,7 @@ bld/
 _bkp/
 _config/
 dist/
+.vscode/
 
 # Angular cache/options directory
 .angular/
