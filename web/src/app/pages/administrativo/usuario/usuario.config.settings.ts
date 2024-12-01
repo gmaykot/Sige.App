@@ -2,6 +2,8 @@ import { NbIconConfig } from "@nebular/theme";
 import { CheckboxComponent } from "../../../@shared/custom-component/checkbox-component";
 import { IUsuario } from "../../../@core/data/usuario";
 import { DefaultComponent } from "../../../@shared/custom-component/default/default-component";
+import { PERFIL_MENU } from "../../../@core/enum/const-dropbox";
+
 export class UsuarioConfigSettings extends DefaultComponent<IUsuario>{
   checked: Array<any> = [];
   disabledIconConfig: NbIconConfig = { icon: "trash-2-outline", pack: "eva" };
@@ -67,14 +69,19 @@ export class UsuarioConfigSettings extends DefaultComponent<IUsuario>{
           });
         },
       },      
-      menuSistemaDesc: {
+      descPredecessor: {
+        title: "Menu Predecessor",
+        type: "string",
+      },
+      descMenu: {
         title: "Menu Sistema",
         type: "string",
       },
       tipoPerfil: {
         title: "Perfil",
         type: "string",
-      },
+        valuePrepareFunction: (value) => { return PERFIL_MENU.find(f => f.id == value).desc},
+      }
     },
     actions: {
       add: false,

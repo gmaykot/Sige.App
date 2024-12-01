@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from "@angular/core";
 import { Validators, FormBuilder } from "@angular/forms";
 import { NbDialogRef } from "@nebular/theme";
 import { PERFIL_MENU } from "../../../@core/enum/const-dropbox";
-import { IMenuSistema } from "../../../@core/data/menu-sistema";
 import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
 import { MenuSistemaService } from "../../../@core/services/administrativo/menu-sistema.service";
 import { IDropDown } from "../../../@core/data/drop-down";
@@ -18,6 +17,7 @@ export class MenuUsuarioComponent implements OnInit {
   @Input() menusSistemaUsuario: any[] = [];
   public menusSistema: IDropDown[] = [];
   public control = this.formBuilder.group({
+    id: ["", null],
     menusSistema: [[""], Validators.required],
     usuarioId: ["", Validators.required],
     tipoPerfil: ["CONSULTIVO", Validators.required],

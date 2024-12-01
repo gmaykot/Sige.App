@@ -1,6 +1,6 @@
 export const settingsMenuSistema = {
     delete: {
-      deleteButtonContent: '<i class="nb-gear"></i>',
+      deleteButtonContent: '<i class="nb-edit"></i>',
       confirmDelete: true,
     },
     columns: {

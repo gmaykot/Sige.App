@@ -19,8 +19,8 @@ export const SUB_GRUPOS =
 
 export const PERFIL_MENU = 
 [
-    { id: 'ADMINISTRATIVO', desc: 'Administrativo'},
-    { id: 'CONSULTIVO', desc: 'Consultivo'},
-    { id: 'USUARIO', desc: 'Usuário'},
-    { id: 'SUPERUSUARIO', desc: 'Super Usuário'},
+    { id: '0', desc: 'Super Usuário'},
+    { id: '1', desc: 'Administrativo'},
+    { id: '2', desc: 'Usuário'},
+    { id: '3', desc: 'Consultivo'},
 ]

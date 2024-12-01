@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Ocsp;
+using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo;
+using SIGE.Core.Models.Dto.Gerencial.Empresa;
 using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Administrativo;
 
 namespace SIGE.Services.Services.Administrativo
 {
-    public class MenuUsuarioService(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<MenuUsuarioDto>
+    public class MenuUsuarioService(AppDbContext appDbContext, IMapper mapper) : IMenuUsuarioService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
@@ -46,21 +50,61 @@ namespace SIGE.Services.Services.Administrativo
 
         public async Task<Response> Incluir(MenuUsuarioDto req)
         {
-            var empresa = _mapper.Map<MenuSistemaModel>(req);
-            _ = await _appDbContext.AddAsync(empresa);
+            var menuUsuario = _mapper.Map<MenuUsuarioModel>(req);
+            _ = await _appDbContext.AddAsync(menuUsuario);
             _ = await _appDbContext.SaveChangesAsync();
 
             return new Response().SetOk().SetMessage("Menu cadastrado com sucesso.");
         }
 
-        public Task<Response> Obter(Guid Id)
+        public async Task<Response> Obter(Guid Id)
         {
-            throw new NotImplementedException();
+            var ret = new Response();
+            var res = await _appDbContext.MenusUsuarios.FindAsync(Id);
+            if (res != null)
+                return ret.SetOk().SetData(_mapper.Map<MenuUsuarioDto>(res));
+
+            return ret.SetNotFound()
+                .AddError(ETipoErro.INFORMATIVO, $"Não existe registro com o Id {Id}.");
+        }
+
+        public async Task<Response> ObterPorUsuario(Guid Id)
+        {
+            var ret = new Response();
+            var res = await _appDbContext.MenusUsuarios.Include(m => m.MenuSistema).ThenInclude(m => m.MenuPredecessor)
+                .Where(m => m.UsuarioId == Id).OrderBy(m => m.MenuSistema.MenuPredecessor.Ordem).ThenBy(m => m.MenuSistema.Ordem).ToListAsync();
+            if (res != null)
+                return ret.SetOk().SetData(_mapper.Map<IEnumerable<MenuUsuarioDto>>(res));
+
+            return ret.SetNotFound()
+                .AddError(ETipoErro.INFORMATIVO, $"Não existe registro com o Id {Id}.");
+        }
+
+        public async Task<Response> IncluirMenus(MenuUsuarioDto[] menusUsuario)
+        {
+            var ret = new Response();
+            if (menusUsuario.Length > 0)
+            {
+                var res = await _appDbContext.MenusUsuarios.Where(m => m.UsuarioId == menusUsuario.First().UsuarioId).ToListAsync();
+                foreach( var menu in menusUsuario)
+                {
+                    if (res.FirstOrDefault(r => r.MenuSistemaId == menu.MenuSistemaId) == null)
+                    {
+                        var menuUsuario = _mapper.Map<MenuUsuarioModel>(menu);
+                        _ = await _appDbContext.AddAsync(menuUsuario);
+                    }
+                }
+                _ = await _appDbContext.SaveChangesAsync();
+            }
+
+            return ret.SetNotFound()
+                .AddError(ETipoErro.INFORMATIVO, $"Não existe registro a ser incluído.");
         }
 
         public Task<Response> ObterDropDown()
         {
             throw new NotImplementedException();
         }
+
     }
 }
