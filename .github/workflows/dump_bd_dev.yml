@@ -30,7 +30,7 @@ jobs:
       - name: Upload dump to VPS
         run: |
           sshpass -p "$VPS_PASSWORD" scp -o StrictHostKeyChecking=no dump_coenel_prd.sql $VPS_USERNAME@$VPS_HOST:/tmp/dump_coenel_prd.sql
-      - name: Restore dump to coenel-hmg
+      - name: Restore dump to coenel-dev
         run: |
           sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST \
           "mysql -h '$DB_HOST_DEV' -u '$DB_USER_DEV' -p'$DB_PASS_DEV' coenel-dev < /tmp/dump_coenel_prd.sql"
@@ -38,4 +38,4 @@ jobs:
       - name: Clean up
         run: |
           rm dump_coenel_dev.sql
-          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST "rm /tmp/dump_coenel_dev.sql"
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST "rm /tmp/dump_coenel_prd.sql"
