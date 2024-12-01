@@ -3,40 +3,62 @@ using SIGE.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//TODO Implementar cache
-builder.Services.AddMyCors();
-builder.Services.AddMyRequestLocalizationOptions();
-builder.Services.AddMyControllers();
-builder.Services.AddMySwaggerGen(builder.Configuration);
-builder.Services.AddMyDependencies(builder.Configuration);
-builder.Services.AddMyDbContext(builder.Configuration);
-builder.Services.AddMyOptions(builder.Configuration);
-builder.Services.AddMyHostedService();
+// Configurar logs com Serilog
+//builder.Host.UseSerilog((context, loggerConfig) =>
+//    loggerConfig.ReadFrom.Configuration(context.Configuration));
+
+// Configurar serviços
+ConfigureServices(builder);
 
 var app = builder.Build();
-app.UseMyExceptionHandler(app.Environment);
-app.UseMyMiddlewares(app.Environment);
-app.UseMyCors();
-app.UseHsts();
-app.UseHttpsRedirection();
-app.UseRouting();
-app.UseMyRequestLocalization();
-app.UseMySwagger(builder.Configuration);
-app.UseMyEndpoints();
 
-if (app.Environment.IsProduction() && false)
+// Configurar middlewares
+ConfigureMiddlewares(app);
+
+// Executar aplicação
+app.Run();
+
+void ConfigureServices(WebApplicationBuilder builder)
 {
-    builder.Host.UseSerilog((context, loggerConfig) =>
-        loggerConfig.ReadFrom.Configuration(context.Configuration));
-
-    app.UseSerilogRequestLogging();
+    builder.Services.AddMemoryCache(); // Adiciona cache em memória
+    builder.Services.AddMyCors();
+    builder.Services.AddMyRequestLocalizationOptions();
+    builder.Services.AddMyControllers();
+    builder.Services.AddMySwaggerGen(builder.Configuration);
+    builder.Services.AddMyDependencies(builder.Configuration);
+    builder.Services.AddMyDbContext(builder.Configuration);
+    builder.Services.AddMyOptions(builder.Configuration);
+    builder.Services.AddMyHostedService();
 }
 
-if (app.Environment.IsStaging())
-    builder.WebHost.UseUrls("https://0.0.0.0:5001");
-if (app.Environment.IsProduction())
-    builder.WebHost.UseUrls("https://0.0.0.0:5000");
-if (app.Environment.IsDevelopment())
-    builder.WebHost.UseUrls("http://localhost:5263");
+void ConfigureMiddlewares(WebApplication app)
+{
+    app.UseMyExceptionHandler(app.Environment);
+    app.UseMyMiddlewares(app.Environment);
+    app.UseMyCors();
+    app.UseHsts();
+    app.UseHttpsRedirection();
+    app.UseRouting();
+    app.UseMyRequestLocalization();
+    app.UseMySwagger(app.Configuration);
+    app.UseMyEndpoints();
 
-app.Run();
+    ConfigureEnvironmentSpecific(app);
+}
+
+void ConfigureEnvironmentSpecific(WebApplication app)
+{
+    var urls = app.Configuration.GetSection("Urls").Get<Dictionary<string, string>>();
+
+    if (urls != null && urls.TryGetValue(app.Environment.EnvironmentName, out var environmentUrl))
+    {
+        app.Logger.LogInformation("Configurando URL: {Url}", environmentUrl);
+        app.Urls.Add(environmentUrl);
+    }
+
+    if (app.Environment.IsProduction())
+    {
+        //app.UseSerilogRequestLogging();
+        app.Logger.LogInformation("Aplicação rodando em produção.");
+    }
+}

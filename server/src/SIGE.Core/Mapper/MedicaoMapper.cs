@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using SIGE.Core.Models.Dto.Ccee;
-using SIGE.Core.Models.Dto.Empresa;
-using SIGE.Core.Models.Sistema.Medicao;
+using SIGE.Core.Models.Dto.Administrativo.Ccee;
+using SIGE.Core.Models.Dto.Gerencial.Empresa;
+using SIGE.Core.Models.Sistema.Geral.Medicao;
 
 namespace SIGE.Core.Mapper
 {

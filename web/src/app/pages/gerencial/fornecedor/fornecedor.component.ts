@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { IFornecedor } from '../../../@core/data/fornecedor';
 import { FornecedorService } from '../../../@core/services/gerencial/fornecedor.service';
@@ -19,7 +19,7 @@ import { SessionStorageService } from '../../../@core/services/util/session-stor
   templateUrl: './fornecedor.component.html',
   styleUrls: ['./fornecedor.component.scss']
 })
-export class FornecedorComponent extends FornecedorConfigSettings{
+export class FornecedorComponent extends FornecedorConfigSettings implements OnInit {
   settingsFornecedor = settingsFornecedor; 
   contatos = [];
   public edit = false;
@@ -58,7 +58,7 @@ export class FornecedorComponent extends FornecedorConfigSettings{
     this.loading = true;
     await this.fornecedorService
       .get()
-      .then((response: IResponseIntercace<IFornecedor[]>) => {
+      .then((response: IResponseInterface<IFornecedor[]>) => {
         if (response.success) {
           this.source.load(response.data);
         } else {
@@ -132,7 +132,7 @@ export class FornecedorComponent extends FornecedorConfigSettings{
   }
 
   private async post(req: IFornecedor) {
-    await this.fornecedorService.post(req).then(async (res: IResponseIntercace<IFornecedor>) =>
+    await this.fornecedorService.post(req).then(async (res: IResponseInterface<IFornecedor>) =>
     {
       this.onSelect(res);
       await this.getFornecedores();
@@ -163,7 +163,7 @@ export class FornecedorComponent extends FornecedorConfigSettings{
     .open(ContatoComponent, { context: { contato: { fornecedorId: fornecedor.id, empresaId: null } as IContato }, })
     .onClose.subscribe(async (contato) => {
       if (contato) {   
-        await this.contatoService.post(contato).then(async (res: IResponseIntercace<IContato>) =>
+        await this.contatoService.post(contato).then(async (res: IResponseInterface<IContato>) =>
         {
           contato.id = res.data.id;
           this.contatos = this.contatos.filter(a => a.id != contato.id);

@@ -3,7 +3,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { LocalDataSource } from 'ng2-smart-table';
 import { MenuSistemaService } from '../../../@core/services/administrativo/menu-sistema.service';
 import { IMenuSistema } from '../../../@core/data/menu-sistema';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { settingsMenuSistema } from '../../../@shared/table-config/menu-sistema.config';
 import { NbDialogService } from '@nebular/theme';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
@@ -41,7 +41,7 @@ export class MenuSistemaComponent {
   async getMenusSistema()
   {
     this.loading = true;
-    await this.menuSistema.get().then((response: IResponseIntercace<IMenuSistema[]>) => {
+    await this.menuSistema.get().then((response: IResponseInterface<IMenuSistema[]>) => {
       this.menus = response.data;
       this.source.load(response.data);
       this.loading = false;

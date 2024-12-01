@@ -1,5 +1,5 @@
-﻿using SIGE.Core.Models.Dto.Ccee;
-using SIGE.Core.Models.Sistema.Medicao;
+﻿using SIGE.Core.Models.Dto.Administrativo.Ccee;
+using SIGE.Core.Models.Sistema.Geral.Medicao;
 
 namespace SIGE.Core.Extensions
 {

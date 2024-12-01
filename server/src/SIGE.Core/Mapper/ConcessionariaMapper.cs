@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
-using SIGE.Core.Models.Dto.Concessionaria;
 using SIGE.Core.Models.Dto.Default;
-using SIGE.Core.Models.Sistema.Concessionaria;
+using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
+using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 
 namespace SIGE.Core.Mapper
 {
@@ -30,6 +30,8 @@ namespace SIGE.Core.Mapper
 
             CreateMap<ValorConcessionariaModel, CalculoValoresConcessionariaDto>()
                 .ForMember(dst => dst.DescConcessionaria, map => map.MapFrom(src => src.Concessionaria.Nome));
+
+            CreateMap<ImpostoConcessionariaDto, ImpostoConcessionariaModel>().ReverseMap();
         }
     }
 }

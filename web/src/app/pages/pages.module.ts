@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { NbAccordionModule, NbActionsModule, NbAlertModule, NbAutocompleteModule, NbButtonGroupModule, NbButtonModule, NbCardModule, NbCheckboxModule, NbDatepickerModule, NbDialogModule, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbMenuModule, NbRadioModule, NbSelectModule, NbSpinnerModule, NbStepperModule, NbTabsetModule, NbToastrModule, NbToggleModule, NbTooltipModule, NbTreeGridModule, NbUserModule, NbWindowModule } from '@nebular/theme';
+import { NbAccordionModule, NbActionsModule, NbAlertModule, NbAutocompleteModule, NbButtonGroupModule, NbButtonModule, NbCardModule, NbCheckboxModule, NbDatepickerModule, NbDialogModule, NbIconModule, NbInputModule, NbLayoutModule, NbListModule, NbMenuModule, NbProgressBarModule, NbRadioModule, NbSelectModule, NbSpinnerModule, NbStepperModule, NbTabsetModule, NbToastrModule, NbToggleModule, NbTooltipModule, NbTreeGridModule, NbUserModule, NbWindowModule } from '@nebular/theme';
 import { ChartModule } from 'angular2-chartjs';
 import { ThemeModule } from '../@theme/theme.module';
 import { PagesComponent } from './pages.component';
@@ -43,10 +43,14 @@ import { AlertService } from '../@core/services/util/alert.service';
 import { ValidacaoMedicaoComponent } from '../@shared/custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
 import { GrupoEmpresaComponent } from '../@shared/custom-component/grupo-empresa.component';
 import { DateFilterComponent } from '../@shared/custom-component/filters/date-filter.component';
-import { ValorPadraoComponent } from './gerencial/valor-padrao/valor-padrao.component';
 import TarifaAplicacaoComponent from './gerencial/tarifa-aplicacao/tarifa-aplicacao.component';
 import { DateInputComponent } from '../@shared/custom-component/date-input/date-input.component';
 import { MenuUsuarioComponent } from '../@shared/custom-component/menu-usuario/menu-usuario.component';
+import { BandeiraTarifariaComponent } from './gerencial/bandeira-tarifaria/bandeira-tarifaria.component';
+import { ImpostoConcessionariaComponent } from '../@shared/custom-component/imposto-concessionaria/imposto-concessionaria.component';
+import { FaturamentoCoenelComponent } from './geral/faturamento-coenel/faturamento-coenel.component';
+import { SalarioMinimoComponent } from './gerencial/salario-minimo/salario-minimo.component';
+import { AutoCompleteComponent } from '../@shared/custom-component/auto-complete/auto-complete.component';
 
 @NgModule({
   imports: [
@@ -85,7 +89,8 @@ import { MenuUsuarioComponent } from '../@shared/custom-component/menu-usuario/m
     NbToastrModule.forRoot(),
     NbTabsetModule,
     NbButtonGroupModule,
-    NbAutocompleteModule
+    NbAutocompleteModule,
+    NbProgressBarModule,
   ],
   declarations: [
     PagesComponent,
@@ -119,10 +124,14 @@ import { MenuUsuarioComponent } from '../@shared/custom-component/menu-usuario/m
     ValidacaoMedicaoComponent,
     GrupoEmpresaComponent,
     DateFilterComponent,
-    ValorPadraoComponent,
     TarifaAplicacaoComponent,
     DateInputComponent,
-    MenuUsuarioComponent
+    MenuUsuarioComponent,
+    BandeiraTarifariaComponent,
+    ImpostoConcessionariaComponent,
+    FaturamentoCoenelComponent,
+    SalarioMinimoComponent,
+    AutoCompleteComponent
   ],
   providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService]
 })

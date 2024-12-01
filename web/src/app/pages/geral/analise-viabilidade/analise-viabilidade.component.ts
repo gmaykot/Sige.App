@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators, FormBuilder } from '@angular/forms';
 import { IConcessionaria } from '../../../@core/data/concessionarias';
 import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { IEmpresa } from '../../../@core/data/empresa';
 import { EmpresaService } from '../../../@core/services/gerencial/empresa.service';
 import { settingsAnaliseViabilidade, settingsAnaliseViabilidadeResponse } from '../../../@shared/table-config/analise.viabilidade.config';
@@ -60,7 +60,7 @@ export class AnaliseViabilidadeComponent implements OnInit{
   async getEmpresas()
   {
     await this.empresaService.get()
-    .then( (response: IResponseIntercace<IEmpresa[]>) =>
+    .then( (response: IResponseInterface<IEmpresa[]>) =>
     {
       this.empresas = response.data;
     });   
@@ -80,7 +80,7 @@ export class AnaliseViabilidadeComponent implements OnInit{
   async getConcessionarias()
   {
     await this.concessionariaService.get()
-    .then( (response: IResponseIntercace<IConcessionaria[]>) =>
+    .then( (response: IResponseInterface<IConcessionaria[]>) =>
     {
       this.concessionarias = response.data;
     });   

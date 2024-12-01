@@ -28,7 +28,7 @@
                     <div class="col-sm-4">
                       <div class="form-group">
                         <label for="inputFirstName" class="label">CPF/CNPJ*</label>
-                        <input type="text" [mask]="control.get('cnpj').value?.length != 11 ? '00.000.000/0000-00' : '000.000.000-009'" nbInput fullWidth id="inputFirstName" placeholder="00.000.000/0000-00" formControlName="cnpj">
+                        <input type="text" [mask]="control.get('cnpj').value?.length !== 11 ? '00.000.000/0000-00' : '000.000.000-009'" nbInput fullWidth id="inputFirstName" placeholder="00.000.000/0000-00" formControlName="cnpj">
                       </div>
                     </div>          
                     <div class="col-sm-4">
@@ -137,9 +137,9 @@
                   </ng2-smart-table>
                 </nb-card-body>
                 <nb-card-footer>
-                  <button type="submit" nbButton status="info" (click)="onContatoConfirm()" *ngIf="contatosChecked.length == 0 && habilitaOperacoes">Cadastrar</button>
-                  <button type="submit" nbButton status="info" (click)="onContatoEdit()" *ngIf="contatosChecked.length == 1 && habilitaOperacoes">Alterar</button>
-                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onContatoDelete()" *ngIf="habilitaOperacoes" [disabled]="contatosChecked.length == 0">Excluir</button>
+                  <button type="submit" nbButton status="info" (click)="onContatoConfirm()" *ngIf="contatosChecked.length === 0 && habilitaOperacoes">Cadastrar</button>
+                  <button type="submit" nbButton status="info" (click)="onContatoEdit()" *ngIf="contatosChecked.length === 1 && habilitaOperacoes">Alterar</button>
+                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onContatoDelete()" *ngIf="habilitaOperacoes" [disabled]="contatosChecked.length === 0">Excluir</button>
                 </nb-card-footer>                 
               </nb-card>              
             </nb-tab>
@@ -152,9 +152,9 @@
                   </div>
                 </nb-card-body>
                 <nb-card-footer>
-                  <button type="submit" nbButton status="info" (click)="onAgenteConfirm()" *ngIf="agentesChecked.length == 0 && habilitaOperacoes">Cadastrar</button>
-                  <button type="submit" nbButton status="info" (click)="onAgenteEdit()" *ngIf="agentesChecked.length == 1 && habilitaOperacoes">Alterar</button>
-                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onAgenteDelete()" *ngIf="habilitaOperacoes" [disabled]="agentesChecked.length == 0">Excluir</button>
+                  <button type="submit" nbButton status="info" (click)="onAgenteConfirm()" *ngIf="agentesChecked.length === 0 && habilitaOperacoes">Cadastrar</button>
+                  <button type="submit" nbButton status="info" (click)="onAgenteEdit()" *ngIf="agentesChecked.length === 1 && habilitaOperacoes">Alterar</button>
+                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onAgenteDelete()" *ngIf="habilitaOperacoes" [disabled]="agentesChecked.length === 0">Excluir</button>
                 </nb-card-footer>                   
               </nb-card>                  
             </nb-tab>
@@ -167,9 +167,9 @@
                     </div>
                 </nb-card-body>
                 <nb-card-footer>
-                  <button type="submit" nbButton status="info" (click)="onPontoConfirm()" *ngIf="pontosChecked.length == 0 && habilitaOperacoes">Cadastrar</button>
-                  <button type="submit" nbButton status="info" (click)="onPontoEdit()" *ngIf="pontosChecked.length == 1 && habilitaOperacoes">Alterar</button>
-                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onPontoDelete()" *ngIf="habilitaOperacoes" [disabled]="pontosChecked.length == 0">Excluir</button>
+                  <button type="submit" nbButton status="info" (click)="onPontoConfirm()" *ngIf="pontosChecked.length === 0 && habilitaOperacoes">Cadastrar</button>
+                  <button type="submit" nbButton status="info" (click)="onPontoEdit()" *ngIf="pontosChecked.length === 1 && habilitaOperacoes">Alterar</button>
+                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onPontoDelete()" *ngIf="habilitaOperacoes" [disabled]="pontosChecked.length === 0">Excluir</button>
                 </nb-card-footer>                    
               </nb-card>                 
             </nb-tab>

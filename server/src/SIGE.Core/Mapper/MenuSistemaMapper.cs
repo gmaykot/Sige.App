@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using SIGE.Core.Models.Dto.Administrativo;
 using SIGE.Core.Models.Dto.Default;
-using SIGE.Core.Models.Dto.Menus;
-using SIGE.Core.Models.Sistema.Menus;
+using SIGE.Core.Models.Sistema.Administrativo;
 
 namespace SIGE.Core.Mapper
 {

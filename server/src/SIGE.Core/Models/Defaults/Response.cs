@@ -183,6 +183,12 @@ namespace SIGE.Core.Models.Defaults
             return this;
         }
 
+        public T GetData(T data)
+        {
+            Data = data;
+            return Data;
+        }
+
         public new Response<T> AddError(string key, string value)
         {
             base.AddError(key, value);

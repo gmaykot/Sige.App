@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IResponseIntercace } from '../../data/response.interface';
+import { IResponseInterface } from '../../data/response.interface';
 import { IColetaMedicao, IMedicao } from '../../data/medicao';
 import { IMedicaoValores, IResultadoMedicao } from '../../data/resultado-medicao';
 import { IIntegracaoCCEE } from '../../data/integracao-ccee.response';
@@ -11,37 +11,37 @@ export class MedicaoService {
    
     constructor(private http: HttpService) {}
 
-    public async post(medicao: IMedicao): Promise<IResponseIntercace<IResultadoMedicao>>
+    public async post(medicao: IMedicao): Promise<IResponseInterface<IResultadoMedicao>>
     {
-        return await this.http.post<IResponseIntercace<IResultadoMedicao>>("/medicao", medicao);
+        return await this.http.post<IResponseInterface<IResultadoMedicao>>("/medicao", medicao);
     }
 
-    public async postValores(medicaoValores: IMedicaoValores): Promise<IResponseIntercace<any>>
+    public async postValores(medicaoValores: IMedicaoValores): Promise<IResponseInterface<any>>
     {
-        return await this.http.post<IResponseIntercace<any>>("/medicao/valores", medicaoValores);
+        return await this.http.post<IResponseInterface<any>>("/medicao/valores", medicaoValores);
     }
 
-    public async coletar(medicao: IColetaMedicao): Promise<IResponseIntercace<IIntegracaoCCEE>>
+    public async coletar(medicao: IColetaMedicao): Promise<IResponseInterface<IIntegracaoCCEE>>
     {
-        return await this.http.post<IResponseIntercace<IIntegracaoCCEE>>("/medicao/coletar", medicao);
+        return await this.http.post<IResponseInterface<IIntegracaoCCEE>>("/medicao/coletar", medicao);
     }
 
-    public async coletarResultado(medicao: IMedicao): Promise<IResponseIntercace<IIntegracaoCCEE>>
+    public async coletarResultado(medicao: IMedicao): Promise<IResponseInterface<IIntegracaoCCEE>>
     {
-        return await this.http.post<IResponseIntercace<IIntegracaoCCEE>>("/medicao/resultado", medicao);
+        return await this.http.post<IResponseInterface<IIntegracaoCCEE>>("/medicao/resultado", medicao);
     }
 
-    public async medicaoPorContrato(contratoId: string, competencia: string): Promise<IResponseIntercace<any[]>>
+    public async medicaoPorContrato(contratoId: string, competencia: string): Promise<IResponseInterface<any[]>>
     {
         let query = '?';
         if (contratoId && contratoId != null)
             query += 'contratoId='+contratoId+'&';
         if (competencia && competencia != null)
             query += 'competencia='+competencia+'&';
-        return await this.http.get<IResponseIntercace<any[]>>(`/medicao/medicao-contrato${query}`);
+        return await this.http.get<IResponseInterface<any[]>>(`/medicao/medicao-contrato${query}`);
     }
 
-    public async get(empresaId: string, periodo: string, faseMedicao: string, statusMedicao: string): Promise<IResponseIntercace<IMedicao[]>> {
+    public async get(empresaId: string, periodo: string, faseMedicao: string, statusMedicao: string): Promise<IResponseInterface<IMedicao[]>> {
         let query = '?';
         if (empresaId && empresaId != null)
             query += 'empresaId='+empresaId+'&';
@@ -51,13 +51,13 @@ export class MedicaoService {
             query += 'statusMedicao='+statusMedicao+'&';
         if (periodo && periodo != null)
             query += 'periodo='+periodo;
-                return await this.http.get<IResponseIntercace<IMedicao[]>>(`/medicao${query}`);
+                return await this.http.get<IResponseInterface<IMedicao[]>>(`/medicao${query}`);
     }
     
-    public async getAgentes(empresaId: string): Promise<IResponseIntercace<IAgenteMedicao[]>> {
+    public async getAgentes(empresaId: string): Promise<IResponseInterface<IAgenteMedicao[]>> {
         let query = '?';
         if (empresaId && empresaId != null)
             query += 'empresaId='+empresaId;
-                return await this.http.get<IResponseIntercace<IAgenteMedicao[]>>("/medicao/agentes"+query);
+                return await this.http.get<IResponseInterface<IAgenteMedicao[]>>("/medicao/agentes"+query);
     }
 }

@@ -5,7 +5,7 @@ import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
 import { IIntegracaoCCEE, IIntegracaoCCEETotais, IValoresGrafico } from '../../../@core/data/integracao-ccee.response';
 import { IColetaMedicao, IMedicao } from '../../../@core/data/medicao';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { settingsMedicao } from '../../../@shared/table-config/medicoes.config';
@@ -31,6 +31,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   public sourceMedicaoIcompletas: LocalDataSource = new LocalDataSource();
   public medicaoSelected : IMedicao;
   public loading: boolean = false;
+  public coletando: boolean = false;
   public selected: boolean = false;
   public colectAll: boolean = false;
   public periodoMenosUm: string;
@@ -38,6 +39,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   public totais: IIntegracaoCCEETotais;
   public valores: IValoresGrafico[];
   public habilitaOperacoes: boolean = false;
+  public percentual: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -108,6 +110,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       periodo: periodo ? periodo : this.periodoMenosUm
     }
     this.loading = true;
+    this.coletando = true;
     this.sourceMedicao.load([]);
     this.sourceMedicaoIcompletas.load([]);
     var tamanhoDoLote = 15; // Tamanho do lote
@@ -117,8 +120,10 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       const loteAtual = coletaMedicao.medicoes.slice(i, i + tamanhoDoLote);
       lotes.push(loteAtual);
     }
+    var erro = false;
     for (let i = 0; i < lotes.length; i += 1) {
-      this.alertService.showWarning("Processando lote "+(i+1)+" de "+lotes.length);
+      this.percentual = ((i + 1) / lotes.length) * 100;
+      //this.alertService.showWarning("Processando lote "+(i+1)+" de "+lotes.length);
       var coleta: IColetaMedicao =
       {
         medicoes: lotes[i],
@@ -126,22 +131,29 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       }
       await this.medicaoService
       .coletar(coleta)
-      .then(async (response: IResponseIntercace<IIntegracaoCCEE>) => {
+      .then(async (response: IResponseInterface<IIntegracaoCCEE>) => {
         if (response.data && response.success && response.data.totais) {
           this.totais = response.data.totais;
           this.valores = response.data.listaValoresGrafico;
           this.sourceMedicao.load(response.data.listaMedidas);
           this.sourceMedicaoIcompletas.load(response.data.listaMedidas.filter(m => m.consumoAtivo === 0 && (m.status === 'HCC' || m.status === 'HE')));
-          this.medicoesChecked = [];          
-        } 
+        } else {
+          if (medicao)
+            response.errors.map((x) => this.alertService.showError(`${x.key} - ${x.value}`));
+          erro = true;
+        }
       });
     }
+    if (erro)
+      this.alertService.showWarning('Ocorreu erro em alguma das coletas. Verifique.')
+    else
+      this.alertService.showSuccess('Coleta efetuada com sucesso.')
     await this.getMedicoes("", null, "", "");
-    this.alertService.showSuccess('Coleta efetuada com sucesso.')
 
     this.loading = false;
-    
+    this.coletando = false;
     this.medicoesChecked = [];
+    this.percentual = 0;
   }
 
   async salvar()
@@ -149,7 +161,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
     var valores = this.controlEdit.value as IMedicaoValores;
     await this.medicaoService
     .postValores(valores)
-    .then(async (response: IResponseIntercace<any>) => {
+    .then(async (response: IResponseInterface<any>) => {
       if (response.success) {        
         this.alertService.showSuccess('Valores alterados com sucesso.')
         this.scroolService.scrollTo(0,0);
@@ -168,7 +180,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   ) {
     await this.medicaoService
       .get(empresaId, periodo, fase, status)
-      .then((response: IResponseIntercace<IMedicao[]>) => {
+      .then((response: IResponseInterface<IMedicao[]>) => {
         if (response.success) {
           this.medicoes = response.data;
           this.source.load(response.data);
@@ -228,7 +240,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
         });        
         await this.medicaoService
         .coletarResultado(this.medicaoSelected)
-        .then(async (response: IResponseIntercace<IIntegracaoCCEE>) => {
+        .then(async (response: IResponseInterface<IIntegracaoCCEE>) => {
           if (response.data && response.success) {
             this.totais = response.data.totais;
             this.valores = response.data.listaValoresGrafico;

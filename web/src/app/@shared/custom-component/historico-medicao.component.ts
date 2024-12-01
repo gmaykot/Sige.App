@@ -7,7 +7,7 @@ import { DatePipe } from '@angular/common';
 import { IDropDown } from '../../@core/data/drop-down';
 
 @Component({
-    selector: 'nb-name-prompt',
+    selector: 'ngx-historico-medicao-component',
     template: `
     <form [formGroup]="control">
       <nb-card accent="warning">

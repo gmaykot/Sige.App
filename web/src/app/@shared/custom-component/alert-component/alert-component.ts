@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { NbWindowRef } from "@nebular/theme";
 
 @Component({
-    selector: "app-alert",
+    selector: "ngx-app-alert",
     templateUrl: "./alert-component.html",
     styleUrls: ["./alert-component.scss"],
   })

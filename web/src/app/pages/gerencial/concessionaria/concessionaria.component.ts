@@ -1,146 +1,127 @@
 import { Component, OnInit } from "@angular/core";
-import { LocalDataSource } from "ng2-smart-table";
 import { ConcessionariaService } from "../../../@core/services/gerencial/concessionaria.service";
-import { FormBuilder, Validators } from "@angular/forms";
-import { IConcessionaria } from "../../../@core/data/concessionarias";
-import { IResponseIntercace } from "../../../@core/data/response.interface";
-import { UF } from "../../../@core/data/estados";
 import { NbDialogService, NbLayoutScrollService } from "@nebular/theme";
-import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
-import { concessioanriaSettings } from "../../../@shared/table-config/concessionaria.config";
 import { AlertService } from "../../../@core/services/util/alert.service";
-import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
+import { Classes } from "../../../@core/enum/classes.const";
+import { FormBuilderService } from "../../../@core/services/util/form-builder.service";
+import { ImpostoConcessionariaService } from "../../../@core/services/gerencial/imposto-concessionaria.service";
+import { ImpostoConcessionariaComponent } from "../../../@shared/custom-component/imposto-concessionaria/imposto-concessionaria.component";
+import { IImpostoConcessionaria } from "../../../@core/data/imposto-concessionaria";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { LocalDataSource } from "ng2-smart-table";
+import { ConcessionariaConfigSettings } from "./concessionaria.config.settings";
+import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
 
 @Component({
   selector: "ngx-concessionaria",
   templateUrl: "./concessionaria.component.html",
   styleUrls: ["./concessionaria.component.scss"],
 })
-export class ConcessionariaComponent implements OnInit {
-  settings = concessioanriaSettings;
-  public estados: any;
-  public edit = false;
-  public selected = false;
-  source: LocalDataSource = new LocalDataSource();
-  public control = this.formBuilder.group({
-    id: "",
-    gestorId: "",
-    ativo: false,
-    nome: ["", Validators.required],
-    estado: ["", Validators.required],
-  });
-  public loading = true;
-  public habilitaOperacoes: boolean = false;
-
-  getEstadoDescricao(uf) {
-    return this.estados.find((e) => e.uf == uf);
-  }
+export class ConcessionariaComponent extends ConcessionariaConfigSettings implements OnInit {
+  public sourceImpostos: LocalDataSource = new LocalDataSource();
 
   constructor(
-    private formBuilder: FormBuilder,
-    private concessionariaService: ConcessionariaService,
-    private dialogService: NbDialogService,
-    private alertService: AlertService,
-    private scroolService: NbLayoutScrollService
-  ) {}
+    protected service: ConcessionariaService,
+    protected formBuilderService: FormBuilderService,
+    protected alertService: AlertService,
+    protected scroolService: NbLayoutScrollService,
+    protected dialogService: NbDialogService,
+    private impostoService: ImpostoConcessionariaService
+  ) 
+  {
+    super(Classes.CONCESSIONARIA, formBuilderService, service, alertService, scroolService, dialogService);
+  }
 
   async ngOnInit() {
-    this.estados = UF;
-    await this.getConcessionarias();
-    this.limparFormulario();
-    this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
+    await super.ngOnInit();
   }
 
-  async getConcessionarias() {
+  onSelectCustom(event) {
+    super.onSelect(event);
+    this.loadSourceImposto();
+  }
+
+  async loadSourceImposto() {
     this.loading = true;
-    await this.concessionariaService
-      .get()
-      .then((response: IResponseIntercace<IConcessionaria[]>) => {
+    await this.impostoService
+      .obterPorConcessionaria(this.control.value.id)
+      .then((response: IResponseInterface<IImpostoConcessionaria[]>) => {
         if (response.success) {
-          this.source.load(response.data);
+          this.sourceImpostos.load(response.data);
         } else {
-          this.source.load([]);
-        }       
-        this.loading = false;
+          this.sourceImpostos.load([]);
+        }
       });
+      this.loading = false;
   }
 
-  private getConcessionaria(): IConcessionaria {
-    return this.control.value as IConcessionaria;
-  }
-
-  onSelect(event): void {
-    this.limparFormulario();
-    const conc = event.data as IConcessionaria;
-    this.control = this.formBuilder.group({
-      id: conc.id,
-      gestorId: conc.gestorId,
-      ativo: conc.ativo,
-      nome: conc.nome,
-      estado: conc.estado,
-    });
-    this.edit = true;
-    this.selected = true;
-    this.scroolService.scrollTo(0,0);
-  }
-
-  async onDeleteConfirm() {
+  onImpostoConfirm() {
     this.dialogService
-      .open(CustomDeleteConfirmationComponent)
-      .onClose.subscribe(async (excluir) => {
-        if (excluir) {
-          await this.concessionariaService
-          .delete(this.getConcessionaria().id)
-          .then();
-        {
-          this.limparFormulario();
-          this.alertService.showSuccess("Concessionária excluída com sucesso.");
-          await this.getConcessionarias();
-        }
-        }
-      });
-  }
-
-  onSubmit(): void {
-    this.changeConcessionaria();
-  }
-
-  onClose(): void {
-  }
-  
-  onEdit() {
-    this.edit = !this.edit;
-  }
-
-  private async changeConcessionaria() {
-    const concessionaria = this.getConcessionaria();
-    if (concessionaria.id == null || concessionaria.id == "") {
-      await this.post(concessionaria);
-    } else {
-      await this.put(concessionaria);
-    }
-  }
-
-  private async post(concessionaria: IConcessionaria) {
-    await this.concessionariaService.post(concessionaria).then(async (res: IResponseIntercace<IConcessionaria>) =>
-    {
-      this.onSelect(res);
-      await this.getConcessionarias();
-      this.alertService.showSuccess("Concessionária cadastrada com sucesso.");
+    .open(ImpostoConcessionariaComponent, {
+      context: { imposto: { concessionariaId: this.control.value.id } as IImpostoConcessionaria },
+    })
+    .onClose.subscribe(async (ret) => {
+      if (ret) {
+        await this.impostoService.post(ret).then(async (res: IResponseInterface<IImpostoConcessionaria>) =>
+        {          
+          if (res.success){     
+            await this.loadSourceImposto();
+            this.alertService.showSuccess("Imposto cadastrado com sucesso.");
+          } else 
+          {
+            res.errors.map((x) => this.alertService.showError(`${x.value}`));
+          }
+        });
+      }
     });
   }
 
-  private async put(concessionaria: IConcessionaria) {
-    await this.concessionariaService.put(concessionaria).then();
-    {
-      await this.getConcessionarias();
-      this.alertService.showSuccess("Concessionária alterada com sucesso.");
-    }
+  onImpostoEdit() {
+    if (this.impostosChecked.length > 0){
+      this.dialogService
+      .open(ImpostoConcessionariaComponent, {
+        context: { imposto: this.impostosChecked[0] as IImpostoConcessionaria },
+      })
+      .onClose.subscribe(async (ret) => {
+        if (ret) {
+          this.impostoService.put(ret).then(async (res: IResponseInterface<IImpostoConcessionaria>) =>
+          {     
+            if (res.success){     
+              await this.loadSourceImposto();
+              this.alertService.showSuccess("Imposto alterado com sucesso.");
+            } else 
+            {
+              res.errors.map((x) => this.alertService.showError(`${x.value}`));
+            }
+          });
+        }      
+      });
+      this.impostosChecked = [];
+  }
   }
 
-  limparFormulario(): void {
-    this.control.reset();
-    this.edit = false;
-    this.selected = false;
+  onImpostoDelete() {
+    if (this.impostosChecked.length > 0){
+      this.dialogService
+      .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir os impostos selecionados?'} })
+      .onClose.subscribe(async (excluir) => {
+        if (excluir){
+          var erroExcluir = false;
+          this.impostosChecked.forEach(imposto => {
+            this.impostoService.delete(imposto.id).then(async (res: IResponseInterface<any>) => {
+              if (res.success){
+                this.loadSourceImposto();
+                this.impostosChecked = [];      
+                this.alertService.showSuccess("Imposto excluído com sucesso.");
+              } else 
+              {
+                erroExcluir = true;
+                res.errors.map((x) => this.alertService.showError(`Imposto ${imposto.nome} - ${x.value}`));
+              }
+            });            
+          });
+        }
+      });          
+    }
   }
 }

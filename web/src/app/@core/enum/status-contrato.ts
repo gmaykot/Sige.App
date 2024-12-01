@@ -1,10 +1,10 @@
 export const STATUS_CONTRATO = 
 [
-    { id: 0, desc: 'Ativo'}, 
-    { id: 1, desc: 'Inativo'}, 
-    { id: 2, desc: 'Pendente'},
-    { id: 3, desc: 'Encerrado'}, 
-    { id: 4, desc: 'Finalizado'}, 
+    { id: 0, desc: 'ATIVO'}, 
+    { id: 1, desc: 'INATIVO'}, 
+    { id: 2, desc: 'PENDENTE'},
+    { id: 3, desc: 'ENCERRADO'}, 
+    { id: 4, desc: 'FINALIZADO'}, 
 ]
 
 export const TIPO_ENERGIA = 
@@ -12,5 +12,11 @@ export const TIPO_ENERGIA =
     { id: 0, desc: 'i0 - LP'}, 
     { id: 1, desc: 'i1 - LP'},
     { id: 2, desc: 'i5 - LP'}, 
-    { id: 3, desc: 'Convencional - LP'}, 
+    { id: 3, desc: 'CONVENCIONAL - LP'}, 
+]
+
+export const SEGMENTO = 
+[
+    { id: 0, desc: 'AZUL'}, 
+    { id: 1, desc: 'VERDE'},
 ]

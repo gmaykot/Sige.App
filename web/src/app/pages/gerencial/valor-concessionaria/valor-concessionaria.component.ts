@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { LocalDataSource } from "ng2-smart-table";
-import { IResponseIntercace } from "../../../@core/data/response.interface";
+import { IResponseInterface } from "../../../@core/data/response.interface";
 import { FormBuilder } from "@angular/forms";
 import { IValorConcessionaria } from "../../../@core/data/valores-concessionarias";
 import { ValorConcessionariaService } from "../../../@core/services/gerencial/valor-concessionaria.service";
@@ -63,7 +63,7 @@ export class ValorConcessionariaComponent implements OnInit {
     this.loading = true;
     await this.valorConcessionariaService
       .get()
-      .then((response: IResponseIntercace<IValorConcessionaria[]>) => {
+      .then((response: IResponseInterface<IValorConcessionaria[]>) => {
         if (response.success) {
           this.source.load(response.data);
         } 
@@ -74,7 +74,7 @@ export class ValorConcessionariaComponent implements OnInit {
   async getConcessionarias() {
     await this.concessionariaService
       .getDropDown()
-      .then((response: IResponseIntercace<IDropDown[]>) => {
+      .then((response: IResponseInterface<IDropDown[]>) => {
         if (response.success) {
           this.concessionarias = response.data;
         }         

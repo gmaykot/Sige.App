@@ -1,7 +1,7 @@
 import { NbIconConfig } from "@nebular/theme";
 import { CheckboxComponent } from "../../../@shared/custom-component/checkbox-component";
 import { IUsuario } from "../../../@core/data/usuario";
-import { DefaultComponent } from "../../default-component";
+import { DefaultComponent } from "../../../@shared/custom-component/default/default-component";
 export class UsuarioConfigSettings extends DefaultComponent<IUsuario>{
   checked: Array<any> = [];
   disabledIconConfig: NbIconConfig = { icon: "trash-2-outline", pack: "eva" };

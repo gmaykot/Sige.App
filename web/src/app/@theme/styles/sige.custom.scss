@@ -2,6 +2,10 @@ table {
   width: 100%;
 }
 
+input, select {
+  text-transform: uppercase;
+}
+
 .icon-nb {
   margin: 0 0.5rem;
 }
@@ -93,6 +97,10 @@ table {
 
 .no-border {
   border: 0rem !important;
+}
+
+.no-background {
+  background-color: transparent !important;
 }
 
 :host {

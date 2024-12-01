@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { IDropDown } from '../../../@core/data/drop-down';
 import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 import { settingsTarifaAplicacao } from '../../../@shared/table-config/tarifa-aplicacao.config';
 import { TarifaAplicacaoService } from '../../../@core/services/gerencial/tarifa-aplicacao.service';
 import { ITarifaAplicacao } from '../../../@core/data/tarifa-aplicacao';
 import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
-import { DefaultComponent } from '../../default-component';
+import { DefaultComponent } from '../../../@shared/custom-component/default/default-component';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { Classes } from '../../../@core/enum/classes.const';
 import { DateService } from '../../../@core/services/util/date.service';
@@ -46,7 +46,7 @@ export default class TarifaAplicacaoComponent extends DefaultComponent<ITarifaAp
     this.loading = true;
     await this.concessionariaService
       .getDropDown()
-      .then((response: IResponseIntercace<IDropDown[]>) => {
+      .then((response: IResponseInterface<IDropDown[]>) => {
         if (response.success) {
           this.concessionarias = response.data;
         }         

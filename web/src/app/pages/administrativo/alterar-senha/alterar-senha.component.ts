@@ -5,7 +5,7 @@ import { SessionStorageService } from '../../../@core/services/util/session-stor
 import { UsuarioService } from '../../../@core/services/administrativo/usuario.service';
 import { IUsuarioSenha, Usuario } from '../../../@core/data/usuario';
 import { JwtService } from '../../../@core/services/util/jwt.service';
-import { IResponseIntercace } from '../../../@core/data/response.interface';
+import { IResponseInterface } from '../../../@core/data/response.interface';
 
 @Component({
   selector: 'ngx-alterar-senha',
@@ -51,7 +51,7 @@ export class AlterarSenhaComponent implements OnInit{
     var usuarioSenha = this.getUsuarioSenha();
     if (this.control.value.novaSenha === this.control.value.novaSenhaRepetir)
     {
-      await this.usuarioService.alterarSenha(usuarioSenha).then(async (res: IResponseIntercace<any>) =>
+      await this.usuarioService.alterarSenha(usuarioSenha).then(async (res: IResponseInterface<any>) =>
       {
         if (res.success){
           this.limparFormulario();

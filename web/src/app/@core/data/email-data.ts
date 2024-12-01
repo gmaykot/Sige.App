@@ -1,8 +1,8 @@
 export interface IEmailData {
     contratoId?: string;
     contato: IContatoEmail;
-    competencia: string;
-    descCompetencia?: string;
+    mesReferencia: string;
+    descMesReferencia?: string;
     descEmpresa?:string;
     totalNota: string;
     relatorios?: string[];

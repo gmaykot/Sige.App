@@ -1,0 +1,113 @@
+<form [formGroup]="control" *ngIf="edit">
+    <div class="card-row">
+        <div class="card-col">
+            <nb-card>
+                <nb-card-body>   
+                    <nb-tabset>
+                        <nb-tab tabTitle="Cadastro de Faturamento">   
+                            <nb-card style="border: 0rem;">
+                            <nb-card-body>
+                            <input hidden id="id" type="text" formControlName="id">
+                            <div class="row">
+                                <div class="col-md-6">
+                                  <ngx-auto-complete
+                                    [label]="'Empresa'"
+                                    [items]="empresas"
+                                    [editLabel]="editLabel"
+                                    (itemSelected)="onItemSelected($event)"
+                                  ></ngx-auto-complete>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="inputLastName" class="label">Ponto de Medição*</label>
+                                    <input style="margin-top: -10px;" *ngIf="selected" fullWidth [value]="tempPontoLabel" nbInput [class]="'no-border no-background'"
+                                        type="text" [readonly]="selected"/>
+                                    <nb-select *ngIf="!selected" fullWidth placeholder="Selecione" formControlName="pontoMedicaoId" (selectedChange)="onSearch($event)">
+                                      <nb-option *ngFor="let ponto of pontosMedicao"
+                                        [value]="ponto">{{ ponto.descricao | uppercase}}</nb-option>
+                                    </nb-select>
+                                  </div>
+                                </div>
+                              </div>                          
+                            <div class="row">                                        
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="label">Vigência Inicial*</label>
+                                        <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
+                                            [dropSpecialCharacters]="false" formControlName="vigenciaInicial">
+                                      </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="label">Vigência Final</label>
+                                        <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
+                                            [dropSpecialCharacters]="false" formControlName="vigenciaFinal">
+                                      </div>
+                                </div>                                
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Valor Fixo (R$)</label>
+                                        <input type="number" nbInput fullWidth formControlName="valorFixo">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Qtde. Salários</label>
+                                        <input type="number" nbInput fullWidth formControlName="qtdeSalarios">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Porcentagem %</label>
+                                        <input type="number" nbInput fullWidth formControlName="porcentagem">
+                                    </div>
+                                </div>                                
+                            </div>     
+                            </nb-card-body>
+                            <nb-card-footer>
+                                <button type="submit" nbButton status="info"  (click)="onSubmitCustom()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+                                <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDelete()">Excluir</button>
+                                <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="clearForm()">Voltar</button> 
+                              </nb-card-footer>                         
+                            </nb-card>        
+                        </nb-tab>
+                        <nb-tab tabTitle="Histórico de Faturamento">
+                            <nb-card class="no-border">
+                                <nb-card-body>
+                                  <ng2-smart-table [settings]="settingsHistoricos" [source]="sourceHistoricos">
+                                  </ng2-smart-table>
+                                </nb-card-body>
+                                <nb-card-footer>
+                                  <button type="submit" nbButton status="info" (click)="onHistoricoConfirm()" *ngIf="isSuperUsuario && historicosChecked.length === 0 && habilitaOperacoes">Cadastrar</button>
+                                  <button type="submit" nbButton status="info" (click)="onHistoricoEdit()" *ngIf="isSuperUsuario && historicosChecked.length === 1 && habilitaOperacoes">Alterar</button>
+                                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onHistoricoDelete()" *ngIf="habilitaOperacoes" [disabled]="historicosChecked.length === 0">Excluir</button>
+                                </nb-card-footer>                 
+                              </nb-card>  
+                        </nb-tab>
+                    </nb-tabset>           
+                  </nb-card-body>              
+            </nb-card>    
+        </div>
+    </div>
+</form>
+
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+    <nb-card-header>
+      <div class="row">
+        <div class="table-header">
+            Faturamentos Cadastrados
+        </div>
+        <div *ngIf="!edit && habilitaOperacoes">
+          <div class="form-group">
+            <nb-actions size="small">
+              <nb-action icon="plus-outline" (click)="onEdit()"></nb-action>
+            </nb-actions>
+          </div>
+        </div>
+      </div>   </nb-card-header>
+  
+    <nb-card-body>
+      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelectCustom($event)">
+      </ng2-smart-table>
+    </nb-card-body>
+  </nb-card>
