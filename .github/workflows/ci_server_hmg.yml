@@ -1,4 +1,5 @@
 name: SIGE Server - CI/HMG
+
 on:
   push:
     branches:
@@ -6,7 +7,6 @@ on:
     paths:
       - 'server/**'      
   workflow_dispatch:
-
 jobs:
   deployment:
     runs-on: ubuntu-latest
