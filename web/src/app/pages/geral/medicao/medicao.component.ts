@@ -123,7 +123,6 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
     var erro = false;
     for (let i = 0; i < lotes.length; i += 1) {
       this.percentual = ((i + 1) / lotes.length) * 100;
-      //this.alertService.showWarning("Processando lote "+(i+1)+" de "+lotes.length);
       var coleta: IColetaMedicao =
       {
         medicoes: lotes[i],
@@ -137,6 +136,9 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
           this.valores = response.data.listaValoresGrafico;
           this.sourceMedicao.load(response.data.listaMedidas);
           this.sourceMedicaoIcompletas.load(response.data.listaMedidas.filter(m => m.consumoAtivo === 0 && (m.status === 'HCC' || m.status === 'HE')));
+          if (this.medicaoSelected) {
+            this.medicaoSelected.statusMedicao = response.data.medicao.statusMedicao;
+          }
         } else {
           if (medicao)
             response.errors.map((x) => this.alertService.showError(`${x.key} - ${x.value}`));

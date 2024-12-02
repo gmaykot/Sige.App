@@ -64,7 +64,7 @@ export class UsuarioComponent extends UsuarioConfigSettings implements OnInit {
     }];
     
     menusGerais = menusGerais.concat(menus);
-    
+       
     this.dialogService
       .open(MenuUsuarioComponent, { context: { menusSistemaUsuario: menusGerais }})
       .onClose.subscribe(async (response) => {

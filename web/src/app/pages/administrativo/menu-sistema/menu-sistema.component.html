@@ -60,8 +60,8 @@
     </div>    
   </nb-card-body>
   <nb-card-footer>
-    <button type="submit" nbButton status="info"  (click)="onSubmit()">{{edit ? 'Alterar' : 'Cadastrar'}}</button>
-    <button type="submit" *ngIf="edit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()">Excluir</button>
+    <button type="submit" nbButton status="info"  (click)="onSubmit()" *ngIf="habilitaOperacoes" [disabled]="!control.valid">{{edit ? 'Alterar' : 'Cadastrar'}}</button>
+    <button type="submit" *ngIf="edit && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()">Excluir</button>
     <button type="submit" *ngIf="edit" nbButton style="margin-left: 0.5rem;" (click)="limparFormulario()">Limpar</button>
   </nb-card-footer>
 </nb-card>

@@ -22,11 +22,11 @@ export class MenuUsuarioComponent implements OnInit {
     usuarioId: ["", Validators.required],
     tipoPerfil: ["CONSULTIVO", Validators.required],
   });
+  private isSuperUsuario = SessionStorageService.isSuperUsuario();
 
   constructor(
     protected dialogRef: NbDialogRef<MenuUsuarioComponent>,
-    private formBuilder: FormBuilder,
-    private menuSistemaService: MenuSistemaService
+    private formBuilder: FormBuilder
   ) {}
 
   async ngOnInit() {
@@ -34,15 +34,8 @@ export class MenuUsuarioComponent implements OnInit {
       usuarioId: SessionStorageService.getUsuarioId(),
       menusSistema: [],
     });
-    await this.menuSistemaService
-      .getDropDownEstruturado()
-      .then((response: IResponseInterface<IDropDown[]>) => {
-        if (response.success) {
-          this.menusSistema = response.data.filter(
-            (d) => d.subGrupo != null && d.subGrupo.length > 0
-          );
-        }
-      });
+    if (!this.isSuperUsuario)
+      this.perfilMenu = PERFIL_MENU.filter(t => t.id !== '0'); 
   }
 
   cancel() {
@@ -90,6 +83,6 @@ export class MenuUsuarioComponent implements OnInit {
   }
 
   showSubMenu(subMenus: IDropDown[]) {
-    return subMenus.filter((sM) => this.showSubMenuById(sM.id));
+    return subMenus.filter((sM) => (sM.descricao != 'Menus do Sistema' || this.isSuperUsuario) && this.showSubMenuById(sM.id));
   }
 }

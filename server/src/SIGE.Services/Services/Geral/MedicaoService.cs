@@ -284,6 +284,7 @@ namespace SIGE.Services.Services.Geral
 
             res.Icms = req.Icms;
             res.Proinfa = req.Proinfa;
+            res.StatusMedicao = EStatusMedicao.COMPLETA;
 
             _appDbContext.Update(res);
             _ = await _appDbContext.SaveChangesAsync();
