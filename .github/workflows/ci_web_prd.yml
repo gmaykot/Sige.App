@@ -3,7 +3,7 @@ name: SIGE Web - CI/PRD
 on:
   push:
     branches:
-      - prd
+      - main
     paths:
       - 'web/**'
   workflow_dispatch:
