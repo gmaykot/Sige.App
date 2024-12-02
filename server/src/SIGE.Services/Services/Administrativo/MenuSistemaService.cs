@@ -73,7 +73,7 @@ namespace SIGE.Services.Services.Administrativo
 
         public async Task<Response> Obter()
         {
-            var menus = await _appDbContext.MenusSistema.AsNoTracking().Where(m => m.Ativo).OrderBy(m => m.Ordem).ToListAsync();
+            var menus = await _appDbContext.MenusSistema.AsNoTracking().OrderBy(m => m.Ordem).ToListAsync();
             var menuSistemaDto = new List<MenuSistemaDto>();
             foreach (var menu in menus)
             {

@@ -23,6 +23,13 @@ export const settingsMenuSistema = {
       ordem: {
         title: "Ordem",
         type: "string",
+      },
+      ativo: {
+        title: "Ativo",
+        type: "string",
+        valuePrepareFunction: (value) => {
+          return value == true ? 'SIM' : 'NÃO';
+        },
       }
     },
     actions: {
@@ -30,6 +37,7 @@ export const settingsMenuSistema = {
       edit: false,
       delete: true,
       position: "right",
+      columnTitle: "",
     },
     hideSubHeader: true,
     noDataMessage: 'Nenhum registro encontrado.'

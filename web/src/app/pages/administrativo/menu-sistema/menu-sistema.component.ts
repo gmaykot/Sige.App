@@ -26,6 +26,7 @@ export class MenuSistemaComponent {
     title: "",
     link: "",
     expanded: new FormControl(),
+    ativo: new FormControl(),
     icon: "",
     ordem: new FormControl()
   });
@@ -58,6 +59,7 @@ export class MenuSistemaComponent {
       title: menu.title,
       link: menu.link,
       expanded: menu.expanded || false,
+      ativo: menu.ativo || false,
       icon: menu.icon,
       ordem: menu.ordem
     });
