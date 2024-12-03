@@ -33,9 +33,10 @@ namespace SIGE.Core.SQLFactory
             builder.Append(string.Format("SELECT COUNT(*) AS 'Total'{0} ", agrupado ? ", consumo.StatusMedicao AS 'Status'" : ""));
             builder.Append("FROM ConsumosMensais consumo ");
             builder.Append(string.Format("WHERE MONTH(consumo.MesReferencia) = {0} ", mesReferencia.Month - 1));
-            builder.Append("AND consumo.Ativo = true ");
+            builder.Append("AND consumo.Ativo = true ");            
             if (agrupado)
-                builder.Append("GROUP BY consumo.StatusMedicao");
+                builder.Append("GROUP BY consumo.StatusMedicao ");
+            builder.Append("ORDER BY consumo.StatusMedicao");
             return builder.ToString();
         }
 
@@ -50,8 +51,9 @@ namespace SIGE.Core.SQLFactory
             builder.Append("INNER JOIN Medicoes medicao on medicao.ConsumoMensalId = consumo.Id ");
             builder.Append("WHERE medicao.SubTipo = 'L' and medicao.Status = 'HCC' ");
             builder.Append(string.Format("AND consumo.MesReferencia > '{0}' AND consumo.MesReferencia <= '{1}' ", dataInicio.ToString("yyyy-MM-dd"), dataFim.ToString("yyyy-MM-dd")));
-            builder.Append("AND consumo.Ativo = true ");
-            builder.Append("GROUP BY consumo.MesReferencia");
+            builder.Append("AND consumo.Ativo = true ");            
+            builder.Append("GROUP BY consumo.MesReferencia ");
+            builder.Append("ORDER BY consumo.MesReferencia");
             return builder.ToString();
         }
 
