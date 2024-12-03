@@ -21,6 +21,7 @@ import TarifaAplicacaoComponent from './gerencial/tarifa-aplicacao/tarifa-aplica
 import { BandeiraTarifariaComponent } from './gerencial/bandeira-tarifaria/bandeira-tarifaria.component';
 import { FaturamentoCoenelComponent } from './geral/faturamento-coenel/faturamento-coenel.component';
 import { SalarioMinimoComponent } from './gerencial/salario-minimo/salario-minimo.component';
+import { FaturaEnergiaComponent } from './geral/fatura-energia/fatura-energia.component';
 
 const routes: Routes = [{
   path: '',
@@ -94,6 +95,10 @@ const routes: Routes = [{
     {
       path: 'valores-concessionarias',
       component: ValorConcessionariaComponent,
+    },
+    {
+      path: 'fatura-energia',
+      component: FaturaEnergiaComponent,
     },
     {
       path: '',

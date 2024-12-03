@@ -43,7 +43,7 @@ namespace SIGE.Core.SQLFactory
         public static string ConsumoMeses(DateTime mesReferencia, int meses)
         {
             var dataInicio = mesReferencia.AddMonths(meses * -1).GetPrimeiraHoraMes();
-            var dataFim = mesReferencia.GetUltimaHoraMes();
+            var dataFim = mesReferencia.GetUltimaHoraMes().AddDays;
 
             StringBuilder builder = new StringBuilder();
             builder.Append("SELECT ROUND(SUM(medicao.ConsumoAtivo),2) AS 'ConsumoMensal', CONCAT(MONTH(consumo.MesReferencia),'/',YEAR(consumo.MesReferencia)) as 'DescMes'");

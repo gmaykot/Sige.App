@@ -53,6 +53,7 @@ import { SalarioMinimoComponent } from './gerencial/salario-minimo/salario-minim
 import { AutoCompleteComponent } from '../@shared/custom-component/auto-complete/auto-complete.component';
 import { BandeiraTarifariaVigenteComponent } from '../@shared/custom-component/bandeira-tarifaria-vigente/bandeira-tarifaria-vigente.component';
 import { DeleteActionLinkComponent } from '../@shared/custom-component/delete-action-link/delete-action-link.component';
+import { FaturaEnergiaComponent } from './geral/fatura-energia/fatura-energia.component';
 
 @NgModule({
   imports: [
@@ -135,7 +136,8 @@ import { DeleteActionLinkComponent } from '../@shared/custom-component/delete-ac
     SalarioMinimoComponent,
     AutoCompleteComponent,
     BandeiraTarifariaVigenteComponent,
-    DeleteActionLinkComponent
+    DeleteActionLinkComponent,
+    FaturaEnergiaComponent
   ],
   providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService]
 })
