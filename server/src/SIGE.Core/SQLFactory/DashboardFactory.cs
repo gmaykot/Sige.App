@@ -46,7 +46,7 @@ namespace SIGE.Core.SQLFactory
             var dataFim = mesReferencia.GetUltimaHoraMes();
 
             StringBuilder builder = new StringBuilder();
-            builder.Append("SELECT ROUND((medicao.ConsumoAtivo),2) AS 'ConsumoMensal', CONCAT(MONTH(consumo.MesReferencia),'/',YEAR(consumo.MesReferencia)) as 'DescMes'");
+            builder.Append("SELECT ROUND(SUM(medicao.ConsumoAtivo),2) AS 'ConsumoMensal', CONCAT(MONTH(consumo.MesReferencia),'/',YEAR(consumo.MesReferencia)) as 'DescMes'");
             builder.Append("FROM ConsumosMensais consumo ");
             builder.Append("INNER JOIN Medicoes medicao on medicao.ConsumoMensalId = consumo.Id ");
             builder.Append("WHERE medicao.SubTipo = 'L' and medicao.Status = 'HCC' ");
