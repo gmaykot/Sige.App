@@ -96,6 +96,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
 
   async onColectAll(){
     this.colectAll = true;
+    this.selected = false;
+    this.medicaoSelected = null;
     this.alertService.showWarning('Iniciando coleta de Pontos de Medição EM LOTE. Isso pode levar alguns minutos.', 20000)
     this.medicoesChecked = this.medicoes;
     await this.onColect(null, null);
@@ -167,6 +169,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       if (response.success) {        
         this.alertService.showSuccess('Valores alterados com sucesso.')
         this.scroolService.scrollTo(0,0);
+        this.medicaoSelected.statusMedicao = '1';
+        await this.getMedicoes("", null, "", "");
       } else {
         response.errors.map((x) => this.alertService.showError( x.value));
       }
@@ -186,9 +190,9 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
         if (response.success) {
           this.medicoes = response.data;
           this.source.load(response.data);
-          if (this.medicoes.filter(m => m.statusMedicao == "18").length > 0)
+          if (this.medicoes.filter(m => m.statusMedicao == "18").length > 0 && !this.medicaoSelected)
             this.alertService.showWarning("Existem medições Incompletas no período.", 12000)
-          if (this.medicoes.filter(m => m.statusMedicao == "19").length > 0)
+          if (this.medicoes.filter(m => m.statusMedicao == "19").length > 0 && !this.medicaoSelected)
             this.alertService.showWarning("Existem medições com Valores Divergentes no período.", 12000)
     } else {
           this.source.load([]);

@@ -1,4 +1,3 @@
-using Serilog;
 using SIGE.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);

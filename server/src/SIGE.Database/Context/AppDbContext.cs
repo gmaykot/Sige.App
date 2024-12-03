@@ -6,6 +6,7 @@ using SIGE.Core.Models.Sistema.Externo;
 using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.Models.Sistema.Gerencial;
+using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 using SIGE.Core.Models.Sistema.Gerencial.Contrato;
 

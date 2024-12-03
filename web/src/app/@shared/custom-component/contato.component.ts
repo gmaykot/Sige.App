@@ -23,7 +23,7 @@ import { IContato } from '../../@core/data/contato';
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label for="inputFirstName" class="label">Email*</label>
-                        <input type="text" mask="A*@A*.SSS.SS" [validation]="true" [dropSpecialCharacters]="false" nbInput fullWidth id="inputFirstName" formControlName="email">
+                        <input type="text" nbInput fullWidth id="inputFirstName" formControlName="email">
                     </div>
                 </div>
             </div>

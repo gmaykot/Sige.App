@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using SIGE.Core.Models.Dto.Gerencial;
+using SIGE.Core.Models.Dto.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Sistema.Gerencial;
+using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
 
 namespace SIGE.Core.Mapper
 {
