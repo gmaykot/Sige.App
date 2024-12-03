@@ -14,7 +14,7 @@
 <div class="card-row" *ngIf="true">
   <div class="col-sm-6" >
     <nb-card accent="danger" size="small">
-      <nb-card-header>Pendências de 12/2024</nb-card-header>
+      <nb-card-header>Pendências (12/2024)</nb-card-header>
       <nb-card-body>
         <ng2-smart-table [settings]="settingsPendencias" [source]="sourcePendencias" (deleteConfirm)="onSelectPendencias($event)">
         </ng2-smart-table>
@@ -23,7 +23,7 @@
   </div>
   <div class="col-sm-6" >
     <nb-card accent="warning" size="small">
-      <nb-card-header>Contratos com Término 12/2024</nb-card-header>
+      <nb-card-header>Contratos Finalizando em 12/2024</nb-card-header>
       <nb-card-body>
         <ng2-smart-table [settings]="settingsContratos" [source]="sourceContratos" (deleteConfirm)="onSelectContratos($event)">
         </ng2-smart-table>
@@ -35,7 +35,7 @@
 <div class="card-row"  *ngIf="true">
   <div class="col-sm-6">
     <nb-card accent="info">
-      <nb-card-header>Status das Coletas de Medições</nb-card-header>
+      <nb-card-header>Status das Coletas de Medições (12/2024)</nb-card-header>
       <nb-card-body>
         <ngx-echarts-pie></ngx-echarts-pie>
       </nb-card-body>    
