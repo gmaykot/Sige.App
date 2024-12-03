@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { NbThemeService } from "@nebular/theme";
 import { takeWhile } from "rxjs/operators";
 import { DeviceDetectorService } from "ngx-device-detector";
@@ -17,7 +17,9 @@ interface CardSettings {
   styleUrls: ["./dashboard.component.scss"],
   templateUrl: "./dashboard.component.html",
 })
-export class DashboardComponent implements OnDestroy {
+export class DashboardComponent implements OnDestroy, OnInit {
+  public sourcePendencias: LocalDataSource = new LocalDataSource();
+  public sourceContratos: LocalDataSource = new LocalDataSource();
   private alive = true;
   viabilidadeCard: CardSettings = {
     title: "Coletar Medições",
@@ -39,31 +41,59 @@ export class DashboardComponent implements OnDestroy {
     link: "/pages/contratos",
   };
 
-  settings = {
+  settingsContratos = {
     delete: {
-      deleteButtonContent: '<i class="nb-gear"></i>',
+      deleteButtonContent: '<i class="nb-checkmark"></i>',
       confirmDelete: true,
     },
     columns: {
-      mesReferencia: {
-        title: "Mês Referência",
-        type: "string"
-      },
-      empresa: {
-        title: "Empresa",
+      numContrato: {
+        title: "Número Contrato",
         type: "string",
+        class: "action",
       },
-      totalkWh: {
-        title: "Total kW/h",
+      descGrupo: {
+        title: "Grupo de Empresas",
         type: "string",
+        class: "action",
       },
-      mediakWh: {
-        title: "Média kW/h",
+      vigenciaInicial: {
+        title: "Início de Vigência",
         type: "string",
+        class: "action",
       }
     },
     actions: {
-      columnTitle: 'Medir',
+      columnTitle: '',
+      add: false,
+      edit: false,
+      delete: false,
+      position: "right",
+    },
+    hideSubHeader: true,
+    noDataMessage: 'Nenhum registro encontrado.'
+  };
+
+  settingsPendencias = {
+    delete: {
+      deleteButtonContent: '<i class="nb-checkmark"></i>',
+      confirmDelete: true,
+    },
+    columns: {
+      motivo: {
+        title: "Motivo da Pendência",
+        type: "string",
+        class: "action",
+      },
+      route: {
+        title: "route",
+        type: "string",
+        class: "action",
+        hide: true
+      }
+    },
+    actions: {
+      columnTitle: 'Acessar',
       add: false,
       edit: false,
       delete: true,
@@ -72,6 +102,7 @@ export class DashboardComponent implements OnDestroy {
     hideSubHeader: true,
     noDataMessage: 'Nenhum registro encontrado.'
   };
+
   statusCards: string;
 
   commonStatusCardsSet: CardSettings[] = [
@@ -90,14 +121,9 @@ export class DashboardComponent implements OnDestroy {
 
   constructor(
     private themeService: NbThemeService,
-    private deviceService: DeviceDetectorService,
-    private router: ActivatedRoute
+    private router: Router
   ) {
-   
-    this.router.url.subscribe(url => {
-      var currentRoute = url.join('/');
-    });
-    
+      
     this.themeService
       .getJsTheme()
       .pipe(takeWhile(() => this.alive))
@@ -105,8 +131,16 @@ export class DashboardComponent implements OnDestroy {
         this.statusCards = this.statusCardsByThemes[theme.name];
       });
   }
+  ngOnInit(): void {
+    this.sourcePendencias.load([{ motivo: 'Cadastro de bandeira tarifária vigente', route: '/pages/bandeira-tarifaria' }, { motivo: 'Geração de medições', route: '/pages/medicao' }, { motivo: 'Cadastro de Faturamento Coenel.', route: '/pages/faturamento-coenel' }]);
+    this.sourceContratos.load([{ numContrato: '765.23', descGrupo: 'POMZAN MOVEIS', vigenciaInicial: '12/2022' }]);
+  }
 
   ngOnDestroy() {
     this.alive = false;
+  }
+
+  onSelectPendencias(event){
+    this.router.navigateByUrl(event.data.route);
   }
 }

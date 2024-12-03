@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
+import { STATUS_FASE } from '../../@core/enum/filtro-medicao';
 
 @Component({
   selector: 'ngx-echarts-pie',
@@ -30,7 +31,7 @@ export class EchartsPieComponent implements AfterViewInit, OnDestroy {
         legend: {
           orient: 'vertical',
           left: 'left',
-          data: ['Coletados', 'Não Coletados'],
+          data: STATUS_FASE[0].status.map((fase) => fase.desc),
           textStyle: {
             color: echarts.textColor,
           },
@@ -42,8 +43,10 @@ export class EchartsPieComponent implements AfterViewInit, OnDestroy {
             radius: '80%',
             center: ['50%', '50%'],
             data: [
-              { value: 16, name: 'Não Coletados' },
-              { value: 6, name: 'Coletados' },
+              { value: 205, name: 'Completa' },
+              { value: 18, name: 'Incompleta' },
+              { value: 9, name: 'Erro na Leitura' },
+              { value: 3, name: 'Valor Divergente' },
             ],
             itemStyle: {
               emphasis: {
