@@ -1,15 +1,15 @@
 export const BANDEIRAS = 
 [
-    { id: 'AMARELA', desc: 'Amarela'}, 
-    { id: 'VERDE', desc: 'Verde'}, 
-    { id: 'VERMELHA_1', desc: 'Vermelha 1'},
-    { id: 'VERMELHA_2', desc: 'Vermelha 2'}
+    { id: '0', desc: 'Amarela'}, 
+    { id: '1', desc: 'Verde'}, 
+    { id: '2', desc: 'Vermelha 1'},
+    { id: '3', desc: 'Vermelha 2'}
 ]
 
 export const MODALIDADES = 
 [
-    { id: 'AZUL', desc: 'Azul'}, 
-    { id: 'VERDE', desc: 'Verde'}, 
+    { id: '0', desc: 'Azul'}, 
+    { id: '1', desc: 'Verde'}, 
 ]
 
 export const SUB_GRUPOS = 

@@ -105,5 +105,11 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     vigenciaInicial: ['', [Validators.required]],
     vigenciaFinal: ['', null],
     valor: [0, [Validators.required]]
+  },
+  BandeiraTarifariaVigente: {
+    id: ['', null],
+    bandeiraTarifariaId: ['', [Validators.required]],
+    mesReferencia: ['', [Validators.required]],
+    bandeira: ['', [Validators.required]],
   }
 };

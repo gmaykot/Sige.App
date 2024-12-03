@@ -59,5 +59,6 @@ namespace SIGE.DataAccess.Context
         public DbSet<ImpostoConcessionariaModel> ImpostosConcessionarias { get; set; }
         public DbSet<SalarioMinimoModel> SalariosMinimos { get; set; }
         public DbSet<FaturamentoCoenelModel> FaturamentosCoenel { get; set; }
+        public DbSet<BandeiraTarifariaVigenteModel> BandeiraTarifariaVigente { get; set; }
     }
 }

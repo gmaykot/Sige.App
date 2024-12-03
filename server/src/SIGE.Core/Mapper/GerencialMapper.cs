@@ -11,6 +11,7 @@ namespace SIGE.Core.Mapper
         public GerencialMapper()
         {
             CreateMap<BandeiraTarifariaDto, BandeiraTarifariaModel>().ReverseMap();
+            CreateMap<BandeiraTarifariaVigenteDto, BandeiraTarifariaVigenteModel>().ReverseMap();
             CreateMap<SalarioMinimoDto, SalarioMinimoModel>().ReverseMap();
 
             CreateMap<TarifaAplicacaoDto, TarifaAplicacaoModel>().ReverseMap();
