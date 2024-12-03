@@ -16,7 +16,7 @@
                     <div class="form-group">
                         <label for="inputFirstName" class="label">Bandeira Vigente*</label>
                         <nb-select fullWidth placeholder="Selecione" formControlName="bandeira">
-                            <nb-option *ngFor="let bd of bandeiras" value="{{bd.id}}">{{bd.desc}}</nb-option>
+                            <nb-option *ngFor="let bd of bandeiras" [value]="bd.id">{{bd.desc}}</nb-option>
                         </nb-select>  
                     </div>
                 </div>

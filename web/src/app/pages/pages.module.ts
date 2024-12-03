@@ -52,6 +52,7 @@ import { FaturamentoCoenelComponent } from './geral/faturamento-coenel/faturamen
 import { SalarioMinimoComponent } from './gerencial/salario-minimo/salario-minimo.component';
 import { AutoCompleteComponent } from '../@shared/custom-component/auto-complete/auto-complete.component';
 import { BandeiraTarifariaVigenteComponent } from '../@shared/custom-component/bandeira-tarifaria-vigente/bandeira-tarifaria-vigente.component';
+import { DeleteActionLinkComponent } from '../@shared/custom-component/delete-action-link/delete-action-link.component';
 
 @NgModule({
   imports: [
@@ -133,7 +134,8 @@ import { BandeiraTarifariaVigenteComponent } from '../@shared/custom-component/b
     FaturamentoCoenelComponent,
     SalarioMinimoComponent,
     AutoCompleteComponent,
-    BandeiraTarifariaVigenteComponent
+    BandeiraTarifariaVigenteComponent,
+    DeleteActionLinkComponent
   ],
   providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService]
 })

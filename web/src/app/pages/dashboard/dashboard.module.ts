@@ -9,6 +9,7 @@ import {
   NbSelectModule,
   NbListModule,
   NbIconModule,
+  NbSpinnerModule,
 } from '@nebular/theme';
 import { NgxEchartsModule } from 'ngx-echarts';
 
@@ -35,7 +36,8 @@ import { EchartsBarComponent } from '../../@shared/charts/echarts-bar.component'
     NbIconModule,
     NbButtonModule,
     NgxEchartsModule,
-    Ng2SmartTableModule
+    Ng2SmartTableModule,
+    NbSpinnerModule
   ],
   declarations: [
     DashboardComponent,

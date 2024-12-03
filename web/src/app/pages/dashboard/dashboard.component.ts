@@ -1,113 +1,38 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { NbThemeService } from "@nebular/theme";
 import { takeWhile } from "rxjs/operators";
-import { DeviceDetectorService } from "ngx-device-detector";
-import { ActivatedRoute, Router } from "@angular/router";
 import { LocalDataSource } from "ng2-smart-table";
-
-interface CardSettings {
-  title: string;
-  iconClass: string;
-  type: string;
-  link: string;
-}
+import { DashboardService } from "../../@core/services/administrativo/dashboard.service";
+import { Router } from "@angular/router";
+import { IChecklist } from "../../@core/data/administrativo/checklist";
+import { IResponseInterface } from "../../@core/data/response.interface";
+import { IContratosFinalizados } from "../../@core/data/administrativo/contratos-finalizados";
+import { IStatusMedicao } from "../../@core/data/administrativo/status-medicao";
+import { IConsumoMeses } from "../../@core/data/administrativo/consumo-meses";
+import { CardSettings, DashboardConfigSettings } from "./dashboard.config.settings";
+import { STATUS_MEDICAO } from "../../@core/enum/filtro-medicao";
 
 @Component({
   selector: "ngx-dashboard",
   styleUrls: ["./dashboard.component.scss"],
   templateUrl: "./dashboard.component.html",
 })
-export class DashboardComponent implements OnDestroy, OnInit {
-  public sourcePendencias: LocalDataSource = new LocalDataSource();
+export class DashboardComponent extends DashboardConfigSettings implements OnDestroy, OnInit {
+  public sourceChecklist: LocalDataSource = new LocalDataSource();
   public sourceContratos: LocalDataSource = new LocalDataSource();
   private alive = true;
-  viabilidadeCard: CardSettings = {
-    title: "Coletar Medições",
-    iconClass: "nb-bar-chart",
-    type: "primary",
-    link: "/pages/medicao",
-  };
-  economiaCard: CardSettings = {
-    title: "Relatório de Medição",
-    iconClass: "nb-compose",
-    type: "primary",
-    link: "/pages/relatorio-medicao",
-  };
-
-  contratoCard: CardSettings = {
-    title: "Contratos",
-    iconClass: "nb-tables",
-    type: "primary",
-    link: "/pages/contratos",
-  };
-
-  settingsContratos = {
-    delete: {
-      deleteButtonContent: '<i class="nb-checkmark"></i>',
-      confirmDelete: true,
-    },
-    columns: {
-      numContrato: {
-        title: "Número Contrato",
-        type: "string",
-        class: "action",
-      },
-      descGrupo: {
-        title: "Grupo de Empresas",
-        type: "string",
-        class: "action",
-      },
-      vigenciaInicial: {
-        title: "Início de Vigência",
-        type: "string",
-        class: "action",
-      }
-    },
-    actions: {
-      columnTitle: '',
-      add: false,
-      edit: false,
-      delete: false,
-      position: "right",
-    },
-    hideSubHeader: true,
-    noDataMessage: 'Nenhum registro encontrado.'
-  };
-
-  settingsPendencias = {
-    delete: {
-      deleteButtonContent: '<i class="nb-checkmark"></i>',
-      confirmDelete: true,
-    },
-    columns: {
-      motivo: {
-        title: "Motivo da Pendência",
-        type: "string",
-        class: "action",
-      },
-      route: {
-        title: "route",
-        type: "string",
-        class: "action",
-        hide: true
-      }
-    },
-    actions: {
-      columnTitle: 'Acessar',
-      add: false,
-      edit: false,
-      delete: true,
-      position: "right",
-    },
-    hideSubHeader: true,
-    noDataMessage: 'Nenhum registro encontrado.'
-  };
-
-  statusCards: string;
+  public checklist = false;
+  public contratos = false;
+  public medicoes = false;
+  public consumo = false;
+  public statusCards: string;
+  public mesReferencia: string = new Date().toLocaleString("pt-BR", { month: "numeric", year: "numeric" });
+  public mesReferenciaAnterior: string =  new Date(new Date().setMonth(new Date().getMonth() - 1)).toLocaleString("pt-BR", { month: "numeric", year: "numeric" });
 
   commonStatusCardsSet: CardSettings[] = [
+    this.faturamentoCard,
     this.viabilidadeCard,
-    this.economiaCard,
+    this.economiaCard,    
     this.contratoCard
   ];
 
@@ -115,32 +40,60 @@ export class DashboardComponent implements OnDestroy, OnInit {
     default: CardSettings[];
     corporate: CardSettings[];
   } = {
-    default: this.commonStatusCardsSet,
-    corporate: this.commonStatusCardsSet
-  };
+      default: this.commonStatusCardsSet,
+      corporate: this.commonStatusCardsSet
+    };
+
+  public pieSource: any[] = [];
+  public barSource: any[] = [];
 
   constructor(
     private themeService: NbThemeService,
-    private router: Router
+    private router: Router,
+    private service: DashboardService
   ) {
-      
+    super();
+  }
+  async ngOnInit(): Promise<void> {
     this.themeService
       .getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe((theme) => {
         this.statusCards = this.statusCardsByThemes[theme.name];
       });
-  }
-  ngOnInit(): void {
-    this.sourcePendencias.load([{ motivo: 'Cadastro de bandeira tarifária vigente', route: '/pages/bandeira-tarifaria' }, { motivo: 'Geração de medições', route: '/pages/medicao' }, { motivo: 'Cadastro de Faturamento Coenel.', route: '/pages/faturamento-coenel' }]);
-    this.sourceContratos.load([{ numContrato: '765.23', descGrupo: 'POMZAN MOVEIS', vigenciaInicial: '12/2022' }]);
+
+    this.service.obterChecklist().then((response: IResponseInterface<IChecklist[]>) => {
+      if (response.success) {
+        this.sourceChecklist.load(response.data);
+      }
+      this.checklist = true;
+    });
+    this.service.obterContratosFinalizados().then((response: IResponseInterface<IContratosFinalizados[]>) => {
+      if (response.success) {
+        this.sourceContratos.load(response.data);
+      }
+      this.contratos = true;
+    });
+    this.service.obterStatusMedicoes().then((response: IResponseInterface<IStatusMedicao[]>) => {
+      if (response.success) {        
+        this.pieSource = response.data.sort((x, y) => x.status - y.status).map((data) => ({ value: data.total, name: STATUS_MEDICAO.filter(s => s.id == data.status)[0].desc }));
+      }
+      this.medicoes = true;
+    });
+    this.service.obterConsumoMeses().then((response: IResponseInterface<IConsumoMeses[]>) => {
+      if (response.success) {
+        this.barSource = response.data.map((data) => ({ value: data.consumoMensal, name: data.descMes }));
+      }
+      this.consumo = true;
+    });
   }
 
   ngOnDestroy() {
     this.alive = false;
   }
 
-  onSelectPendencias(event){
+  onSelectPendencias(event) {
     this.router.navigateByUrl(event.data.route);
   }
+
 }

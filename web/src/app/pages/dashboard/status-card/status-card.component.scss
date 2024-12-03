@@ -4,7 +4,7 @@
   nb-card {
     flex-direction: row;
     align-items: center;
-    height: 6rem;
+    height: 5.2rem;
     overflow: visible;
     
     .icon-container {
@@ -16,8 +16,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 5.75rem;
-      height: 4.75rem;
       font-size: 3.75rem;
       border-radius: nb-theme(card-border-radius);
       transition: width 0.4s ease;

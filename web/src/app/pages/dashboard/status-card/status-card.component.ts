@@ -13,7 +13,7 @@ import { Component, Input } from '@angular/core';
       </div>
 
       <div class="details">
-        <div class="title h5">{{ title }}</div>
+        <div class="title h6">{{ title }}</div>
       </div>
     </nb-card>
     </a>

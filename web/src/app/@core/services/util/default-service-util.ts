@@ -2,12 +2,13 @@ export class DefaultServiceUtil<T> {
 
     private datePatternMesANo = /^[0-9]{2}\/[0-9]{4}$/; // Validação do formato MM/yyyy
     private datePatternFullUs = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/; // Validação do formato dd/MM/yyyy
-    private datePatternFullBr = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/; // Validação do formato yyyy-MM-dd
+    private datePatternFullBr = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/; // Validação do formato yyyy-MM-ddTHH:mm:ss
 
     protected formatPrePost(item: T): T {
         this.transformPrePostField(item, 'mesReferencia', 'mesAno');
         this.transformPrePostField(item, 'vigenciaInicial', 'fullDate');
         this.transformPrePostField(item, 'vigenciaFinal', 'fullDate');
+        this.transformPrePostField(item, 'dataUltimoReajuste', 'fullDate');
         return item;
     }
 
@@ -27,6 +28,7 @@ export class DefaultServiceUtil<T> {
         this.transformDateField(item, 'mesReferencia', 'mesAno');
         this.transformDateField(item, 'vigenciaInicial', 'fullDate');
         this.transformDateField(item, 'vigenciaFinal', 'fullDate');
+        this.transformDateField(item, 'dataUltimoReajuste', 'fullDate');        
         return item;
     }
 
@@ -40,7 +42,6 @@ export class DefaultServiceUtil<T> {
             const [mes, ano] = value.split("/");
             return `${ano}-${mes}-01`;
         }
-
         return value;
     }
 
@@ -50,7 +51,7 @@ export class DefaultServiceUtil<T> {
         }
     }
 
-    private transformDateField(item: any, fieldName: string, formatType: 'mesAno' | 'fullDate'): void {
+    private transformDateField(item: any, fieldName: string, formatType: 'mesAno' | 'fullDate'): void {        
         if (item[fieldName] && typeof item[fieldName] === 'string') {
             const value = item[fieldName];
             if (this.datePatternFullUs.test(value)) {

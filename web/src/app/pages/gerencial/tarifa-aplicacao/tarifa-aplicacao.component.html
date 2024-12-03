@@ -21,15 +21,15 @@
                             <div class="form-group">
                             <label for="inputFirstName" class="label">Sub-Grupo*</label><br>
                             <nb-select fullWidth formControlName="subGrupo">
-                                <nb-option *ngFor="let obj of subgrupos" value="{{obj.id}}">{{obj.desc}}</nb-option>
+                                <nb-option *ngFor="let obj of subgrupos" [value]="obj.id">{{obj.desc}}</nb-option>
                             </nb-select>
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="form-group">
-                            <label for="inputFirstName" class="label">Modalidade*</label><br>
-                            <nb-select fullWidth formControlName="modalidade">
-                                <nb-option *ngFor="let obj of modalidades" value="{{obj.id}}">{{obj.desc}}</nb-option>
+                            <label for="inputFirstName" class="label">Segmento*</label><br>
+                            <nb-select fullWidth formControlName="segmento">
+                                <nb-option *ngFor="let obj of segmentos" [value]="obj.id">{{obj.desc}}</nb-option>
                             </nb-select>
                             </div>
                         </div>                  

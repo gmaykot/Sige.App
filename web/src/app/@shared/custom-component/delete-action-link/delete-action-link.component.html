@@ -1,0 +1,4 @@
+<button *ngIf="rowData.finalizado" nbButton ghost status="success" (click)="onAction()" class="btn-center"><nb-icon
+        icon="checkmark"></nb-icon></button>
+<button *ngIf="!rowData.finalizado" nbButton ghost status="danger" (click)="onAction()" class="btn-center"><nb-icon
+        icon="close"></nb-icon></button>

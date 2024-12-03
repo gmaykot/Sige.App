@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { SEGMENTO } from '../../enum/status-contrato';
 
 @Injectable({
   providedIn: 'root',
@@ -52,8 +53,8 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     descConcessionaria: ['', null],
     concessionariaId: ['', [Validators.required]],
     numeroResolucao: ['', [Validators.required]],
-    subGrupo: ['', [Validators.required]],
-    modalidade: ['', [Validators.required]],
+    subGrupo: [0, [Validators.required]],
+    segmento: [0, [Validators.required]],
     dataUltimoReajuste: [null, [Validators.required]],
     kwPonta: [0, [Validators.required]],
     kwForaPonta: [0, [Validators.required]],
@@ -110,6 +111,6 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     id: ['', null],
     bandeiraTarifariaId: ['', [Validators.required]],
     mesReferencia: ['', [Validators.required]],
-    bandeira: ['', [Validators.required]],
+    bandeira: [0, [Validators.required]],
   }
 };

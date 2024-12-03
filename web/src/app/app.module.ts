@@ -20,7 +20,6 @@ import {
   NbButtonModule,
 } from '@nebular/theme';
 import { registerLocaleData } from '@angular/common';
-import { BandeiraTarifariaVigenteComponent } from './@shared/custom-component/bandeira-tarifaria-vigente/bandeira-tarifaria-vigente.component';
 
 @NgModule({
   declarations: [AppComponent],
