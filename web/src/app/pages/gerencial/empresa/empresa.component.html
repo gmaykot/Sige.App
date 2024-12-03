@@ -107,17 +107,18 @@
                     </div>                                              
                   </div>    
                   <div class="row">
-                    <div class="col-sm-8">
+                    <div class="col-sm-10">
                       <div class="form-group">
                         <label for="inputEmail" class="label">Responsável Coenel</label><br>
                         <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="responsavelGestor">
                       </div>
                     </div>
-                    <div class="col-sm-4">
-                      <div class="form-group" hidden>
-                        <label for="inputEmail" class="label">*Perfil CCEE</label><br>
-                        <nb-select fullWidth placeholder="Selecione" formControlName="estado">
-                          
+                    <div class="col-sm-2">
+                      <div class="form-group">
+                        <label for="inputEmail" class="label">*Ativa</label><br>
+                        <nb-select fullWidth placeholder="Selecione" formControlName="ativo">
+                          <nb-option [value]="true">SIM</nb-option>
+                          <nb-option [value]="false">NÃO</nb-option>
                         </nb-select>
                       </div>
                     </div>          
