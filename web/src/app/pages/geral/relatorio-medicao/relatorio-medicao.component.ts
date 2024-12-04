@@ -91,7 +91,7 @@ export class RelatorioMedicaoComponent implements OnInit {
   }
 
   habilitaPdf(){
-    return this.relatorioMedicao.proinfa > 0 && this.relatorioMedicao.totalMedido > 0;
+    return this.relatorioMedicao.totalMedido > 0;
   }
 
   clear()
@@ -135,6 +135,16 @@ export class RelatorioMedicaoComponent implements OnInit {
           this.control.patchValue({ observacao: this.relatorioMedicao.observacao }, { emitEvent: false });
           this.atualizaValoresEconomia();
           this.selected = true;
+          if (this.relatorioMedicao.totalMedido === 0) {
+            this.dialogService
+              .open(CustomDeleteConfirmationComponent, {
+                context: {
+                  mesage: "O valor Total Medido CCEE está zerado. Algumas funcionalidades não serão disponibilizadas.",
+                  accent: "warning",
+                },
+              })
+              .onClose.subscribe();
+          }
         } else {
           this.relatorioMedicao = null;
           response.errors.map((x) => this.alertService.showError(x.value));
@@ -200,7 +210,7 @@ export class RelatorioMedicaoComponent implements OnInit {
   }
 
   public downloadAsPdf(): void {
-    this.alertService.showWarning("Iniciando a geração e download do relatório de medição em PDF.")
+    this.alertService.showWarning("Iniciando a geração e download do relatório de medição em PDF.", 120)
     this.relatorioMedicaoPdfService.downloadPDF(this.relatorioMedicao, this.valores, this.resultadoAnalitico, this.mesReferencia);
   }
 

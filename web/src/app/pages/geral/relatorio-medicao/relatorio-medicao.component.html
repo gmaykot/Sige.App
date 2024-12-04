@@ -184,13 +184,10 @@
                 </nb-card-body>
                 <nb-card-footer>
                     <button *ngIf="habilitaOperacoes" type="submit" nbButton status="basic" (click)="clear()">Voltar</button>
-                    <button [disabled]="!control.valid" type="submit" nbButton status="info" style="margin-left: 0.5rem;" >Salvar</button>
-                    <button *ngIf="habilitaValidar && habilitaOperacoes" type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;">Validar</button>
-                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" hidden>Relatório de Economia</button>
-                    <button *ngIf="habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsPdf()">Gerar PDF</button>
-                    <button *ngIf="habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="onSendEmail()">Enviar E-mail</button>
-                    <button *ngIf="!habilitaPdf()" [disabled]="true" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" nbTooltip="Verifique o total medido e o PROINFA">Gerar PDF</button>
-                    <button *ngIf="!habilitaPdf()" [disabled]="true" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" nbTooltip="Verifique o total medido e o PROINFA">Enviar E-mail</button>
+                    <button [disabled]="!control.valid || !habilitaPdf()" type="submit" nbButton status="info" style="margin-left: 0.5rem;" >Salvar</button>
+                    <button [disabled]="!habilitaPdf()" *ngIf="habilitaValidar && habilitaOperacoes" type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;">Validar</button>
+                    <button [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;">Gerar PDF</button>
+                    <button [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;">Enviar E-mail</button>
                     <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsCsv()">Exportar Medições CSV</button>
                 </nb-card-footer>
             </nb-card>
