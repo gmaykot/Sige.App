@@ -202,13 +202,13 @@ export class RelatorioMedicaoPdfService {
         ],
         valorUnitarioKwh: [
           {
-            text: "Valor KWh:",
+            text: "Valor MWh:",
             isBold: true,
           },
           {
-            text: this.decimalPipe.transform(
+            text: "R$ " + this.decimalPipe.transform(
               relatorioMedicao?.valorUnitarioKwh,
-              "2.3-3",
+              "2.2-2",
               "pt"
             ),
           },
