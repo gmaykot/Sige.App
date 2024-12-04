@@ -40,6 +40,7 @@ export class CalculoEconomiaService {
       relatorio.valoresAnaliticos.forEach(val => {
         if (!val.totalMedido || val.totalMedido == null)
           val.totalMedido = 0;
+        console.log(val);
         var unitario3Porcento = +(val.totalMedido*(3/100))+val.totalMedido;
         var total = this.calculaConsumoTotalUnitario(val.totalMedido, val.proinfa);
         var totalComTake = (total/this.consumoTotal)*valores.resultadoFaturamento.quantidade;

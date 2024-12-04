@@ -183,13 +183,15 @@
                     
                 </nb-card-body>
                 <nb-card-footer>
-                    <button type="submit" nbButton status="basic" (click)="clear()">Voltar</button>
-                    <button type="submit" nbButton status="info" style="margin-left: 0.5rem;" *ngIf="habilitaOperacoes" [disabled]="!control.valid">Salvar</button>
-                    <button type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;" *ngIf="habilitaValidar && habilitaOperacoes">Validar</button>
-                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsCsv()">Exportar Medições CSV</button>
+                    <button *ngIf="habilitaOperacoes" type="submit" nbButton status="basic" (click)="clear()">Voltar</button>
+                    <button [disabled]="!control.valid" type="submit" nbButton status="info" style="margin-left: 0.5rem;" >Salvar</button>
+                    <button *ngIf="habilitaValidar && habilitaOperacoes" type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;">Validar</button>
                     <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" hidden>Relatório de Economia</button>
-                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsPdf()">Gerar PDF</button>
-                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="onSendEmail()">Enviar E-mail</button>
+                    <button *ngIf="habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsPdf()">Gerar PDF</button>
+                    <button *ngIf="habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="onSendEmail()">Enviar E-mail</button>
+                    <button *ngIf="!habilitaPdf()" [disabled]="true" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" nbTooltip="Verifique o total medido e o PROINFA">Gerar PDF</button>
+                    <button *ngIf="!habilitaPdf()" [disabled]="true" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" nbTooltip="Verifique o total medido e o PROINFA">Enviar E-mail</button>
+                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsCsv()">Exportar Medições CSV</button>
                 </nb-card-footer>
             </nb-card>
         </div>

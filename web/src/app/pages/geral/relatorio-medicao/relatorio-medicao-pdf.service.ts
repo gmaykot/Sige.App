@@ -60,7 +60,7 @@ export class RelatorioMedicaoPdfService {
   }
 
   private createPDF(
-    relatorioEconomia: IRelatorioMedicao,
+    relatorioMedicao: IRelatorioMedicao,
     valores: IValoresMedicao,
     resultadoAnalitico: IValoresMedicaoAnalitico[],
     mesReferencia: any
@@ -73,8 +73,8 @@ export class RelatorioMedicaoPdfService {
         Valores usados em multiplos lugares
       */
       const globalValues = {
-        mesReferencia: relatorioEconomia.mesReferencia
-            ? relatorioEconomia.mesReferencia
+        mesReferencia: relatorioMedicao.mesReferencia
+            ? relatorioMedicao.mesReferencia
             : mesReferencia
       };
 
@@ -146,7 +146,7 @@ export class RelatorioMedicaoPdfService {
               margins?.sectionXsMarginTop,
           },
           {
-            text: relatorioEconomia.descGrupo?.toUpperCase(),
+            text: relatorioMedicao.descGrupo?.toUpperCase(),
             marginTop:
               tituloCabecalhoHeight +
               tituloCabecalhoMarginTop +
@@ -161,7 +161,7 @@ export class RelatorioMedicaoPdfService {
             isBold: true,
           },
           {
-            text: relatorioEconomia.numContrato,
+            text: relatorioMedicao.numContrato,
             borderColor: "#ffffff",
           },
         ],
@@ -171,7 +171,7 @@ export class RelatorioMedicaoPdfService {
             isBold: true,
           },
           {
-            text: relatorioEconomia.descFornecedor?.toUpperCase(),
+            text: relatorioMedicao.descFornecedor?.toUpperCase(),
             lineWidth: 415,
             borderColor: "#ffffff",
           },
@@ -183,7 +183,7 @@ export class RelatorioMedicaoPdfService {
           },
           {
             text: this.decimalPipe.transform(
-              relatorioEconomia?.horasMes,
+              relatorioMedicao?.horasMes,
               "2.0-0",
               "pt"
             ),
@@ -195,25 +195,31 @@ export class RelatorioMedicaoPdfService {
             isBold: true,
           },
           {
-            text: this.tipoEnergiaMapper(relatorioEconomia.tipoEnergia),
+            text: this.tipoEnergiaMapper(relatorioMedicao.tipoEnergia),
+            borderColor: "#ffffff",
+            lineWidth: 415,
+          },
+        ],
+        valorUnitarioKwh: [
+          {
+            text: "Valor KWh:",
+            isBold: true,
+          },
+          {
+            text: this.decimalPipe.transform(
+              relatorioMedicao?.valorUnitarioKwh,
+              "2.3-3",
+              "pt"
+            ),
           },
         ],
       };
 
       this.pdfConfig.addMarginTop(relatorioPdfData, "contrato", "empresa");
-      this.pdfConfig.addMarginTop(
-        relatorioPdfData,
-        "fornecedor",
-        "contrato",
-        margins.itemSpacing
-      );
+      this.pdfConfig.addMarginTop(relatorioPdfData,"fornecedor","contrato",margins.itemSpacing);
       this.pdfConfig.addMarginTop(relatorioPdfData, "horasMes", "fornecedor");
-      this.pdfConfig.addMarginTop(
-        relatorioPdfData,
-        "tipoEnergia",
-        "horasMes",
-        margins.itemSpacing
-      );
+      this.pdfConfig.addMarginTop(relatorioPdfData,"tipoEnergia","horasMes",margins.itemSpacing);
+      this.pdfConfig.addMarginTop(relatorioPdfData, "valorUnitarioKwh", "horasMes",margins.itemSpacing);
 
       const relatorioData = this.pdfConfig.formatarPdfData(relatorioPdfData);
       this.pdfConfig.addMultiplosTextos(doc, relatorioData);
@@ -258,7 +264,7 @@ export class RelatorioMedicaoPdfService {
           {
             text:
               this.decimalPipe.transform(
-                relatorioEconomia.totalMedido,
+                relatorioMedicao.totalMedido,
                 "2.3-3",
                 "pt"
               ) + " (kWh)",
@@ -272,7 +278,7 @@ export class RelatorioMedicaoPdfService {
           {
             text: `Medido + 3% perdas = (+) ${this.getDesconto(
               this.decimalPipe.transform(
-                relatorioEconomia.totalMedido,
+                relatorioMedicao.totalMedido,
                 "2.3-3",
                 "pt"
               )
@@ -289,7 +295,7 @@ export class RelatorioMedicaoPdfService {
         proinfa: [
           {
             text: `Desconto PROINFA no mês = (-) ${this.decimalPipe.transform(
-              relatorioEconomia.proinfa,
+              relatorioMedicao.proinfa,
               "2.3-3",
               "pt"
             )}:`,
@@ -412,13 +418,13 @@ export class RelatorioMedicaoPdfService {
 
       autoTable(doc, {
         head: [
-          ["Mês", "hs mês", "Energia cont. (MWh)", `Flex -${relatorioEconomia.takeMinimo}%`, `Flex -${relatorioEconomia.takeMinimo}%`],
+          ["Mês", "hs mês", "Energia cont. (MWh)", `Flex -${relatorioMedicao.takeMinimo}%`, `Flex -${relatorioMedicao.takeMinimo}%`],
         ],
         body: [
           [
             {
-              content: relatorioEconomia.mesReferencia
-                  ? relatorioEconomia.mesReferencia
+              content: relatorioMedicao.mesReferencia
+                  ? relatorioMedicao.mesReferencia
                   : mesReferencia,
               styles: {
                 halign: "center",
@@ -427,7 +433,7 @@ export class RelatorioMedicaoPdfService {
             },
             {
               content: this.decimalPipe.transform(
-                relatorioEconomia?.horasMes,
+                relatorioMedicao?.horasMes,
                 "2.0-0",
                 "pt"
               ),
@@ -438,7 +444,7 @@ export class RelatorioMedicaoPdfService {
             },
             {
               content: this.decimalPipe.transform(
-                relatorioEconomia.energiaContratada,
+                relatorioMedicao.energiaContratada,
                 "2.3-3",
                 "pt"
               ),

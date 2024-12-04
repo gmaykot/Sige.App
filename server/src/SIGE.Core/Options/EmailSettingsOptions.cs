@@ -3,7 +3,9 @@
     public class EmailSettingsOptions
     {
         public string Server { get; set; }
+        public string Imap { get; set; }
         public int Port { get; set; }
+        public int ImapPort { get; set; }
         public string SenderName { get; set; }
         public string SenderEmail { get; set; }
         public string UserName { get; set; }

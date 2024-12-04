@@ -90,6 +90,10 @@ export class RelatorioMedicaoComponent implements OnInit {
     }); 
   }
 
+  habilitaPdf(){
+    return this.relatorioMedicao.proinfa > 0 && this.relatorioMedicao.totalMedido > 0;
+  }
+
   clear()
   {
     this.mesReferencia = null;
