@@ -1,20 +1,20 @@
 import { Injectable } from "@angular/core";
-import { IRelatorioEconomia, IValoresEconomia, IFaturamentoEconomia, IValoresEconomiaAnalitico } from "../../data/relatorio-economia";
+import { IRelatorioMedicao, IValoresMedicao, IFaturamentoMedicao, IValoresMedicaoAnalitico } from "../../data/relatorio-medicao";
 
 @Injectable({ providedIn: "root" })
 export class CalculoEconomiaService {
-  private relatorio: IRelatorioEconomia;
+  private relatorio: IRelatorioMedicao;
   private consumoTotal: number = 0;
   private multiplicadorPerda: number = 1.03;
 
-  public calcular(relatorio: IRelatorioEconomia) : IValoresEconomia
+  public calcular(relatorio: IRelatorioMedicao) : IValoresMedicao
   {
     if (!relatorio)
       return null;
 
     this.relatorio = relatorio
     this.calculaConsumoTotal();
-    var ret: IValoresEconomia = {
+    var ret: IValoresMedicao = {
         valorProduto: this.calculaValorProduto(),
         faturarLongoPrazo: this.faturarLongoPrazo(),
         comprarCurtoPrazo: this.comprarCurtoPrazo(),
@@ -29,12 +29,12 @@ export class CalculoEconomiaService {
     return ret;
   } 
   
-  public calcularAnalitico(relatorio: IRelatorioEconomia) : IValoresEconomiaAnalitico[]
+  public calcularAnalitico(relatorio: IRelatorioMedicao) : IValoresMedicaoAnalitico[]
   {
     if (!relatorio)
       return null;
     try {      
-      var retorno: IValoresEconomiaAnalitico[] = [];      
+      var retorno: IValoresMedicaoAnalitico[] = [];      
       var valores = this.calcular(relatorio);
       var total3Porcento = this.relatorio.totalMedido*1.03;
       relatorio.valoresAnaliticos.forEach(val => {
@@ -46,7 +46,7 @@ export class CalculoEconomiaService {
         var valorProduto = totalComTake * relatorio.valorUnitarioKwh;
         var totalIcms = this.calculaIcmsUnitario(totalComTake, valorProduto);
         var totalNota = valorProduto + totalIcms;
-        var ret: IValoresEconomiaAnalitico = {
+        var ret: IValoresMedicaoAnalitico = {
           numCnpj: val.numCnpj,
           descEmpresa: val.descEmpresa,
           descEndereco: val.descEndereco,
@@ -152,7 +152,7 @@ export class CalculoEconomiaService {
 
   private resultadoFaturamento()
   {
-    var faturamento: IFaturamentoEconomia =
+    var faturamento: IFaturamentoMedicao =
     {
       faturamento: 'Longo Prazo',
       quantidade: this.faturarLongoPrazo(),

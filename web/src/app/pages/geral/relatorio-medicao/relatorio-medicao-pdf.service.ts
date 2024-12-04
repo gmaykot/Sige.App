@@ -2,10 +2,10 @@ import { Injectable } from "@angular/core";
 import jsPDF, { TextOptionsLight } from "jspdf";
 import autoTable, { RowInput } from "jspdf-autotable";
 import {
-  IRelatorioEconomia,
-  IValoresEconomia,
-  IValoresEconomiaAnalitico,
-} from "../../../@core/data/relatorio-economia";
+  IRelatorioMedicao,
+  IValoresMedicao,
+  IValoresMedicaoAnalitico,
+} from "../../../@core/data/relatorio-medicao";
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { CapitalizePipe } from "../../../@theme/pipes";
 
@@ -26,47 +26,47 @@ export class RelatorioMedicaoPdfService {
   ) {}
 
   public blobPDF(
-    relatorioEconomia: IRelatorioEconomia,
-    valores: IValoresEconomia,
-    resultadoAnalitico: IValoresEconomiaAnalitico[],
-    competencia: any
+    relatorioMedicao: IRelatorioMedicao,
+    valores: IValoresMedicao,
+    resultadoAnalitico: IValoresMedicaoAnalitico[],
+    mesReferencia: any
   ): any {
     const pdf = this.createPDF(
-      relatorioEconomia,
+      relatorioMedicao,
       valores,
       resultadoAnalitico,
-      competencia
+      mesReferencia
     );
     return pdf.output("blob");
   }
 
   public downloadPDF(
-    relatorioEconomia: IRelatorioEconomia,
-    valores: IValoresEconomia,
-    resultadoAnalitico: IValoresEconomiaAnalitico[],
-    competencia: any
+    relatorioMedicao: IRelatorioMedicao,
+    valores: IValoresMedicao,
+    resultadoAnalitico: IValoresMedicaoAnalitico[],
+    mesReferencia: any
   ) {
     const pdf = this.createPDF(
-      relatorioEconomia,
+      relatorioMedicao,
       valores,
       resultadoAnalitico,
-      competencia
+      mesReferencia
     );
     pdf.save(
       `relatorio_medicao_${this.datePipe.transform(
-        relatorioEconomia.competencia
-          ? relatorioEconomia.competencia
-          : competencia,
+        relatorioMedicao.mesReferencia
+          ? relatorioMedicao.mesReferencia
+          : mesReferencia,
         "MMyy"
-      )}_${relatorioEconomia.descGrupo.toLowerCase().replace(" ", "_")}.pdf`
+      )}_${relatorioMedicao.descGrupo.toLowerCase().replace(" ", "_")}.pdf`
     );
   }
 
   private createPDF(
-    relatorioEconomia: IRelatorioEconomia,
-    valores: IValoresEconomia,
-    resultadoAnalitico: IValoresEconomiaAnalitico[],
-    competencia: any
+    relatorioEconomia: IRelatorioMedicao,
+    valores: IValoresMedicao,
+    resultadoAnalitico: IValoresMedicaoAnalitico[],
+    mesReferencia: any
   ): jsPDF {
     // TAMANHO A4 EM PT: 595.35 x 841.995
     const doc = new jsPDF("p", "pt", "a4");
@@ -77,9 +77,9 @@ export class RelatorioMedicaoPdfService {
       */
       const globalValues = {
         mesReferencia: this.datePipe.transform(
-          relatorioEconomia.competencia
-            ? relatorioEconomia.competencia
-            : competencia,
+          relatorioEconomia.mesReferencia
+            ? relatorioEconomia.mesReferencia
+            : mesReferencia,
           "MM/yyyy"
         ),
       };
@@ -424,9 +424,9 @@ export class RelatorioMedicaoPdfService {
           [
             {
               content: this.datePipe.transform(
-                relatorioEconomia.competencia
-                  ? relatorioEconomia.competencia
-                  : competencia,
+                relatorioEconomia.mesReferencia
+                  ? relatorioEconomia.mesReferencia
+                  : mesReferencia,
                 "MM/yyyy"
               ),
               styles: {
@@ -639,7 +639,7 @@ export class RelatorioMedicaoPdfService {
     );
   }
 
-  private faturamentoHelper(resultadoAnalitico: IValoresEconomiaAnalitico[]): {
+  private faturamentoHelper(resultadoAnalitico: IValoresMedicaoAnalitico[]): {
     totalFaturamentoLongoPrazo: any[];
     venderOuComprar: string;
   } {

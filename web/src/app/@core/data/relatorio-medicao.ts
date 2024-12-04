@@ -1,23 +1,23 @@
 import { ETipoEnergia } from "../enum/tipo-energia";
 
-export interface IRelatorioEconomiaList {  
+export interface IRelatorioMedicaoList {  
     contratoId: string;
     fornecedorId: string;
     dscGrupo: string;
     fase: string;
     descFornecedor: string;
-    competencia: string;
+    mesReferencia: string;
     dataEmissao: string;
 }
 
-export interface IRelatorioEconomia {  
+export interface IRelatorioMedicao {  
     id: string;
-    contratoId: string,
+    contratoId: string;
     descGrupo: string;
     numContrato: string;
     descFornecedor: string;
     fase: string;
-    competencia: string;
+    mesReferencia: string;
     dataEmissao: string;
     dataMedicao: string;
     dataBase: string;
@@ -33,10 +33,10 @@ export interface IRelatorioEconomia {
     proinfa: number;
     icms: number;
     observacao: string;
-    valoresAnaliticos: IValorAnaliticosEconomia[];
+    valoresAnaliticos: IValorAnaliticoMedicao[];
 }
 
-export interface IValorAnaliticosEconomia
+export interface IValorAnaliticoMedicao
 {
     empresaId: string;
     numCnpj: string;
@@ -47,12 +47,12 @@ export interface IValorAnaliticosEconomia
     icms: number;
 }
 
-export interface IRelatorioEconomiaRequest
+export interface IRelatorioMedicaoRequest
 {
 
 }
 
-export interface IValoresEconomia
+export interface IValoresMedicao
 {
     valorConsumoTotal: number,
     valorProduto: number,
@@ -63,10 +63,10 @@ export interface IValoresEconomia
     takeMinimo: number,
     takeMaximo: number,
     dentroTake: boolean,
-    resultadoFaturamento: IFaturamentoEconomia
+    resultadoFaturamento: IFaturamentoMedicao
 }
 
-export interface IValoresEconomiaAnalitico
+export interface IValoresMedicaoAnalitico
 {
     numCnpj: string,
     descEmpresa: string,
@@ -81,7 +81,7 @@ export interface IValoresEconomiaAnalitico
     venderCurtoPrazo: number
 }
 
-export interface IFaturamentoEconomia {
+export interface IFaturamentoMedicao {
     faturamento: string,
     quantidade: number,
     unidade: string,

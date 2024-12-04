@@ -1,6 +1,6 @@
 ﻿namespace SIGE.Core.Models.Requests
 {
-    public class RelatorioEconomiaRequest
+    public class RelatorioMedicaoRequest
     {
     }
 }

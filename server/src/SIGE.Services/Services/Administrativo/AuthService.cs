@@ -11,15 +11,27 @@ using Microsoft.Extensions.Logging;
 using SIGE.Services.Interfaces.Administrativo;
 using SIGE.Core.Models.Dto.Administrativo;
 using SIGE.Core.Models.Dto.Administrativo.Usuario;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using SIGE.Core.Models.Dto.Administrativo.Dashboard;
+using SIGE.Core.Models.Sistema.Administrativo;
 
 namespace SIGE.Services.Services.Administrativo
 {
-    public class AuthService(AppDbContext appDbContext, IConfiguration config, IMapper mapper, ICustomLoggerService loggerService) : IAuthService
+    public class AuthService(AppDbContext appDbContext, IConfiguration config, IMapper mapper, ICustomLoggerService loggerService, IMemoryCache memoryCache) : IAuthService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IConfiguration _config = config;
         private readonly IMapper _mapper = mapper;
         private readonly ICustomLoggerService _loggerService = loggerService;
+        private readonly IMemoryCache _memoryCache = memoryCache;
+        private readonly MemoryCacheEntryOptions _cacheEntryOptions = new()
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(180),
+            SlidingExpiration = TimeSpan.FromMinutes(30),
+            Priority = CacheItemPriority.Normal
+        };
+
 
         public async Task<Response> Login(LoginRequest req)
         {
@@ -41,7 +53,14 @@ namespace SIGE.Services.Services.Administrativo
             if (!req.Password.VerifyPasswordHash(usuario.PasswordHash, usuario.PasswordSalt))
                 return ret.SetUnauthorized().AddError(ETipoErro.ERRO, "A senha digitada não está correta.");
 
-            var menusUsuario = await _appDbContext.MenusUsuarios.AsNoTracking().Include(m => m.MenuSistema).Where(m => m.UsuarioId == usuario.Id && m.MenuSistema.Ativo).OrderBy(m => m.MenuSistema.Ordem).ToListAsync();
+            var menusUsuario = new List<MenuUsuarioModel>();
+            if (_memoryCache.TryGetValue($"MenuUsuarioLogin{usuario.Id}", out string valor))
+                menusUsuario.AddRange(JsonConvert.DeserializeObject<List<MenuUsuarioModel>>(valor));
+            else
+            {
+                menusUsuario = await _appDbContext.MenusUsuarios.AsNoTracking().Include(m => m.MenuSistema).Where(m => m.UsuarioId == usuario.Id && m.MenuSistema.Ativo).OrderBy(m => m.MenuSistema.Ordem).ToListAsync();
+                _memoryCache.Set($"MenuUsuarioLogin{usuario.Id}", JsonConvert.SerializeObject(menusUsuario), _cacheEntryOptions);
+            }
 
             var menuSistemaDto = new List<MenuSistemaDto>();
             foreach (var menu in menusUsuario.Where(m => m.MenuSistema.MenuPredecessorId == null).OrderBy(m => m.MenuSistema.Ordem))

@@ -2,7 +2,7 @@
 
 namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
 {
-    public class RelatorioEconomiaListDto
+    public class RelatorioMedicaoListDto
     {
         public Guid? Id { get; set; }
         public Guid? FornecedorId { get; set; }
@@ -10,7 +10,7 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
         public string? DescGrupo { get; set; }
         public string? DescFornecedor { get; set; }
         public EFaseMedicao Fase { get; set; }
-        public DateTime? Competencia { get; set; }
+        public DateTime? MesReferencia { get; set; }
         public DateTime? DataEmissao { get; set; }
     }
 }

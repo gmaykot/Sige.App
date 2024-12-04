@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
 {
-    public class RelatorioEconomiaDto
+    public class RelatorioMedicaoDto
     {
         public Guid? Id { get; set; }
         public Guid? ContratoId { get; set; }
@@ -13,7 +13,7 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
         public string? DescFornecedor { get; set; }
         public ETipoEnergia TipoEnergia { get; set; }
         public EFaseMedicao Fase { get; set; }
-        public DateTime? Competencia { get; set; }
+        public DateTime? MesReferencia { get; set; }
         public DateTime? DataEmissao { get; set; }
         public DateTime? DataBase { get; set; }
         public DateTime? DataVigenciaInicial { get; set; }
@@ -28,6 +28,6 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
         public decimal? Icms { get; set; }
         public string? Observacao { get; set; }
         [NotMapped]
-        public ICollection<ValorAnaliticosEconomiaDto>? ValoresAnaliticos { get; set; }
+        public ICollection<ValorAnaliticoMedicaoDto>? ValoresAnaliticos { get; set; }
     }
 }

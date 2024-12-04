@@ -8,7 +8,7 @@ namespace SIGE.Controller.Gerencial
 {
     [ApiController]
     [Route("analise-viabilidade")]
-    public class AnaliseViabilidadeController(IAnaliseViabilidadeService analiseViabilidadeService, IRelatorioEconomiaService relatorioEconomiaService) : ControllerBase
+    public class AnaliseViabilidadeController(IAnaliseViabilidadeService analiseViabilidadeService) : ControllerBase
     {
         private readonly IAnaliseViabilidadeService _analiseViabilidadeService = analiseViabilidadeService;
 

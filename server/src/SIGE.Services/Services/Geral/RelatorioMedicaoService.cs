@@ -1,61 +1,67 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Enumerators;
+using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
 using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
 using SIGE.Core.Models.Requests;
+using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
 
 namespace SIGE.Services.Services.Geral
 {
-    public class RelatorioEconomiaService(AppDbContext appDbContext, IMapper mapper) : IRelatorioEconomiaService
+    public class RelatorioMedicaoService(AppDbContext appDbContext, IMapper mapper) : IRelatorioMedicaoService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Response> ListarRelatorios(RelatorioEconomiaRequest req)
+        public async Task<Response> ListarRelatorios(RelatorioMedicaoRequest req)
         {
             var ret = new Response();
-            var res = await _appDbContext.Database.SqlQueryRaw<RelatorioEconomiaListDto>(RelatorioEconomiaFactory.ListaRelatoriosEconomia(req)).ToListAsync();
+            var res = await _appDbContext.Database.SqlQueryRaw<RelatorioMedicaoListDto>(RelatorioMedicaoFactory.ListaRelatoriosMedicao(req)).ToListAsync();
             if (res != null && res.Count != 0)
-                return ret.SetOk().SetData(res.DistinctBy(m => m.DescGrupo).OrderByDescending(m => m.Competencia));
+                return ret.SetOk().SetData(res.DistinctBy(m => m.DescGrupo).OrderByDescending(m => m.MesReferencia));
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de economia no período.");
         }
 
-        public async Task<Response> Obter(Guid contratoId, DateTime competencia)
+        public async Task<Response> Obter(Guid contratoId, DateTime mesReferencia)
         {
             var ret = new Response();
 
-            var rel = await _appDbContext.RelatoriosEconomia.FirstOrDefaultAsync(r => r.ContratoId.Equals(contratoId));
-            var relDto = new RelatorioEconomiaDto();
-            if (rel == null)
+            var rel = await _appDbContext.RelatoriosMedicao.FirstOrDefaultAsync(r => r.ContratoId.Equals(contratoId));
+            var res = await _appDbContext.Database.SqlQueryRaw<RelatorioMedicaoDto>(RelatorioMedicaoFactory.ValoresRelatoriosMedicao(contratoId, mesReferencia, null)).FirstOrDefaultAsync();
+            if (res == null)
+                return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Verifique se a medição da competência foram efetuadas.")
+                                        .AddError(ETipoErro.INFORMATIVO, $"Verifique se os valores contratuais estão cadastrados.");
+
+            res.ValoresAnaliticos = [];
+            res.ContratoId = contratoId;
+
+            var empresas = await _appDbContext.Database.SqlQueryRaw<Guid>(ContratosFactory.EmpresasPorContrato(contratoId)).ToListAsync();
+
+            empresas.ForEach(empresaId =>
             {
-                var res = await _appDbContext.Database.SqlQueryRaw<RelatorioEconomiaDto>(RelatorioEconomiaFactory.ValoresRelatoriosEconomia(contratoId, competencia, null)).FirstOrDefaultAsync();
-                if (res == null)
-                    return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Verifique se a medição da competência foram efetuadas.")
-                                            .AddError(ETipoErro.INFORMATIVO, $"Verifique se os valores contratuais estão cadastrados.");
+                var valores = _appDbContext.Database.SqlQueryRaw<ValorAnaliticoMedicaoDto>(RelatorioMedicaoFactory.ValoresRelatoriosMedicao(contratoId, mesReferencia, empresaId)).FirstOrDefault();
+                res.ValoresAnaliticos.Add(valores);
+            });
 
-                res.ValoresAnaliticos = [];
-                res.ContratoId = contratoId;
+            res.Fase = EFaseMedicao.RELATORIO_MEDICAO;
+            res.MesReferencia = mesReferencia;
+            res.DataEmissao = DateTime.Now.Hoje();
+            res.ContratoId = contratoId;
 
-                var empresas = await _appDbContext.Database.SqlQueryRaw<Guid>(ContratosFactory.EmpresasPorContrato(contratoId)).ToListAsync();
-
-                empresas.ForEach(empresaId =>
-                {
-                    var valores = _appDbContext.Database.SqlQueryRaw<ValorAnaliticosEconomiaDto>(RelatorioEconomiaFactory.ValoresRelatoriosEconomia(contratoId, competencia, empresaId)).FirstOrDefault();
-                    res.ValoresAnaliticos.Add(valores);
-                });
-
-                return ret.SetOk().SetData(res);
-            }
+            if (rel == null)
+                await _appDbContext.RelatoriosMedicao.AddAsync(_mapper.Map<RelatorioMedicaoModel>(res));
             else
-                relDto = _mapper.Map<RelatorioEconomiaDto>(rel);
+                _appDbContext.RelatoriosMedicao.Update(_mapper.Map(res, rel));
+            
+            _appDbContext.SaveChanges();
 
-            return ret.SetNotFound();
+            return ret.SetOk().SetData(res);
         }
 
         public async Task<Response> ObterFinal(Guid contratoId, DateTime competencia)

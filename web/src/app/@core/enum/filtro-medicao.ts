@@ -3,7 +3,7 @@ import { environment } from "../../../environments/environment";
 export const FASES_MEDICAO = 
 [
     { id: 0, desc: 'Medição' },
-    { id: 1, desc: 'Relatório Economia' },
+    { id: 1, desc: 'Relatório Medição' },
     { id: 2, desc: 'Envio E-Mail' },
     { id: 3, desc: 'Fatura Concessionária' },
     { id: 4, desc: 'Relatório Economia' },

@@ -1,6 +1,6 @@
 ﻿namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
 {
-    public class ValorAnaliticosEconomiaDto
+    public class ValorAnaliticoMedicaoDto
     {
         public Guid? EmpresaId { get; set; }
         public string? NumCnpj { get; set; }
