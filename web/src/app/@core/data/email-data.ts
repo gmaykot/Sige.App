@@ -1,5 +1,6 @@
 export interface IEmailData {
     contratoId?: string;
+    relatorioMedicaoId?: string;
     contato: IContatoEmail;
     mesReferencia: string;
     descMesReferencia?: string;

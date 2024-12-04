@@ -172,7 +172,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <div class="subtitle sub-med">Observação</div>
-                                                <textarea nbInput fullWidth formControlName="observacao">{{relatorioMedicao.observacao}}</textarea>
+                                                <textarea nbInput fullWidth formControlName="observacao"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -184,7 +184,7 @@
                 </nb-card-body>
                 <nb-card-footer>
                     <button type="submit" nbButton status="basic" (click)="clear()">Voltar</button>
-                    <button type="submit" nbButton status="info" style="margin-left: 0.5rem;" *ngIf="habilitaOperacoes">Salvar</button>
+                    <button type="submit" nbButton status="info" style="margin-left: 0.5rem;" *ngIf="habilitaOperacoes" [disabled]="!control.valid">Salvar</button>
                     <button type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;" *ngIf="habilitaValidar && habilitaOperacoes">Validar</button>
                     <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsCsv()">Exportar Medições CSV</button>
                     <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" hidden>Relatório de Economia</button>

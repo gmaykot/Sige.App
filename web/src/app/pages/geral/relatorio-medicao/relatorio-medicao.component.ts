@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { settingsRelatorioMedicao, settingsResultadoAnalitico, settingsResultadoEconomia } from '../../../@shared/table-config/relatorio-economia.config';
 import { LocalDataSource } from 'ng2-smart-table';
 import { DateService } from '../../../@core/services/util/date.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { RelatorioMedicaoService } from '../../../@core/services/geral/relatorio-medicao.service';
 import { ContatoService } from '../../../@core/services/gerencial/contato.service';
 import { DatePipe } from '@angular/common';
@@ -22,6 +22,7 @@ import { ValidacaoMedicaoComponent } from '../../../@shared/custom-component/val
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
+import { JwtService } from '../../../@core/services/util/jwt.service';
 
 @Component({
   selector: 'ngx-relatorio-medicao',
@@ -41,6 +42,7 @@ export class RelatorioMedicaoComponent implements OnInit {
     private emailService: EmailService,
     private relatorioMedicaoPdfService: RelatorioMedicaoPdfService,
     private alertService: AlertService,
+    private jwtService: JwtService
   ) {}
 
     public settings = settingsRelatorioMedicao;
@@ -65,6 +67,10 @@ export class RelatorioMedicaoComponent implements OnInit {
     public habilitaOperacoes: boolean = false;
 
     public control = this.formBuilder.group({
+      observacao: ["", Validators.required],
+      observacaoValidacao: ["", null],
+      validado: [false, null],
+      usuarioResponsavelId: [this.jwtService.getDecodedUser().id, null],
     });
 
     async ngOnInit()
@@ -122,6 +128,7 @@ export class RelatorioMedicaoComponent implements OnInit {
       .then((response: IResponseInterface<IRelatorioMedicao>) => {
         if (response.success) {
           this.relatorioMedicao = response.data;
+          this.control.patchValue({ observacao: this.relatorioMedicao.observacao }, { emitEvent: false });
           this.atualizaValoresEconomia();
           this.selected = true;
         } else {
@@ -269,15 +276,18 @@ export class RelatorioMedicaoComponent implements OnInit {
             
             var emailData: IEmailData = {
               contratoId: this.relatorioMedicao.contratoId,
+              relatorioMedicaoId: this.relatorioMedicao.id,
               contato: contato,
-              mesReferencia: this.datePipe.transform(this.mesReferencia, "MM/yyyy"),
-              descMesReferencia: this.datePipe.transform(this.mesReferencia, "MMyy"),
+              mesReferencia: this.relatorioMedicao.mesReferencia,
+              descMesReferencia: this.relatorioMedicao.mesReferencia,
               descEmpresa: this.relatorioMedicao.descGrupo,
               totalNota: Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(this.relatorioMedicao.totalMedido),
               relatorios: [result],
               contatosCCO: contatosSend.filter(c => c.id != contato.id)
             }
             await this.emailService.sendEmail(emailData).then(() => this.alertService.showSuccess('Email enviado com sucesso.'));
+            this.getRelatorios();
+            this.relatorioMedicao.fase = '2';
           }
         });
   }

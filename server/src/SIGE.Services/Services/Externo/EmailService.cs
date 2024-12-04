@@ -1,6 +1,7 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Email;
@@ -84,6 +85,14 @@ namespace SIGE.Services.Services.Externo
                     await mailClient.ConnectAsync(_opt.Server, _opt.Port, MailKit.Security.SecureSocketOptions.Auto);
                     await mailClient.AuthenticateAsync(_opt.UserName, _opt.Password);
                     await mailClient.SendAsync(mensagem);
+                }
+
+                var relatorio = await _appDbContext.RelatoriosMedicao.FindAsync(req.RelatorioMedicaoId);
+                if (relatorio != null)
+                {
+                    relatorio.Fase = EFaseMedicao.ENVIO_EMAIL;
+                    _appDbContext.RelatoriosMedicao.Update(relatorio);
+                    _ = await _appDbContext.SaveChangesAsync();
                 }
 
                 return ret.SetOk();

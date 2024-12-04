@@ -53,12 +53,9 @@ export class RelatorioMedicaoPdfService {
       mesReferencia
     );
     pdf.save(
-      `relatorio_medicao_${this.datePipe.transform(
-        relatorioMedicao.mesReferencia
+      `relatorio_medicao_${relatorioMedicao.mesReferencia
           ? relatorioMedicao.mesReferencia
-          : mesReferencia,
-        "MMyy"
-      )}_${relatorioMedicao.descGrupo.toLowerCase().replace(" ", "_")}.pdf`
+          : mesReferencia}_${relatorioMedicao.descGrupo.toLowerCase().replace(" ", "_")}.pdf`
     );
   }
 
@@ -76,12 +73,9 @@ export class RelatorioMedicaoPdfService {
         Valores usados em multiplos lugares
       */
       const globalValues = {
-        mesReferencia: this.datePipe.transform(
-          relatorioEconomia.mesReferencia
+        mesReferencia: relatorioEconomia.mesReferencia
             ? relatorioEconomia.mesReferencia
-            : mesReferencia,
-          "MM/yyyy"
-        ),
+            : mesReferencia
       };
 
       /*
@@ -423,12 +417,9 @@ export class RelatorioMedicaoPdfService {
         body: [
           [
             {
-              content: this.datePipe.transform(
-                relatorioEconomia.mesReferencia
+              content: relatorioEconomia.mesReferencia
                   ? relatorioEconomia.mesReferencia
                   : mesReferencia,
-                "MM/yyyy"
-              ),
               styles: {
                 halign: "center",
                 fontSize: 9,
