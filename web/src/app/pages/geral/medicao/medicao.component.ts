@@ -152,8 +152,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       this.alertService.showWarning('Ocorreu erro em alguma das coletas. Verifique.')
     else
       this.alertService.showSuccess('Coleta efetuada com sucesso.')
-    await this.getMedicoes("", null, "", "");
-
+    
+    this.getMedicoes("", null, "", "");
     this.loading = false;
     this.coletando = false;
     this.medicoesChecked = [];

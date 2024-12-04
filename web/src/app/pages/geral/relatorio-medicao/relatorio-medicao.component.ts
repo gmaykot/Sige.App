@@ -107,7 +107,7 @@ export class RelatorioMedicaoComponent implements OnInit {
   {
     this.loading = true;
     this.relatorio = event.data as IRelatorioMedicaoList;
-    if (this.mesReferencia == null) {
+    if (this.mesReferencia == null && event.data.mesReferencia == null) {
       this.dialogService
         .open(CustomDeleteConfirmationComponent, {
           context: {
@@ -118,7 +118,7 @@ export class RelatorioMedicaoComponent implements OnInit {
         .onClose.subscribe();
     } else {
       await this.relatorioEconomiaService
-      .getRelatorio(this.relatorio.contratoId, this.mesReferencia)
+      .getRelatorio(this.relatorio.contratoId, this.mesReferencia ?? event.data.mesReferencia)
       .then((response: IResponseInterface<IRelatorioMedicao>) => {
         if (response.success) {
           this.relatorioMedicao = response.data;
@@ -134,6 +134,7 @@ export class RelatorioMedicaoComponent implements OnInit {
       });
     }
     this.loading = false;
+    this.getRelatorios();
   }
 
   atualizaValoresEconomia(){

@@ -32,11 +32,14 @@ namespace SIGE.Services.Services.Geral
         {
             var ret = new Response();
 
-            var rel = await _appDbContext.RelatoriosMedicao.FirstOrDefaultAsync(r => r.ContratoId.Equals(contratoId));
+            var rel = await _appDbContext.RelatoriosMedicao.FirstOrDefaultAsync(r => r.ContratoId.Equals(contratoId) && r.MesReferencia.Equals(mesReferencia));
             var res = await _appDbContext.Database.SqlQueryRaw<RelatorioMedicaoDto>(RelatorioMedicaoFactory.ValoresRelatoriosMedicao(contratoId, mesReferencia, null)).FirstOrDefaultAsync();
             if (res == null)
                 return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Verifique se a medição da competência foram efetuadas.")
                                         .AddError(ETipoErro.INFORMATIVO, $"Verifique se os valores contratuais estão cadastrados.");
+            
+            if (rel != null)
+                _mapper.Map(rel, res);
 
             res.ValoresAnaliticos = [];
             res.ContratoId = contratoId;
@@ -49,16 +52,22 @@ namespace SIGE.Services.Services.Geral
                 res.ValoresAnaliticos.Add(valores);
             });
 
-            res.Fase = EFaseMedicao.RELATORIO_MEDICAO;
             res.MesReferencia = mesReferencia;
             res.DataEmissao = DateTime.Now.Hoje();
-            res.ContratoId = contratoId;
 
             if (rel == null)
+            {
+                res.Id = Guid.Empty;
+                res.Fase = EFaseMedicao.RELATORIO_MEDICAO;
                 await _appDbContext.RelatoriosMedicao.AddAsync(_mapper.Map<RelatorioMedicaoModel>(res));
+            }
             else
-                _appDbContext.RelatoriosMedicao.Update(_mapper.Map(res, rel));
-            
+            {
+                res.Id = rel.Id;
+                _mapper.Map(res, rel);
+            }
+                
+
             _appDbContext.SaveChanges();
 
             return ret.SetOk().SetData(res);
