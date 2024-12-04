@@ -179,13 +179,15 @@
                                 </nb-card-body>
                             </nb-card>
                         </nb-tab>
-                    </nb-tabset>
-                    
+                    </nb-tabset>                    
                 </nb-card-body>
                 <nb-card-footer>
                     <button *ngIf="habilitaOperacoes" type="submit" nbButton status="basic" (click)="clear()">Voltar</button>
-                    <button [disabled]="!control.valid || !habilitaPdf()" type="submit" nbButton status="info" style="margin-left: 0.5rem;" >Salvar</button>
-                    <button [disabled]="!habilitaPdf()" *ngIf="habilitaValidar && habilitaOperacoes" type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;">Validar</button>
+                    <button [disabled]="!control.valid || !habilitaPdf()" type="submit" nbButton status="info" style="margin-left: 0.5rem;" (click)="salvar()">Salvar</button>
+                    
+                    <button [disabled]="!habilitaPdf()" *ngIf="habilitaValidar && habilitaOperacoes && relatorioMedicao.validado && relatorioMedicao.validado !== null" type="submit" nbButton (click)="validar()" status="{{relatorioMedicao.validado === true ? 'success' : 'danger'}}" style="margin-left: 0.5rem;"><nb-icon icon="{{relatorioMedicao.validado === true ? 'person-done-outline' : 'person-delete-outline'}}"></nb-icon>Validado</button>
+                    <button [disabled]="!habilitaPdf()" *ngIf="habilitaValidar && habilitaOperacoes && (!relatorioMedicao.validado || relatorioMedicao.validado === null)" type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;">Validar</button>
+
                     <button [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsPdf()">Gerar PDF</button>
                     <button [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="onSendEmail()">Enviar E-mail</button>
                     <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsCsv()">Exportar Medições CSV</button>

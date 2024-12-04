@@ -32,7 +32,7 @@ import { JwtService } from '../../../@core/services/util/jwt.service';
 export class RelatorioMedicaoComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
-    private relatorioEconomiaService: RelatorioMedicaoService,
+    private relatorioMedicaoService: RelatorioMedicaoService,
     private medicaoService: MedicaoService,
     private contatoService: ContatoService,
     private datePipe: DatePipe,
@@ -68,8 +68,8 @@ export class RelatorioMedicaoComponent implements OnInit {
 
     public control = this.formBuilder.group({
       observacao: ["", Validators.required],
-      observacaoValidacao: ["", null],
-      validado: [false, null],
+      observacaoValidacao: [null, null],
+      validado: [null, null],
       usuarioResponsavelId: [this.jwtService.getDecodedUser().id, null],
     });
 
@@ -82,11 +82,36 @@ export class RelatorioMedicaoComponent implements OnInit {
       this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
     }
   
+  salvar()
+  {
+    this.relatorioMedicao.observacao = this.control.value.observacao;
+    this.relatorioMedicao.observacaoValidacao = this.control.value.observacaoValidacao;
+    this.relatorioMedicao.validado = this.control.value.validado;
+    this.relatorioMedicao.usuarioResponsavelId = this.control.value.usuarioResponsavelId;
+    this.relatorioMedicaoService
+    .put(this.relatorioMedicao)
+    .then((response: IResponseInterface<IRelatorioMedicao>) => {
+      if (response.success) {
+        this.alertService.showSuccess("Observação salva com sucesso.");
+      } else {
+        response.errors.map((x) => this.alertService.showError(x.value));
+      }
+    })
+    .catch((httpMessage: any) => {
+      this.alertService.showError(httpMessage);
+    });
+  }
+
   validar()
   {
     this.dialogService
-    .open(ValidacaoMedicaoComponent)
+    .open(ValidacaoMedicaoComponent, { context: { observacao: this.relatorioMedicao.observacaoValidacao, validado: this.relatorioMedicao.validado } })
     .onClose.subscribe(async (ret) => {
+      if (ret) {
+        this.control.patchValue({ observacaoValidacao: ret.observacao }, { emitEvent: false });
+        this.control.patchValue({ validado: ret.validado }, { emitEvent: false });
+        this.salvar();
+      }
     }); 
   }
 
@@ -127,7 +152,7 @@ export class RelatorioMedicaoComponent implements OnInit {
         })
         .onClose.subscribe();
     } else {
-      await this.relatorioEconomiaService
+      await this.relatorioMedicaoService
       .getRelatorio(this.relatorio.contratoId, this.mesReferencia ?? event.data.mesReferencia)
       .then((response: IResponseInterface<IRelatorioMedicao>) => {
         if (response.success) {
@@ -155,7 +180,6 @@ export class RelatorioMedicaoComponent implements OnInit {
       });
     }
     this.loading = false;
-    this.getRelatorios();
   }
 
   atualizaValoresEconomia(){
@@ -179,7 +203,7 @@ export class RelatorioMedicaoComponent implements OnInit {
   private async getRelatorios() {
     var relatorio: IRelatorioMedicaoRequest = {
     };
-    await this.relatorioEconomiaService
+    await this.relatorioMedicaoService
       .getRelatorios(relatorio)
       .then((response: IResponseInterface<IRelatorioMedicaoList[]>) => {
         if (response.success) {

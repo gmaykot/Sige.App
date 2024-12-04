@@ -32,7 +32,10 @@ export interface IRelatorioMedicao {
     tipoEnergia: ETipoEnergia;
     proinfa: number;
     icms: number;
-    observacao: string;
+    observacao?: string;
+    observacaoValidacao?: string;
+    validado?: boolean;
+    usuarioResponsavelId?: string;
     valoresAnaliticos: IValorAnaliticoMedicao[];
 }
 

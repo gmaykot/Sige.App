@@ -12,7 +12,7 @@ namespace SIGE.Core.Models.Sistema.Geral.Medicao
         public EFaseMedicao Fase { get; set; }
         public required decimal TotalMedido { get; set; }
         public string? Observacao { get; set; }
-        public required bool Validado { get; set; } = false;
+        public bool? Validado { get; set; } = false;
         public string? ObservacaoValidacao { get; set; }
         public Guid ContratoId { get; set; }
         public virtual ContratoModel? Contrato { get; set; }

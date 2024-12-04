@@ -27,6 +27,8 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
         public decimal? Proinfa { get; set; }
         public decimal? Icms { get; set; }
         public string? Observacao { get; set; }
+        public string? ObservacaoValidacao { get; set; }
+        public bool? Validado { get; set; }
         [NotMapped]
         public ICollection<ValorAnaliticoMedicaoDto>? ValoresAnaliticos { get; set; }
     }

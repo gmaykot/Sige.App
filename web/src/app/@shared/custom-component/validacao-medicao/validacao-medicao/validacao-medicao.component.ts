@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { NbDialogRef } from '@nebular/theme';
 
 @Component({
@@ -7,27 +7,30 @@ import { NbDialogRef } from '@nebular/theme';
   templateUrl: './validacao-medicao.component.html',
   styleUrls: ['./validacao-medicao.component.scss']
 })
-export class ValidacaoMedicaoComponent {
-  habilitaValidar: boolean = false;
+export class ValidacaoMedicaoComponent implements OnInit {
+  @Input() observacao: string = '';
+  @Input() validado: boolean = null;
+  
+  public control = this.formBuilder.group({
+    validado: [null as boolean | null, [Validators.required]],
+    observacao: [null],
+  });
+
   constructor(
     protected dialogRef: NbDialogRef<ValidacaoMedicaoComponent>,
     private formBuilder: FormBuilder
   ) {}
-  
-  public control = this.formBuilder.group({
-    validado: "false",
-    observacao: "",
-  });
 
+  ngOnInit(): void {
+    this.control.patchValue({ observacao: this.observacao }, { emitEvent: false });
+    this.control.patchValue({ validado: this.validado }, { emitEvent: false });
+  }
+  
   cancel() {
     this.dialogRef.close();
   }
 
   submit() {
     this.dialogRef.close(this.control.value);
-  }
-
-  updateSingleSelectGroupValue(value): void {
-    this.habilitaValidar = true;
   }
 }
