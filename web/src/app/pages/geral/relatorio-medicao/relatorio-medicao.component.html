@@ -186,7 +186,7 @@
                     <button [disabled]="!control.valid || !habilitaPdf()" type="submit" nbButton status="info" style="margin-left: 0.5rem;" (click)="salvar()">Salvar</button>
 
                     <button [disabled]="!habilitaPdf()" *ngIf="habilitaValidar && habilitaOperacoes && relatorioMedicao.validado !== undefined && relatorioMedicao.validado !== null" type="submit" nbButton (click)="validar()" status="{{relatorioMedicao.validado === true ? 'success' : 'danger'}}" style="margin-left: 0.5rem;"><nb-icon icon="{{relatorioMedicao.validado === true ? 'person-done-outline' : 'person-delete-outline'}}"></nb-icon>Validado</button>
-                    <button [disabled]="!habilitaPdf()" *ngIf="habilitaValidar && habilitaOperacoes && (!relatorioMedicao.validado === undefined || relatorioMedicao.validado === null)" type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;">Validar</button>
+                    <button [disabled]="!habilitaPdf()" *ngIf="habilitaValidar && habilitaOperacoes && (relatorioMedicao.validado === undefined || relatorioMedicao.validado === null)" type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;">Validar</button>
 
                     <button [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsPdf()">Gerar PDF</button>
                     <button [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="onSendEmail()">Enviar E-mail</button>
