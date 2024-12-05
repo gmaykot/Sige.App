@@ -57,7 +57,8 @@ namespace SIGE.Core.Extensions
             {
                 new Claim("id", usuario.Id.ToString()),
                 new Claim("name", usuario.Apelido),
-                new Claim("gestor_id", usuario.GestorId.ToString())
+                new Claim("gestor_id", usuario.GestorId.ToString()),
+                new Claim("su", usuario.SuperUsuario.ToString())
             };
 
             return claims.GetJWTEncoded(securityToken);

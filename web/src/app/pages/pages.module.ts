@@ -54,6 +54,7 @@ import { AutoCompleteComponent } from '../@shared/custom-component/auto-complete
 import { BandeiraTarifariaVigenteComponent } from '../@shared/custom-component/bandeira-tarifaria-vigente/bandeira-tarifaria-vigente.component';
 import { DeleteActionLinkComponent } from '../@shared/custom-component/delete-action-link/delete-action-link.component';
 import { FaturaEnergiaComponent } from './geral/fatura-energia/fatura-energia.component';
+import { GhostComponent } from './administrativo/ghost/ghost.component';
 
 @NgModule({
   imports: [
@@ -137,7 +138,8 @@ import { FaturaEnergiaComponent } from './geral/fatura-energia/fatura-energia.co
     AutoCompleteComponent,
     BandeiraTarifariaVigenteComponent,
     DeleteActionLinkComponent,
-    FaturaEnergiaComponent
+    FaturaEnergiaComponent,
+    GhostComponent
   ],
   providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService]
 })

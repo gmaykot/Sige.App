@@ -1,8 +1,7 @@
-import { ETipoPerfil } from "../enum/ETipoPerfil";
-
 export interface Usuario {
     id: string;
     name: string;
+    su: string;
     picture: string;
 }
 
@@ -13,7 +12,8 @@ export interface IUsuario {
     email: string;
     senha: string;
     contraSenha: string;
-    ativo: boolean
+    ativo: boolean;
+    superUsuario: boolean;
 }
 
 export interface IUsuarioSenha {
