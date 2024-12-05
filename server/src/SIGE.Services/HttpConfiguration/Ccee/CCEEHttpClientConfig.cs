@@ -11,8 +11,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee
     {
         public static IServiceCollection AddCCEEHttpClient(this IServiceCollection services, IConfiguration config)
         {
-            services.Configure<CceeOptions>(o => config.GetSection("Services:Ccee").Bind(o));
-            var cceeOptions = config.GetSection("Services:Ccee").Get<CceeOptions>();
+            CceeOption option = config.GetSection("Services:Ccee").Get<CceeOption>();
 
             _ = services.AddHttpClient<IHttpClient<CceeHttpClient>, CceeHttpClient>()
                 .ConfigurePrimaryHttpMessageHandler(services =>
@@ -25,10 +24,10 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                     };
 
 
-                    if (!string.IsNullOrEmpty(cceeOptions?.CertificateValue) && !cceeOptions.CertificateValue.Equals("${CERTIFICATE_VALUE}"))
+                    if (!string.IsNullOrEmpty(option?.CertificateValue) && !option.CertificateValue.Equals("${CERTIFICATE_VALUE}"))
                     {
-                        byte[] certBytes = Convert.FromBase64String(cceeOptions.CertificateValue);
-                        var certificatePem = new X509Certificate2(certBytes, cceeOptions.CertificatePass);
+                        byte[] certBytes = Convert.FromBase64String(option.CertificateValue);
+                        var certificatePem = new X509Certificate2(certBytes, option.CertificatePass);
 
                         if (certificatePem != null)
                         {
@@ -38,7 +37,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee
 
                     } else
                     {
-                        Console.WriteLine("##ERRO: Certificate Value => {0}", cceeOptions?.CertificateValue);
+                        Console.WriteLine("##ERRO: Certificate Value => {0}", option?.CertificateValue);
                     }
                     return handler;
                 })
@@ -46,7 +45,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee
                 .ConfigureHttpClient((sp, client) =>
                 {
                     client.Timeout = TimeSpan.FromMinutes(5);
-                    client.BaseAddress = new Uri(cceeOptions.BaseUrl);
+                    client.BaseAddress = new Uri(option.BaseUrl);
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
                 });
 

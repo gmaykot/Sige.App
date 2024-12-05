@@ -19,5 +19,8 @@
 
         public static DateTime GetPeriodo(this string periodo) =>
             DateTime.Parse(string.Format("01/{0}", periodo));
+
+        public static string GetCacheKey(this DateTime data) =>
+            data.ToString("yyyyMMdd");
     }
 }

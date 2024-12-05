@@ -17,9 +17,9 @@ using System.Text;
 
 namespace SIGE.Services.Services.Externo
 {
-    public class EmailService(IOptions<EmailSettingsOptions> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService) : IEmailService
+    public class EmailService(IOptions<EmailSettingsOption> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService) : IEmailService
     {
-        private readonly EmailSettingsOptions _opt = mailSettingsOptions.Value;
+        private readonly EmailSettingsOption _opt = mailSettingsOptions.Value;
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMedicaoService _medicaoService = medicaoService;
 
@@ -89,20 +89,24 @@ namespace SIGE.Services.Services.Externo
                     await mailClient.AuthenticateAsync(_opt.UserName, _opt.Password);
                     await mailClient.SendAsync(mensagem);
 
-                    using var imapClient = new ImapClient();
+                    if (_opt.Imap != null)
+                    {
+                        using var imapClient = new ImapClient();
+
+                        // Conecte ao servidor IMAP
+                        imapClient.Connect(_opt.Imap, _opt.ImapPort.NullToInt(), SecureSocketOptions.SslOnConnect);
+                        imapClient.Authenticate(_opt.UserName, _opt.Password);
+
+                        // Selecione a pasta de "Itens Enviados"
+                        var sentFolder = imapClient.GetFolder(SpecialFolder.Sent);
+                        sentFolder.Open(FolderAccess.ReadWrite);
+
+                        // Copie o e-mail para a pasta
+                        sentFolder.Append(mensagem);
+
+                        imapClient.Disconnect(true);
+                    }
                     
-                    // Conecte ao servidor IMAP
-                    imapClient.Connect(_opt.Imap, _opt.ImapPort, SecureSocketOptions.SslOnConnect);
-                    imapClient.Authenticate(_opt.UserName, _opt.Password);
-
-                    // Selecione a pasta de "Itens Enviados"
-                    var sentFolder = imapClient.GetFolder(SpecialFolder.Sent);
-                    sentFolder.Open(FolderAccess.ReadWrite);
-
-                    // Copie o e-mail para a pasta
-                    sentFolder.Append(mensagem);
-
-                    imapClient.Disconnect(true);
                 }
 
 

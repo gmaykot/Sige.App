@@ -1,23 +1,18 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using SIGE.Core.Options;
 
 namespace SIGE.Services.Schedule
 {
-    public class MedicaoCCEEScheduleService : BackgroundService
+    public class MedicaoCCEEScheduleService(IServiceProvider serviceProvider, IOptions<SystemOption> option) : BackgroundService
     {
-        private readonly IConfiguration _config;
-        private readonly IServiceProvider _serviceProvider;
-
-        public MedicaoCCEEScheduleService(IConfiguration config, IServiceProvider serviceProvider)
-        {
-            _config = config;
-            _serviceProvider = serviceProvider;
-        }
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
+        private readonly SystemOption _option = option.Value;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            if (bool.Parse(_config.GetSection("System:Config:EnableSchedule").Value))
+            if (_option.EnableSchedule)
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {

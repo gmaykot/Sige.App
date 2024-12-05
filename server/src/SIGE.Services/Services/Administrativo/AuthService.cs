@@ -13,16 +13,20 @@ using SIGE.Core.Models.Dto.Administrativo;
 using SIGE.Core.Models.Dto.Administrativo.Usuario;
 using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.Core.Cache;
+using Microsoft.Extensions.Options;
+using SIGE.Core.Options;
 
 namespace SIGE.Services.Services.Administrativo
 {
-    public class AuthService(AppDbContext appDbContext, IConfiguration config, IMapper mapper, ICustomLoggerService loggerService, ICacheManager cacheManager) : IAuthService
+    public class AuthService(AppDbContext appDbContext, IConfiguration config, IMapper mapper, ICustomLoggerService loggerService, ICacheManager cacheManager, IOptions<CacheOption> cacheOption, IOptions<SystemOption> sysOption) : IAuthService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IConfiguration _config = config;
         private readonly IMapper _mapper = mapper;
         private readonly ICustomLoggerService _loggerService = loggerService;
         private readonly ICacheManager _cacheManager = cacheManager;
+        private readonly CacheAuthOption _cacheOption = cacheOption.Value.Auth;
+        private readonly SystemOption _sysOption= sysOption.Value;
 
         public async Task<Response> Login(LoginRequest req)
         {
@@ -44,12 +48,13 @@ namespace SIGE.Services.Services.Administrativo
             if (!req.Password.VerifyPasswordHash(usuario.PasswordHash, usuario.PasswordSalt))
                 return ret.SetUnauthorized().AddError(ETipoErro.ERRO, "A senha digitada não está correta.");
 
-            var menusUsuario = await _cacheManager.Get<List<MenuUsuarioModel>>($"MenuUsuarioLogin{usuario.Id}");
+            var cacheKey = string.Format(_cacheOption.MenuUsuario.Key, usuario.Id);
+            var menusUsuario = await _cacheManager.Get<List<MenuUsuarioModel>>(cacheKey);
 
             if (menusUsuario == null)
             { 
                 menusUsuario = await _appDbContext.MenusUsuarios.AsNoTracking().Include(m => m.MenuSistema).Where(m => m.UsuarioId == usuario.Id && m.MenuSistema.Ativo).OrderBy(m => m.MenuSistema.Ordem).ToListAsync();
-                await _cacheManager.Set($"MenuUsuarioLogin{usuario.Id}", menusUsuario);
+                await _cacheManager.Set(cacheKey, menusUsuario, _cacheOption.MenuUsuario.Expiration);
             }
 
             var menuSistemaDto = new List<MenuSistemaDto>();
@@ -74,11 +79,10 @@ namespace SIGE.Services.Services.Administrativo
                 }
             }
 
-            var jwtSecurityToken = _config.GetSection("System:Config:JwtSecurityToken").Value;
             var token = new TokenDto
             {
-                Payload = usuario.GetTokenJWT(jwtSecurityToken),
-                MenusUsuario = menuSistemaDto.GetMenuJWT(jwtSecurityToken)
+                Payload = usuario.GetTokenJWT(_sysOption.JwtSecurityToken),
+                MenusUsuario = menuSistemaDto.GetMenuJWT(_sysOption.JwtSecurityToken)
             };
 
             return ret.SetOk().SetData(token).SetMessage("Login efetuado com sucesso.");

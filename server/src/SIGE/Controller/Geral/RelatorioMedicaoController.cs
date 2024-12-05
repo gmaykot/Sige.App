@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
-using SIGE.Core.Models.Dto.Gerencial;
 using SIGE.Core.Models.Requests;
 using SIGE.Services.Interfaces.Geral;
 using Swashbuckle.AspNetCore.Annotations;

@@ -54,7 +54,10 @@ namespace SIGE.Configuration
 
         public static IServiceCollection AddMyOptions(this IServiceCollection services, IConfiguration config)
         {
-             services.Configure<EmailSettingsOptions>(config.GetSection("MailSettings"));
+             services.Configure<EmailSettingsOption>(config.GetSection("Email"));
+             services.Configure<CacheOption>(config.GetSection("Cache"));
+             services.Configure<SystemOption>(config.GetSection("System"));
+             services.Configure<CceeOption>(config.GetSection("Services:Ccee"));
             return services;
         }
 

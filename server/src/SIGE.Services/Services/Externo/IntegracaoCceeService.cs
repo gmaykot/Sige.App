@@ -1,9 +1,7 @@
 ﻿using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Options;
 using SIGE.Services.HttpConfiguration.Ccee;
 using SIGE.Services.HttpConfiguration;
-using Microsoft.Extensions.Configuration;
 using System.Text;
 using Newtonsoft.Json;
 using System.Xml.Linq;
@@ -13,14 +11,16 @@ using AutoMapper;
 using SIGE.Core.Extensions;
 using SIGE.Services.Interfaces.Externo;
 using SIGE.Core.Models.Dto.Administrativo.Ccee;
+using SIGE.Core.Options;
+using Microsoft.Extensions.Options;
 
 namespace SIGE.Services.Services.Externo
 {
-    public class IntegracaoCceeService(IHttpClient<CceeHttpClient> httpClient, IConfiguration config, AppDbContext appDbContext, IMapper mapper) : IIntegracaoCceeService
+    public class IntegracaoCceeService(IHttpClient<CceeHttpClient> httpClient, AppDbContext appDbContext, IMapper mapper, IOptions<CceeOption> option) : IIntegracaoCceeService
     {
         public readonly IMapper _mapper = mapper;
         public readonly IHttpClient<CceeHttpClient> _httpClient = httpClient;
-        public readonly CceeOptions? _cceeOptions = config.GetSection("Services:Ccee").Get<CceeOptions>();
+        public readonly CceeOption? _option = option.Value;
         private readonly AppDbContext _appDbContext = appDbContext;
 
         public async Task<Response> ListarMedicoes(IntegracaoCceeBaseDto req)
@@ -44,10 +44,10 @@ namespace SIGE.Services.Services.Externo
                 {
                     var xmlEnvelope = req.TipoMedicao.CreateSoapEnvelope(agente.CodigoPerfilAgente, credenciais.AuthUsername, credenciais.AuthPassword, ponto.Codigo, req.Periodo.GetPrimeiraHoraMes(), req.Periodo.GetUltimaHoraMes());
                     var httpContent = new StringContent(xmlEnvelope, Encoding.UTF8, "text/xml");
-                    httpContent.Headers.Add("SOAPAction", _cceeOptions.ListarMedidas.SoapAction);
+                    httpContent.Headers.Add("SOAPAction", _option.ListarMedidas.SoapAction);
                     try
                     {
-                        var res = await _httpClient.PostAsync(_cceeOptions.ListarMedidas.Url, httpContent);
+                        var res = await _httpClient.PostAsync(_option.ListarMedidas.Url, httpContent);
                         if (res.IsSuccessStatusCode)
                         {
                             var content = await res.Content.ReadAsStringAsync();
@@ -108,10 +108,10 @@ namespace SIGE.Services.Services.Externo
 
             var xmlEnvelope = req.TipoMedicao.CreateSoapEnvelope(req.CodAgente.Trim(), credenciais.AuthUsername.Trim(), credenciais.AuthPassword.Trim(), req.PontoMedicao.Trim(), req.Periodo.GetPrimeiraHoraMes(), req.Periodo.GetUltimaHoraMes());
             var httpContent = new StringContent(xmlEnvelope, Encoding.UTF8, "text/xml");
-            httpContent.Headers.Add("SOAPAction", _cceeOptions.ListarMedidas.SoapAction);
+            httpContent.Headers.Add("SOAPAction", _option.ListarMedidas.SoapAction);
             try
             {
-                var res = await _httpClient.PostAsync(_cceeOptions.ListarMedidas.Url, httpContent);
+                var res = await _httpClient.PostAsync(_option.ListarMedidas.Url, httpContent);
                 if (res.IsSuccessStatusCode)
                 {
                     var content = await res.Content.ReadAsStringAsync();

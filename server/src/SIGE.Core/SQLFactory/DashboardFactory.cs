@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Primitives;
-using SIGE.Core.Extensions;
+﻿using SIGE.Core.Extensions;
 using System.Text;
 
 namespace SIGE.Core.SQLFactory
