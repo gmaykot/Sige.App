@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Extensions;
+using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Email;
 using SIGE.Core.Models.Dto.Geral.Medicao;
 using SIGE.Core.Models.Sistema;
@@ -26,7 +27,7 @@ namespace SIGE.Services.Schedule
 
             var logModel = new LogModel
             {
-                Timestamp = DateTime.Now,
+                Timestamp = DataSige.Hoje(),
                 Source = httpContext?.TraceIdentifier ?? "ScheduleService",
                 Message = string.Empty,
                 RequestPath = request?.Path,
@@ -42,7 +43,7 @@ namespace SIGE.Services.Schedule
 
                 var res = await _medicaoService.ColetarMedicoes(new ColetaMedicaoDto()
                 {
-                    Periodo = DateTime.Now.GetPrimeiraHoraMes(),
+                    Periodo = DataSige.GetPrimeiraHoraMes(),
                     Medicoes = medicoes.Data
                 });
                 if (res != null)
@@ -59,7 +60,7 @@ namespace SIGE.Services.Schedule
 
                 EmailFullDataDto email = new()
                 {
-                    MesReferencia = DateTime.Now.ToString(),
+                    MesReferencia = DataSige.HojeString(),
                     Contato = new ContatoEmailDto()
                     {
                         EmailContato = "gmaykot@gmail.com",

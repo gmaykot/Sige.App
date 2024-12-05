@@ -37,7 +37,7 @@ namespace SIGE.Services.Services.Geral
 
             var resMed = new ResultadoMedicaoDto()
             {
-                DataMedicao = DateTime.Now,
+                DataMedicao = DataSige.Hoje(),
                 EmpresaId = req.EmpresaId.ThrowIfNull(),
                 Contrato = cont,
             };
@@ -94,9 +94,9 @@ namespace SIGE.Services.Services.Geral
                 var consumo = new ConsumoMensalModel
                 {
                     MesReferencia = req.Periodo.ToDate(),
-                    DataMedicao = DateTime.UtcNow,
+                    DataMedicao = DataSige.Hoje(),
                     PontoMedicaoId = med.PontoMedicaoId.ToGuid(),
-                    Icms = 17
+                    Icms = 17,
                 };
 
                 var res = await _integracaoCceeService.ListarMedicoesPorPonto(ccee);

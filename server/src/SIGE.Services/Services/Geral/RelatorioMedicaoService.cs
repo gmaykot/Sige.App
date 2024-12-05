@@ -64,7 +64,7 @@ namespace SIGE.Services.Services.Geral
             });
 
             res.MesReferencia = mesReferencia;
-            res.DataEmissao = DateTime.Now.Hoje();
+            res.DataEmissao = DataSige.Hoje();
 
             if (rel == null)
             {
@@ -97,7 +97,7 @@ namespace SIGE.Services.Services.Geral
                     SubMercado = "Sul",
                     Conexao = "A4",
                     Concessao = "RGE Sul",
-                    DataAnalise = DateTime.Now,
+                    DataAnalise = DataSige.Hoje(),
                     MesReferencia = "Outubro/24",
                     NumerorDiasMes = 31,
                     PeriodoHoroSazonal = "Bandeira Verde"

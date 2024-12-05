@@ -19,11 +19,5 @@
 
         public static DateTime GetPeriodo(this string periodo) =>
             DateTime.Parse(string.Format("01/{0}", periodo));
-
-        public static DateTime Hoje(this DateTime dataHoje)
-        {
-            string formato = dataHoje.ToString("yyyy-MM-ddTHH:mm:ss");
-            return DateTime.ParseExact(formato, "yyyy-MM-ddTHH:mm:ss", null);
-        }
     }
 }
