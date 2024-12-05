@@ -1,82 +1,38 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { NbThemeService } from "@nebular/theme";
 import { takeWhile } from "rxjs/operators";
-import { DeviceDetectorService } from "ngx-device-detector";
-import { ActivatedRoute, Router } from "@angular/router";
 import { LocalDataSource } from "ng2-smart-table";
-
-interface CardSettings {
-  title: string;
-  iconClass: string;
-  type: string;
-  link: string;
-}
+import { DashboardService } from "../../@core/services/administrativo/dashboard.service";
+import { Router } from "@angular/router";
+import { IChecklist } from "../../@core/data/administrativo/checklist";
+import { IResponseInterface } from "../../@core/data/response.interface";
+import { IContratosFinalizados } from "../../@core/data/administrativo/contratos-finalizados";
+import { IStatusMedicao } from "../../@core/data/administrativo/status-medicao";
+import { IConsumoMeses } from "../../@core/data/administrativo/consumo-meses";
+import { CardSettings, DashboardConfigSettings } from "./dashboard.config.settings";
+import { STATUS_MEDICAO } from "../../@core/enum/filtro-medicao";
 
 @Component({
   selector: "ngx-dashboard",
   styleUrls: ["./dashboard.component.scss"],
   templateUrl: "./dashboard.component.html",
 })
-export class DashboardComponent implements OnDestroy {
+export class DashboardComponent extends DashboardConfigSettings implements OnDestroy, OnInit {
+  public sourceChecklist: LocalDataSource = new LocalDataSource();
+  public sourceContratos: LocalDataSource = new LocalDataSource();
   private alive = true;
-  viabilidadeCard: CardSettings = {
-    title: "Coletar Medições",
-    iconClass: "nb-bar-chart",
-    type: "primary",
-    link: "/pages/medicao",
-  };
-  economiaCard: CardSettings = {
-    title: "Relatório de Medição",
-    iconClass: "nb-compose",
-    type: "primary",
-    link: "/pages/relatorio-medicao",
-  };
-
-  contratoCard: CardSettings = {
-    title: "Contratos",
-    iconClass: "nb-tables",
-    type: "primary",
-    link: "/pages/contratos",
-  };
-
-  settings = {
-    delete: {
-      deleteButtonContent: '<i class="nb-gear"></i>',
-      confirmDelete: true,
-    },
-    columns: {
-      mesReferencia: {
-        title: "Mês Referência",
-        type: "string"
-      },
-      empresa: {
-        title: "Empresa",
-        type: "string",
-      },
-      totalkWh: {
-        title: "Total kW/h",
-        type: "string",
-      },
-      mediakWh: {
-        title: "Média kW/h",
-        type: "string",
-      }
-    },
-    actions: {
-      columnTitle: 'Medir',
-      add: false,
-      edit: false,
-      delete: true,
-      position: "right",
-    },
-    hideSubHeader: true,
-    noDataMessage: 'Nenhum registro encontrado.'
-  };
-  statusCards: string;
+  public checklist = false;
+  public contratos = false;
+  public medicoes = false;
+  public consumo = false;
+  public statusCards: string;
+  public mesReferencia: string = new Date().toLocaleString("pt-BR", { month: "numeric", year: "numeric" });
+  public mesReferenciaAnterior: string =  new Date(new Date().setMonth(new Date().getMonth() - 1)).toLocaleString("pt-BR", { month: "numeric", year: "numeric" });
 
   commonStatusCardsSet: CardSettings[] = [
+    this.faturamentoCard,
     this.viabilidadeCard,
-    this.economiaCard,
+    this.economiaCard,    
     this.contratoCard
   ];
 
@@ -84,29 +40,60 @@ export class DashboardComponent implements OnDestroy {
     default: CardSettings[];
     corporate: CardSettings[];
   } = {
-    default: this.commonStatusCardsSet,
-    corporate: this.commonStatusCardsSet
-  };
+      default: this.commonStatusCardsSet,
+      corporate: this.commonStatusCardsSet
+    };
+
+  public pieSource: any[] = [];
+  public barSource: any[] = [];
 
   constructor(
     private themeService: NbThemeService,
-    private deviceService: DeviceDetectorService,
-    private router: ActivatedRoute
+    private router: Router,
+    private service: DashboardService
   ) {
-   
-    this.router.url.subscribe(url => {
-      var currentRoute = url.join('/');
-    });
-    
+    super();
+  }
+  async ngOnInit(): Promise<void> {
     this.themeService
       .getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe((theme) => {
         this.statusCards = this.statusCardsByThemes[theme.name];
       });
+
+    this.service.obterChecklist().then((response: IResponseInterface<IChecklist[]>) => {
+      if (response.success) {
+        this.sourceChecklist.load(response.data);
+      }
+      this.checklist = true;
+    });
+    this.service.obterContratosFinalizados().then((response: IResponseInterface<IContratosFinalizados[]>) => {
+      if (response.success) {
+        this.sourceContratos.load(response.data);
+      }
+      this.contratos = true;
+    });
+    this.service.obterStatusMedicoes().then((response: IResponseInterface<IStatusMedicao[]>) => {
+      if (response.success) {        
+        this.pieSource = response.data.sort((x, y) => x.status - y.status).map((data) => ({ value: data.total, name: STATUS_MEDICAO.filter(s => s.id == data.status)[0].desc }));
+      }
+      this.medicoes = true;
+    });
+    this.service.obterConsumoMeses().then((response: IResponseInterface<IConsumoMeses[]>) => {
+      if (response.success) {
+        this.barSource = response.data.map((data) => ({ value: data.consumoMensal, name: data.descMes }));
+      }
+      this.consumo = true;
+    });
   }
 
   ngOnDestroy() {
     this.alive = false;
   }
+
+  onSelectPendencias(event) {
+    this.router.navigateByUrl(event.data.route);
+  }
+
 }

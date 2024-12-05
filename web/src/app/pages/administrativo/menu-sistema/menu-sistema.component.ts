@@ -7,6 +7,7 @@ import { IResponseInterface } from '../../../@core/data/response.interface';
 import { settingsMenuSistema } from '../../../@shared/table-config/menu-sistema.config';
 import { NbDialogService } from '@nebular/theme';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
+import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 
 @Component({
   selector: 'ngx-menu-sistema',
@@ -26,9 +27,11 @@ export class MenuSistemaComponent {
     title: "",
     link: "",
     expanded: new FormControl(),
+    ativo: new FormControl(),
     icon: "",
     ordem: new FormControl()
   });
+  public habilitaOperacoes = SessionStorageService.habilitaOperacoes();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -58,6 +61,7 @@ export class MenuSistemaComponent {
       title: menu.title,
       link: menu.link,
       expanded: menu.expanded || false,
+      ativo: menu.ativo || false,
       icon: menu.icon,
       ordem: menu.ordem
     });

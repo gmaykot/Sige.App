@@ -5,6 +5,6 @@
         public Guid Id { get; set; }
         public bool Ativo { get; set; } = true;
         public DateTime? DataExclusao { get; set; }
-        public DateTime DataRegistro { get; set; } = DateTime.Now;
+        public DateTime DataRegistro { get; set; } = DataSige.Hoje();
     }
 }

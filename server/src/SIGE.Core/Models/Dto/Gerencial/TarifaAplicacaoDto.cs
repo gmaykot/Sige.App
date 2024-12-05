@@ -1,4 +1,6 @@
-﻿namespace SIGE.Core.Models.Dto.Gerencial
+﻿using SIGE.Core.Enumerators;
+
+namespace SIGE.Core.Models.Dto.Gerencial
 {
     public class TarifaAplicacaoDto
     {
@@ -6,8 +8,8 @@
         public Guid? ConcessionariaId { get; set; }
         public string? DescConcessionaria { get; set; }
         public required string NumeroResolucao { get; set; }
-        public string SubGrupo { get; set; } = string.Empty;
-        public string Modalidade { get; set; } = string.Empty;
+        public required ESubGrupo SubGrupo { get; set; }
+        public required ETipoSegmento Segmento { get; set; }
         public DateTime DataUltimoReajuste { get; set; }
         public required decimal KWPonta { get; set; }
         public required decimal KWForaPonta { get; set; }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Extensions;
+using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Sistema;
 using SIGE.DataAccess.Context;
 
@@ -20,7 +21,7 @@ namespace SIGE.Services.Custom
 
             var logModel = new LogModel
             {
-                Timestamp = DateTime.Now,
+                Timestamp = DataSige.Hoje(),
                 LogLevel = logLevel,
                 Message = message,
                 Source = httpContext?.TraceIdentifier,
@@ -44,7 +45,7 @@ namespace SIGE.Services.Custom
 
             var logModel = new LogModel
             {
-                Timestamp = DateTime.Now,
+                Timestamp = DataSige.Hoje(),
                 LogLevel = logLevel,
                 Message = message,
                 Source = httpContext?.TraceIdentifier,

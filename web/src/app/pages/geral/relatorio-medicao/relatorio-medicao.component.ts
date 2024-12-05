@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { settingsRelatorioEconomia, settingsResultadoAnalitico, settingsResultadoEconomia } from '../../../@shared/table-config/relatorio-economia.config';
+import { settingsRelatorioMedicao, settingsResultadoAnalitico, settingsResultadoEconomia } from '../../../@shared/table-config/relatorio-economia.config';
 import { LocalDataSource } from 'ng2-smart-table';
 import { DateService } from '../../../@core/services/util/date.service';
-import { FormBuilder } from '@angular/forms';
-import { RelatorioEconomiaService } from '../../../@core/services/geral/relatorio-economia.service';
+import { FormBuilder, Validators } from '@angular/forms';
+import { RelatorioMedicaoService } from '../../../@core/services/geral/relatorio-medicao.service';
 import { ContatoService } from '../../../@core/services/gerencial/contato.service';
 import { DatePipe } from '@angular/common';
 import { NbDialogService, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { IResponseInterface } from '../../../@core/data/response.interface';
-import { CalculoEconomiaService } from '../../../@core/services/geral/calculo-economia.service';
+import { CalculoEconomiaService } from '../../../@core/services/geral/calculo-medicao.service';
 import { EmailService } from '../../../@core/services/util/email.service';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { FASES_MEDICAO } from '../../../@core/enum/filtro-medicao';
@@ -17,11 +17,12 @@ import { EnvioEmailComponent } from '../../../@shared/custom-component/envio-ema
 import { IContato } from '../../../@core/data/contato';
 import { RelatorioMedicaoPdfService } from './relatorio-medicao-pdf.service';
 import { AlertService } from '../../../@core/services/util/alert.service';
-import { IRelatorioEconomia, IRelatorioEconomiaList, IRelatorioEconomiaRequest, IValoresEconomia, IValoresEconomiaAnalitico } from '../../../@core/data/relatorio-economia';
+import { IRelatorioMedicao, IRelatorioMedicaoList, IRelatorioMedicaoRequest, IValoresMedicao, IValoresMedicaoAnalitico } from '../../../@core/data/relatorio-medicao';
 import { ValidacaoMedicaoComponent } from '../../../@shared/custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
+import { JwtService } from '../../../@core/services/util/jwt.service';
 
 @Component({
   selector: 'ngx-relatorio-medicao',
@@ -31,7 +32,7 @@ import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 export class RelatorioMedicaoComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
-    private relatorioEconomiaService: RelatorioEconomiaService,
+    private relatorioMedicaoService: RelatorioMedicaoService,
     private medicaoService: MedicaoService,
     private contatoService: ContatoService,
     private datePipe: DatePipe,
@@ -41,9 +42,10 @@ export class RelatorioMedicaoComponent implements OnInit {
     private emailService: EmailService,
     private relatorioMedicaoPdfService: RelatorioMedicaoPdfService,
     private alertService: AlertService,
+    private jwtService: JwtService
   ) {}
 
-    public settings = settingsRelatorioEconomia;
+    public settings = settingsRelatorioMedicao;
     public settingsResultado = settingsResultadoEconomia;
     public settingsResultadoAnalitico = settingsResultadoAnalitico;
     public source: LocalDataSource = new LocalDataSource();
@@ -54,17 +56,21 @@ export class RelatorioMedicaoComponent implements OnInit {
     public loading: boolean = false;
 
     public dataAtual = new Date();
-    public competencia = null;
-    public relatorio: IRelatorioEconomiaList;
-    public relatorioEconomia: IRelatorioEconomia;
-    public valores:IValoresEconomia;
-    public resultadoAnalitico: IValoresEconomiaAnalitico[];
+    public mesReferencia = null;
+    public relatorio: IRelatorioMedicaoList;
+    public relatorioMedicao: IRelatorioMedicao;
+    public valores:IValoresMedicao;
+    public resultadoAnalitico: IValoresMedicaoAnalitico[];
     public contatos: Array<IContato> = []
     public positions = NbGlobalPhysicalPosition;
     public habilitaValidar: boolean = false;
     public habilitaOperacoes: boolean = false;
 
     public control = this.formBuilder.group({
+      observacao: ["", Validators.required],
+      observacaoValidacao: [null, null],
+      validado: [null, null],
+      usuarioResponsavelId: [this.jwtService.getDecodedUser().id, null],
     });
 
     async ngOnInit()
@@ -76,21 +82,50 @@ export class RelatorioMedicaoComponent implements OnInit {
       this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
     }
   
+  salvar()
+  {
+    this.relatorioMedicao.observacao = this.control.value.observacao;
+    this.relatorioMedicao.observacaoValidacao = this.control.value.observacaoValidacao;
+    this.relatorioMedicao.validado = this.control.value.validado;
+    this.relatorioMedicao.usuarioResponsavelId = this.control.value.usuarioResponsavelId;
+    this.relatorioMedicaoService
+    .put(this.relatorioMedicao)
+    .then((response: IResponseInterface<IRelatorioMedicao>) => {
+      if (response.success) {
+        this.alertService.showSuccess("Observação salva com sucesso.");
+      } else {
+        response.errors.map((x) => this.alertService.showError(x.value));
+      }
+    })
+    .catch((httpMessage: any) => {
+      this.alertService.showError(httpMessage);
+    });
+  }
+
   validar()
   {
     this.dialogService
-    .open(ValidacaoMedicaoComponent)
+    .open(ValidacaoMedicaoComponent, { context: { observacao: this.relatorioMedicao.observacaoValidacao, validado: this.relatorioMedicao.validado } })
     .onClose.subscribe(async (ret) => {
+      if (ret) {
+        this.control.patchValue({ observacaoValidacao: ret.observacao }, { emitEvent: false });
+        this.control.patchValue({ validado: ret.validado }, { emitEvent: false });
+        this.salvar();
+      }
     }); 
+  }
+
+  habilitaPdf(){
+    return this.relatorioMedicao.totalMedido > 0;
   }
 
   clear()
   {
-    this.competencia = null;
+    this.mesReferencia = null;
     this.selected = false;
     this.sourceResultado.load([]);
     this.sourceResultadoAnalitico.load([]);
-    this.relatorioEconomia = null;
+    this.relatorioMedicao = null;
   }
 
   getMeses()
@@ -100,32 +135,43 @@ export class RelatorioMedicaoComponent implements OnInit {
 
   onSearch(event)
   {
-    this.competencia = event;
+    this.mesReferencia = event;
   }
 
   async onSelect(event)
   {
     this.loading = true;
-    this.relatorio = event.data as IRelatorioEconomiaList;
-    if (this.competencia == null) {
+    this.relatorio = event.data as IRelatorioMedicaoList;
+    if (this.mesReferencia == null && event.data.mesReferencia == null) {
       this.dialogService
         .open(CustomDeleteConfirmationComponent, {
           context: {
-            mesage: "A Competência do Relatório deve ser selecionada.",
+            mesage: "O Mês de Referência do Relatório deve ser selecionado.",
             accent: "warning",
           },
         })
         .onClose.subscribe();
     } else {
-      await this.relatorioEconomiaService
-      .get(this.relatorio.contratoId, this.competencia)
-      .then((response: IResponseInterface<IRelatorioEconomia>) => {
+      await this.relatorioMedicaoService
+      .getRelatorio(this.relatorio.contratoId, this.mesReferencia ?? event.data.mesReferencia)
+      .then((response: IResponseInterface<IRelatorioMedicao>) => {
         if (response.success) {
-          this.relatorioEconomia = response.data;
+          this.relatorioMedicao = response.data;
+          this.control.patchValue({ observacao: this.relatorioMedicao.observacao }, { emitEvent: false });
           this.atualizaValoresEconomia();
           this.selected = true;
+          if (this.relatorioMedicao.totalMedido === 0) {
+            this.dialogService
+              .open(CustomDeleteConfirmationComponent, {
+                context: {
+                  mesage: "O valor Total Medido CCEE está zerado. Algumas funcionalidades não serão disponibilizadas.",
+                  accent: "warning",
+                },
+              })
+              .onClose.subscribe();
+          }
         } else {
-          this.relatorioEconomia = null;
+          this.relatorioMedicao = null;
           response.errors.map((x) => this.alertService.showError(x.value));
         }
       })
@@ -137,10 +183,10 @@ export class RelatorioMedicaoComponent implements OnInit {
   }
 
   atualizaValoresEconomia(){
-    this.valores = this.calculoEconomiaService.calcular(this.relatorioEconomia);
+    this.valores = this.calculoEconomiaService.calcular(this.relatorioMedicao);
     this.sourceResultado.load([this.valores.resultadoFaturamento]);
     
-    this.resultadoAnalitico = this.calculoEconomiaService.calcularAnalitico(this.relatorioEconomia);
+    this.resultadoAnalitico = this.calculoEconomiaService.calcularAnalitico(this.relatorioMedicao);
     this.sourceResultadoAnalitico.load(this.resultadoAnalitico);
         
     if (this.valores.comprarCurtoPrazo > 0)
@@ -151,15 +197,15 @@ export class RelatorioMedicaoComponent implements OnInit {
 
   getStatusFase()
   {   
-    return FASES_MEDICAO.find((f) => f.id == +this.relatorioEconomia.fase)?.desc;
+    return FASES_MEDICAO.find((f) => f.id == +this.relatorioMedicao.fase)?.desc;
   }
 
   private async getRelatorios() {
-    var relatorio: IRelatorioEconomiaRequest = {
+    var relatorio: IRelatorioMedicaoRequest = {
     };
-    await this.relatorioEconomiaService
+    await this.relatorioMedicaoService
       .getRelatorios(relatorio)
-      .then((response: IResponseInterface<IRelatorioEconomiaList[]>) => {
+      .then((response: IResponseInterface<IRelatorioMedicaoList[]>) => {
         if (response.success) {
           this.source.load(response.data);
         } else {
@@ -188,8 +234,8 @@ export class RelatorioMedicaoComponent implements OnInit {
   }
 
   public downloadAsPdf(): void {
-    this.alertService.showWarning("Iniciando a geração e download do relatório de medição em PDF.")
-    this.relatorioMedicaoPdfService.downloadPDF(this.relatorioEconomia, this.valores, this.resultadoAnalitico, this.competencia);
+    this.alertService.showWarning("Iniciando a geração e download do relatório de medição em PDF.", 120)
+    this.relatorioMedicaoPdfService.downloadPDF(this.relatorioMedicao, this.valores, this.resultadoAnalitico, this.mesReferencia);
   }
 
   public downloadAsCsv(): void {
@@ -209,10 +255,10 @@ export class RelatorioMedicaoComponent implements OnInit {
         'Consumo Reativo',
       ],
     };
-    var nomeArquivo = `relarotio_medicao${this.relatorioEconomia.descGrupo.replace(" ", "_")}_${this.datePipe.transform(this.competencia, 'yyyyMM')}`.toLowerCase();
+    var nomeArquivo = `relarotio_medicao${this.relatorioMedicao.descGrupo.replace(" ", "_")}_${this.datePipe.transform(this.mesReferencia, 'yyyyMM')}`.toLowerCase();
     var medicoes = [];
     this.medicaoService
-    .medicaoPorContrato(this.relatorioEconomia.contratoId, this.relatorioEconomia.competencia || this.competencia)
+    .medicaoPorContrato(this.relatorioMedicao.contratoId, this.relatorioMedicao.mesReferencia || this.mesReferencia)
     .then((response: IResponseInterface<any>) => {
       if (response.success) {
         response.data.forEach(med => {
@@ -258,7 +304,7 @@ export class RelatorioMedicaoComponent implements OnInit {
   }
 
   public sendEmailAsPdf(contatosSend: IContatoEmail[]): void {       
-        var file = this.relatorioMedicaoPdfService.blobPDF(this.relatorioEconomia, this.valores, this.resultadoAnalitico, this.competencia);
+        var file = this.relatorioMedicaoPdfService.blobPDF(this.relatorioMedicao, this.valores, this.resultadoAnalitico, this.mesReferencia);
         this.blobToBase64(file).then(async (result: string) =>
         {
           if (result){
@@ -267,16 +313,19 @@ export class RelatorioMedicaoComponent implements OnInit {
               contato = contatosSend.pop();
             
             var emailData: IEmailData = {
-              contratoId: this.relatorioEconomia.contratoId,
+              contratoId: this.relatorioMedicao.contratoId,
+              relatorioMedicaoId: this.relatorioMedicao.id,
               contato: contato,
-              mesReferencia: this.datePipe.transform(this.competencia, "MM/yyyy"),
-              descMesReferencia: this.datePipe.transform(this.competencia, "MMyy"),
-              descEmpresa: this.relatorioEconomia.descGrupo,
-              totalNota: Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(this.relatorioEconomia.totalMedido),
+              mesReferencia: this.relatorioMedicao.mesReferencia,
+              descMesReferencia: this.relatorioMedicao.mesReferencia,
+              descEmpresa: this.relatorioMedicao.descGrupo,
+              totalNota: Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(this.relatorioMedicao.totalMedido),
               relatorios: [result],
               contatosCCO: contatosSend.filter(c => c.id != contato.id)
             }
             await this.emailService.sendEmail(emailData).then(() => this.alertService.showSuccess('Email enviado com sucesso.'));
+            this.getRelatorios();
+            this.relatorioMedicao.fase = '2';
           }
         });
   }

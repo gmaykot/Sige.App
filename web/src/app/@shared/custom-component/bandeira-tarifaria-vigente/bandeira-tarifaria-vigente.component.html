@@ -1,0 +1,32 @@
+<form [formGroup]="control">
+    <nb-card accent="warning">
+        <input hidden id="id" type="text" formControlName="id">
+        <nb-card-header>Cadastro de Imposto</nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="inputFirstName" class="label">Mês Referência*</label>
+                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____" [dropSpecialCharacters]="false" fieldSize="small" formControlName="mesReferencia">              
+                    </div>
+                </div>          
+            </div>
+            <div class="row">       
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="inputFirstName" class="label">Bandeira Vigente*</label>
+                        <nb-select fullWidth placeholder="Selecione" formControlName="bandeira">
+                            <nb-option *ngFor="let bd of bandeiras" [value]="bd.id">{{bd.desc}}</nb-option>
+                        </nb-select>  
+                    </div>
+                </div>
+            </div>            
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="text-center">
+                <button nbButton status="warning" (click)="onSubmit()" [disabled]="!control.valid">Confirmar</button>
+                <button nbButton status="basic" style="margin-left: 2.5rem;" (click)="onClose()">Cancelar</button>
+            </div>
+        </nb-card-footer>  
+    </nb-card>
+</form>

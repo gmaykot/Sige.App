@@ -8,7 +8,7 @@
                     <div class="form-group">
                         <label for="inputFirstName" class="label">Menu Sistema*</label>
                         <nb-select fullWidth multiple placeholder="Selecione os Menus" formControlName="menusSistema">
-                            <nb-option-group *ngFor="let obj of menusSistema" title="{{obj.descricao}}">
+                            <nb-option-group *ngFor="let obj of menusSistemaUsuario" title="{{obj.descricao}}">
                                 <nb-option *ngFor="let subObj of showSubMenu(obj.subGrupo)" value="{{subObj.id}}">{{subObj.descricao}}</nb-option>
                             </nb-option-group>
                         </nb-select>

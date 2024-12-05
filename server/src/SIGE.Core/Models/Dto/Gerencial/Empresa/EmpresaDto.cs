@@ -23,6 +23,7 @@ namespace SIGE.Core.Models.Dto.Gerencial.Empresa
         public IEnumerable<AgenteMedicaoDto>? AgentesMedicao { get; set; }
         public IEnumerable<ContatoDto>? Contatos { get; set; }
         public IEnumerable<ContratoEmpresaDto>? ContratosEmpresa { get; set; }
+        public bool Ativo { get; set; } = true;
 
         public virtual bool IsMatriz() =>
             EmpresaMatrizId == null;

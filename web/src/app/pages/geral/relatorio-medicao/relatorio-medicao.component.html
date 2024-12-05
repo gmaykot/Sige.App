@@ -6,7 +6,7 @@
                 <div class="row">
                     <div class="col-sm-2">
                         <div class="form-group">
-                            <label for="inputEmail" class="label">Competência</label><br />
+                            <label for="inputEmail" class="label">Mês Referência</label><br />
                             <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
                                 <nb-option>Selecione</nb-option>
                                 <nb-option *ngFor="let mes of getMeses()"
@@ -27,21 +27,21 @@
     <div class="row">
         <div class="col-md-12">
             <nb-card accent="warning" [nbSpinner]="loading">
-                <nb-card-header>Relatório de Medição {{relatorioEconomia.competencia ? relatorioEconomia.competencia : competencia | date:
+                <nb-card-header>Relatório de Medição {{relatorioMedicao.mesReferencia ? relatorioMedicao.mesReferencia : mesReferencia | date:
                     'MM/yyyy'}}</nb-card-header>
                 <nb-card-body>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="subtitle sub-med">Grupo</div>
-                            <div class="h7">{{relatorioEconomia.descGrupo}}</div>
+                            <div class="h7">{{relatorioMedicao.descGrupo}}</div>
                         </div>
                         <div class="col-md-2">
                             <div class="subtitle sub-med">Contrato</div>
-                            <div class="h7">{{relatorioEconomia.numContrato}}</div>
+                            <div class="h7">{{relatorioMedicao.numContrato}}</div>
                         </div>
                         <div class="col-md-2">
                             <div class="subtitle sub-med">Fornecedor</div>
-                            <div class="h7">{{relatorioEconomia.descFornecedor}}</div>
+                            <div class="h7">{{relatorioMedicao.descFornecedor}}</div>
                         </div>
                         <div class="col-md-2">
                             <div class="subtitle sub-med">Fase Atual</div>
@@ -49,32 +49,32 @@
                         </div>
                         <div class="col-md-2">
                             <div class="subtitle sub-med">Data Emissão</div>
-                            <div class="h7">{{relatorioEconomia.dataEmissao ? relatorioEconomia.dataEmissao : dataAtual | date : 'dd/MM/yyyy'}}</div>
+                            <div class="h7">{{relatorioMedicao.dataEmissao ? relatorioMedicao.dataEmissao : dataAtual | date : 'dd/MM/yyyy'}}</div>
                         </div>
                     </div>
                     <div class="row top-up">
                         <div class="col-md-2">
                             <div class="subtitle sub-med">Vigência Inicial</div>
-                            <div class="h7">{{relatorioEconomia.dataVigenciaInicial | date : 'dd/MM/yyyy'}}</div>
+                            <div class="h7">{{relatorioMedicao.dataVigenciaInicial | date : 'dd/MM/yyyy'}}</div>
                         </div>
                         <div class="col-md-2">
                             <div class="subtitle sub-med">Vigência Final</div>
-                            <div class="h7">{{relatorioEconomia.dataVigenciaFinal | date : 'dd/MM/yyyy'}}</div>
+                            <div class="h7">{{relatorioMedicao.dataVigenciaFinal | date : 'dd/MM/yyyy'}}</div>
                         </div>
                         <div class="col-md-2">
                             <div class="subtitle sub-med">Energia Contratada</div>
-                            <div class="h7">{{relatorioEconomia.energiaContratada | number:'2.3-3':'pt'}} MWh</div>
+                            <div class="h7">{{relatorioMedicao.energiaContratada | number:'2.3-3':'pt'}} MWh</div>
                         </div>
                         <div class="col-md-2">
                             <div class="subtitle sub-med">Horas/Mês</div>
-                            <div class="h7">{{relatorioEconomia.horasMes}} hs</div>
+                            <div class="h7">{{relatorioMedicao.horasMes}} hs</div>
                         </div>
                         <div class="col-md-2">
-                            <div class="subtitle sub-med">Flex -{{relatorioEconomia.takeMinimo}}%</div>
+                            <div class="subtitle sub-med">Flex -{{relatorioMedicao.takeMinimo}}%</div>
                             <div class="h7">{{valores.takeMinimo | number:'2.3-3':'pt'}} MWh</div>
                         </div>
                         <div class="col-md-2">
-                            <div class="subtitle sub-med">Flex +{{relatorioEconomia.takeMaximo}}%</div>
+                            <div class="subtitle sub-med">Flex +{{relatorioMedicao.takeMaximo}}%</div>
                             <div class="h7">{{valores.takeMaximo | number:'2.3-3':'pt'}} MWh</div>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="subtitle sub-med">Total Medido CCEE</div>
-                                            <div class="h7">{{relatorioEconomia.totalMedido | number:'2.3-3':'pt'}} kWh
+                                            <div class="h7">{{relatorioMedicao.totalMedido | number:'2.3-3':'pt'}} kWh
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -103,12 +103,12 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="subtitle sub-med">PROINFA</div>
-                                            <div class="h7">{{relatorioEconomia.proinfa | number:'2.2-2':'pt'}}
+                                            <div class="h7">{{relatorioMedicao.proinfa | number:'2.2-2':'pt'}}
                                             </div>
                                         </div> 
                                         <div class="col-md-3">
                                             <div class="subtitle sub-med">ICMS</div>
-                                            <div class="h7">{{relatorioEconomia.icms | number:'2.2-2':'pt'}}
+                                            <div class="h7">{{relatorioMedicao.icms | number:'2.2-2':'pt'}}
                                             </div>
                                         </div>                                                                                                                                                                
                                     </div>
@@ -172,24 +172,25 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <div class="subtitle sub-med">Observação</div>
-                                                <textarea nbInput fullWidth></textarea>
+                                                <textarea nbInput fullWidth formControlName="observacao"></textarea>
                                             </div>
                                         </div>
                                     </div>
                                 </nb-card-body>
                             </nb-card>
                         </nb-tab>
-                    </nb-tabset>
-                    
+                    </nb-tabset>                    
                 </nb-card-body>
                 <nb-card-footer>
-                    <button type="submit" nbButton status="basic" (click)="clear()">Voltar</button>
-                    <button type="submit" nbButton status="info" style="margin-left: 0.5rem;" *ngIf="habilitaOperacoes">Salvar</button>
-                    <button type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;" *ngIf="habilitaValidar && habilitaOperacoes">Validar</button>
+                    <button *ngIf="habilitaOperacoes" type="submit" nbButton status="basic" (click)="clear()">Voltar</button>
+                    <button [disabled]="!control.valid || !habilitaPdf()" type="submit" nbButton status="info" style="margin-left: 0.5rem;" (click)="salvar()">Salvar</button>
+
+                    <button [disabled]="!habilitaPdf()" *ngIf="habilitaValidar && habilitaOperacoes && relatorioMedicao.validado !== undefined && relatorioMedicao.validado !== null" type="submit" nbButton (click)="validar()" status="{{relatorioMedicao.validado === true ? 'success' : 'danger'}}" style="margin-left: 0.5rem;"><nb-icon icon="{{relatorioMedicao.validado === true ? 'person-done-outline' : 'person-delete-outline'}}"></nb-icon>Validado</button>
+                    <button [disabled]="!habilitaPdf()" *ngIf="habilitaValidar && habilitaOperacoes && (relatorioMedicao.validado === undefined || relatorioMedicao.validado === null)" type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;">Validar</button>
+
+                    <button [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsPdf()">Gerar PDF</button>
+                    <button [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="onSendEmail()">Enviar E-mail</button>
                     <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsCsv()">Exportar Medições CSV</button>
-                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" hidden>Relatório de Economia</button>
-                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsPdf()">Gerar PDF</button>
-                    <button type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="onSendEmail()">Enviar E-mail</button>
                 </nb-card-footer>
             </nb-card>
         </div>

@@ -1,26 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { EmpresaService } from '../../../@core/services/gerencial/empresa.service';
-import { ContratoService } from '../../../@core/services/gerencial/contrato.service';
-import { FormBuilder, Validators } from '@angular/forms';
-import { IDropDown } from '../../../@core/data/drop-down';
-import { IResponseInterface } from '../../../@core/data/response.interface';
-import { IContratoEmpresas } from '../../../@core/data/contrato-empresas';
 import { AlertService } from '../../../@core/services/util/alert.service';
-import { IUsuario, Usuario } from '../../../@core/data/usuario';
-import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { LocalDataSource } from 'ng2-smart-table';
 import { UsuarioConfigSettings } from './usuario.config.settings';
 import { UsuarioService } from '../../../@core/services/administrativo/usuario.service';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
-import { ETipoPerfil } from '../../../@core/enum/ETipoPerfil';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { Classes } from '../../../@core/enum/classes.const';
-import { DateService } from '../../../@core/services/util/date.service';
 import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
-import { PERFIL_MENU } from '../../../@core/enum/const-dropbox';
-import { IMenuSistema } from '../../../@core/data/menu-sistema';
 import { MenuUsuarioComponent } from '../../../@shared/custom-component/menu-usuario/menu-usuario.component';
 import { IMenuUsuario } from '../../../@core/data/menu-usuario';
+import { MenuUsuarioService } from '../../../@core/services/administrativo/menu-usuario.service';
+import { IResponseInterface } from '../../../@core/data/response.interface';
+import { MenuSistemaService } from '../../../@core/services/administrativo/menu-sistema.service';
+import { IDropDown } from '../../../@core/data/drop-down';
 
 @Component({
   selector: 'ngx-usuario',
@@ -35,29 +27,69 @@ export class UsuarioComponent extends UsuarioConfigSettings implements OnInit {
     protected formBuilderService: FormBuilderService,
     protected alertService: AlertService,
     protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService
+    protected dialogService: NbDialogService,
+    private menuUsuarioService: MenuUsuarioService,
+    private menuSistemaService: MenuSistemaService,
   ) 
   {
     super(Classes.USUARIO, formBuilderService, service, alertService, scroolService, dialogService);
   }
 
-  async onConfirmMenu() {
-    var menus = await this.sourceMenu.getAll();
+  async onSelectCustom(event) {
+    super.onSelect(event);
+    this.loadSourceMenu(event.data.id);
+  }
 
+  private async loadSourceMenu(id: string) {
+    this.loading = true;
+    await this.menuUsuarioService
+    .getPorUsuario(id)
+    .then((response: IResponseInterface<IMenuUsuario[]>) => {
+      if (response.success) {
+        this.sourceMenu.load(response.data);
+      } else {
+        this.sourceMenu.load([]);
+      }
+    });
+    this.loading = false;
+  }
+
+  async onConfirmMenu() {
+    var menus = (await this.menuSistemaService.getDropDownEstruturado()).data;
+
+    var menusGerais: IDropDown[] = [{
+      id: '0',
+      descricao: 'Principais',
+      subGrupo: menus
+    }];
+    
+    menusGerais = menusGerais.concat(menus);
+       
     this.dialogService
-      .open(MenuUsuarioComponent, { context: { menusSistemaUsuario: menus } })
+      .open(MenuUsuarioComponent, { context: { menusSistemaUsuario: menusGerais }})
       .onClose.subscribe(async (response) => {
-        if (response) {          
+        if (response) {         
+          var menusUsuario: IMenuUsuario[] = [];
           response.menusSistema.forEach(menuSistema => {
             const menu: IMenuUsuario = {
               menuSistemaId: menuSistema.id,
               menuSistemaDesc: menuSistema.desc,
-              usuarioId: response.usuarioId,
+              usuarioId: this.control.value.id,
               tipoPerfil: response.tipoPerfil
             }
-            menus.push(menu);
+            menusUsuario.push(menu);
           });
-          this.sourceMenu.load(menus);
+          if (menusUsuario.length > 0)
+          {
+            await this.menuUsuarioService
+            .postMenus(menusUsuario)
+            .then((res2: IResponseInterface<any>) => {
+              if (res2.success) {
+              }
+            });
+            this.alertService.showSuccess('Menu atualizado com sucesso.');
+            this.loadSourceMenu(this.control.value.id);
+          }        
         }
       });
   }
@@ -69,9 +101,12 @@ export class UsuarioComponent extends UsuarioConfigSettings implements OnInit {
       .onClose.subscribe(async (excluir) => {
         if (excluir){  
           this.checked.forEach(async menu => {
-            var menus = await this.sourceMenu.getAll();
-            this.sourceMenu.load(menus.filter(m => m.menuSistemaId != menu.menuSistemaId));
+            await this.menuUsuarioService
+            .delete(menu.id)
+            .then((res2: IResponseInterface<any>) => {
+            });
           });
+          this.loadSourceMenu(this.control.value.id);
           this.alertService.showSuccess("Registros excluídos com sucesso.");
           this.checked = [];
         }

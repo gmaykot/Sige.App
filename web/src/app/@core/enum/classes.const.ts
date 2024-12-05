@@ -1,5 +1,6 @@
 export enum Classes
 {
+    BANDEIRA_TARIFARIA_VIGENTE = 'BandeiraTarifariaVigente',
     IMPOSTO_CONCESSIONARIA = 'ImpostoConcessionaria',
     CONCESSIONARIA = 'Concessionaria',
     FATURAMENTO_COENEL = 'FaturamentoCoenel',

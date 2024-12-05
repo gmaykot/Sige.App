@@ -1,0 +1,30 @@
+<form [formGroup]="control">
+    <div class="card-row" [nbSpinner]="loading">
+        <div class="card-col">
+            <nb-card>
+                <nb-card-body>
+                    <nb-tabset>
+                        <nb-tab tabTitle="Cache Manager">
+                            <nb-card style="border: 0rem;">
+                                <nb-card-body>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                        <label for="inputFirstName" class="label">Cache Key´s*</label>
+                                        <nb-select fullWidth placeholder="Selecione" formControlName="key">
+                                            <nb-option *ngFor="let src of source" value="{{src}}">{{src}}</nb-option>
+                                        </nb-select>
+                                    </div>
+                                </div>
+                                </nb-card-body>
+                                <nb-card-footer>
+                                    <button type="submit" nbButton status="info" (click)="clear()" [disabled]="!control.valid">Clear</button>
+                                    <button type="submit" nbButton status="danger" (click)="clearAll()" [disabled]="!control.valid" style="margin-left: 0.5rem;">Clear All</button>
+                                </nb-card-footer>
+                            </nb-card>
+                        </nb-tab>
+                    </nb-tabset>
+                </nb-card-body>
+            </nb-card>
+        </div>
+    </div>
+</form>

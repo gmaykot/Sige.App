@@ -2,10 +2,10 @@ import { Injectable } from "@angular/core";
 import jsPDF, { TextOptionsLight } from "jspdf";
 import autoTable, { RowInput } from "jspdf-autotable";
 import {
-  IRelatorioEconomia,
-  IValoresEconomia,
-  IValoresEconomiaAnalitico,
-} from "../../../@core/data/relatorio-economia";
+  IRelatorioMedicao,
+  IValoresMedicao,
+  IValoresMedicaoAnalitico,
+} from "../../../@core/data/relatorio-medicao";
 import { DatePipe, DecimalPipe } from "@angular/common";
 import { CapitalizePipe } from "../../../@theme/pipes";
 
@@ -26,47 +26,44 @@ export class RelatorioMedicaoPdfService {
   ) {}
 
   public blobPDF(
-    relatorioEconomia: IRelatorioEconomia,
-    valores: IValoresEconomia,
-    resultadoAnalitico: IValoresEconomiaAnalitico[],
-    competencia: any
+    relatorioMedicao: IRelatorioMedicao,
+    valores: IValoresMedicao,
+    resultadoAnalitico: IValoresMedicaoAnalitico[],
+    mesReferencia: any
   ): any {
     const pdf = this.createPDF(
-      relatorioEconomia,
+      relatorioMedicao,
       valores,
       resultadoAnalitico,
-      competencia
+      mesReferencia
     );
     return pdf.output("blob");
   }
 
   public downloadPDF(
-    relatorioEconomia: IRelatorioEconomia,
-    valores: IValoresEconomia,
-    resultadoAnalitico: IValoresEconomiaAnalitico[],
-    competencia: any
+    relatorioMedicao: IRelatorioMedicao,
+    valores: IValoresMedicao,
+    resultadoAnalitico: IValoresMedicaoAnalitico[],
+    mesReferencia: any
   ) {
     const pdf = this.createPDF(
-      relatorioEconomia,
+      relatorioMedicao,
       valores,
       resultadoAnalitico,
-      competencia
+      mesReferencia
     );
     pdf.save(
-      `relatorio_medicao_${this.datePipe.transform(
-        relatorioEconomia.competencia
-          ? relatorioEconomia.competencia
-          : competencia,
-        "MMyy"
-      )}_${relatorioEconomia.descGrupo.toLowerCase().replace(" ", "_")}.pdf`
+      `relatorio_medicao_${relatorioMedicao.mesReferencia
+          ? relatorioMedicao.mesReferencia
+          : mesReferencia}_${relatorioMedicao.descGrupo.toLowerCase().replace(" ", "_")}.pdf`
     );
   }
 
   private createPDF(
-    relatorioEconomia: IRelatorioEconomia,
-    valores: IValoresEconomia,
-    resultadoAnalitico: IValoresEconomiaAnalitico[],
-    competencia: any
+    relatorioMedicao: IRelatorioMedicao,
+    valores: IValoresMedicao,
+    resultadoAnalitico: IValoresMedicaoAnalitico[],
+    mesReferencia: any
   ): jsPDF {
     // TAMANHO A4 EM PT: 595.35 x 841.995
     const doc = new jsPDF("p", "pt", "a4");
@@ -76,12 +73,9 @@ export class RelatorioMedicaoPdfService {
         Valores usados em multiplos lugares
       */
       const globalValues = {
-        mesReferencia: this.datePipe.transform(
-          relatorioEconomia.competencia
-            ? relatorioEconomia.competencia
-            : competencia,
-          "MM/yyyy"
-        ),
+        mesReferencia: relatorioMedicao.mesReferencia
+            ? relatorioMedicao.mesReferencia
+            : mesReferencia
       };
 
       /*
@@ -152,7 +146,7 @@ export class RelatorioMedicaoPdfService {
               margins?.sectionXsMarginTop,
           },
           {
-            text: relatorioEconomia.descGrupo?.toUpperCase(),
+            text: relatorioMedicao.descGrupo?.toUpperCase(),
             marginTop:
               tituloCabecalhoHeight +
               tituloCabecalhoMarginTop +
@@ -167,7 +161,7 @@ export class RelatorioMedicaoPdfService {
             isBold: true,
           },
           {
-            text: relatorioEconomia.numContrato,
+            text: relatorioMedicao.numContrato,
             borderColor: "#ffffff",
           },
         ],
@@ -177,7 +171,7 @@ export class RelatorioMedicaoPdfService {
             isBold: true,
           },
           {
-            text: relatorioEconomia.descFornecedor?.toUpperCase(),
+            text: relatorioMedicao.descFornecedor?.toUpperCase(),
             lineWidth: 415,
             borderColor: "#ffffff",
           },
@@ -189,7 +183,7 @@ export class RelatorioMedicaoPdfService {
           },
           {
             text: this.decimalPipe.transform(
-              relatorioEconomia?.horasMes,
+              relatorioMedicao?.horasMes,
               "2.0-0",
               "pt"
             ),
@@ -201,25 +195,31 @@ export class RelatorioMedicaoPdfService {
             isBold: true,
           },
           {
-            text: this.tipoEnergiaMapper(relatorioEconomia.tipoEnergia),
+            text: this.tipoEnergiaMapper(relatorioMedicao.tipoEnergia),
+            borderColor: "#ffffff",
+            lineWidth: 415,
+          },
+        ],
+        valorUnitarioKwh: [
+          {
+            text: "Valor MWh:",
+            isBold: true,
+          },
+          {
+            text: "R$ " + this.decimalPipe.transform(
+              relatorioMedicao?.valorUnitarioKwh,
+              "2.2-2",
+              "pt"
+            ),
           },
         ],
       };
 
       this.pdfConfig.addMarginTop(relatorioPdfData, "contrato", "empresa");
-      this.pdfConfig.addMarginTop(
-        relatorioPdfData,
-        "fornecedor",
-        "contrato",
-        margins.itemSpacing
-      );
+      this.pdfConfig.addMarginTop(relatorioPdfData,"fornecedor","contrato",margins.itemSpacing);
       this.pdfConfig.addMarginTop(relatorioPdfData, "horasMes", "fornecedor");
-      this.pdfConfig.addMarginTop(
-        relatorioPdfData,
-        "tipoEnergia",
-        "horasMes",
-        margins.itemSpacing
-      );
+      this.pdfConfig.addMarginTop(relatorioPdfData,"tipoEnergia","horasMes",margins.itemSpacing);
+      this.pdfConfig.addMarginTop(relatorioPdfData, "valorUnitarioKwh", "horasMes",margins.itemSpacing);
 
       const relatorioData = this.pdfConfig.formatarPdfData(relatorioPdfData);
       this.pdfConfig.addMultiplosTextos(doc, relatorioData);
@@ -264,7 +264,7 @@ export class RelatorioMedicaoPdfService {
           {
             text:
               this.decimalPipe.transform(
-                relatorioEconomia.totalMedido,
+                relatorioMedicao.totalMedido,
                 "2.3-3",
                 "pt"
               ) + " (kWh)",
@@ -278,7 +278,7 @@ export class RelatorioMedicaoPdfService {
           {
             text: `Medido + 3% perdas = (+) ${this.getDesconto(
               this.decimalPipe.transform(
-                relatorioEconomia.totalMedido,
+                relatorioMedicao.totalMedido,
                 "2.3-3",
                 "pt"
               )
@@ -295,7 +295,7 @@ export class RelatorioMedicaoPdfService {
         proinfa: [
           {
             text: `Desconto PROINFA no mês = (-) ${this.decimalPipe.transform(
-              relatorioEconomia.proinfa,
+              relatorioMedicao.proinfa,
               "2.3-3",
               "pt"
             )}:`,
@@ -418,17 +418,14 @@ export class RelatorioMedicaoPdfService {
 
       autoTable(doc, {
         head: [
-          ["Mês", "hs mês", "Energia cont. (MWh)", `Flex -${relatorioEconomia.takeMinimo}%`, `Flex -${relatorioEconomia.takeMinimo}%`],
+          ["Mês", "hs mês", "Energia cont. (MWh)", `Flex -${relatorioMedicao.takeMinimo}%`, `Flex -${relatorioMedicao.takeMinimo}%`],
         ],
         body: [
           [
             {
-              content: this.datePipe.transform(
-                relatorioEconomia.competencia
-                  ? relatorioEconomia.competencia
-                  : competencia,
-                "MM/yyyy"
-              ),
+              content: relatorioMedicao.mesReferencia
+                  ? relatorioMedicao.mesReferencia
+                  : mesReferencia,
               styles: {
                 halign: "center",
                 fontSize: 9,
@@ -436,7 +433,7 @@ export class RelatorioMedicaoPdfService {
             },
             {
               content: this.decimalPipe.transform(
-                relatorioEconomia?.horasMes,
+                relatorioMedicao?.horasMes,
                 "2.0-0",
                 "pt"
               ),
@@ -447,7 +444,7 @@ export class RelatorioMedicaoPdfService {
             },
             {
               content: this.decimalPipe.transform(
-                relatorioEconomia.energiaContratada,
+                relatorioMedicao.energiaContratada,
                 "2.3-3",
                 "pt"
               ),
@@ -639,7 +636,7 @@ export class RelatorioMedicaoPdfService {
     );
   }
 
-  private faturamentoHelper(resultadoAnalitico: IValoresEconomiaAnalitico[]): {
+  private faturamentoHelper(resultadoAnalitico: IValoresMedicaoAnalitico[]): {
     totalFaturamentoLongoPrazo: any[];
     venderOuComprar: string;
   } {

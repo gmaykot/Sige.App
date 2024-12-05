@@ -19,6 +19,7 @@ export class DefaultComponent<T> implements OnInit {
   public isSuperUsuario: boolean = false;
   public loading = true;
   public selected = false;
+  public selectedObject: T;
   public source: LocalDataSource = new LocalDataSource();
 
   constructor(
@@ -51,9 +52,11 @@ export class DefaultComponent<T> implements OnInit {
     this.control.reset();
     this.edit = false;
     this.selected = false;
+    this.selectedObject = null;
   }
 
   loadObject(){
+    this.selectedObject = null;
     return this.control.value;
   }
 
@@ -74,6 +77,7 @@ export class DefaultComponent<T> implements OnInit {
   onSelect(event){
     this.clearForm();
     this.createControlObject(event.data);
+    this.selectedObject = event.data;
     this.selected = true;
     this.edit = true;
     this.scroolService.scrollTo(0,0);

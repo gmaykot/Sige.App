@@ -96,6 +96,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
 
   async onColectAll(){
     this.colectAll = true;
+    this.selected = false;
+    this.medicaoSelected = null;
     this.alertService.showWarning('Iniciando coleta de Pontos de Medição EM LOTE. Isso pode levar alguns minutos.', 20000)
     this.medicoesChecked = this.medicoes;
     await this.onColect(null, null);
@@ -123,7 +125,6 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
     var erro = false;
     for (let i = 0; i < lotes.length; i += 1) {
       this.percentual = ((i + 1) / lotes.length) * 100;
-      //this.alertService.showWarning("Processando lote "+(i+1)+" de "+lotes.length);
       var coleta: IColetaMedicao =
       {
         medicoes: lotes[i],
@@ -137,6 +138,9 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
           this.valores = response.data.listaValoresGrafico;
           this.sourceMedicao.load(response.data.listaMedidas);
           this.sourceMedicaoIcompletas.load(response.data.listaMedidas.filter(m => m.consumoAtivo === 0 && (m.status === 'HCC' || m.status === 'HE')));
+          if (this.medicaoSelected) {
+            this.medicaoSelected.statusMedicao = response.data.medicao.statusMedicao;
+          }
         } else {
           if (medicao)
             response.errors.map((x) => this.alertService.showError(`${x.key} - ${x.value}`));
@@ -148,8 +152,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       this.alertService.showWarning('Ocorreu erro em alguma das coletas. Verifique.')
     else
       this.alertService.showSuccess('Coleta efetuada com sucesso.')
-    await this.getMedicoes("", null, "", "");
-
+    
+    this.getMedicoes("", null, "", "");
     this.loading = false;
     this.coletando = false;
     this.medicoesChecked = [];
@@ -165,6 +169,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       if (response.success) {        
         this.alertService.showSuccess('Valores alterados com sucesso.')
         this.scroolService.scrollTo(0,0);
+        this.medicaoSelected.statusMedicao = '1';
+        await this.getMedicoes("", null, "", "");
       } else {
         response.errors.map((x) => this.alertService.showError( x.value));
       }
@@ -184,9 +190,9 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
         if (response.success) {
           this.medicoes = response.data;
           this.source.load(response.data);
-          if (this.medicoes.filter(m => m.statusMedicao == "18").length > 0)
+          if (this.medicoes.filter(m => m.statusMedicao == "18").length > 0 && !this.medicaoSelected)
             this.alertService.showWarning("Existem medições Incompletas no período.", 12000)
-          if (this.medicoes.filter(m => m.statusMedicao == "19").length > 0)
+          if (this.medicoes.filter(m => m.statusMedicao == "19").length > 0 && !this.medicaoSelected)
             this.alertService.showWarning("Existem medições com Valores Divergentes no período.", 12000)
     } else {
           this.source.load([]);

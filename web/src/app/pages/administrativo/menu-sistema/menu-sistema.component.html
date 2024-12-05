@@ -39,7 +39,7 @@
           <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="ordem">
         </div>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-1">
         <div class="form-group">
           <label for="inputFirstName" class="label">Expandido*</label>
           <nb-select fullWidth placeholder="Selecione" formControlName="expanded">
@@ -48,11 +48,20 @@
           </nb-select>
         </div>
       </div>
+      <div class="col-sm-1">
+        <div class="form-group">
+          <label for="inputFirstName" class="label">Ativo*</label>
+          <nb-select fullWidth placeholder="Selecione" formControlName="ativo">
+            <nb-option [value]="false">Não</nb-option>
+            <nb-option [value]="true">Sim</nb-option>
+          </nb-select>
+        </div>
+      </div>
     </div>    
   </nb-card-body>
   <nb-card-footer>
-    <button type="submit" nbButton status="info"  (click)="onSubmit()">{{edit ? 'Alterar' : 'Cadastrar'}}</button>
-    <button type="submit" *ngIf="edit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()">Excluir</button>
+    <button type="submit" nbButton status="info"  (click)="onSubmit()" *ngIf="habilitaOperacoes" [disabled]="!control.valid">{{edit ? 'Alterar' : 'Cadastrar'}}</button>
+    <button type="submit" *ngIf="edit && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()">Excluir</button>
     <button type="submit" *ngIf="edit" nbButton style="margin-left: 0.5rem;" (click)="limparFormulario()">Limpar</button>
   </nb-card-footer>
 </nb-card>

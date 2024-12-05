@@ -21,6 +21,10 @@ import TarifaAplicacaoComponent from './gerencial/tarifa-aplicacao/tarifa-aplica
 import { BandeiraTarifariaComponent } from './gerencial/bandeira-tarifaria/bandeira-tarifaria.component';
 import { FaturamentoCoenelComponent } from './geral/faturamento-coenel/faturamento-coenel.component';
 import { SalarioMinimoComponent } from './gerencial/salario-minimo/salario-minimo.component';
+import { FaturaEnergiaComponent } from './geral/fatura-energia/fatura-energia.component';
+import { SAGuard } from '../@core/guards/SAGuard';
+import { GhostComponent } from './administrativo/ghost/ghost.component';
+import { UnauthorizedComponent } from '../@core/pages/unauthorized/unauthorized.component';
 
 const routes: Routes = [{
   path: '',
@@ -70,6 +74,7 @@ const routes: Routes = [{
     {
       path: 'menu-sistema',
       component: MenuSistemaComponent,
+      canActivate: [ SAGuard ],
     },
     {
       path: 'relatorio-economia',
@@ -96,6 +101,19 @@ const routes: Routes = [{
       component: ValorConcessionariaComponent,
     },
     {
+      path: 'fatura-energia',
+      component: FaturaEnergiaComponent,
+    },
+    {
+      path: 'ghost',
+      component: GhostComponent,
+      canActivate: [ SAGuard ],
+    },
+    {
+      path: 'unauthorized',
+      component: UnauthorizedComponent,
+    },    
+    {
       path: '',
       redirectTo: 'dashboard',
       pathMatch: 'full',
@@ -103,7 +121,7 @@ const routes: Routes = [{
     {
       path: '**',
       component: NotFoundComponent,
-    },
+    },    
   ],
 }];
 

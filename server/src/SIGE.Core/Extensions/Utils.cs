@@ -4,8 +4,30 @@ namespace SIGE.Core.Extensions
 {
     public static class Utils
     {
-        public static string NullToString(this object? Value) =>
-            Value.ToString() ?? string.Empty;
+        public static string NullToString(this object? value)
+        {
+            return value switch
+            {
+                null => string.Empty,
+                string str => str,
+                _ => value.ToString() ?? string.Empty
+            };
+        }
+
+
+        public static int NullToInt(this object? value)
+        {
+            if (value == null)
+                return 0;
+            try
+            {
+                return Convert.ToInt32(value);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
 
         public static DateTime ToDate(this DateTime? data)
         {

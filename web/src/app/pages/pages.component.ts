@@ -25,7 +25,7 @@ export class PagesComponent {
         var menuSistema: any = menuBag.item;
         var perfil: number = menuSistema.Perfil
         sessionStorage.setItem('selectedMenuItem', menuSistema.title);
-        sessionStorage.setItem('selectedMenuPerfil', perfil.toString());
+        sessionStorage.setItem('selectedMenuPerfil', perfil?.toString());
       });
     }    
   } 

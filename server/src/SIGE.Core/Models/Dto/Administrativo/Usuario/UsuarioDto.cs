@@ -11,6 +11,7 @@ namespace SIGE.Core.Models.Dto.Administrativo.Usuario
         public string? Senha { get; set; }
         public ETipoPerfil TipoPerfil { get; set; }
         public bool Ativo { get; set; }
+        public bool SuperUsuario { get; set; }
         public IEnumerable<MenuUsuarioDto>? MenusUsuario { get; set; }
     }
 }

@@ -18,7 +18,7 @@ import { ThemeModule } from '../@theme/theme.module';
 import { NgxLoginComponent } from './pages/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { environment } from '../../environments/environment';
+import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 
 const DATA_SERVICES = [];
 
@@ -80,7 +80,8 @@ export const NB_CORE_PROVIDERS = [
   ],
   declarations: [
     NotFoundComponent,
-    NgxLoginComponent
+    NgxLoginComponent,
+    UnauthorizedComponent
   ],
 })
 export class CoreModule {

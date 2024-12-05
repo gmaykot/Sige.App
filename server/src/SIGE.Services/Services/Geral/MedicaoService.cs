@@ -37,7 +37,7 @@ namespace SIGE.Services.Services.Geral
 
             var resMed = new ResultadoMedicaoDto()
             {
-                DataMedicao = DateTime.Now,
+                DataMedicao = DataSige.Hoje(),
                 EmpresaId = req.EmpresaId.ThrowIfNull(),
                 Contrato = cont,
             };
@@ -51,7 +51,7 @@ namespace SIGE.Services.Services.Geral
             var res = await _appDbContext.Database.SqlQueryRaw<MedicaoDto>(MedicoesFactory.ListaMedicoes(req)).ToListAsync();
             if (res != null && res.Count != 0)
             {
-                return ret.SetOk().SetData(res.DistinctBy(m => m.PontoMedicaoId).OrderByDescending(m => m.Periodo));
+                return ret.SetOk().SetData(res.DistinctBy(m => m.PontoMedicaoId).OrderBy(m => m.DescEmpresa).ThenBy(m => m.DescPontoMedicao));
             }
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem medições no período.");
@@ -94,9 +94,9 @@ namespace SIGE.Services.Services.Geral
                 var consumo = new ConsumoMensalModel
                 {
                     MesReferencia = req.Periodo.ToDate(),
-                    DataMedicao = DateTime.UtcNow,
+                    DataMedicao = DataSige.Hoje(),
                     PontoMedicaoId = med.PontoMedicaoId.ToGuid(),
-                    Icms = 17
+                    Icms = 17,
                 };
 
                 var res = await _integracaoCceeService.ListarMedicoesPorPonto(ccee);
@@ -167,16 +167,16 @@ namespace SIGE.Services.Services.Geral
 
         private EStatusMedicao VerificaStatusMedicao(IEnumerable<IntegracaoCceeMedidasDto>? lista, DateTime mesReferencia, ConsumoMensalModel consumoRecente)
         {
-            if (!lista.Any())
-                return EStatusMedicao.INCOMPLETA;
-
             if (consumoRecente == null)
                 return EStatusMedicao.COMPLETA;
+
+            if (!lista.Any())
+                return EStatusMedicao.INCOMPLETA;
 
             var totalConsumoRecente = consumoRecente.Medicoes.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()).Sum(m => m.ConsumoAtivo);
             var totalAtual = lista.Sum(m => m.ConsumoAtivo);
 
-            if (totalConsumoRecente != totalAtual)
+            if (totalConsumoRecente != totalAtual && consumoRecente.StatusMedicao is EStatusMedicao.COMPLETA or EStatusMedicao.INCOMPLETA)
                 return EStatusMedicao.VALOR_DIVERGENTE;
 
             int diasNoMes = DateTime.DaysInMonth(mesReferencia.Year, mesReferencia.Month);
@@ -284,6 +284,7 @@ namespace SIGE.Services.Services.Geral
 
             res.Icms = req.Icms;
             res.Proinfa = req.Proinfa;
+            res.StatusMedicao = EStatusMedicao.COMPLETA;
 
             _appDbContext.Update(res);
             _ = await _appDbContext.SaveChangesAsync();

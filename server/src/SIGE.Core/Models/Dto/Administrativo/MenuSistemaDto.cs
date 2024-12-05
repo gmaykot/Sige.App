@@ -12,6 +12,7 @@ namespace SIGE.Core.Models.Dto.Administrativo
         public string? icon { get; set; }
         public bool? home { get; set; }
         public bool? expanded { get; set; }
+        public bool? ativo { get; set; }
         public int ordem { get; set; }
         public required ETipoPerfil Perfil { get; set; }
         public List<MenuSistemaDto>? children { get; set; }

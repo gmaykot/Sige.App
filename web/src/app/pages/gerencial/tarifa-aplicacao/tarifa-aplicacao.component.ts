@@ -11,7 +11,7 @@ import { DefaultComponent } from '../../../@shared/custom-component/default/defa
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { Classes } from '../../../@core/enum/classes.const';
 import { DateService } from '../../../@core/services/util/date.service';
-import { MODALIDADES, SUB_GRUPOS } from '../../../@core/enum/const-dropbox';
+import { SEGMENTOS, SUB_GRUPOS } from '../../../@core/enum/const-dropbox';
 
 @Component({
   selector: 'ngx-tarifa-aplicacao',
@@ -21,7 +21,7 @@ import { MODALIDADES, SUB_GRUPOS } from '../../../@core/enum/const-dropbox';
 export default class TarifaAplicacaoComponent extends DefaultComponent<ITarifaAplicacao> implements OnInit {
   settings = settingsTarifaAplicacao;
   public concessionarias?: IDropDown[];  
-  modalidades = MODALIDADES;
+  segmentos = SEGMENTOS;
   subgrupos = SUB_GRUPOS;
 
   constructor(
@@ -56,13 +56,9 @@ export default class TarifaAplicacaoComponent extends DefaultComponent<ITarifaAp
 
   onSelectCustom(event){
     this.onSelect(event);
-    this.control.patchValue({dataUltimoReajuste: this.dateService.usStringToPtBrString(this.control.value.dataUltimoReajuste, 'dd/MM/yyyy')});
   }
 
   onSubmitCustom(): void {
-    const oldDate = this.control.value.dataUltimoReajuste;
-    this.control.patchValue({dataUltimoReajuste: this.dateService.ptBrStringToUsString(this.control.value.dataUltimoReajuste)});
     this.onSubmit();
-    this.control.patchValue({dataUltimoReajuste: oldDate});
   }
 }

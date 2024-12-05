@@ -1,5 +1,5 @@
 <div class="row show-grid">
-    <div class="col-12 col-md-4" *ngFor="let statusCard of statusCards">
+    <div class="col-12 col-md-3" *ngFor="let statusCard of statusCards">
       <a>
         <ngx-status-card
           [title]="statusCard.title"
@@ -11,38 +11,41 @@
       </a>
     </div>
 </div>
-<div class="card-row" *ngIf="false">
+<div class="card-row">
   <div class="col-sm-6" >
-    <nb-card accent="info">
-      <nb-card-header>Medições Coletadas</nb-card-header>
+    <nb-card accent="danger" size="small" [nbSpinner]="!checklist">
+      <nb-card-header>Checklist Operacional {{mesReferencia}}</nb-card-header>
       <nb-card-body>
-        <ngx-echarts-pie></ngx-echarts-pie>
+        <ng2-smart-table [settings]="settingsPendencias" [source]="sourceChecklist" (deleteConfirm)="onSelectPendencias($event)">
+        </ng2-smart-table>
       </nb-card-body>    
     </nb-card>
   </div>
-  <div class="col-sm-6">
-    <nb-card accent="info">
-      <nb-card-header>Consumo Geral kWh Mês</nb-card-header>
+  <div class="col-sm-6" >
+    <nb-card accent="warning" size="small" [nbSpinner]="!contratos">
+      <nb-card-header>Contratos Finalizando em {{mesReferencia}}</nb-card-header>
       <nb-card-body>
-        <ngx-echarts-bar></ngx-echarts-bar>
+        <ng2-smart-table [settings]="settingsContratos" [source]="sourceContratos">
+        </ng2-smart-table>
       </nb-card-body>    
     </nb-card>
   </div>
+  
 </div>
-<div class="card-row"  *ngIf="false">
-  <div class="col-sm-6" >
-    <nb-card accent="info">
-      <nb-card-header>Status Medições</nb-card-header>
+<div class="card-row">
+  <div class="col-sm-6">
+    <nb-card accent="info" [nbSpinner]="!medicoes">
+      <nb-card-header>Status das Coletas de Medições {{mesReferenciaAnterior}}</nb-card-header>
       <nb-card-body>
-        <ngx-echarts-pie></ngx-echarts-pie>
+        <ngx-echarts-pie *ngIf="medicoes" [descricao]="'Medições'" [dataSource]="pieSource"></ngx-echarts-pie>
       </nb-card-body>    
     </nb-card>
   </div>
   <div class="col-sm-6">
-    <nb-card accent="info">
-      <nb-card-header>Contratos Fim Vigência</nb-card-header>
+    <nb-card accent="info" [nbSpinner]="!consumo">
+      <nb-card-header>Total de Consumo kWh Últimos 6 Meses</nb-card-header>
       <nb-card-body>
-        <ngx-echarts-bar></ngx-echarts-bar>
+        <ngx-echarts-bar *ngIf="consumo" [dataSource]="barSource"></ngx-echarts-bar>
       </nb-card-body>    
     </nb-card>
   </div>

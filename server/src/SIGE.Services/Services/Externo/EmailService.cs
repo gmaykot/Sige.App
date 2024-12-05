@@ -1,6 +1,10 @@
-﻿using MailKit.Net.Smtp;
+﻿using MailKit;
+using MailKit.Net.Imap;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Email;
@@ -13,9 +17,9 @@ using System.Text;
 
 namespace SIGE.Services.Services.Externo
 {
-    public class EmailService(IOptions<EmailSettingsOptions> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService) : IEmailService
+    public class EmailService(IOptions<EmailSettingsOption> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService) : IEmailService
     {
-        private readonly EmailSettingsOptions _opt = mailSettingsOptions.Value;
+        private readonly EmailSettingsOption _opt = mailSettingsOptions.Value;
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMedicaoService _medicaoService = medicaoService;
 
@@ -34,7 +38,7 @@ namespace SIGE.Services.Services.Externo
                     var emailTo = new MailboxAddress(req.Contato.NomeContato, req.Contato.EmailContato);
                     mensagem.To.Add(emailTo);
 
-                    req.ContatosCCO?.ForEach(c => mensagem.Bcc.Add(new MailboxAddress(c.NomeContato, c.EmailContato)));
+                    req.ContatosCCO?.ForEach(c => mensagem.Cc.Add(new MailboxAddress(c.NomeContato, c.EmailContato)));
 
                     var builder = new BodyBuilder
                     {
@@ -81,9 +85,37 @@ namespace SIGE.Services.Services.Externo
                     mensagem.Body = builder.ToMessageBody();
 
                     using var mailClient = new SmtpClient();
-                    await mailClient.ConnectAsync(_opt.Server, _opt.Port, MailKit.Security.SecureSocketOptions.Auto);
+                    await mailClient.ConnectAsync(_opt.Server, _opt.Port, SecureSocketOptions.Auto);
                     await mailClient.AuthenticateAsync(_opt.UserName, _opt.Password);
                     await mailClient.SendAsync(mensagem);
+
+                    if (_opt.Imap != null)
+                    {
+                        using var imapClient = new ImapClient();
+
+                        // Conecte ao servidor IMAP
+                        imapClient.Connect(_opt.Imap, _opt.ImapPort.NullToInt(), SecureSocketOptions.SslOnConnect);
+                        imapClient.Authenticate(_opt.UserName, _opt.Password);
+
+                        // Selecione a pasta de "Itens Enviados"
+                        var sentFolder = imapClient.GetFolder(SpecialFolder.Sent);
+                        sentFolder.Open(FolderAccess.ReadWrite);
+
+                        // Copie o e-mail para a pasta
+                        sentFolder.Append(mensagem);
+
+                        imapClient.Disconnect(true);
+                    }
+                    
+                }
+
+
+                var relatorio = await _appDbContext.RelatoriosMedicao.FindAsync(req.RelatorioMedicaoId);
+                if (relatorio != null)
+                {
+                    relatorio.Fase = EFaseMedicao.ENVIO_EMAIL;
+                    _appDbContext.RelatoriosMedicao.Update(relatorio);
+                    _ = await _appDbContext.SaveChangesAsync();
                 }
 
                 return ret.SetOk();

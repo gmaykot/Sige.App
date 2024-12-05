@@ -4,6 +4,8 @@ const estadoToList = Object.values(UF).map(value => {
   return { value: value.sigla, title: value.sigla };
 });
 
+const ativoToList = [{ value: 'true', title: 'SIM' }, { value: 'false', title: 'NÃO' }];
+
 export const settingsEmpresa = {
   add: {
     addButtonContent: '<i class="nb-plus"></i>',
@@ -50,6 +52,19 @@ export const settingsEmpresa = {
           list: estadoToList,
         },
       },    
+    },
+    ativo: {
+      title: "Ativa",
+      type: "string",
+      class: "estado",
+      valuePrepareFunction: (value) => { return value == true ? 'SIM' : 'NÃO'},
+      filter: {
+        type: 'list',
+        config: {
+          selectText: 'Selecione...',
+          list: ativoToList,
+        },
+      },  
     }
   },
   actions: {

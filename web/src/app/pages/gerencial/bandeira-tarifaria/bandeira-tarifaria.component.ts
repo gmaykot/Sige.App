@@ -11,6 +11,9 @@ import { IBandeiraTarifaria } from '../../../@core/data/bandeira-tarifaria';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
+import { IBandeiraTarifariaVigente } from '../../../@core/data/bandeira-tarifaria-vigente';
+import { BandeiraTarifariaVigenteService } from '../../../@core/services/gerencial/bandeira-tarifaria-vigente.service';
+import { BandeiraTarifariaVigenteComponent } from '../../../@shared/custom-component/bandeira-tarifaria-vigente/bandeira-tarifaria-vigente.component';
 
 @Component({
   selector: 'ngx-bandeira-tarifaria',
@@ -19,6 +22,7 @@ import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-compo
 })
 export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings implements OnInit{
   public source: LocalDataSource = new LocalDataSource();
+  public sourceBandeiras: LocalDataSource = new LocalDataSource();
   public loading: boolean;
   public edit: boolean;
   public selected: boolean;
@@ -39,11 +43,11 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
   constructor(
     private formBuilder: FormBuilder,
     private service: BandeiraTarifariaService,
-    private datePipe: DatePipe,
-    private dateService: DateService,
+    private bandeiraVigenteService: BandeiraTarifariaVigenteService,
     private dialogService: NbDialogService,
     private alertService: AlertService,
-    private scroolService: NbLayoutScrollService
+    private scroolService: NbLayoutScrollService,
+
   ) { super();}
   
   async ngOnInit() {
@@ -93,6 +97,7 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
       valorBandeiraVermelha2: band.valorBandeiraVermelha2,
       ativo: band.ativo
     });
+    this.loadSourceBandeiras();
     this.edit = true;
     this.selected = true;
     this.scroolService.scrollTo(0,0);  
@@ -151,5 +156,89 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
     }).catch(() => {
       this.alertService.showError("Não foi possível alterar a bandeira neste momento.");
     });
+  }
+
+  async loadSourceBandeiras() {
+    this.loading = true;
+    await this.bandeiraVigenteService
+      .obterPorBandeira(this.control.value.id)
+      .then((response: IResponseInterface<IBandeiraTarifariaVigente[]>) => {
+        if (response.success) {
+          this.sourceBandeiras.load(response.data);
+        } else {
+          this.sourceBandeiras.load([]);
+        }
+      });
+      this.loading = false;
+  }
+
+  onBandeiraConfirm() {
+    this.dialogService
+    .open(BandeiraTarifariaVigenteComponent, {
+      context: { bandeiraVigente: { bandeiraTarifariaId: this.control.value.id } as IBandeiraTarifariaVigente },
+    })
+    .onClose.subscribe(async (ret) => {
+      if (ret) {
+        await this.bandeiraVigenteService.post(ret).then(async (res: IResponseInterface<IBandeiraTarifariaVigente>) =>
+        {          
+          if (res.success){     
+            await this.loadSourceBandeiras();
+            this.alertService.showSuccess("Imposto cadastrado com sucesso.");
+          } else 
+          {
+            res.errors.map((x) => this.alertService.showError(`${x.value}`));
+          }
+        });
+      }
+    });
+  }
+
+  onBandeiraEdit() {
+    if (this.bandeirasChecked.length > 0){
+      this.dialogService
+      .open(BandeiraTarifariaVigenteComponent, {
+        context: { bandeiraVigente: this.bandeirasChecked[0] as IBandeiraTarifariaVigente },
+      })
+      .onClose.subscribe(async (ret) => {
+        if (ret) {
+          this.bandeiraVigenteService.put(ret).then(async (res: IResponseInterface<IBandeiraTarifariaVigente>) =>
+          {     
+            if (res.success){     
+              await this.loadSourceBandeiras();
+              this.alertService.showSuccess("Imposto alterado com sucesso.");
+            } else 
+            {
+              res.errors.map((x) => this.alertService.showError(`${x.value}`));
+            }
+          });
+        }      
+      });
+      this.bandeirasChecked = [];
+  }
+}
+
+  onBandeiraDelete() {
+    if (this.bandeirasChecked.length > 0){
+      this.dialogService
+      .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir as bandeiras selecionadas?'} })
+      .onClose.subscribe(async (excluir) => {
+        if (excluir){
+          var erroExcluir = false;
+          this.bandeirasChecked.forEach(bandeira => {
+            this.bandeiraVigenteService.delete(bandeira.id).then(async (res: IResponseInterface<any>) => {
+              if (res.success){
+                this.loadSourceBandeiras();
+                this.bandeirasChecked = [];      
+                this.alertService.showSuccess("Bandeira excluída com sucesso.");
+              } else 
+              {
+                erroExcluir = true;
+                res.errors.map((x) => this.alertService.showError(`Bandeira ${bandeira.bandeira} - ${x.value}`));
+              }
+            });            
+          });
+        }
+      });          
+    }
   }
 }

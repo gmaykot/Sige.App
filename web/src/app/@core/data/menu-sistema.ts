@@ -8,5 +8,6 @@ export interface IMenuSistema extends NbMenuItem{
     link: string,
     icon: string,
     expanded: boolean,
+    ativo: boolean,
     ordem: number
 }

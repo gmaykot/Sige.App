@@ -1,11 +1,6 @@
-using Serilog;
 using SIGE.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Configurar logs com Serilog
-//builder.Host.UseSerilog((context, loggerConfig) =>
-//    loggerConfig.ReadFrom.Configuration(context.Configuration));
 
 // Configurar serviços
 ConfigureServices(builder);
@@ -20,7 +15,7 @@ app.Run();
 
 void ConfigureServices(WebApplicationBuilder builder)
 {
-    builder.Services.AddMemoryCache(); // Adiciona cache em memória
+    builder.Services.AddMemoryCache();
     builder.Services.AddMyCors();
     builder.Services.AddMyRequestLocalizationOptions();
     builder.Services.AddMyControllers();
@@ -58,7 +53,9 @@ void ConfigureEnvironmentSpecific(WebApplication app)
 
     if (app.Environment.IsProduction())
     {
-        //app.UseSerilogRequestLogging();
         app.Logger.LogInformation("Aplicação rodando em produção.");
+    } else
+    {
+        app.Logger.LogInformation("Aplicação rodando em homologação.");
     }
 }

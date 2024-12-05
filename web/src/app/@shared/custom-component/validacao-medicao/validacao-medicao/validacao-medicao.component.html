@@ -5,26 +5,27 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <div class="subtitle">Formulário Validado?</div><br>
-                            <nb-button-group (valueChange)="updateSingleSelectGroupValue($event)">
-                                <button nbButtonToggle value="true">Sim</button>
-                                <button nbButtonToggle value="false" style="margin-left: 1rem;">Não</button>
-                            </nb-button-group>
+                        <div class="subtitle">O Relatório de Medição foi validado?</div><br>
+                        <nb-select fullWidth placeholder="Selecione" formControlName="validado">
+                            <nb-option [value]="null">&nbsp;</nb-option>
+                            <nb-option [value]="true">SIM</nb-option>
+                            <nb-option [value]="false">NÃO</nb-option>
+                        </nb-select>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <div class="subtitle">Observação</div>
+                        <div class="subtitle">Alguma observação?</div>
                         <textarea nbInput fullWidth formControlName="observacao" rows="5" cols="50"></textarea>
                     </div>
                 </div>
-            </div>                    
+            </div>
         </nb-card-body>
         <nb-card-footer>
             <div class="text-center">
-                <button nbButton status="info" (click)="submit()" [disabled]="!habilitaValidar">Confirmar</button>
+                <button nbButton status="info" (click)="submit()" [disabled]="!control.valid">Confirmar</button>
                 <button nbButton status="basic" style="margin-left: 2.5rem;" (click)="cancel()">Cancelar</button>
             </div>
         </nb-card-footer>

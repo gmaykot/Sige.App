@@ -1,26 +1,26 @@
 export const BANDEIRAS = 
 [
-    { id: 'AMARELA', desc: 'Amarela'}, 
-    { id: 'VERDE', desc: 'Verde'}, 
-    { id: 'VERMELHA_1', desc: 'Vermelha 1'},
-    { id: 'VERMELHA_2', desc: 'Vermelha 2'}
+    { id: 0, desc: 'Amarela'}, 
+    { id: 1, desc: 'Verde'}, 
+    { id: 2, desc: 'Vermelha 1'},
+    { id: 3, desc: 'Vermelha 2'}
 ]
 
-export const MODALIDADES = 
+export const SEGMENTOS = 
 [
-    { id: 'AZUL', desc: 'Azul'}, 
-    { id: 'VERDE', desc: 'Verde'}, 
+    { id: 0, desc: 'AZUL'}, 
+    { id: 1, desc: 'VERDE'}, 
 ]
 
 export const SUB_GRUPOS = 
 [
-    { id: 'A4_138_23KV', desc: 'A4 (13.8 - 23 KV)'}, 
+    { id: 0, desc: 'A4 (13.8 - 23 KV)'}, 
 ]
 
 export const PERFIL_MENU = 
 [
-    { id: 'ADMINISTRATIVO', desc: 'Administrativo'},
-    { id: 'CONSULTIVO', desc: 'Consultivo'},
-    { id: 'USUARIO', desc: 'Usuário'},
-    { id: 'SUPERUSUARIO', desc: 'Super Usuário'},
+    { id: '0', desc: 'Super Usuário'},
+    { id: '1', desc: 'Administrativo'},
+    { id: '2', desc: 'Usuário'},
+    { id: '3', desc: 'Consultivo'},
 ]

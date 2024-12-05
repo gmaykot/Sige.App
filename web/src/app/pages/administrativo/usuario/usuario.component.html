@@ -1,5 +1,5 @@
 <form [formGroup]="control">    
-  <div class="card-row" *ngIf="edit || true" [nbSpinner]="loading">
+  <div class="card-row" *ngIf="edit" [nbSpinner]="loading">
     <div class="card-col">
       <nb-card>
         <nb-card-body>
@@ -90,7 +90,7 @@
   </nb-card-header>
 
   <nb-card-body>
-    <ng2-smart-table [settings]="settingsUsuario" [source]="source" (deleteConfirm)="onSelect($event)">
+    <ng2-smart-table [settings]="settingsUsuario" [source]="source" (deleteConfirm)="onSelectCustom($event)">
     </ng2-smart-table>
   </nb-card-body>
 </nb-card>

@@ -19,7 +19,7 @@ namespace SIGE.Calculos.AnaliseViabilidade
 
             var res = new CalculoAnaliseDto
             {
-                TipoSegmento = ETipoSegmento.AZUL_CATIVO.GetDescription(),
+                TipoSegmento = ETipoSegmentoViabilidade.AZUL_CATIVO.GetDescription(),
                 DemPonta = demPonta,
                 DemFPonta = demFPonta,
                 KWhPonta = kwhPta,
@@ -44,7 +44,7 @@ namespace SIGE.Calculos.AnaliseViabilidade
 
             var res = new CalculoAnaliseDto
             {
-                TipoSegmento = ETipoSegmento.VERDE_CATIVO.GetDescription(),
+                TipoSegmento = ETipoSegmentoViabilidade.VERDE_CATIVO.GetDescription(),
                 DemFPonta = demFPonta,
                 KWhPonta = kwhPta,
                 KWhFPonta = kwhFPta,
@@ -71,7 +71,7 @@ namespace SIGE.Calculos.AnaliseViabilidade
 
             var res = new CalculoAnaliseDto
             {
-                TipoSegmento = ETipoSegmento.AZUL_CEM.GetDescription(),
+                TipoSegmento = ETipoSegmentoViabilidade.AZUL_CEM.GetDescription(),
                 EncConexao = analiseViabilidadeRequest.EncConexao,
                 EssEncServicoSist = analiseViabilidadeRequest.EssEncServicoSist,
                 CusdPonta = cusdPta,
@@ -103,7 +103,7 @@ namespace SIGE.Calculos.AnaliseViabilidade
 
             var res = new CalculoAnaliseDto
             {
-                TipoSegmento = ETipoSegmento.AZUL_CINQUENTA.GetDescription(),
+                TipoSegmento = ETipoSegmentoViabilidade.AZUL_CINQUENTA.GetDescription(),
                 EncConexao = analiseViabilidadeRequest.EncConexao,
                 EssEncServicoSist = analiseViabilidadeRequest.EssEncServicoSist,
                 CusdPonta = cusdPta,
@@ -137,7 +137,7 @@ namespace SIGE.Calculos.AnaliseViabilidade
 
             var res = new CalculoAnaliseDto
             {
-                TipoSegmento = ETipoSegmento.AZUL_ZERO.GetDescription(),
+                TipoSegmento = ETipoSegmentoViabilidade.AZUL_ZERO.GetDescription(),
                 EncConexao = analiseViabilidadeRequest.EncConexao,
                 EssEncServicoSist = analiseViabilidadeRequest.EssEncServicoSist,
                 CusdPonta = cusdPta,
@@ -169,7 +169,7 @@ namespace SIGE.Calculos.AnaliseViabilidade
 
             var res = new CalculoAnaliseDto
             {
-                TipoSegmento = ETipoSegmento.VERDE_CEM.GetDescription(),
+                TipoSegmento = ETipoSegmentoViabilidade.VERDE_CEM.GetDescription(),
                 EncConexao = analiseViabilidadeRequest.EncConexao,
                 EssEncServicoSist = analiseViabilidadeRequest.EssEncServicoSist,
                 CusdFPonta = cusdFPta,
@@ -201,7 +201,7 @@ namespace SIGE.Calculos.AnaliseViabilidade
 
             var res = new CalculoAnaliseDto
             {
-                TipoSegmento = ETipoSegmento.VERDE_CINQUENTA.GetDescription(),
+                TipoSegmento = ETipoSegmentoViabilidade.VERDE_CINQUENTA.GetDescription(),
                 EncConexao = analiseViabilidadeRequest.EncConexao,
                 EssEncServicoSist = analiseViabilidadeRequest.EssEncServicoSist,
                 CusdPonta = cusdPta,
@@ -233,7 +233,7 @@ namespace SIGE.Calculos.AnaliseViabilidade
 
             var res = new CalculoAnaliseDto
             {
-                TipoSegmento = ETipoSegmento.VERDE_ZERO.GetDescription(),
+                TipoSegmento = ETipoSegmentoViabilidade.VERDE_ZERO.GetDescription(),
                 EncConexao = analiseViabilidadeRequest.EncConexao,
                 EssEncServicoSist = analiseViabilidadeRequest.EssEncServicoSist,
                 CusdFPonta = cusdFPta,

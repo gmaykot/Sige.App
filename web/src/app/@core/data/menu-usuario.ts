@@ -3,5 +3,8 @@ export interface IMenuUsuario {
     menuSistemaId: string,
     menuSistemaDesc?: string,
     usuarioId: string,
-    tipoPerfil: string
+    tipoPerfil: string,
+    descMenu?: string
+    descPredecessor?: string
+    menuAtivo?: boolean
 }

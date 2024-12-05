@@ -5,7 +5,7 @@ import { DateFilterComponent } from "../custom-component/filters/date-filter.com
 const faseToList = Object.values(FASES_MEDICAO).map(value => {
   return { value: value.id, title: value.desc };
 });
-export const settingsRelatorioEconomia =  {
+export const settingsRelatorioMedicao =  {
   add: {
     addButtonContent: '<i class="nb-plus"></i>',
     createButtonContent: '<i class="nb-checkmark"></i>',
@@ -53,14 +53,14 @@ export const settingsRelatorioEconomia =  {
         },
       }, 
     },
-    competencia: {
-      title: "Competência",
+    mesReferencia: {
+      title: "Mês Referência",
       type: "string",
       valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'MM/yyyy')},
       width: '200px',
       filter: true
     },
-    dataMedicao: {
+    dataEmissao: {
       title: "Data Emissão",
       type: "string",
       valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},

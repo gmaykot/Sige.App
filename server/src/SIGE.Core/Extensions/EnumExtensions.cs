@@ -73,5 +73,14 @@ namespace SIGE.Core.Extensions
 
             return anyEnum.ToString();
         }
+
+        public static T GetByIndex<T>(int index)
+        {
+            var values = Enum.GetValues(typeof(T));
+            if (index < 0 || index >= values.Length)
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range for the enum.");
+
+            return (T)values.GetValue(index)!;
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace SIGE.Core.Mapper
     {
         public GeralMapper()
         {
-            CreateMap<RelatorioEconomiaModel, RelatorioEconomiaDto> ().ReverseMap();
+            CreateMap<RelatorioMedicaoModel, RelatorioMedicaoDto> ().ReverseMap();
 
             CreateMap<dynamic, FaturamentoCoenelDto>();
 

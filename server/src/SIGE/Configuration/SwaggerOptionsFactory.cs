@@ -31,15 +31,6 @@ namespace SIGE.Configuration
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = "Bearer"
                 });
-                if (bool.Parse(config.GetSection("System:Config:EnableAuthGestor").Value))
-                {
-                    options.AddSecurityDefinition("GestorId", new OpenApiSecurityScheme
-                    {
-                        Name = "Gestor",
-                        In = ParameterLocation.Header,
-                        Type = SecuritySchemeType.ApiKey,
-                    });
-                }
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {

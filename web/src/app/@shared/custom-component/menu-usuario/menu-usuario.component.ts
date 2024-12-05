@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from "@angular/core";
 import { Validators, FormBuilder } from "@angular/forms";
 import { NbDialogRef } from "@nebular/theme";
 import { PERFIL_MENU } from "../../../@core/enum/const-dropbox";
-import { IMenuSistema } from "../../../@core/data/menu-sistema";
 import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
 import { MenuSistemaService } from "../../../@core/services/administrativo/menu-sistema.service";
 import { IDropDown } from "../../../@core/data/drop-down";
@@ -18,15 +17,16 @@ export class MenuUsuarioComponent implements OnInit {
   @Input() menusSistemaUsuario: any[] = [];
   public menusSistema: IDropDown[] = [];
   public control = this.formBuilder.group({
+    id: ["", null],
     menusSistema: [[""], Validators.required],
     usuarioId: ["", Validators.required],
     tipoPerfil: ["CONSULTIVO", Validators.required],
   });
+  private isSuperUsuario = SessionStorageService.isSuperUsuario();
 
   constructor(
     protected dialogRef: NbDialogRef<MenuUsuarioComponent>,
-    private formBuilder: FormBuilder,
-    private menuSistemaService: MenuSistemaService
+    private formBuilder: FormBuilder
   ) {}
 
   async ngOnInit() {
@@ -34,15 +34,8 @@ export class MenuUsuarioComponent implements OnInit {
       usuarioId: SessionStorageService.getUsuarioId(),
       menusSistema: [],
     });
-    await this.menuSistemaService
-      .getDropDownEstruturado()
-      .then((response: IResponseInterface<IDropDown[]>) => {
-        if (response.success) {
-          this.menusSistema = response.data.filter(
-            (d) => d.subGrupo != null && d.subGrupo.length > 0
-          );
-        }
-      });
+    if (!this.isSuperUsuario)
+      this.perfilMenu = PERFIL_MENU.filter(t => t.id !== '0'); 
   }
 
   cancel() {
@@ -90,6 +83,6 @@ export class MenuUsuarioComponent implements OnInit {
   }
 
   showSubMenu(subMenus: IDropDown[]) {
-    return subMenus.filter((sM) => this.showSubMenuById(sM.id));
+    return subMenus.filter((sM) => (sM.descricao != 'Menus do Sistema' || this.isSuperUsuario) && this.showSubMenuById(sM.id));
   }
 }

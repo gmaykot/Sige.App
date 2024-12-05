@@ -10,7 +10,7 @@ namespace SIGE.Core.Models.Sistema.Gerencial
         public virtual ConcessionariaModel? Concessionaria { get; set; }
         public required string NumeroResolucao { get; set; }
         public required ESubGrupo SubGrupo { get; set; }
-        public required ETipoModalidade Modalidade { get; set; }
+        public required ETipoSegmento Segmento { get; set; }
         public DateTime DataUltimoReajuste { get; set; }
         public required decimal KWPonta { get; set; }
         public required decimal KWForaPonta { get; set; }

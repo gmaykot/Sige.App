@@ -91,6 +91,14 @@ input, select {
   padding: var(--card-padding);
 }
 
+.text-center {
+  display: flex;
+  justify-content: center !important; 
+  align-items: center !important; 
+  text-align: center !important;
+  height: 100%; 
+}
+
 .center {
   text-align: center !important;
 }

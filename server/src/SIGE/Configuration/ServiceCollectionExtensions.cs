@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SIGE.Core.Cache;
 using SIGE.Core.Options;
 using SIGE.DataAccess.Context;
 using SIGE.Services;
@@ -36,6 +37,7 @@ namespace SIGE.Configuration
             services.AddMyAutoMapper();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ICustomLoggerService, CustomLoggerService>();
+            services.TryAddSingleton<ICacheManager, CacheManager>();
 
             return services;
         }
@@ -52,7 +54,10 @@ namespace SIGE.Configuration
 
         public static IServiceCollection AddMyOptions(this IServiceCollection services, IConfiguration config)
         {
-             services.Configure<EmailSettingsOptions>(config.GetSection("MailSettings"));
+            services.Configure<CacheOption>(config.GetSection("Cache"));
+            services.Configure<CceeOption>(config.GetSection("Services:Ccee"));
+            services.Configure<EmailSettingsOption>(config.GetSection("Email"));
+            services.Configure<SystemOption>(config.GetSection("System"));
             return services;
         }
 

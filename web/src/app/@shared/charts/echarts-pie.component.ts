@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
+import { STATUS_FASE } from '../../@core/enum/filtro-medicao';
 
 @Component({
   selector: 'ngx-echarts-pie',
@@ -7,11 +8,16 @@ import { NbThemeService } from '@nebular/theme';
     <div echarts [options]="options" class="echart"></div>
   `,
 })
-export class EchartsPieComponent implements AfterViewInit, OnDestroy {
+export class EchartsPieComponent implements AfterViewInit, OnDestroy, OnInit {
+  @Input() descricao: string = '';
+  @Input() dataSource: any[] = [];
   options: any = {};
   themeSubscription: any;
 
   constructor(private theme: NbThemeService) {
+  }
+
+  ngOnInit(): void {
   }
 
   ngAfterViewInit() {
@@ -29,22 +35,19 @@ export class EchartsPieComponent implements AfterViewInit, OnDestroy {
         },
         legend: {
           orient: 'vertical',
-          left: 'left',
-          data: ['Coletados', 'Não Coletados'],
+          left: 'right',
+          data: this.dataSource.map((fase) => fase.name),
           textStyle: {
             color: echarts.textColor,
           },
         },
         series: [
           {
-            name: 'Medições',
+            name: this.descricao,
             type: 'pie',
-            radius: '80%',
+            radius: '65%',
             center: ['50%', '50%'],
-            data: [
-              { value: 16, name: 'Não Coletados' },
-              { value: 6, name: 'Coletados' },
-            ],
+            data: this.dataSource,
             itemStyle: {
               emphasis: {
                 shadowBlur: 10,
