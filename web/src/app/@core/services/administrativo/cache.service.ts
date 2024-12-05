@@ -1,11 +1,20 @@
 import * as core from "@angular/core";
-import { JwtService } from "../util/jwt.service";
 import { HttpService } from "../util/http.service";
-import { IResponseInterface } from "../../data/response.interface";
+import { IDropDown } from "../../data/drop-down";
 
 @core.Injectable({ providedIn: "root" })
 export class CacheService {
-  constructor(protected http: HttpService, private jwtService: JwtService) {
-  }
+    private urlBase = "auth";
 
+    constructor(private http: HttpService) {
+    }
+
+    public async listCache(): Promise<string[]> {
+        return await this.http.get<string[]>(`/${this.urlBase}/list-cache`
+    );
+    }
+
+    public async clearCache(req?: IDropDown): Promise<any> {
+        return await this.http.post<any>(`/${this.urlBase}/clear-cache`, req);   
+    }
 }

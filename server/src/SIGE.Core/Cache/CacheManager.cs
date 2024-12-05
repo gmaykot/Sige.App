@@ -70,6 +70,6 @@ namespace SIGE.Core.Cache
 
         // Método para listar todas as chaves do cache
         public async Task<List<string>> ListAllKeys() =>
-            await Task.Run(() => _keys.ToList());
+            await Task.Run(() => _keys.OrderBy(k => k).ToList());
     }
 }

@@ -48,7 +48,7 @@ namespace SIGE.Services.Services.Administrativo
             if (!req.Password.VerifyPasswordHash(usuario.PasswordHash, usuario.PasswordSalt))
                 return ret.SetUnauthorized().AddError(ETipoErro.ERRO, "A senha digitada não está correta.");
 
-            var cacheKey = string.Format(_cacheOption.MenuUsuario.Key, usuario.Id);
+            var cacheKey = string.Format(_cacheOption.MenuUsuario.Key, usuario.Email);
             var menusUsuario = await _cacheManager.Get<List<MenuUsuarioModel>>(cacheKey);
 
             if (menusUsuario == null)

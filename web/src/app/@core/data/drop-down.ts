@@ -1,5 +1,5 @@
 export interface IDropDown {
-    id: string;
+    id?: string;
     descricao: string;
     subGrupo?: IDropDown[]
 }

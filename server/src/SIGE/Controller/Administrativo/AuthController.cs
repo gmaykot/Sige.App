@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Cache;
 using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Requests;
 using SIGE.Services.Interfaces.Administrativo;
 using Swashbuckle.AspNetCore.Annotations;
@@ -40,12 +41,12 @@ namespace SIGE.Controller.Administrativo
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ClearCache([FromBody] string? key)
+        public async Task<IActionResult> ClearCache([FromBody] DropDownDto? req)
         {
-            if (string.IsNullOrWhiteSpace(key))
+            if (req == null)
                 await _cacheManager.ClearAll();
             else
-                await _cacheManager.Remove(key);
+                await _cacheManager.Remove(req.Descricao);
 
             return Ok();
         }
