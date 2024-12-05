@@ -12,7 +12,7 @@ export class ValidacaoMedicaoComponent implements OnInit {
   @Input() validado: boolean = null;
   
   public control = this.formBuilder.group({
-    validado: [null as boolean | null, [Validators.required]],
+    validado: [null as boolean | null],
     observacao: [null],
   });
 

@@ -7,6 +7,7 @@
                     <div class="form-group">
                         <div class="subtitle">O Relatório de Medição foi validado?</div><br>
                         <nb-select fullWidth placeholder="Selecione" formControlName="validado">
+                            <nb-option [value]="null">&nbsp;</nb-option>
                             <nb-option [value]="true">SIM</nb-option>
                             <nb-option [value]="false">NÃO</nb-option>
                         </nb-select>
