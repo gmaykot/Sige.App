@@ -18,6 +18,17 @@ namespace SIGE.Services.Services.Geral
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
 
+        public async Task<Response> Alterar(RelatorioMedicaoDto req)
+        {
+            var ret = new Response();
+            var res = await _appDbContext.RelatoriosMedicao.FindAsync(req.Id);
+            _mapper.Map(req, res);
+
+            _appDbContext.SaveChanges();
+
+            return ret.SetOk();
+        }
+
         public async Task<Response> ListarRelatorios(RelatorioMedicaoRequest req)
         {
             var ret = new Response();
