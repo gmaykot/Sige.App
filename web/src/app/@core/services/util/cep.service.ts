@@ -1,13 +1,12 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
-import { JwtService } from "./jwt.service";
 import { environment } from "../../../../environments/environment";
 
 @Injectable({ providedIn: 'root' })
 export class CepService {
     private _urlBase = environment.base_cep_url;
 
-    constructor(private http: HttpClient, private jwtService: JwtService) {}
+    constructor(private http: HttpClient) {}
     
     private getUrl(cep: string){
       return this._urlBase.replace('{cep}', cep);

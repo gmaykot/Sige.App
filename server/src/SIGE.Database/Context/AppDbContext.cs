@@ -60,6 +60,6 @@ namespace SIGE.DataAccess.Context
         public DbSet<ValorAnualContratoModel> ValoresAnuaisContrato { get; set; }
         public DbSet<ValorConcessionariaModel> ValoresConcessionaria { get; set; }
         public DbSet<ValorMensalContratoModel> ValoresMensaisContrato { get; set; }
-
+        public DbSet<TokenModel> Tokens { get; set; }
     }
 }

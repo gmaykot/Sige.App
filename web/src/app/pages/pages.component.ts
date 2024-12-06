@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NbMenuItem, NbMenuService } from '@nebular/theme';
-import { JwtService } from '../@core/services/util/jwt.service';
+import { SessionSige } from '../@core/enum/session.const';
 
 @Component({
   selector: 'ngx-pages',
@@ -15,17 +15,15 @@ import { JwtService } from '../@core/services/util/jwt.service';
 export class PagesComponent {
   menu: NbMenuItem[];
 
-  constructor(private jwtService: JwtService, private menuService: NbMenuService) {
-    const menuUsuario = sessionStorage.getItem("menu_usuario")
+  constructor(private menuService: NbMenuService) {
+    const menuUsuario = sessionStorage.getItem(SessionSige.MENU_LIST);
     if (menuUsuario != null){      
-      this.menu = JSON.parse(this.jwtService.getDecodedMenuUsuario());
+      this.menu = JSON.parse(menuUsuario);
 
       this.menuService.onItemClick()
       .subscribe(menuBag => {
         var menuSistema: any = menuBag.item;
-        var perfil: number = menuSistema.Perfil
-        sessionStorage.setItem('selectedMenuItem', menuSistema.title);
-        sessionStorage.setItem('selectedMenuPerfil', perfil?.toString());
+        sessionStorage.setItem(SessionSige.MENU_ACTIVE, menuSistema.perfil?.toString());
       });
     }    
   } 

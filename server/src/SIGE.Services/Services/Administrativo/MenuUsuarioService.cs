@@ -14,6 +14,7 @@ namespace SIGE.Services.Services.Administrativo
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
 
+
         public async Task<Response> Obter()
         {
             var menus = await _appDbContext.MenusUsuarios.AsNoTracking().Include(m => m.MenuSistema).Where(m => m.Ativo).OrderBy(m => m.MenuSistema.Ordem).ToListAsync();
@@ -102,6 +103,5 @@ namespace SIGE.Services.Services.Administrativo
         {
             throw new NotImplementedException();
         }
-
     }
 }

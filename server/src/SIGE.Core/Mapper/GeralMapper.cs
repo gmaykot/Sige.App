@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using SIGE.Core.Models.Dto.Administrativo.Usuario;
 using SIGE.Core.Models.Dto.Geral;
 using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
+using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
 
@@ -10,6 +12,8 @@ namespace SIGE.Core.Mapper
     {
         public GeralMapper()
         {
+            CreateMap<TokenModel, TokenDto> ().ReverseMap();
+
             CreateMap<RelatorioMedicaoModel, RelatorioMedicaoDto> ().ReverseMap();
 
             CreateMap<dynamic, FaturamentoCoenelDto>();

@@ -42,7 +42,6 @@ export class GhostComponent implements OnInit {
   }
   async clear() {
     this.loading = true;
-    console.log(this.control.value.key);
     await this.cacheService.clearCache({ descricao: this.control.value.key }).then((response: any) => {
       this.alertService.showSuccess('Chave removida com sucesso.');
       this.listCache();

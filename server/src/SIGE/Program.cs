@@ -24,6 +24,7 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddMyDbContext(builder.Configuration);
     builder.Services.AddMyOptions(builder.Configuration);
     builder.Services.AddMyHostedService();
+    builder.Services.AddMyCompression();
 }
 
 void ConfigureMiddlewares(WebApplication app)
@@ -37,6 +38,7 @@ void ConfigureMiddlewares(WebApplication app)
     app.UseMyRequestLocalization();
     app.UseMySwagger(app.Configuration);
     app.UseMyEndpoints();
+    app.UseResponseCompression();
 
     ConfigureEnvironmentSpecific(app);
 }

@@ -22,7 +22,6 @@ import { ValidacaoMedicaoComponent } from '../../../@shared/custom-component/val
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
-import { JwtService } from '../../../@core/services/util/jwt.service';
 
 @Component({
   selector: 'ngx-relatorio-medicao',
@@ -42,7 +41,7 @@ export class RelatorioMedicaoComponent implements OnInit {
     private emailService: EmailService,
     private relatorioMedicaoPdfService: RelatorioMedicaoPdfService,
     private alertService: AlertService,
-    private jwtService: JwtService
+    private se: SessionStorageService
   ) {}
 
     public settings = settingsRelatorioMedicao;
@@ -70,7 +69,7 @@ export class RelatorioMedicaoComponent implements OnInit {
       observacao: ["", Validators.required],
       observacaoValidacao: [null, null],
       validado: [null, null],
-      usuarioResponsavelId: [this.jwtService.getDecodedUser().id, null],
+      usuarioResponsavelId: [SessionStorageService.getUsuarioId(), null],
     });
 
     async ngOnInit()

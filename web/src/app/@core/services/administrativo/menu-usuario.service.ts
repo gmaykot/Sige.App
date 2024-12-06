@@ -10,6 +10,12 @@ export class MenuUsuarioService extends DefaultService<IMenuUsuario> {
     super(http, "menu-usuario");
   }
 
+  public async obterPosLogin(): Promise<IResponseInterface<any>> {
+    return await this.http.get<IResponseInterface<IMenuUsuario[]>>(
+      `/${this.urlBase}/posLogin`
+    );
+  }
+
   public async getPorUsuario(id: string): Promise<IResponseInterface<IMenuUsuario[]>> {
     return await this.http.get<IResponseInterface<IMenuUsuario[]>>(
       `/${this.urlBase}/usuario/${id}`

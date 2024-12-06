@@ -4,7 +4,6 @@ import { AlertService } from '../../../@core/services/util/alert.service';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { UsuarioService } from '../../../@core/services/administrativo/usuario.service';
 import { IUsuarioSenha, Usuario } from '../../../@core/data/usuario';
-import { JwtService } from '../../../@core/services/util/jwt.service';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 
 @Component({
@@ -15,7 +14,6 @@ import { IResponseInterface } from '../../../@core/data/response.interface';
 export class AlterarSenhaComponent implements OnInit{
   public habilitaOperacoes: boolean = false;
   public loading = false;
-  public usuarioLogado: Usuario;
   public control = this.formBuilder.group({
     id: "",
     senhaAntiga: ["", Validators.required],
@@ -26,15 +24,13 @@ export class AlterarSenhaComponent implements OnInit{
   constructor(
     private formBuilder: FormBuilder,
     private alertService: AlertService,
-    private usuarioService: UsuarioService,
-    private jwtService: JwtService
+    private usuarioService: UsuarioService
   ) 
   {    
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
   }
   
   ngOnInit(): void {
-    this.usuarioLogado = this.jwtService.getDecodedUser();
   }
 
   limparFormulario(): void {
@@ -43,7 +39,7 @@ export class AlterarSenhaComponent implements OnInit{
 
   private getUsuarioSenha(): IUsuarioSenha {
     var usuario = this.control.value as IUsuarioSenha;
-    usuario.id = this.usuarioLogado.id;
+    usuario.id = SessionStorageService.getUsuarioId();
     return usuario;
   }
 

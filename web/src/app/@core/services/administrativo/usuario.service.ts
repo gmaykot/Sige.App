@@ -1,23 +1,29 @@
 import { Injectable } from "@angular/core";
 import { IUsuario, IUsuarioSenha, Usuario } from "../../data/usuario";
 import { of as observableOf, Observable } from "rxjs";
-import { JwtService } from "../util/jwt.service";
 import { DefaultService } from "../default-service";
 import { HttpService } from "../util/http.service";
 import { IResponseInterface } from "../../data/response.interface";
+import { SessionSige } from "../../enum/session.const";
 
 @Injectable({ providedIn: "root" })
 export class UsuarioService  extends DefaultService<IUsuario> {
-  constructor(protected http: HttpService, private jwtService: JwtService) {
+  constructor(protected http: HttpService) {
     super(http, "usuario");
     this.getUsuario();
   }
   usuario: Usuario;
 
   getUsuario(): Observable<Usuario> {
-    const accessToken = sessionStorage.getItem("access_token");
-    if (accessToken != null) {
-      this.usuario = this.jwtService.getDecodedUser();
+    this.usuario = {
+      id: "",
+      name: "",
+      su: "",
+      picture: ""
+    };
+    const nome = sessionStorage.getItem(SessionSige.USER_NAME);
+    if (nome != null) {
+      this.usuario.name = sessionStorage.getItem(SessionSige.USER_NAME);
     }
     this.usuario.picture = "assets/images/profile.png";
     return observableOf(this.usuario);

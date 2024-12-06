@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ETipoPerfil } from "../../enum/ETipoPerfil";
+import { SessionSige } from "../../enum/session.const";
 
 @Injectable({ providedIn: "root" })
 export class SessionStorageService {
@@ -21,11 +22,15 @@ export class SessionStorageService {
     }
 
     public static getPerfil(): ETipoPerfil {
-        var codPerfil: number = +sessionStorage.getItem('selectedMenuPerfil');
+        var codPerfil: number = +sessionStorage.getItem(SessionSige.MENU_ACTIVE);
         return codPerfil as ETipoPerfil;
     }
 
     public static getUsuarioId(): string {
-        return '08dcf487-2e38-4838-801d-952d82f9a537';
+        return sessionStorage.getItem(SessionSige.USER_ID);
+    }
+
+    public static isSysAdm(): boolean {
+        return sessionStorage.getItem(SessionSige.USER_SYSADM) === 'true';
     }
 }

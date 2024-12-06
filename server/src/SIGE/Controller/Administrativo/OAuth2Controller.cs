@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SIGE.Core.Cache;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Requests;
 using SIGE.Services.Interfaces.Administrativo;
 using Swashbuckle.AspNetCore.Annotations;
@@ -10,11 +8,10 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace SIGE.Controller.Administrativo
 {
     [ApiController]
-    [Route("auth")]
-    public class AuthController(IAuthService authService, ICacheManager cacheManager) : ControllerBase
+    [Route("oauth2")]
+    public class OAuth2Controller(IOAuth2Service service) : ControllerBase
     {
-        private readonly IAuthService _authService = authService;
-        private readonly ICacheManager _cacheManager = cacheManager;
+        private readonly IOAuth2Service _service = service;
 
         [AllowAnonymous]
         [HttpGet("hc")]
@@ -22,45 +19,38 @@ namespace SIGE.Controller.Administrativo
         [ProducesResponseType(typeof(Response), 200)]
         public IActionResult GetHealthCheck() => Ok("");
 
+        [HttpPost("introspect")]
+        [SwaggerOperation(Description = "Efetua o introspect do token.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> Introspect([FromForm] Guid token)
+        {
+            return Ok(await _service.Introspect(token));
+        }
+
         [AllowAnonymous]
         [HttpPost("login")]
-        [SwaggerOperation(Description = "Efetua o login do usuário ao sistema.")]
+        [SwaggerOperation(Description = "Efetua o login do usuario.")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Login([FromBody] LoginRequest login)
+        public async Task<IActionResult> Login([FromBody] LoginRequest req)
         {
-            var res = await _authService.Login(login);
-            return Ok(res);
+            return Ok(await _service.Login(req));
         }
 
-        [HttpPost("clear-cache")]
-        [SwaggerOperation(Description = "Efetua a limpeza do cache no sistema.")]
+        [HttpPost("logout")]
+        [SwaggerOperation(Description = "Efetua o logout do usuario.")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ClearCache([FromBody] DropDownDto? req)
+        public async Task<IActionResult> Logout()
         {
-            if (req == null)
-                await _cacheManager.ClearAll();
-            else
-                await _cacheManager.Remove(req.Descricao);
-
-            return Ok();
-        }
-
-        [HttpGet("list-cache")]
-        [SwaggerOperation(Description = "Obtém as chaves do cache no sistema.")]
-        [ProducesResponseType(typeof(Response), 200)]
-        [ProducesResponseType(typeof(Response), 400)]
-        [ProducesResponseType(typeof(Response), 401)]
-        [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ListAllKeys()
-        {
-            return Ok(await _cacheManager.ListAllKeys());
+            return Ok(await _service.Logout());
         }
     }
-
 }

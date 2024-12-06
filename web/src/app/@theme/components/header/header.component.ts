@@ -14,6 +14,7 @@ import { UsuarioService } from "../../../@core/services/administrativo/usuario.s
 import { Usuario } from "../../../@core/data/usuario";
 import { FormBuilder } from "@angular/forms";
 import { environment } from "../../../../environments/environment";
+import { OAuth2Service } from "../../../@core/services/util/oauth2.service";
 
 @Component({
   selector: "ngx-header",
@@ -50,24 +51,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private sidebarService: NbSidebarService,
-    private formBuilder: FormBuilder,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
     private layoutService: LayoutService,
     protected router: Router,
     private breakpointService: NbMediaBreakpointsService,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    protected oauth2Service: OAuth2Service,
   ) {
     menuService
       .onItemClick()
       .pipe(filter(({ tag }) => tag === this.tag))
-      .subscribe((bag) => {        
+      .subscribe(async (bag) => {        
         if (bag.item.title == "Sair")
         {
-          sessionStorage.removeItem("access_token");
-          sessionStorage.removeItem("menu_usuario");
-          this.router.navigateByUrl("/auth");
-          this.user = null;
+          await this.oauth2Service.logout().then((response: any) => {
+            sessionStorage.clear();
+            this.router.navigateByUrl("/auth");
+            this.user = null; 
+          });
           return;
         }        
 
@@ -82,6 +84,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .getUsuario()
       .pipe(takeUntil(this.destroy$))
       .subscribe((usuario: Usuario) => (this.user = usuario));
+      
     const { xl } = this.breakpointService.getBreakpointsMap();
     this.themeService
       .onMediaQueryChange()

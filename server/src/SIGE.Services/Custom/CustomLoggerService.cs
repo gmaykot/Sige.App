@@ -18,7 +18,7 @@ namespace SIGE.Services.Custom
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var request = httpContext?.Request;
-            var user = _requestContext.UserName;
+            var user = _requestContext.UsuarioId.ToString();
 
             var logModel = new LogModel
             {
@@ -42,7 +42,7 @@ namespace SIGE.Services.Custom
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var request = httpContext?.Request;
-            var user = _requestContext.UserName;
+            var user = _requestContext.UsuarioId.ToString();
 
             var logModel = new LogModel
             {

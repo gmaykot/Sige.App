@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
-import { JwtService } from "./jwt.service";
 import { environment } from "../../../../environments/environment";
+import { SessionSige } from "../../enum/session.const";
 
 @Injectable({ providedIn: 'root' })
 export class HttpService {
     private _urlBase = environment.base_api_url;
 
-    constructor(private http: HttpClient, private jwtService: JwtService) {}
+    constructor(private http: HttpClient) {}
     
     private getUrl(url: string){
       return this._urlBase + url;
@@ -20,7 +20,7 @@ export class HttpService {
         const options = {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': this.jwtService.getToken()
+            'Authorization': this.getOAuth2Token()
           }
         };
         return this.http.get<T>(this.getUrl(url), options).toPromise();
@@ -33,7 +33,7 @@ export class HttpService {
         const options = {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': this.jwtService.getToken()
+            'Authorization': this.getOAuth2Token()
           }
         };
         return this.http.post<T>(this.getUrl(url), body, options).toPromise();
@@ -46,7 +46,7 @@ export class HttpService {
         const options = {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': this.jwtService.getToken()
+            'Authorization': this.getOAuth2Token()
           }
         };
         return this.http.put<T>(this.getUrl(url), body, options).toPromise();
@@ -56,10 +56,18 @@ export class HttpService {
         const options = {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': this.jwtService.getToken()
+            'Authorization': this.getOAuth2Token()
           }
         };
     
         return this.http.delete<T>(this.getUrl(url), options).toPromise();
       }
+
+      private getOAuth2Token() {
+        const token = sessionStorage.getItem(SessionSige.AUTH_TOKEN);
+        if (token !== null && token !== '') {
+          return token;
+        }
+          return '';
+    }
 }

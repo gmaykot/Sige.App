@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SIGE.Core.Cache;
 using SIGE.Core.Models.Requests;
@@ -7,6 +8,7 @@ using SIGE.DataAccess.Context;
 using SIGE.Services;
 using SIGE.Services.Custom;
 using SIGE.Services.Schedule;
+using System.IO.Compression;
 
 namespace SIGE.Configuration
 {
@@ -67,6 +69,22 @@ namespace SIGE.Configuration
         {
             services.AddHostedService<MedicaoCCEEScheduleService>();
             services.AddScoped<MedicaoCCEEScheduleEscoped>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddMyCompression(this IServiceCollection services)
+        {
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
 
             return services;
         }
