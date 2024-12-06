@@ -7,6 +7,7 @@ using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
+using SIGE.Core.Models.Requests;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
@@ -16,10 +17,10 @@ namespace SIGE.Services.Services.Gerencial
     public class ConcessionariaService(
         AppDbContext appDbContext,
         IMapper mapper,
-        IHttpContextAccessor httpContextAccessor
+        RequestContext requestContext
     ) : IBaseInterface<ConcessionariaDto>
     {
-        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly RequestContext _requestContext = requestContext;
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
 
@@ -48,7 +49,7 @@ namespace SIGE.Services.Services.Gerencial
 
         public async Task<Response> Incluir(ConcessionariaDto req)
         {
-            req.GestorId = _httpContextAccessor.GetGestorId();
+            req.GestorId = _requestContext.GestorId;
             var res = _mapper.Map<ConcessionariaModel>(req);
             _ = await _appDbContext.AddAsync(res);
             _ = await _appDbContext.SaveChangesAsync();

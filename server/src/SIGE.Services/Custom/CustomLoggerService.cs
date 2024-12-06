@@ -1,23 +1,24 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Requests;
 using SIGE.Core.Models.Sistema;
 using SIGE.DataAccess.Context;
 
 namespace SIGE.Services.Custom
 {
-    public class CustomLoggerService(AppDbContext appDbContext, IHttpContextAccessor httpContextAccessor) : ICustomLoggerService
+    public class CustomLoggerService(AppDbContext appDbContext, IHttpContextAccessor httpContextAccessor, RequestContext requestContext) : ICustomLoggerService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly RequestContext _requestContext = requestContext;
 
         public async Task LogAsync(LogLevel logLevel, string message)
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var request = httpContext?.Request;
-            var user = _httpContextAccessor.GetUser();
+            var user = _requestContext.UserName;
 
             var logModel = new LogModel
             {
@@ -41,7 +42,7 @@ namespace SIGE.Services.Custom
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var request = httpContext?.Request;
-            var user = _httpContextAccessor.GetUser();
+            var user = _requestContext.UserName;
 
             var logModel = new LogModel
             {

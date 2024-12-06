@@ -5,6 +5,7 @@ using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Email;
 using SIGE.Core.Models.Dto.Geral.Medicao;
+using SIGE.Core.Models.Requests;
 using SIGE.Core.Models.Sistema;
 using SIGE.Services.Custom;
 using SIGE.Services.Interfaces.Externo;
@@ -12,18 +13,19 @@ using SIGE.Services.Interfaces.Geral;
 
 namespace SIGE.Services.Schedule
 {
-    public class MedicaoCCEEScheduleEscoped(IMedicaoService medicaoService, ICustomLoggerService loggerService, IHttpContextAccessor httpContextAccessor, IEmailService emailService)
+    public class MedicaoCCEEScheduleEscoped(IMedicaoService medicaoService, ICustomLoggerService loggerService, IHttpContextAccessor httpContextAccessor, IEmailService emailService, RequestContext requestContext)
     {
-        private IMedicaoService _medicaoService = medicaoService;
-        private IEmailService _emailService = emailService;
+        private readonly IMedicaoService _medicaoService = medicaoService;
+        private readonly IEmailService _emailService = emailService;
         private readonly ICustomLoggerService _loggerService = loggerService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly RequestContext _requestContext = requestContext;
 
         public async void DoWorkAsync()
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var request = httpContext?.Request;
-            var user = _httpContextAccessor.GetUser();
+            var user = _requestContext.UserName;
 
             var logModel = new LogModel
             {

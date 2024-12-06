@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Requests;
 using SIGE.Core.Options;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -11,11 +12,11 @@ using System.Text;
 
 namespace SIGE.Configuration
 {
-    public class CustomAuthorizationFilter(IWebHostEnvironment environment, IConfiguration config, IOptions<SystemOption> option) : IAsyncAuthorizationFilter
+    public class CustomAuthorizationFilter(IWebHostEnvironment environment, IConfiguration config, IOptions<SystemOption> option, RequestContext requestContext) : IAsyncAuthorizationFilter
     {
         private readonly IWebHostEnvironment _environment = environment;
-        private readonly IConfiguration _config = config;
         private readonly SystemOption _option = option.Value;
+        private readonly RequestContext _requestContext = requestContext;
 
         public void SetAuthorizationBody<T>(AuthorizationFilterContext filterContext, HttpStatusCode httpStatus, string message = "", string erroMessage = "") {
             filterContext.HttpContext.Response.StatusCode = httpStatus.GetHashCode();
@@ -52,10 +53,16 @@ namespace SIGE.Configuration
             {
                 SetAuthorizationBody<UnauthorizedObjectResult>(filterContext, HttpStatusCode.Unauthorized, string.Empty, "O token fornecido é inválido.");
                 return;
-            }
+            }           
 
-            if (token.Payload.TryGetValue("name", out var y) && y is string name)
-                filterContext.HttpContext.Request.Headers.Add("name", name);
+            if (token.Payload.TryGetValue("gestor_id", out var x) && x is string gestorId)
+                _requestContext.GestorId = Guid.Parse(gestorId);
+
+            if (token.Payload.TryGetValue("id", out var y) && y is string userId)
+                _requestContext.UserId = Guid.Parse(userId);
+
+            if (token.Payload.TryGetValue("name", out var z) && z is string name)
+                _requestContext.UserName = name;
 
             await Task.CompletedTask;
         }

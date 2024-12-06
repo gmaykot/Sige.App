@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SIGE.Core.Cache;
+using SIGE.Core.Models.Requests;
 using SIGE.Core.Options;
 using SIGE.DataAccess.Context;
 using SIGE.Services;
@@ -38,6 +39,7 @@ namespace SIGE.Configuration
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ICustomLoggerService, CustomLoggerService>();
             services.TryAddSingleton<ICacheManager, CacheManager>();
+            services.TryAddScoped<RequestContext>();
 
             return services;
         }

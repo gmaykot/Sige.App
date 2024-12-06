@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Enumerators;
@@ -7,15 +6,16 @@ using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Gerencial;
+using SIGE.Core.Models.Requests;
 using SIGE.Core.Models.Sistema.Gerencial;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services.Gerencial
 {
-    public class FornecedorService(AppDbContext appDbContext, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IBaseInterface<FornecedorDto>
+    public class FornecedorService(AppDbContext appDbContext, IMapper mapper, RequestContext requestContext) : IBaseInterface<FornecedorDto>
     {
-        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly RequestContext _requestContext = requestContext;
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
 
@@ -49,7 +49,7 @@ namespace SIGE.Services.Services.Gerencial
 
         public async Task<Response> Incluir(FornecedorDto req)
         {
-            req.GestorId = _httpContextAccessor.GetGestorId();
+            req.GestorId = _requestContext.GestorId;
             if (!req.TelefoneContato.IsNullOrEmpty())
                 req.TelefoneContato = req.TelefoneContato.FormataTelefone();
 
