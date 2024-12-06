@@ -55,7 +55,7 @@
                 </nb-card-footer>          
               </nb-card>                
             </nb-tab>
-          <nb-tab tabTitle="Menus de Acesso">
+          <nb-tab tabTitle="Menus de Acesso" *ngIf="selected">
             <nb-card style="border: 0rem;">                 
               <nb-card-body>         
                 <ng2-smart-table [settings]="settingsMenus" [source]="sourceMenu" (deleteConfirm)="onSelectMenu($event)">
