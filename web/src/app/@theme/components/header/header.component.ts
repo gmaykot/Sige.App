@@ -15,6 +15,7 @@ import { Usuario } from "../../../@core/data/usuario";
 import { FormBuilder } from "@angular/forms";
 import { environment } from "../../../../environments/environment";
 import { OAuth2Service } from "../../../@core/services/util/oauth2.service";
+import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
 
 @Component({
   selector: "ngx-header",
@@ -62,16 +63,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
     menuService
       .onItemClick()
       .pipe(filter(({ tag }) => tag === this.tag))
-      .subscribe(async (bag) => {        
-        if (bag.item.title == "Sair")
-        {
-          await this.oauth2Service.logout().then((response: any) => {
-            sessionStorage.clear();
+      .subscribe(async (bag) => {
+        if (bag.item.title == "Sair") {
+          if (SessionStorageService.isLogged()) {
             this.router.navigateByUrl("/auth");
-            this.user = null; 
-          });
+            this.user = null;
+            this.oauth2Service.logout().then((response: any) => {
+            });
+            sessionStorage.clear();
+          }
           return;
-        }        
+        }
 
         this.router.navigateByUrl("/pages/alterar-senha");
       });
@@ -79,12 +81,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.currentTheme = this.themeService.currentTheme;
-    
+
     this.usuarioService
       .getUsuario()
       .pipe(takeUntil(this.destroy$))
       .subscribe((usuario: Usuario) => (this.user = usuario));
-      
+
     const { xl } = this.breakpointService.getBreakpointsMap();
     this.themeService
       .onMediaQueryChange()

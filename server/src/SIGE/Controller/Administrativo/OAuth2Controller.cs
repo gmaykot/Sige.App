@@ -19,17 +19,6 @@ namespace SIGE.Controller.Administrativo
         [ProducesResponseType(typeof(Response), 200)]
         public IActionResult GetHealthCheck() => Ok("");
 
-        [HttpPost("introspect")]
-        [SwaggerOperation(Description = "Efetua o introspect do token.")]
-        [ProducesResponseType(typeof(Response), 200)]
-        [ProducesResponseType(typeof(Response), 400)]
-        [ProducesResponseType(typeof(Response), 401)]
-        [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Introspect([FromForm] Guid token)
-        {
-            return Ok(await _service.Introspect(token));
-        }
-
         [AllowAnonymous]
         [HttpPost("login")]
         [SwaggerOperation(Description = "Efetua o login do usuario.")]
@@ -51,6 +40,17 @@ namespace SIGE.Controller.Administrativo
         public async Task<IActionResult> Logout()
         {
             return Ok(await _service.Logout());
+        }
+
+        [HttpPost("introspect")]
+        [SwaggerOperation(Description = "Efetua o introspect do token.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> Introspect([FromForm] Guid token)
+        {
+            return Ok(await _service.Introspect(token));
         }
     }
 }

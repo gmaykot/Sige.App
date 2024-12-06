@@ -3,9 +3,7 @@ import { Validators, FormBuilder } from "@angular/forms";
 import { NbDialogRef } from "@nebular/theme";
 import { PERFIL_MENU } from "../../../@core/enum/const-dropbox";
 import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
-import { MenuSistemaService } from "../../../@core/services/administrativo/menu-sistema.service";
 import { IDropDown } from "../../../@core/data/drop-down";
-import { IResponseInterface } from "../../../@core/data/response.interface";
 
 @Component({
   selector: "ngx-menu-usuario",
@@ -22,7 +20,6 @@ export class MenuUsuarioComponent implements OnInit {
     usuarioId: ["", Validators.required],
     tipoPerfil: ["CONSULTIVO", Validators.required],
   });
-  private isSuperUsuario = SessionStorageService.isSuperUsuario();
 
   constructor(
     protected dialogRef: NbDialogRef<MenuUsuarioComponent>,
@@ -34,7 +31,7 @@ export class MenuUsuarioComponent implements OnInit {
       usuarioId: SessionStorageService.getUsuarioId(),
       menusSistema: [],
     });
-    if (!this.isSuperUsuario)
+    if (!SessionStorageService.isSysAdm())
       this.perfilMenu = PERFIL_MENU.filter(t => t.id !== '0'); 
   }
 
@@ -83,6 +80,6 @@ export class MenuUsuarioComponent implements OnInit {
   }
 
   showSubMenu(subMenus: IDropDown[]) {
-    return subMenus.filter((sM) => (sM.descricao != 'Menus do Sistema' || this.isSuperUsuario) && this.showSubMenuById(sM.id));
+    return subMenus.filter((sM) => ((sM.descricao != 'Menus do Sistema' && sM.descricao != 'Ghost') || SessionStorageService.isSysAdm()) && this.showSubMenuById(sM.id));
   }
 }

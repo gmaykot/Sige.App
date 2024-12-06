@@ -33,4 +33,10 @@ export class SessionStorageService {
     public static isSysAdm(): boolean {
         return sessionStorage.getItem(SessionSige.USER_SYSADM) === 'true';
     }
+    
+    public static isLogged(): boolean {
+        var token = sessionStorage.getItem(SessionSige.AUTH_TOKEN);
+        return token !== undefined && token !== null && token !== '';
+    }
+    
 }
