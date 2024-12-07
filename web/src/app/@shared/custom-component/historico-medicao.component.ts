@@ -11,12 +11,12 @@ import { IDropDown } from '../../@core/data/drop-down';
     template: `
     <form [formGroup]="control">
       <nb-card accent="warning">
-        <nb-card-header>Selecione a competência</nb-card-header>
+        <nb-card-header>Selecione o Mês de Referência</nb-card-header>
         <nb-card-body>
             <div class="row">
                 <div class="col-sm-12">
                 <div class="form-group">
-                    <label for="inputEmail" class="label">Competência da Medição</label><br />
+                    <label for="inputEmail" class="label">Mês de Referência</label><br />
                     <nb-select fullWidth placeholder="Selecione" formControlName="periodo">
                     <nb-option>Selecione</nb-option>
                     <nb-option *ngFor="let mes of meses" value="{{mes.id}}">{{mes.descricao}}</nb-option>

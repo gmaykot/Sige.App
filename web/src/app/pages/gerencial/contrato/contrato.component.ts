@@ -377,7 +377,7 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
         {
           valor.id = res.data.id;
           this.valoresMensais.push(valor);
-          this.sourceValoresMensais.load(this.valoresMensais.sort((a, b) => new Date(a.competencia).getTime() - new Date(b.competencia).getTime()));
+          this.sourceValoresMensais.load(this.valoresMensais.sort((a, b) => new Date(a.mesReferencia).getTime() - new Date(b.mesReferencia).getTime()));
           this.alertService.showSuccess("Valores Mensais cadastrados com sucesso.");
         }).catch(() => {
           this.alertService.showError("Não foi possível cadastrar Valores Mensais neste momento.");
@@ -396,7 +396,7 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
           this.valorMensalContratoService.put(valor).then(() => {
           this.valoresMensaisChecked = this.valoresMensais.filter(a => a.id != valor.id);
           this.valoresMensaisChecked.push(valor);
-          this.sourceValoresMensais.load(this.valoresMensaisChecked.sort((a, b) => new Date(a.competencia).getTime() - new Date(b.competencia).getTime()));        
+          this.sourceValoresMensais.load(this.valoresMensaisChecked.sort((a, b) => new Date(a.mesReferencia).getTime() - new Date(b.mesReferencia).getTime()));        
           this.alertService.showSuccess("Valores mensais editados com sucesso.");
           }).catch(() => {
             this.alertService.showError("Não foi possível editar Valores Mensais neste momento.");
@@ -416,7 +416,7 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
           this.valoresMensaisChecked.forEach(valor => {
             this.valoresMensais = this.valoresMensais.filter(a => a.id != valor.id);
             this.valorMensalContratoService.delete(valor.id).then(() => {
-              this.sourceValoresMensais.load(this.valoresMensais.sort((a, b) => new Date(a.competencia).getTime() - new Date(b.competencia).getTime()));                          
+              this.sourceValoresMensais.load(this.valoresMensais.sort((a, b) => new Date(a.mesReferencia).getTime() - new Date(b.mesReferencia).getTime()));                          
               this.alertService.showSuccess("Valores Mensais excluídos com sucesso.");
             }).catch(() => {
               this.alertService.showError("Não foi possível excluir Valores Mensais neste momento.");

@@ -77,7 +77,7 @@ export class MedicaoConfigSettings {
         }, 
       },
       periodo: {
-        title: "Competência",
+        title: "Mês Referência",
         type: "string",
         valuePrepareFunction: (value) => {
           return new DatePipe("pt-BR").transform(value, "MM/yyyy");

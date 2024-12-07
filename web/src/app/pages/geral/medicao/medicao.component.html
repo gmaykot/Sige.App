@@ -6,7 +6,7 @@
       <div class="row">
         <div class="col-sm-2">
           <div class="form-group">
-            <label class="label">Competência</label><br />
+            <label class="label">Mês Referência</label><br />
             <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
               <nb-option>Selecione</nb-option>
               <nb-option *ngFor="let mes of getMeses()" value="{{mes.id}}">{{mes.descricao}}</nb-option>
@@ -15,9 +15,9 @@
         </div>
         <div class="col-sm-8">
           <div class="form-group">
-            <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" [disabled]="colectAll || !competencia || competencia === null || medicoesChecked.length === 0" *ngIf="habilitaOperacoes" (click)="onColect()">Coletar Selecionadas</button>
-            <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" status="warning" [disabled]="colectAll || !competencia || competencia === null" *ngIf="habilitaOperacoes" (click)="onColectAll()">Coletar Todas</button>
-            <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" status="warning" [disabled]="colectAll || !competencia || competencia === null"  (click)="onStatusMedicao()">Status das Medições</button>
+            <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" [disabled]="colectAll || !mesReferencia || mesReferencia === null || medicoesChecked.length === 0" *ngIf="habilitaOperacoes" (click)="onColect()">Coletar Selecionadas</button>
+            <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" status="warning" [disabled]="colectAll || !mesReferencia || mesReferencia === null" *ngIf="habilitaOperacoes" (click)="onColectAll()">Coletar Todas</button>
+            <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" status="warning" [disabled]="colectAll || !mesReferencia || mesReferencia === null"  (click)="onStatusMedicao()">Status das Medições</button>
           </div>
         </div>          
       </div>        

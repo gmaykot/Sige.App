@@ -29,7 +29,7 @@ export class DateService {
     return this.datePipe.transform(data, format ? format : "dd/MM/yyyy");
   }
 
-  getCompetencias(qtdeMeses: number): Array<IDropDown>
+  getMesesReferencia(qtdeMeses: number): Array<IDropDown>
   {
     var meses: Array<IDropDown> = []
     var dataInicial = new Date();

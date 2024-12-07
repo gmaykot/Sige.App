@@ -15,12 +15,12 @@ export class RelatorioMedicaoService extends DefaultService<IRelatorioMedicao> {
         return await this.http.post<IResponseInterface<IRelatorioMedicaoList[]>>(`/${this.urlBase}`, relatorio);
     }
 
-    public async getRelatorio(contratoId: string, competencia: string): Promise<IResponseInterface<IRelatorioMedicao>> {
+    public async getRelatorio(contratoId: string, mesReferencia: string): Promise<IResponseInterface<IRelatorioMedicao>> {
         let query = '?';
         if (contratoId && contratoId != null)
             query += 'contratoId='+contratoId+'&';
-        if (competencia && competencia != null)
-            query += 'competencia='+competencia;
+        if (mesReferencia && mesReferencia != null)
+            query += 'mesReferencia='+mesReferencia;
         const ret = await this.http.get<IResponseInterface<IRelatorioMedicao>>(`/${this.urlBase}${query}`);
         const formattedReq = this.formatPosGet(ret.data);
         return { ...ret, data: formattedReq };

@@ -31,13 +31,13 @@ export class MedicaoService {
         return await this.http.post<IResponseInterface<IIntegracaoCCEE>>("/medicao/resultado", medicao);
     }
 
-    public async medicaoPorContrato(contratoId: string, competencia: string): Promise<IResponseInterface<any[]>>
+    public async medicaoPorContrato(contratoId: string, mesReferencia: string): Promise<IResponseInterface<any[]>>
     {
         let query = '?';
         if (contratoId && contratoId != null)
             query += 'contratoId='+contratoId+'&';
-        if (competencia && competencia != null)
-            query += 'competencia='+competencia+'&';
+        if (mesReferencia && mesReferencia != null)
+            query += 'mesReferencia='+mesReferencia+'&';
         return await this.http.get<IResponseInterface<any[]>>(`/medicao/medicao-contrato${query}`);
     }
 

@@ -45,8 +45,7 @@ namespace SIGE.Services.Services.Geral
             var rel = await _appDbContext.RelatoriosMedicao.FirstOrDefaultAsync(r => r.ContratoId.Equals(contratoId) && r.MesReferencia.Equals(mesReferencia));
             var res = await _appDbContext.Database.SqlQueryRaw<RelatorioMedicaoDto>(RelatorioMedicaoFactory.ValoresRelatoriosMedicao(contratoId, mesReferencia, null)).FirstOrDefaultAsync();
             if (res == null)
-                return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Verifique se a medição da competência foram efetuadas.")
-                                        .AddError(ETipoErro.INFORMATIVO, $"Verifique se os valores contratuais estão cadastrados.");
+                return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Verifique a medição do mês de referência e os valores contratuais cadastrados.");
             
             if (rel != null)
                 _mapper.Map(rel, res);
@@ -83,7 +82,7 @@ namespace SIGE.Services.Services.Geral
             return ret.SetOk().SetData(res);
         }
 
-        public async Task<Response> ObterFinal(Guid contratoId, DateTime competencia)
+        public async Task<Response> ObterFinal(Guid contratoId, DateTime mesReferencia)
         {
             var ret = new Response();
             var relatorio = new RelatorioFinalDto

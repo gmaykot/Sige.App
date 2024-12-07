@@ -4,7 +4,7 @@ namespace SIGE.Core.Models.Sistema.Gerencial.Contrato
 {
     public class ValorMensalContratoModel : BaseModel
     {
-        public required DateTime Competencia { get; set; }
+        public required DateTime MesReferencia { get; set; }
         public required decimal HorasMes { get; set; }
         public required decimal EnergiaContratada { get; set; }
         public Guid ValorAnualContratoId { get; set; }

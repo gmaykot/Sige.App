@@ -29,7 +29,7 @@ namespace SIGE.Core.SQLFactory
             builder.Append("INNER JOIN ValoresAnuaisContrato valorAnual ON valorAnual.ContratoId = contrato.Id ");
             builder.Append(string.Format("AND DATE_FORMAT(valorAnual.DataVigenciaInicial, '%Y-%m-01') <= '{0}' AND DATE_FORMAT(valorAnual.DataVigenciaFinal, '%Y-%m-01') >= '{0}' ", mesReferencia.ToString("yyyy-MM-01")));
             builder.Append("INNER JOIN ValoresMensaisContrato valorMensal ON valorMensal.ValorAnualContratoId = valorAnual.Id ");
-            builder.Append(string.Format("AND DATE_FORMAT(valorMensal.Competencia, '%Y-%m-01') = '{0}' ", mesReferencia.ToString("yyyy-MM-01")));
+            builder.Append(string.Format("AND DATE_FORMAT(valorMensal.MesReferencia, '%Y-%m-01') = '{0}' ", mesReferencia.ToString("yyyy-MM-01")));
             builder.Append("INNER JOIN  ");
             builder.Append("	( ");
             builder.Append("	SELECT ");

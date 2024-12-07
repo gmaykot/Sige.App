@@ -1,7 +1,7 @@
 export interface IValorMensal {
     id: string;
     vigencia: string;
-    competencia: string;
+    mesReferencia: string;
     horasMes: number;
     energiaContratada: number;
     valorAnualContratoId: string;

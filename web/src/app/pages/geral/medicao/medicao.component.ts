@@ -35,7 +35,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   public selected: boolean = false;
   public colectAll: boolean = false;
   public periodoMenosUm: string;
-  public competencia = null;
+  public mesReferencia = null;
   public totais: IIntegracaoCCEETotais;
   public valores: IValoresGrafico[];
   public habilitaOperacoes: boolean = false;
@@ -54,7 +54,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   }
 
   public control = this.formBuilder.group({
-    competencia: ["", Validators.required],
+    mesReferencia: ["", Validators.required],
   });
 
   public controlEdit = this.formBuilder.group({
@@ -70,12 +70,12 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
 
   getMeses()
   {
-    return this.dateService.getCompetencias(6);
+    return this.dateService.getMesesReferencia(6);
   }
 
   onSearch(event)
   {
-    this.competencia = event;
+    this.mesReferencia = event;
     this.medicoesChecked = [];
     this.loading = true;
     if (!event || event == '')

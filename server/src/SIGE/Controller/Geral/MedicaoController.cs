@@ -64,8 +64,8 @@ namespace SIGE.Controller.Geral
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ObterMedicoes([FromQuery] Guid contratoId, DateTime competencia) =>
-            Ok(await _medicaoService.ListaMedicoesPorContrato(contratoId, competencia));
+        public async Task<IActionResult> ObterMedicoes([FromQuery] Guid contratoId, DateTime mesReferencia) =>
+            Ok(await _medicaoService.ListaMedicoesPorContrato(contratoId, mesReferencia));
 
 
         [HttpGet("agentes")]

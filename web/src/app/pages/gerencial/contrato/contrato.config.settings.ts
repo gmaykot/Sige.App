@@ -134,8 +134,8 @@ export class ContratoConfigSettings {
         title: "Vigência",
         type: "string",
       },
-      competencia: {
-        title: "Competência",
+      mesReferencia: {
+        title: "Mês Referência",
         type: "string",        
         valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'MM/yyyy')},
       },

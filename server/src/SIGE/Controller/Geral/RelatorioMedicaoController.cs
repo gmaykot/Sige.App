@@ -28,8 +28,8 @@ namespace SIGE.Controller.Geral
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Obter([FromQuery] Guid contratoId, [FromQuery] DateTime competencia) =>
-            Ok(await _service.Obter(contratoId, competencia));
+        public async Task<IActionResult> Obter([FromQuery] Guid contratoId, [FromQuery] DateTime mesReferencia) =>
+            Ok(await _service.Obter(contratoId, mesReferencia));
 
         [HttpGet("final")]
         [SwaggerOperation(Description = "Obtém o cálculo do relatório final de economia.")]
@@ -37,8 +37,8 @@ namespace SIGE.Controller.Geral
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ObterFinal([FromQuery] Guid contratoId, [FromQuery] DateTime competencia) =>
-            Ok(await _service.ObterFinal(contratoId, competencia));
+        public async Task<IActionResult> ObterFinal([FromQuery] Guid contratoId, [FromQuery] DateTime mesReferencia) =>
+            Ok(await _service.ObterFinal(contratoId, mesReferencia));
 
         [HttpPut()]
         [SwaggerOperation(Description = "Altera os dados no sistema.")]

@@ -31,14 +31,14 @@ import { DateService } from "../../@core/services/util/date.service";
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
-                <label for="inputFirstName" class="label">Competência*</label>
+                <label for="inputFirstName" class="label">Mês Referência*</label>
                 <input
                   type="text"
                   nbInput
                   fullWidth
                   id="inputFirstName"
                   mask="M0/0000" placeholder="__/____" [dropSpecialCharacters]="false"
-                  formControlName="competencia"
+                  formControlName="mesReferencia"
                 />
               </div>
             </div>
@@ -100,7 +100,7 @@ export class ValorMensalComponent implements OnInit {
   @Input() dateService: DateService
   public control = this.formBuilder.group({
     id: "",
-    competencia: "",
+    mesReferencia: "",
     horasMes: 0,
     energiaContratada: 0,
     valorAnualContratoId: "",
@@ -119,7 +119,7 @@ export class ValorMensalComponent implements OnInit {
   getValores() {
     this.control = this.formBuilder.group({
       id: this.valor.id,
-      competencia: this.dateService.usStringToPtBrString(this.valor.competencia, 'MM/yyyy'),
+      mesReferencia: this.dateService.usStringToPtBrString(this.valor.mesReferencia, 'MM/yyyy'),
       horasMes: this.valor.horasMes,
       energiaContratada: this.valor.energiaContratada,
       valorAnualContratoId: this.valor.valorAnualContratoId,
@@ -137,7 +137,7 @@ export class ValorMensalComponent implements OnInit {
 
   submit() {    
     this.valor.id = this.control.value.id;
-    this.valor.competencia = this.dateService.ptBrStringToUsString(`01/${this.control.value.competencia}`, "yyyy-MM-dd");
+    this.valor.mesReferencia = this.dateService.ptBrStringToUsString(`01/${this.control.value.mesReferencia}`, "yyyy-MM-dd");
     this.valor.valorAnualContratoId = this.control.value.valorAnualContratoId;
     this.valor.horasMes = this.control.value.horasMes;
     this.valor.energiaContratada = this.control.value.energiaContratada;

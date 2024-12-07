@@ -129,7 +129,7 @@ export class RelatorioMedicaoComponent implements OnInit {
 
   getMeses()
   {
-    return this.dateService.getCompetencias(6);
+    return this.dateService.getMesesReferencia(6);
   }
 
   onSearch(event)
