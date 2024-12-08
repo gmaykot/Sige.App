@@ -14,12 +14,8 @@ jobs:
 
     steps:
     - name: System under maintenance
-      env:
-        HOST: ${{ vars.VPS_HOST }}
-        USERNAME: ${{ vars.VPS_USERNAME }}
-        PASSWORD: ${{ secrets.VPS_PASSWORD }}
-      run: |
-        sshpass -p "$PASSWORD" scp /var/www/index.html $USERNAME@$HOST:/var/www/prd/web/index.html
+      run:
+        cp /var/www/index.html /var/www/prd/web/index.html
         
     - name: Check out repository
       uses: actions/checkout@v3
