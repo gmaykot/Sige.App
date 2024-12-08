@@ -29,12 +29,14 @@ jobs:
     - name: Set environment variables
       run: |
         echo "BASE_API_URL=${{ vars.BASE_API_URL }}" >> $GITHUB_ENV
+        
     - name: Replace variables in environment.prod.ts
       working-directory: web/src/environments
       run: |
         # Usando envsubst para substituir todas as variáveis no arquivo environment.prod.ts
         envsubst < environment.prod.ts > environment.prod.temp.ts
         mv environment.prod.temp.ts environment.prod.ts
+        
     - name: Build the project
       working-directory: web
       run: npm run build -- --configuration=production
