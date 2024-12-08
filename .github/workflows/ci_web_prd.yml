@@ -12,17 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
-    steps:
-    - name: Check if index.html exists
-      working-directory: /var/www
+    steps:  
+    - name: System under maintenance
+      env:
+        HOST: ${{ vars.VPS_HOST }}
+        USERNAME: ${{ vars.VPS_USERNAME }}
+        PASSWORD: ${{ secrets.VPS_PASSWORD }}
       run: |
-        ls -la
-        if [ ! -f index.html ]; then echo "File does not exist"; exit 1; fi
-    
-    - name: Copy index.html
-      working-directory: /var/www
-      run: cp index.html /var/www/prd/web/index.html
-        
+        echo "Placing the system in maintenance mode..."
+        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "cp /var/www/index.html /var/www/prd/web/index.html"
+       
     - name: Check out repository
       uses: actions/checkout@v3
 
