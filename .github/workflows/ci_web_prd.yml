@@ -15,7 +15,9 @@ jobs:
     steps:
     - name: Check if index.html exists
       working-directory: /var/www
-      run: if [ ! -f index.html ]; then echo "File does not exist"; exit 1; fi
+      run: |
+        ls -la
+        if [ ! -f index.html ]; then echo "File does not exist"; exit 1; fi
     
     - name: Copy index.html
       working-directory: /var/www
