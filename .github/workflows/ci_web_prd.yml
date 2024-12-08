@@ -14,10 +14,12 @@ jobs:
 
     steps:
     - name: Check if index.html exists
-      run: if [ ! -f /var/www/index.html ]; then echo "File does not exist"; exit 1; fi
+      working-directory: /var/www
+      run: if [ ! -f index.html ]; then echo "File does not exist"; exit 1; fi
     
     - name: Copy index.html
-      run: cp /var/www/index.html /var/www/prd/web/index.html
+      working-directory: /var/www
+      run: cp index.html /var/www/prd/web/index.html
         
     - name: Check out repository
       uses: actions/checkout@v3
