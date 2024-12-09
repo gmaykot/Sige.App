@@ -37,5 +37,5 @@ jobs:
       
       - name: Clean up
         run: |
-          rm dump_coenel_dev.sql
+          rm dump_coenel_prd.sql
           sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST "rm /tmp/dump_coenel_prd.sql"
