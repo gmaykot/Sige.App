@@ -13,6 +13,15 @@ jobs:
     environment: staging
 
     steps:
+    - name: System under maintenance
+      env:
+        HOST: ${{ vars.VPS_HOST }}
+        USERNAME: ${{ vars.VPS_USERNAME }}
+        PASSWORD: ${{ secrets.VPS_PASSWORD }}
+      run: |
+        echo "Placing the system in maintenance mode..."
+        sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "cp /var/www/index.html /var/www/hmg/web/index.html"
+        
     - name: Check out repository
       uses: actions/checkout@v3
 
