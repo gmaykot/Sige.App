@@ -1,19 +1,23 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using SIGE.Core.Cache;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo;
 using SIGE.Core.Models.Sistema.Administrativo;
+using SIGE.Core.Options;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Administrativo;
 
 namespace SIGE.Services.Services.Administrativo
 {
-    public class MenuUsuarioService(AppDbContext appDbContext, IMapper mapper) : IMenuUsuarioService
+    public class MenuUsuarioService(AppDbContext appDbContext, IMapper mapper, ICacheManager cacheManager, IOptions<CacheOption> cacheOption) : IMenuUsuarioService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
-
+        private readonly ICacheManager _cacheManager = cacheManager;
+        private readonly CacheAuthOption _cacheOption = cacheOption.Value.Auth;
 
         public async Task<Response> Obter()
         {
@@ -33,15 +37,19 @@ namespace SIGE.Services.Services.Administrativo
             var empresa = await _appDbContext.MenusUsuarios.FindAsync(req.Id);
             _mapper.Map(req, empresa);
             _ = await _appDbContext.SaveChangesAsync();
+            var cacheKey = string.Format(_cacheOption.MenuUsuario.Key, req.UsuarioId);
+            await _cacheManager.Remove(cacheKey);
 
             return new Response().SetOk().SetMessage("Dados do menu alterados com sucesso.");
         }
 
         public async Task<Response> Excluir(Guid Id)
         {
-            var empresa = await _appDbContext.MenusUsuarios.FindAsync(Id);
-            _appDbContext.MenusUsuarios.Remove(empresa);
+            var menu = await _appDbContext.MenusUsuarios.FindAsync(Id);
+            _appDbContext.MenusUsuarios.Remove(menu);
             _ = await _appDbContext.SaveChangesAsync();
+            var cacheKey = string.Format(_cacheOption.MenuUsuario.Key, menu.UsuarioId);
+            await _cacheManager.Remove(cacheKey);
 
             return new Response().SetOk().SetMessage("Menu excluído com sucesso.");
         }
@@ -51,6 +59,8 @@ namespace SIGE.Services.Services.Administrativo
             var menuUsuario = _mapper.Map<MenuUsuarioModel>(req);
             _ = await _appDbContext.AddAsync(menuUsuario);
             _ = await _appDbContext.SaveChangesAsync();
+            var cacheKey = string.Format(_cacheOption.MenuUsuario.Key, req.UsuarioId);
+            await _cacheManager.Remove(cacheKey);
 
             return new Response().SetOk().SetMessage("Menu cadastrado com sucesso.");
         }
@@ -92,6 +102,8 @@ namespace SIGE.Services.Services.Administrativo
                         _ = await _appDbContext.AddAsync(menuUsuario);
                     }
                 }
+                var cacheKey = string.Format(_cacheOption.MenuUsuario.Key, menusUsuario.First().UsuarioId);
+                await _cacheManager.Remove(cacheKey);
                 _ = await _appDbContext.SaveChangesAsync();
             }
 
