@@ -16,10 +16,7 @@ jobs:
         DB_HOST_OLD: ${{ vars.DB_HOST_OLD }}
         DB_USER_OLD: ${{ vars.DB_USER_OLD }}
         DB_PASS_OLD: ${{ secrets.DB_PASS_OLD }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        
+    steps:      
       - name: Set up MySQL client
         run: |
           sudo apt-get update
@@ -33,7 +30,7 @@ jobs:
       - name: Restore dump to coenel-prd
         run: |
           sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST \
-          "mysql -h '$DB_HOST_PRD' -u '$DB_USER_PRD' -p'$DB_PASS_PRD' coenel-prd < /tmp/dump_coenel_old.sql"
+          "mysql -h '$DB_HOST_PRD' -u '$DB_USER_PRD' -p'$DB_PASS_PRD' --default-character-set=utf8mb4 coenel-prd < /tmp/dump_coenel_old.sql"
       
       - name: Clean up
         run: |
