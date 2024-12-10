@@ -27,11 +27,16 @@ jobs:
       - name: Upload dump to VPS
         run: |
           sshpass -p "$VPS_PASSWORD" scp -o StrictHostKeyChecking=no dump_coenel_old.sql $VPS_USERNAME@$VPS_HOST:/tmp/dump_coenel_old.sql
+          
+      - name: Change collation MySQL > MariaDB
+        run: |
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST \
+          "sed -i 's/utf8mb4_0900_ai_ci/utf8mb4_general_ci/g' /tmp/dump_coenel_old.sql"
+
       - name: Restore dump to coenel-prd
         run: |
           sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST \
-          "sed -i 's/utf8mb4_0900_ai_ci/utf8mb4_general_ci/g' /tmp/dump_coenel_old.sql" \
-          "mysql -h '$DB_HOST_PRD' -u '$DB_USER_PRD' -p'$DB_PASS_PRD' --default-character-set=utf8mb4 coenel-prd < /tmp/dump_coenel_old.sql"
+          "mysql -h '$DB_HOST_PRD' -u '$DB_USER_PRD' -p'$DB_PASS_PRD' --default-character-set=utf8mb4 coenel-prd < /tmp/dump_coenel_old.sql"          
       
       - name: Clean up
         run: |
