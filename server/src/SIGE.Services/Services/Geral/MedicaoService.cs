@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Enumerators;
+using SIGE.Core.Enumerators.Medicao;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Ccee;
@@ -93,7 +94,7 @@ namespace SIGE.Services.Services.Geral
 
                 var consumo = new ConsumoMensalModel
                 {
-                    MesReferencia = req.Periodo.ToDate(),
+                    MesReferencia = DateOnly.MaxValue,
                     DataMedicao = DataSige.Hoje(),
                     PontoMedicaoId = med.PontoMedicaoId.ToGuid(),
                     Icms = 17,
@@ -105,17 +106,17 @@ namespace SIGE.Services.Services.Geral
                 {
                     var integracaoCCEE = (IntegracaoCceeDto)res.Data;
                     var listaMedidas = integracaoCCEE.ListaMedidas.OrderBy(o => o.PeriodoFinal).ToList();
-                    consumo.StatusMedicao = VerificaStatusMedicao(listaMedidas.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()), req.Periodo.ToDate(), consumoRecente);
+                    consumo.Status = VerificaStatusMedicao(listaMedidas.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()), req.Periodo.ToDate(), consumoRecente);
 
                     if (!integracaoCCEE.ListaMedidas.IsNullOrEmpty())
                     {
                         listaMedidas.ForEach(m => m.Periodo = DateTime.ParseExact(m.PeriodoFinal, "yyyy-MM-ddTHHmmss-0300", null));
-                        consumo.Medicoes = _mapper.Map<IEnumerable<MedicoesModel>>(listaMedidas);
+                        consumo.Medicoes = _mapper.Map<IEnumerable<MedicaoModel>>(listaMedidas);
                     }
                 }
                 else
                 {
-                    consumo.StatusMedicao = EStatusMedicao.ERRO_LEITURA;
+                    consumo.Status = EStatusConsumoMensal.ERRO_LEITURA;
                     foreach (var e in res.Errors)
                     {
                         ret.AddError(e.Key, e.Value);
@@ -135,17 +136,16 @@ namespace SIGE.Services.Services.Geral
                     Periodo = req.Periodo.ToDate(),
                     medicao = new MedicaoDto
                     {
-                        StatusMedicao = consumo.StatusMedicao,
+                        Status = consumo.Status,
                     },
-                    ListaMedidas = consumo.Medicoes == null ? new List<IntegracaoCceeMedidasDto>() : consumo.Medicoes.Where(m => m.SubTipo.Equals("L")).Select(m =>
+                    ListaMedidas = consumo.Medicoes == null ? new List<IntegracaoCceeMedidasDto>() : consumo.Medicoes.Where(m => m.SubTipo.Equals(ESubTipoMedicao.L)).Select(m =>
                         new IntegracaoCceeMedidasDto
                         {
                             PontoMedicao = med.PontoMedicao,
-                            Periodo = m.Periodo,
-                            SubTipo = m.SubTipo,
-                            Status = m.Status,
-                            ConsumoAtivo = m.ConsumoAtivo,
-                            ConsumoReativo = m.ConsumoReativo
+                            Periodo = DataSige.Hoje(),
+                            SubTipo = m.SubTipo.GetDescription(),
+                            Status = m.Status.GetDescription(),
+                            ConsumoAtivo = m.ValorConsumoAtivo
                         }
                     )
                 };
@@ -165,19 +165,19 @@ namespace SIGE.Services.Services.Geral
             return ret.SetOk().SetMessage("Consumos coletados com sucesso.");
         }
 
-        private EStatusMedicao VerificaStatusMedicao(IEnumerable<IntegracaoCceeMedidasDto>? lista, DateTime mesReferencia, ConsumoMensalModel consumoRecente)
+        private EStatusConsumoMensal VerificaStatusMedicao(IEnumerable<IntegracaoCceeMedidasDto>? lista, DateTime mesReferencia, ConsumoMensalModel consumoRecente)
         {
             if (consumoRecente == null)
-                return EStatusMedicao.COMPLETA;
+                return EStatusConsumoMensal.COMPLETA;
 
             if (!lista.Any())
-                return EStatusMedicao.INCOMPLETA;
+                return EStatusConsumoMensal.INCOMPLETA;
 
-            var totalConsumoRecente = consumoRecente.Medicoes.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()).Sum(m => m.ConsumoAtivo);
+            var totalConsumoRecente = consumoRecente.Medicoes.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()).Sum(m => m.ValorConsumoAtivo);
             var totalAtual = lista.Sum(m => m.ConsumoAtivo);
 
-            if (totalConsumoRecente != totalAtual && consumoRecente.StatusMedicao is EStatusMedicao.COMPLETA or EStatusMedicao.INCOMPLETA)
-                return EStatusMedicao.VALOR_DIVERGENTE;
+            if (totalConsumoRecente != totalAtual && consumoRecente.Status is EStatusConsumoMensal.COMPLETA or EStatusConsumoMensal.INCOMPLETA)
+                return EStatusConsumoMensal.VALOR_DIVERGENTE;
 
             int diasNoMes = DateTime.DaysInMonth(mesReferencia.Year, mesReferencia.Month);
 
@@ -200,11 +200,11 @@ namespace SIGE.Services.Services.Geral
                 if (!listaFiltrada.Any(x => DateTime.ParseExact(x.PeriodoFinal, "yyyy-MM-ddTHHmmss-0300", null).Date == data.Date &&
                                             DateTime.ParseExact(x.PeriodoFinal, "yyyy-MM-ddTHHmmss-0300", null).Hour == data.Hour))
                 {
-                    return EStatusMedicao.INCOMPLETA;
+                    return EStatusConsumoMensal.INCOMPLETA;
                 }
             }
 
-            return EStatusMedicao.COMPLETA;
+            return EStatusConsumoMensal.COMPLETA;
         }
 
         public async Task<Response> ObterAgentes(Guid empresaId)
@@ -245,7 +245,7 @@ namespace SIGE.Services.Services.Geral
                 ListaMedidas = medicoes.Where(m => m.SubTipo.Equals("L")).OrderBy(m => m.PontoMedicao).ThenBy(m => m.PeriodoFinal),
                 medicao = new MedicaoDto
                 {
-                    StatusMedicao = req.StatusMedicao,
+                    Status = req.Status,
                 },
             };
             var listaDistinct = medicoes.GroupBy(m => m.Periodo.GetDiaMes()).ToList();
@@ -282,9 +282,9 @@ namespace SIGE.Services.Services.Geral
             if (res == null)
                 return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Não existe consumo registrado.");
 
-            res.Icms = req.Icms;
-            res.Proinfa = req.Proinfa;
-            res.StatusMedicao = EStatusMedicao.COMPLETA;
+            res.Icms = 0;
+            res.Proinfa = 0;
+            res.Status = EStatusConsumoMensal.COMPLETA;
 
             _appDbContext.Update(res);
             _ = await _appDbContext.SaveChangesAsync();

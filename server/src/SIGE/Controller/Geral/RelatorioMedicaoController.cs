@@ -19,7 +19,7 @@ namespace SIGE.Controller.Geral
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ListarRelatorios([FromBody] RelatorioMedicaoRequest req) =>
+        public async Task<IActionResult> ListarRelatorios([FromBody] ColetarMedicoesRequest req) =>
             Ok(await _service.ListarRelatorios(req));
 
         [HttpGet()]

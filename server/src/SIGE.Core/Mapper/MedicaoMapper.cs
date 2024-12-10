@@ -11,8 +11,8 @@ namespace SIGE.Core.Mapper
             CreateMap<AgenteMedicaoDto, AgenteMedicaoModel>().ReverseMap();
             CreateMap<PontoMedicaoDto, PontoMedicaoModel>().ReverseMap();
 
-            CreateMap<IntegracaoCceeMedidasDto, MedicoesModel>().ReverseMap()
-                .ForMember(dst => dst.Periodo, map => map.MapFrom(src => src.Periodo))
+            CreateMap<IntegracaoCceeMedidasDto, MedicaoModel>().ReverseMap()
+                .ForMember(dst => dst.Periodo, map => map.MapFrom(src => src.DataMedicao))
                 .ForMember(dst => dst.PontoMedicao, map => map.MapFrom(src => src.ConsumoMensal.PontoMedicao.Codigo))
                 .ForMember(dst => dst.DescPontoMedicao, map => map.MapFrom(src => src.ConsumoMensal.PontoMedicao.Nome));
         }

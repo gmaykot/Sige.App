@@ -51,7 +51,7 @@ namespace SIGE.DataAccess.Context
         public DbSet<LogModel> Logs { get; set; }
         public DbSet<MenuSistemaModel> MenusSistema { get; set; }
         public DbSet<MenuUsuarioModel> MenusUsuarios { get; set; }
-        public DbSet<MedicoesModel> Medicoes { get; set; }
+        public DbSet<MedicaoModel> Medicoes { get; set; }
         public DbSet<PontoMedicaoModel> PontosMedicao { get; set; }
         public DbSet<RelatorioMedicaoModel> RelatoriosMedicao { get; set; }
         public DbSet<SalarioMinimoModel> SalariosMinimos { get; set; }

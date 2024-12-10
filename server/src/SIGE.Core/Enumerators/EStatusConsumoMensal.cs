@@ -1,6 +1,6 @@
 ﻿namespace SIGE.Core.Enumerators
 {
-    public enum EStatusMedicao
+    public enum EStatusConsumoMensal
     {
         PENDENTE_MEDICAO = 0,
         COMPLETA = 1,

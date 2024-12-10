@@ -6,7 +6,7 @@ namespace SIGE.Services.Interfaces.Geral
 {
     public interface IRelatorioMedicaoService
     {
-        Task<Response> ListarRelatorios(RelatorioMedicaoRequest req);
+        Task<Response> ListarRelatorios(ColetarMedicoesRequest req);
         Task<Response> Obter(Guid contratoId, DateTime mesReferencia);
         Task<Response> ObterFinal(Guid contratoId, DateTime mesReferencia);
         Task<Response> Alterar(RelatorioMedicaoDto req);

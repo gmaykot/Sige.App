@@ -28,7 +28,7 @@ namespace SIGE.Services.Services.Geral
             return ret.SetOk();
         }
 
-        public async Task<Response> ListarRelatorios(RelatorioMedicaoRequest req)
+        public async Task<Response> ListarRelatorios(ColetarMedicoesRequest req)
         {
             var ret = new Response();
             var res = await _appDbContext.Database.SqlQueryRaw<RelatorioMedicaoListDto>(RelatorioMedicaoFactory.ListaRelatoriosMedicao(req)).ToListAsync();

@@ -9,7 +9,7 @@ namespace SIGE.Core.Models.Dto.Administrativo.Ccee
         public IntegracaoCceeTotaisDto? Totais { get; set; }
         public IEnumerable<ValoresGraficoDto>? ListaValoresGrafico { get; set; }
         public IEnumerable<IntegracaoCceeMedidasDto>? ListaMedidas { get; set; }
-        public MedicaoDto? medicao { get; set; }
+        public MedicaoDto? Medicao { get; set; }
     }
 
     [JsonConverter(typeof(CustomJsonPathConverter))]

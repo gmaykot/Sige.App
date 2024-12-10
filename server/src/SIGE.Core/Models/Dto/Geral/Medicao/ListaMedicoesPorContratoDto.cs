@@ -3,7 +3,7 @@
     public class ListaMedicoesPorContratoDto
     {
         public string? DescEmpresa { get; set; }
-        public DateTime? DiaMedicaoo { get; set; }
+        public DateTime? DiaMedicao { get; set; }
         public string? DescAgenteMedicao { get; set; }
         public string? DescPontoMedicao { get; set; }
         public string? SubTipo { get; set; }

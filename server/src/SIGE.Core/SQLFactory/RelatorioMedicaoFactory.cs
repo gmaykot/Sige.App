@@ -5,7 +5,7 @@ namespace SIGE.Core.SQLFactory
 {
     public static class RelatorioMedicaoFactory
     {
-        public static string ListaRelatoriosMedicao(RelatorioMedicaoRequest relatorio)
+        public static string ListaRelatoriosMedicao(ColetarMedicoesRequest relatorio)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("SELECT forn.Id AS 'FornecedorId', relatorio.Id AS 'Id', contrato.Id AS 'ContratoId', contrato.DscGrupo AS 'DescGrupo', forn.Nome AS 'DescFornecedor', IFNULL(relatorio.Fase, 0) AS 'Fase', relatorio.MesReferencia AS 'MesReferencia', relatorio.DataEmissao AS 'DataEmissao'");

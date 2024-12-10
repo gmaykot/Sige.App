@@ -1,17 +1,26 @@
 ﻿using SIGE.Core.Enumerators;
-using SIGE.Core.Models.Defaults;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SIGE.Core.Models.Sistema.Geral.Medicao
 {
-    public class ConsumoMensalModel : BaseModel
+    public class ConsumoMensalModel
     {
-        public DateTime MesReferencia { get; set; }
-        public DateTime DataMedicao { get; set; }
-        public decimal Icms { get; set; }
-        public decimal Proinfa { get; set; }
-        public EStatusMedicao StatusMedicao { get; set; }
+        [Key]
+        public int Id { get; set; }
+
+        public required DateOnly MesReferencia { get; set; }
+        public required DateTime DataMedicao { get; set; }
+        public required float Icms { get; set; }
+        public float Proinfa { get; set; }
+        public EStatusConsumoMensal Status { get; set; }
+
+        [ForeignKey("PontosMedicao")]
         public Guid PontoMedicaoId { get; set; }
+
+        #region Virtual
         public virtual PontoMedicaoModel? PontoMedicao { get; set; }
-        public IEnumerable<MedicoesModel>? Medicoes { get; set; }
+        public virtual IEnumerable<MedicaoModel>? Medicoes { get; set; }
+        #endregion
     }
 }

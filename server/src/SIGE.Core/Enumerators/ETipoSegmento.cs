@@ -1,12 +1,12 @@
-﻿using System.ComponentModel;
+﻿using SIGE.Core.Attributes;
 
 namespace SIGE.Core.Enumerators
 {
     public enum ETipoSegmento
     {
-        [Description("Azul")]
-        AZUL,
-        [Description("Verde")]
-        VERDE,
+        [StringValue("AZUL")]
+        AZUL = 0,
+        [StringValue("VERDE")]
+        VERDE = 1,
     }
 }
