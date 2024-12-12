@@ -72,12 +72,12 @@ namespace SIGE.Services.Services.Geral
         public async Task<Response> ColetarMedicoes(ColetaMedicaoDto req)
         {
             var ret = new Response();
-            await _loggerService.LogAsync(LogLevel.Information, $"Solicitação de coleta geral para {req.Periodo.ToDate()}");
+            await _loggerService.LogAsync(LogLevel.Information, $"Solicitação de coleta geral para {req.Periodo}");
             foreach (var med in req.Medicoes.DistinctBy(m => m.Id))
             {
                 var ccee = new IntegracaoCceeBaseDto()
                 {
-                    Periodo = req.Periodo.ToDate(),
+                    Periodo = req.Periodo,
                     EmpresaId = med.EmpresaId.ToGuid(),
                     CodAgente = med.CodAgente,
                     PontoMedicao = med.PontoMedicao
@@ -93,8 +93,8 @@ namespace SIGE.Services.Services.Geral
 
                 var consumo = new ConsumoMensalModel
                 {
-                    MesReferencia = req.Periodo.ToDate(),
-                    DataMedicao = DataSige.Hoje(),
+                    MesReferencia = req.Periodo,
+                    DataMedicao = DataSige.HojeDO(),
                     PontoMedicaoId = med.PontoMedicaoId.ToGuid(),
                     Icms = 17,
                 };
@@ -105,7 +105,7 @@ namespace SIGE.Services.Services.Geral
                 {
                     var integracaoCCEE = (IntegracaoCceeDto)res.Data;
                     var listaMedidas = integracaoCCEE.ListaMedidas.OrderBy(o => o.PeriodoFinal).ToList();
-                    consumo.StatusMedicao = VerificaStatusMedicao(listaMedidas.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()), req.Periodo.ToDate(), consumoRecente);
+                    consumo.StatusMedicao = VerificaStatusMedicao(listaMedidas.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()), req.Periodo, consumoRecente);
 
                     if (!integracaoCCEE.ListaMedidas.IsNullOrEmpty())
                     {
@@ -132,7 +132,7 @@ namespace SIGE.Services.Services.Geral
 
                 var resCcee = new IntegracaoCceeDto
                 {
-                    Periodo = req.Periodo.ToDate(),
+                    Periodo = req.Periodo,
                     medicao = new MedicaoDto
                     {
                         StatusMedicao = consumo.StatusMedicao,
@@ -145,7 +145,6 @@ namespace SIGE.Services.Services.Geral
                             SubTipo = m.SubTipo,
                             Status = m.Status,
                             ConsumoAtivo = m.ConsumoAtivo,
-                            ConsumoReativo = m.ConsumoReativo
                         }
                     )
                 };
@@ -153,9 +152,7 @@ namespace SIGE.Services.Services.Geral
                     resCcee.Totais = new IntegracaoCceeTotaisDto()
                     {
                         MediaConsumoAtivo = resCcee.ListaMedidas.Average(m => m.ConsumoAtivo),
-                        MediaConsumoReativo = resCcee.ListaMedidas.Average(m => m.ConsumoReativo),
                         SomaConsumoAtivo = resCcee.ListaMedidas.Sum(m => m.ConsumoAtivo),
-                        SomaConsumoReativo = resCcee.ListaMedidas.Sum(m => m.ConsumoReativo)
                     };
                 ret.SetData(resCcee);
             }
@@ -165,7 +162,7 @@ namespace SIGE.Services.Services.Geral
             return ret.SetOk().SetMessage("Consumos coletados com sucesso.");
         }
 
-        private EStatusMedicao VerificaStatusMedicao(IEnumerable<IntegracaoCceeMedidasDto>? lista, DateTime mesReferencia, ConsumoMensalModel consumoRecente)
+        private EStatusMedicao VerificaStatusMedicao(IEnumerable<IntegracaoCceeMedidasDto>? lista, DateOnly mesReferencia, ConsumoMensalModel consumoRecente)
         {
             if (consumoRecente == null)
                 return EStatusMedicao.COMPLETA;
@@ -241,7 +238,7 @@ namespace SIGE.Services.Services.Geral
             {
                 PontoMedicao = req.PontoMedicao,
                 EmpresaId = req.EmpresaId.ToGuid(),
-                Periodo = req.Periodo.ToDate(),
+                Periodo = req.Periodo.Value,
                 ListaMedidas = medicoes.Where(m => m.SubTipo.Equals("L")).OrderBy(m => m.PontoMedicao).ThenBy(m => m.PeriodoFinal),
                 medicao = new MedicaoDto
                 {

@@ -84,9 +84,7 @@ namespace SIGE.Services.Services.Externo
                 resCcee.Totais = new IntegracaoCceeTotaisDto()
                 {
                     MediaConsumoAtivo = resCcee.ListaMedidas.Average(m => m.ConsumoAtivo),
-                    MediaConsumoReativo = resCcee.ListaMedidas.Average(m => m.ConsumoReativo),
                     SomaConsumoAtivo = resCcee.ListaMedidas.Sum(m => m.ConsumoAtivo),
-                    SomaConsumoReativo = resCcee.ListaMedidas.Sum(m => m.ConsumoReativo)
                 };
 
             return ret.SetOk().SetData(resCcee).SetMessage("Integração efetuada com sucesso.");
@@ -154,9 +152,7 @@ namespace SIGE.Services.Services.Externo
                 resCcee.Totais = new IntegracaoCceeTotaisDto()
                 {
                     MediaConsumoAtivo = resCcee.ListaMedidas.Average(m => m.ConsumoAtivo),
-                    MediaConsumoReativo = resCcee.ListaMedidas.Average(m => m.ConsumoReativo),
                     SomaConsumoAtivo = resCcee.ListaMedidas.Sum(m => m.ConsumoAtivo),
-                    SomaConsumoReativo = resCcee.ListaMedidas.Sum(m => m.ConsumoReativo)
                 };
             } else
             {

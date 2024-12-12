@@ -2,7 +2,7 @@
 {
     public class ColetaMedicaoDto
     {
-        public DateTime? Periodo { get; set; }
+        public DateOnly Periodo { get; set; }
         public IEnumerable<MedicaoDto>? Medicoes { get; set; }
     }
 }

@@ -45,7 +45,7 @@ namespace SIGE.Services.Schedule
 
                 var res = await _medicaoService.ColetarMedicoes(new ColetaMedicaoDto()
                 {
-                    Periodo = DataSige.GetPrimeiraHoraMes(),
+                    Periodo = DataSige.HojeDO(),
                     Medicoes = medicoes.Data
                 });
                 if (res != null)

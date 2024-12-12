@@ -13,6 +13,12 @@ namespace SIGE.Core.Models.Defaults
             return DateTime.ParseExact(formato, "yyyy-MM-ddTHH:mm:ss", null);
         }
 
+        public static DateOnly HojeDO()
+        {
+            string formato = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+            return DateOnly.FromDateTime(DateTime.ParseExact(formato, "yyyy-MM-ddTHH:mm:ss", null));
+        }
+
         public static string HojeString()
         {
             string formato = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
