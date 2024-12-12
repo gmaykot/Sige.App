@@ -238,7 +238,7 @@ namespace SIGE.Services.Services.Geral
             {
                 PontoMedicao = req.PontoMedicao,
                 EmpresaId = req.EmpresaId.ToGuid(),
-                Periodo = DateOnly.FromDateTime(req.Periodo.Value),
+                Periodo = req.Periodo.Value,
                 ListaMedidas = medicoes.Where(m => m.SubTipo.Equals("L")).OrderBy(m => m.PontoMedicao).ThenBy(m => m.PeriodoFinal),
                 medicao = new MedicaoDto
                 {
