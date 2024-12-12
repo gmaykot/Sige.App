@@ -4,7 +4,7 @@ namespace SIGE.Core.Models.Dto.Geral.Medicao
 {
     public class MedicaoDto
     {
-        public Guid? Id { get; set; }
+        public int? Id { get; set; }
         public Guid? EmpresaId { get; set; }
         public Guid? PontoMedicaoId { get; set; }
         public decimal? Icms { get; set; }
