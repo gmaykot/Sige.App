@@ -71,7 +71,6 @@ namespace SIGE.Services.Services.Externo
                                 builderRow.Append(medida.SubTipo); builderRow.Append(';');
                                 builderRow.Append(medida.Status); builderRow.Append(';');
                                 builderRow.Append(medida.TotalConsumoAtivo); builderRow.Append(';');
-                                builderRow.Append(medida.TotalConsumoReativo);
 
                                 stringBuilder.AppendLine(builderRow.ToString());
                             }

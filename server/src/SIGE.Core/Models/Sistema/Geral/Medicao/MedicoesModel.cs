@@ -9,7 +9,6 @@ namespace SIGE.Core.Models.Sistema.Geral.Medicao
         public string? SubTipo { get; set; }
         public string? Status { get; set; }
         public float ConsumoAtivo { get; set; }
-        public float ConsumoReativo { get; set; }
 
         [ForeignKey("ConsumoMensal")]
         public int ConsumoMensalId { get; set; }
