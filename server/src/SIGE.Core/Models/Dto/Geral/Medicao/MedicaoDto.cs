@@ -17,7 +17,7 @@ namespace SIGE.Core.Models.Dto.Geral.Medicao
         public DateTime? DataMedicao { get; set; }
         public DateTime? DataVigenciaInicial { get; set; }
         public DateTime? DataVigenciaFinal { get; set; }
-        public DateTime? Periodo { get; set; }
+        public DateOnly? Periodo { get; set; }
         public EStatusMedicao? StatusMedicao { get; set; }
     }
 }
