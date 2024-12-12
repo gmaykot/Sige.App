@@ -141,7 +141,7 @@ namespace SIGE.Services.Services.Geral
                         new IntegracaoCceeMedidasDto
                         {
                             PontoMedicao = med.PontoMedicao,
-                            Periodo = m.Periodo.ToDateTime(TimeOnly.MinValue),
+                            Periodo = m.Periodo,
                             SubTipo = m.SubTipo,
                             Status = m.Status,
                             ConsumoAtivo = m.ConsumoAtivo,
