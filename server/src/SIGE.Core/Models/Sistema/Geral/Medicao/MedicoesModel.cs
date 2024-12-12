@@ -12,7 +12,7 @@ namespace SIGE.Core.Models.Sistema.Geral.Medicao
         public float ConsumoReativo { get; set; }
 
         [ForeignKey("ConsumoMensal")]
-        public Guid ConsumoMensalId { get; set; }
+        public int ConsumoMensalId { get; set; }
 
         public virtual ConsumoMensalModel? ConsumoMensal { get; set; }
 
