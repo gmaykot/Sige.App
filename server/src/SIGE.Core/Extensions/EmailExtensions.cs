@@ -54,7 +54,7 @@
                       <h2>Relatório de Medição</h2>
                     </header>
                     <div class=""content"">
-                      <p>Olá <b>{0}</b>,</p>
+                      <p><b>Prezados</b>,</p>
                       <p>Segue em anexo o relatório referente ao período de <b>{1}</b>.</p>
                       <p>Caso tenha alguma dúvida, entre em contato conosco pelos telefones <b>{2}</b> ou pelo e-mail <b>{3}</b></p>
                       <p>Atenciosamente,<br>Equipe Coenel</p>
