@@ -59,6 +59,7 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
     takeMinimo: [0, Validators.required],
     takeMaximo: [0, Validators.required],
     status: ["", Validators.required],
+    segmento: ["", Validators.required],
     concessionariaId: ["", Validators.required],
     fornecedorId: ["", Validators.required],
     ativo: true
@@ -181,6 +182,7 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
       takeMinimo: cont.takeMinimo,
       takeMaximo: cont.takeMaximo,
       status: cont.status.toString(),
+      segmento: cont.segmento.toString(),
       fornecedorId: cont.fornecedorId,
       concessionariaId: cont.concessionariaId,
       ativo: cont.ativo
