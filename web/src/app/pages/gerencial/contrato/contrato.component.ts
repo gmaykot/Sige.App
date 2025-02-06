@@ -315,7 +315,8 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
             valor.id = response.data.id;
             this.valoresAnuais.push(valor);
             this.sourceValoresAnuais.load(this.valoresAnuais.sort((a, b) => new Date(a.dataVigenciaInicial).getTime() - new Date(b.dataVigenciaInicial).getTime()));            
-            this.alertService.showSuccess("Valores Anuais cadastrados com sucesso.");  
+            this.alertService.showSuccess("Valores Anuais cadastrados com sucesso.");
+            this.valoresAnuaisChecked = [];
           } else {
             response.errors.map((x) => this.alertService.showError(x.value));
           }
@@ -324,7 +325,6 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
         });
       }
       });
-      this.valoresAnuaisChecked =  [];
   }
 
   async onValorAnualEdit() {
@@ -337,6 +337,7 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
           this.valoresAnuaisChecked = this.valoresAnuais.filter(a => a.id != valor.id);
           this.valoresAnuaisChecked.push(valor);
           this.sourceValoresAnuais.load(this.valoresAnuaisChecked.sort((a, b) => new Date(a.dataVigenciaInicial).getTime() - new Date(b.dataVigenciaInicial).getTime()));            
+          this.valoresAnuaisChecked = [];
           this.alertService.showSuccess("Valores Anuais editados com sucesso.");
 
           }).catch(() => {
@@ -345,7 +346,6 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
           });
         }
       });
-      this.valoresAnuaisChecked =  [];
     }    
   }
 
@@ -359,12 +359,12 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
             this.valoresAnuais = this.valoresAnuais.filter(a => a.id != valor.id);
             this.valorAnualContratoService.delete(valor.id).then(() => {
               this.sourceValoresAnuais.load(this.valoresAnuais.sort((a, b) => new Date(a.dataVigenciaInicial).getTime() - new Date(b.dataVigenciaInicial).getTime()));                          
+              this.valoresAnuaisChecked = [];
               this.alertService.showSuccess("Valores Anuais excluídos com sucesso.");
             }).catch(() => {
               this.alertService.showError("Não foi possível excluir Valores Anuais neste momento.");
             });
           });
-          this.valoresAnuaisChecked = [];
         }
       });
     }
@@ -379,14 +379,14 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
         {
           valor.id = res.data.id;
           this.valoresMensais.push(valor);
-          this.sourceValoresMensais.load(this.valoresMensais.sort((a, b) => new Date(a.mesReferencia).getTime() - new Date(b.mesReferencia).getTime()));
+          this.sourceValoresMensais.load(this.valoresMensais.sort((a, b) => new Date(a.mesReferencia).getTime() - new Date(b.mesReferencia).getTime()));         
+          this.valoresMensaisChecked =  [];
           this.alertService.showSuccess("Valores Mensais cadastrados com sucesso.");
         }).catch(() => {
           this.alertService.showError("Não foi possível cadastrar Valores Mensais neste momento.");
         });
       }
       });
-      this.valoresMensaisChecked =  [];
   }
 
   async onValorMensalEdit() {
@@ -399,13 +399,13 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
           this.valoresMensaisChecked = this.valoresMensais.filter(a => a.id != valor.id);
           this.valoresMensaisChecked.push(valor);
           this.sourceValoresMensais.load(this.valoresMensaisChecked.sort((a, b) => new Date(a.mesReferencia).getTime() - new Date(b.mesReferencia).getTime()));        
+          this.valoresMensaisChecked =  [];
           this.alertService.showSuccess("Valores mensais editados com sucesso.");
           }).catch(() => {
             this.alertService.showError("Não foi possível editar Valores Mensais neste momento.");
           });
         }
       });
-      this.valoresMensaisChecked =  [];
     }    
   }
 
@@ -419,12 +419,12 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
             this.valoresMensais = this.valoresMensais.filter(a => a.id != valor.id);
             this.valorMensalContratoService.delete(valor.id).then(() => {
               this.sourceValoresMensais.load(this.valoresMensais.sort((a, b) => new Date(a.mesReferencia).getTime() - new Date(b.mesReferencia).getTime()));                          
+              this.valoresMensaisChecked =  [];
               this.alertService.showSuccess("Valores Mensais excluídos com sucesso.");
             }).catch(() => {
               this.alertService.showError("Não foi possível excluir Valores Mensais neste momento.");
             });
           });
-          this.valoresMensaisChecked = [];
         }
       });
     }
