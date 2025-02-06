@@ -173,9 +173,6 @@ namespace SIGE.Services.Services.Geral
             var totalConsumoRecente = consumoRecente.Medicoes.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()).Sum(m => m.ConsumoAtivo);
             var totalAtual = lista.Sum(m => m.ConsumoAtivo);
 
-            if (totalConsumoRecente != totalAtual && consumoRecente.StatusMedicao is EStatusMedicao.COMPLETA or EStatusMedicao.INCOMPLETA)
-                return EStatusMedicao.VALOR_DIVERGENTE;
-
             int diasNoMes = DateTime.DaysInMonth(mesReferencia.Year, mesReferencia.Month);
 
             var todasDatas = new List<DateTime>();

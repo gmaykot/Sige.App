@@ -46,9 +46,6 @@ namespace SIGE.Services.Services.Geral
             var res = await _appDbContext.Database.SqlQueryRaw<RelatorioMedicaoDto>(RelatorioMedicaoFactory.ValoresRelatoriosMedicao(contratoId, mesReferencia, null)).FirstOrDefaultAsync();
             if (res == null)
                 return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Verifique a medição do mês de referência e os valores contratuais cadastrados.");
-            
-            if (rel != null)
-                _mapper.Map(rel, res);
 
             res.ValoresAnaliticos = [];
             res.ContratoId = contratoId;
@@ -74,8 +71,7 @@ namespace SIGE.Services.Services.Geral
             {
                 res.Id = rel.Id;
                 _mapper.Map(res, rel);
-            }
-                
+            }                
 
             _appDbContext.SaveChanges();
 

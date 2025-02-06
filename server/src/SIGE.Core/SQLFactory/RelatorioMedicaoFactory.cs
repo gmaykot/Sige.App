@@ -14,7 +14,7 @@ namespace SIGE.Core.SQLFactory
             builder.Append("INNER JOIN Empresas emp on emp.Id = contratoEmpresa.EmpresaId ");
             builder.Append("INNER JOIN Fornecedores forn on forn.Id = contrato.FornecedorId ");
             builder.Append("LEFT JOIN RelatoriosMedicao relatorio on relatorio.ContratoId = contrato.Id ");
-            builder.Append("ORDER BY emp.NomeFantasia");
+            builder.Append("ORDER BY emp.NomeFantasia, MesReferencia DESC");
             return builder.ToString();
         }
 
