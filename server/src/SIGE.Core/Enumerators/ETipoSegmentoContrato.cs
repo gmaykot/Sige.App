@@ -5,8 +5,8 @@ namespace SIGE.Core.Enumerators
     public enum ETipoSegmentoContrato
     {
         [StringValue("AZUL")]
-        AZUL = 0,
+        AZUL = 1,
         [StringValue("VERDE")]
-        VERDE = 1,
+        VERDE = 0,
     }
 }

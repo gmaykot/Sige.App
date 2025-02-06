@@ -17,6 +17,6 @@ export const TIPO_ENERGIA =
 
 export const SEGMENTO = 
 [
-    { id: 0, desc: 'AZUL'}, 
-    { id: 1, desc: 'VERDE'},
+    { id: 1, desc: 'AZUL'}, 
+    { id: 0, desc: 'VERDE'},
 ]
