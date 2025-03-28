@@ -6,37 +6,39 @@
                 <h6>Dados da Fatura</h6>
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="label">Mês Referência*</label>
-                                    <input nbInput fullWidth mask="M0/0000" placeholder="__/____"
-                                        [dropSpecialCharacters]="false" formControlName="mesReferencia">
+                        <form [formGroup]="control">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="label">Mês Referência*</label>
+                                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____"
+                                            [dropSpecialCharacters]="false" formControlName="mesReferencia">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="label">Data Vencimento*</label>
+                                        <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
+                                            [dropSpecialCharacters]="false" formControlName="dataVencimento">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="label">Data Vencimento*</label>
-                                    <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
-                                        [dropSpecialCharacters]="false" formControlName="dataVencimento">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ngx-auto-complete [label]="'Empresa'" [items]="empresas" [editLabel]="editLabel"
+                                        (itemSelected)="onItemSelected($event)"></ngx-auto-complete>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Concessionária*</label>
+                                        <nb-select fullWidth placeholder="Selecione" formControlName="concessionariaId">
+                                            <nb-option *ngFor="let con of concessionarias"
+                                                value="{{con.id}}">{{con.descricao}}</nb-option>
+                                        </nb-select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ngx-auto-complete [label]="'Empresa'" [items]="empresas" [editLabel]="editLabel"
-                                    (itemSelected)="onItemSelected($event)"></ngx-auto-complete>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Concessionária*</label>
-                                    <nb-select fullWidth placeholder="Selecione" formControlName="concessionariaId">
-                                        <nb-option *ngFor="let con of concessionarias"
-                                            value="{{con.id}}">{{con.descricao}}</nb-option>
-                                    </nb-select>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </nb-card-body>
                 </nb-card>
                 <button nbButton disabled nbStepperNext>Voltar</button>
@@ -47,104 +49,109 @@
                 <h6>Lançamentos da Fatura</h6>
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Demanda Contratada - Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPta">
+                        <form [formGroup]="control">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Demanda Contratada - Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="demPta">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Demanda Contratada - Fora de Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="demForaPta">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Demanda Faturada - Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
+                                    </div>                            </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Demanda Faturada - Fora de Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Demanda Ultrapassagem - Fora de Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="demForaPtaUltrapassagem">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Demanda Reativa - Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="demPtaReativa">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Demanda Contratada - Fora de Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPta">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Demanda Reativa - Fora de Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="demForaPtaReativa">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Demanda Faturada - Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
-                                </div>                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Demanda Faturada - Fora de Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Consumo Medido - Ponta - TUSD*</label>
+                                        <input type="number" nbInput fullWidth formControlName="consPtaMedioTusd">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Demanda Ultrapassagem - Fora de Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
-                                </div>                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Demanda Reativa - Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Consumo Medido - Fora de Ponta - TUSD*</label>
+                                        <input type="number" nbInput fullWidth formControlName="consForaPtaMedioTusd">
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Demanda Reativa - Fora de Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPta">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Consumo Medido - Ponta - TE*</label>
+                                        <input type="number" nbInput fullWidth formControlName="consPtaMedioTe">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Consumo Medido - Ponta - TUSD*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPta">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Consumo Medido - Fora de Ponta - TE*</label>
+                                        <input type="number" nbInput fullWidth formControlName="consForaPtaMedioTe">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Consumo Medido - Fora de Ponta - TUSD*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
-                                </div>                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Consumo Medido - Fora de Ponta - TUSD*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Adicional Bandeira Tarifária Vigente Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="adBandTarVigPta">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Consumo Medido - Fora de Ponta - TE*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
-                                </div>                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Adicional Bandeira Tarifária Vigente Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
+                            </div>  
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Adicional Bandeira Tarifária Vigente F. Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="adBandTarVigFPta">
+                                    </div>
                                 </div>
-                            </div>
-                        </div>  
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Adicional Bandeira Tarifária Vigente F. Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPta">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Consumo Medido Reativo - Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="consPtaMedidoReativo">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Consumo Medido Reativo - Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPta">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Consumo Medido Reativo - Fora de Ponta*</label>
+                                        <input type="number" nbInput fullWidth formControlName="consForaPtaMedidoReativo">
+                                    </div>                           
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Consumo Medido Reativo - Fora de Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Subvenção Tarifária*</label>
+                                        <input type="number" nbInput fullWidth formControlName="subvencaoTarifaria">
+                                    </div>
                                 </div>                           
-                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Subvenção Tarifária*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
-                                </div>
-                            </div>                           
-                        </div>                                                
+                            </div>                                                
+                        </form>
                     </nb-card-body>
                 </nb-card>
                 <button nbButton nbStepperPrevious>Voltar</button>
@@ -154,40 +161,42 @@
                 <ng-template #labelThree>Lançamentos Adicionais</ng-template>
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Lançamento*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPta">
+                        <form [formGroup]="lancamentoControl">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Lançamento*</label>
+                                        <input type="number" nbInput fullWidth formControlName="lancamento">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Valor*</label>
+                                        <input type="number" nbInput fullWidth formControlName="valor">
+                                    </div>
+                                </div>                            
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Tipo*</label>
+                                        <nb-select fullWidth placeholder="Selecione" formControlName="tipo">
+                                            <nb-option>Débito</nb-option>
+                                            <nb-option>Credito</nb-option>
+                                        </nb-select>
+                                    </div>
+                                </div>  
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <button nbButton style="margin-top: 1.7rem;" status="warning" (click)="adicionarLancamento()">Adicionar</button>
+                                    </div>
+                                </div>                            
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="selecionarColeta($event)">
+                                    </ng2-smart-table>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Valor*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPta">
-                                </div>
-                            </div>                            
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Tipo*</label>
-                                    <nb-select fullWidth placeholder="Selecione" formControlName="concessionariaId">
-                                        <nb-option>Débito</nb-option>
-                                        <nb-option>Credito</nb-option>
-                                    </nb-select>
-                                </div>
-                            </div>  
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <button nbButton style="margin-top: 1.7rem;" status="warning">Adicionar</button>
-                                </div>
-                            </div>                            
-                        </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="selecionarColeta($event)">
-                            </ng2-smart-table>
-                        </div>
-                    </div>
+                        </form>
                     </nb-card-body>
                 </nb-card>
                 <button nbButton nbStepperPrevious>Voltar</button>
@@ -196,7 +205,7 @@
             <nb-step [label]="labelFour">
                 <ng-template #labelFour>Emissão</ng-template>
                 <button nbButton nbStepperPrevious>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Emitir Fatura</button>                
+                <button nbButton style="margin-left: 0.5rem;" (click)="emitirFatura()" nbStepperNext>Emitir Fatura</button>                
             </nb-step>
         </nb-stepper>
     </nb-card-body>
