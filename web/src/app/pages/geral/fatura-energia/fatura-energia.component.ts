@@ -87,4 +87,8 @@ export class FaturaEnergiaComponent {
   adicionarLancamento() {
     console.log("Adicionado lançamentos:", this.lancamentoControl.value);
   }
+
+  getControlValues(controlName: string) {
+    return this.control.get(controlName).value;
+  }
 }
