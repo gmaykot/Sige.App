@@ -13,6 +13,7 @@ export class FaturaEnergiaComponent {
   public concessionarias: Array<IDropDown> = [];
   public editLabel: string = null;
   public source: LocalDataSource = new LocalDataSource();
+  public tipoSegmento: boolean;
 
   public control = this.formBuilder.group({
     concessionariaId: [null],
@@ -28,6 +29,7 @@ export class FaturaEnergiaComponent {
     demForaPtaReativa: [null],
     consPtaMedioTusd: [null],
     consForaPtaMedioTusd: [null],
+    consPtaMedioTe: [null],
     consForaPtaMedioTe: [null],
     adBandTarVigPta: [null],
     adBandTarVigFPta: [null],
