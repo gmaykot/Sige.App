@@ -213,9 +213,8 @@
                                     <div class="form-group">
                                         <label class="label">Tipo*</label>
                                         <nb-select fullWidth placeholder="Selecione" formControlName="tipo">
-                                            <nb-option>Selecione</nb-option>
-                                            <nb-option>Débito</nb-option>
-                                            <nb-option>Credito</nb-option>
+                                            <nb-option value="Debito">Débito</nb-option>
+                                            <nb-option value="Credito">Crédito</nb-option>
                                         </nb-select>
                                     </div>
                                 </div>  
@@ -242,6 +241,33 @@
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
                         <div class="row">
+                            <div class="col-md-4">
+                                <p class="font-weight-bold">Dados da Fatura</p>
+                                <div class="w-75">
+                                    <div class="">
+                                        <div class="label">Mês referencia</div>
+                                        <div>{{getControlValues('mesReferencia') ?? '-'}}</div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <div class="label">Data Vencimento</div>
+                                        <div>{{getControlValues('dataVencimento') ?? '-'}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="w-75">
+                                    <div class="">
+                                        <div class="label">Empresa</div>
+                                        <div>{{getControlValues('empresas') ?? '-'}}</div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <div class="label">Concessionária</div>
+                                        <div>{{getControlValues('concessionariaId') ?? '-'}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
                             <div class="col-md-4">
                                 <p class="font-weight-bold">Demanda Contratada</p>
                                 <div class="w-75">
@@ -355,6 +381,17 @@
                                 <div class="font-weight-bold">Subvenção Tarifária</div>
                                 <div class="w-75">
                                     <div>{{getControlValues('subvencaoTarifaria') ?? '-'}}</div>
+                                </div>
+                            </div>                           
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-md-12">  
+                                <div class="font-weight-bold">Lançamentos Adicionais</div>
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
+                                        <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="selecionarColeta($event)">
+                                        </ng2-smart-table>
+                                    </div>
                                 </div>
                             </div>                           
                         </div>

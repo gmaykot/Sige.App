@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { IDropDown } from "../../../@core/data/drop-down";
 import { LocalDataSource } from "ng2-smart-table";
 import { FormBuilder } from "@angular/forms";
+import { settingsFaturaEnergia } from "../../../@shared/table-config/fatura-energia.config";
 
 @Component({
   selector: "ngx-fatura-energia",
@@ -9,11 +10,14 @@ import { FormBuilder } from "@angular/forms";
   styleUrls: ["./fatura-energia.component.scss"],
 })
 export class FaturaEnergiaComponent {
+  public settings = settingsFaturaEnergia;
+  public source: LocalDataSource = new LocalDataSource();
+
   public empresas: Array<IDropDown> = [];
   public concessionarias: Array<IDropDown> = [];
   public editLabel: string = null;
-  public source: LocalDataSource = new LocalDataSource();
   public tipoSegmento: boolean;
+  public lancamentos: any[] = [];
 
   public control = this.formBuilder.group({
     concessionariaId: [null],
@@ -44,30 +48,6 @@ export class FaturaEnergiaComponent {
     tipo: [null]
   })
 
-  settings = {
-    actions: {
-      add: false,
-      edit: false,
-      delete: false,
-    },
-    columns: {
-      empresa: {
-        title: "Lançamento",
-        type: "string",
-      },
-      concessionaria: {
-        title: "Valor (R$)",
-        type: "string",
-      },
-      valor: {
-        title: "Tipo",
-        type: "string",
-      },
-    },
-    hideSubHeader: true,
-    noDataMessage: "Nenhum registro encontrado.",
-  };
-
   constructor(private formBuilder: FormBuilder) {}
 
   onItemSelected(selectedItem: IDropDown) {
@@ -85,7 +65,9 @@ export class FaturaEnergiaComponent {
   }
 
   adicionarLancamento() {
-    console.log("Adicionado lançamentos:", this.lancamentoControl.value);
+    this.lancamentos.push(this.lancamentoControl.value);
+    this.source.load(this.lancamentos);
+    console.log("Lançamento adicionado:", this.lancamentos);
   }
 
   getControlValues(controlName: string) {
