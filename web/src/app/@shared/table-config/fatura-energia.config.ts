@@ -1,8 +1,14 @@
 export const settingsFaturaEnergia = {
+  delete: {
+    deleteButtonContent: '<i class="nb-trash"></i>',
+    confirmDelete: true,
+  },
   actions: {
     add: false,
     edit: false,
-    delete: false,
+    delete: true,
+    position: "right",
+    columnTitle: "",
   },
   columns: {
     lancamento: {

@@ -2,15 +2,16 @@
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
 using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Gerencial;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller.Gerencial
 {
     [ApiController]
     [Route("concessionaria")]
-    public class ConcessioanriaController(IBaseInterface<ConcessionariaDto> service) : ControllerBase
+    public class ConcessioanriaController(IConcessionariaService service) : ControllerBase
     {
-        private readonly IBaseInterface<ConcessionariaDto> _service = service;
+        private readonly IConcessionariaService _service = service;
 
         [HttpPost()]
         [SwaggerOperation(Description = "Cadastro da empresa ao sistema.")]
@@ -47,6 +48,15 @@ namespace SIGE.Controller.Gerencial
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> Obter([FromRoute] Guid Id) =>
             Ok(await _service.Obter(Id));
+
+        [HttpGet("pontoMedicao/{id}")]
+        [SwaggerOperation(Description = "Obtém uma empresa com todos os dados.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ObterPorPontoMedicao([FromRoute] Guid Id) =>
+            Ok(await _service.ObterPorPontoMedicao(Id));
 
         [HttpGet()]
         [SwaggerOperation(Description = "Obtém a lista com todos os dados.")]

@@ -9,10 +9,10 @@ import { IDropDown } from '../../../@core/data/drop-down';
 })
 export class AutoCompleteComponent {
   @Input() label: string = 'Selecione';
+  @Input() placeholder: string = 'Nome da Empresa...';
   @Input() editLabel: string = null;
   @Input() items: IDropDown[] = []; // Lista de objetos IDropDown
   @Output() itemSelected = new EventEmitter<IDropDown>(); // Evento ao selecionar
-
   searchControl = new FormControl(''); // Controle para entrada de texto
   filteredItems: IDropDown[] = []; // Resultados filtrados
 
