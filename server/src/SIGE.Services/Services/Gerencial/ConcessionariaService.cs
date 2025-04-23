@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Ocsp;
 using SIGE.Core.Enumerators;
-using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
+using SIGE.Core.Models.Dto.Geral.Medicao;
 using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
 using SIGE.Core.Models.Requests;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
+using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
-using SIGE.Services.Interfaces;
+using SIGE.Services.Interfaces.Gerencial;
 
 namespace SIGE.Services.Services.Gerencial
 {
@@ -18,7 +19,7 @@ namespace SIGE.Services.Services.Gerencial
         AppDbContext appDbContext,
         IMapper mapper,
         RequestContext requestContext
-    ) : IBaseInterface<ConcessionariaDto>
+    ) : IConcessionariaService
     {
         private readonly RequestContext _requestContext = requestContext;
         private readonly AppDbContext _appDbContext = appDbContext;
@@ -85,6 +86,17 @@ namespace SIGE.Services.Services.Gerencial
             var res = await _appDbContext.Concessionarias.ToListAsync();
             if (res.Count > 0)
                 return ret.SetOk().SetData(_mapper.Map<IEnumerable<DropDownDto>>(res).OrderBy(d => d.Descricao));
+
+            return ret.SetNotFound()
+                .AddError(ETipoErro.INFORMATIVO, "Não existe concessionária cadastrada.");
+        }
+
+        public async Task<Response> ObterPorPontoMedicao(Guid Id)
+        {
+            var ret = new Response();
+            var res = await _appDbContext.Database.SqlQueryRaw<DropDownDto>(ConcessionariasFactory.ConcessionariasPorPontoMedicao(Id)).ToListAsync();
+            if (res.Count > 0)
+                return ret.SetOk().SetData(res);
 
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, "Não existe concessionária cadastrada.");

@@ -2,7 +2,7 @@
     <nb-card-body>
         <nb-stepper orientation="horizontal">
             <nb-step [label]="labelOne">
-                <ng-template #labelOne>Informações</ng-template>
+                <ng-template #labelOne>Fatura</ng-template>
                 <h6>Dados da Fatura</h6>
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
@@ -25,13 +25,14 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <ngx-auto-complete [label]="'Empresa'" [items]="empresas" [editLabel]="editLabel"
+                                    <ngx-auto-complete [label]="'Ponto de Medição'" [items]="pontosMedicao" [editLabel]="editLabel" [placeholder]="'Nome do Ponto de Medição...'"
                                         (itemSelected)="onItemSelected($event)"></ngx-auto-complete>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="inputLastName" class="label">Concessionária*</label>
-                                        <nb-select fullWidth placeholder="Selecione" formControlName="concessionariaId">
+                                        <input readonly nbInput fullWidth [value]="concessionarias.length == 1 ? concessionarias[0].descricao : ''">
+                                        <nb-select *ngIf="concessionarias.length > 1" fullWidth placeholder="Selecione" formControlName="concessionariaId">
                                             <nb-option *ngFor="let con of concessionarias"
                                                 value="{{con.id}}">{{con.descricao}}</nb-option>
                                         </nb-select>
@@ -42,11 +43,11 @@
                     </nb-card-body>
                 </nb-card>
                 <button nbButton disabled nbStepperNext>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>
+                <button nbButton style="margin-left: 0.5rem;" [disabled]="habilitaFatura()" nbStepperNext>Próximo</button>
             </nb-step>
             <nb-step [label]="labelTwo">
                 <ng-template #labelTwo>Lançamentos</ng-template>
-                <h6>Lançamentos da Fatura</h6>
+                <h6>Lançamentos</h6>
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
                         <form [formGroup]="control">
@@ -193,6 +194,7 @@
             </nb-step>
             <nb-step [label]="labelThree">
                 <ng-template #labelThree>Lançamentos Adicionais</ng-template>
+                <h6>Lançamentos Adicionais</h6>
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
                         <form [formGroup]="lancamentoControl">
@@ -226,7 +228,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="selecionarColeta($event)">
+                                    <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="excluirLancamento($event)">
                                     </ng2-smart-table>
                                 </div>
                             </div>
@@ -241,28 +243,32 @@
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-12">
                                 <p class="font-weight-bold">Dados da Fatura</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
                                 <div class="w-75">
                                     <div class="">
                                         <div class="label">Mês referencia</div>
                                         <div>{{getControlValues('mesReferencia') ?? '-'}}</div>
                                     </div>
                                     <div class="mt-3">
-                                        <div class="label">Data Vencimento</div>
-                                        <div>{{getControlValues('dataVencimento') ?? '-'}}</div>
+                                        <div class="label">Ponto de Medição</div>
+                                        <div>{{getControlValues('pontoMedicaoDesc') ?? '-'}}</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="w-75">
                                     <div class="">
-                                        <div class="label">Empresa</div>
-                                        <div>{{getControlValues('empresas') ?? '-'}}</div>
+                                        <div class="label">Data Vencimento</div>
+                                        <div>{{getControlValues('dataVencimento') ?? '-'}}</div>
                                     </div>
                                     <div class="mt-3">
                                         <div class="label">Concessionária</div>
-                                        <div>{{getControlValues('concessionariaId') ?? '-'}}</div>
+                                        <div>{{getControlValues('concessionariaDesc') ?? '-'}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -389,7 +395,7 @@
                                 <div class="font-weight-bold">Lançamentos Adicionais</div>
                                 <div class="row mt-4">
                                     <div class="col-md-12">
-                                        <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="selecionarColeta($event)">
+                                        <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="excluirLancamento($event)">
                                         </ng2-smart-table>
                                     </div>
                                 </div>

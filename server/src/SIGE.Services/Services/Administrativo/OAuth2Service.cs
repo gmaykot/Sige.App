@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
 using SIGE.Core.Cache;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
