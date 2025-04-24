@@ -1,10 +1,28 @@
+import { ILancamentoAdicional } from "./lancamento-adicional";
+
 export interface IFaturaEnergia {
-    id: number;
-    mesAno: string;
-    kwhPta: number;
-    kwhFpta: number;
-    kwPta: number;
-    kwFpta: number;
-    demandaPta: number;
-    demandaFpta: number;
-  }
+  id: string;
+  concessionariaId: string;
+  pontoMedicaoId: string;
+  mesReferencia: string;
+  dataVencimento: string;
+  descConcessionaria: string;
+  descPontoMedicao: string;
+  valorContratadoPonta: number;
+  valorContratadoForaPonta: number;
+  valorFaturadoPonta: number;
+  valorFaturadoForaPonta: number;
+  valorUltrapassagemForaPonta: number;
+  valorReativoPonta: number;
+  valorReativoForaPonta: number;
+  valorConsumoTUSDPonta: number;
+  valorConsumoTUSDForaPonta: number;
+  valorConsumoTEPonta: number;
+  valorConsumoTEForaPonta: number;
+  valorBandeiraPonta: number;
+  valorBandeiraForaPonta: number;
+  valorMedidoReativoPonta: number;
+  valorMedidoReativoForaPonta: number;
+  valorSubvencaoTarifaria: number;
+  lancamentosAdicionais: ILancamentoAdicional[];
+}
