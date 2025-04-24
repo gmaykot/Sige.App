@@ -6,6 +6,7 @@ export interface IFaturaEnergia {
   pontoMedicaoId: string;
   mesReferencia: string;
   dataVencimento: string;
+  segmento: string;
   descConcessionaria: string;
   descPontoMedicao: string;
   valorContratadoPonta: number;

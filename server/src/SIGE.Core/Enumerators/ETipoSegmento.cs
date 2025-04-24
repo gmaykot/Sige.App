@@ -4,9 +4,9 @@ namespace SIGE.Core.Enumerators
 {
     public enum ETipoSegmento
     {
-        [Description("Azul")]
-        AZUL,
-        [Description("Verde")]
+        [Description("VERDE")]
         VERDE,
+        [Description("AZUL")]
+        AZUL
     }
 }
