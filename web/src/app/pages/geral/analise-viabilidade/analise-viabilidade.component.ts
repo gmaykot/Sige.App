@@ -68,13 +68,13 @@ export class AnaliseViabilidadeComponent implements OnInit{
 
   iniciaTabela()
   {
-    this.faturasEnergia = MockFatura;
+    //this.faturasEnergia = MockFatura;
     this.source.load(this.faturasEnergia);
-    let media = this.faturasEnergia.find(fat => fat.id === 1);
-    this.passo2.controls.demPta.setValue(media.demandaPta);
-    this.passo2.controls.demFPta.setValue(media.demandaFpta);
-    this.passo2.controls.kWhPta.setValue(media.kwhPta);
-    this.passo2.controls.kWhFPta.setValue(media.kwhFpta);
+    //let media = this.faturasEnergia.find(fat => fat.id === 1);
+    //this.passo2.controls.demPta.setValue(media.demandaPta);
+    //this.passo2.controls.demFPta.setValue(media.demandaFpta);
+    //this.passo2.controls.kWhPta.setValue(media.kwhPta);
+    //this.passo2.controls.kWhFPta.setValue(media.kwhFpta);
   }
 
   async getConcessionarias()
@@ -91,10 +91,10 @@ export class AnaliseViabilidadeComponent implements OnInit{
   onCreate(event): void {
     let val = (event.newData as IFaturaEnergia);
     event.confirm.resolve();
-    let total = this.faturasEnergia.find(fat => fat.id === 0);
-    let media = this.faturasEnergia.find(fat => fat.id === 1);
-    total.kwhFpta += Number(val.kwhFpta);
-    media.kwhFpta = total.kwhFpta/(this.faturasEnergia.length-1);
+    //let total = this.faturasEnergia.find(fat => fat.id === 0);
+    //let media = this.faturasEnergia.find(fat => fat.id === 1);
+    //total.kwhFpta += Number(val.kwhFpta);
+    //media.kwhFpta = total.kwhFpta/(this.faturasEnergia.length-1);
   }
 
   async onClickAnalisar(): Promise<void> {

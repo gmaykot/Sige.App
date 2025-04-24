@@ -1,6 +1,8 @@
+import { DatePipe } from "@angular/common";
+
 export const settingsFatura = {
   delete: {
-    deleteButtonContent: '<i class="nb-compose"></i>',
+    deleteButtonContent: '<i class="nb-edit"></i>',
     confirmDelete: true,
   },   
   actions: {
@@ -11,27 +13,23 @@ export const settingsFatura = {
     columnTitle: "",
   },
   columns: {
-    lancamento: {
+    descPontoMedicao: {
       title: "Ponto de Medição",
       type: "string",
     },
-    valor: {
+    descConcessionaria: {
       title: "Concessionária",
       type: "string",
-      valuePrepareFunction: (value) => {
-        return Intl.NumberFormat("pt-BR", {
-          maximumFractionDigits: 2,
-          minimumFractionDigits: 2,
-        }).format(value);
-      },
     },
     mesReferencia: {
       title: "Mês de Referência",
       type: "string",
+      valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'MM/yyyy')},
     },
     dataVencimento: {
       title: "Data de Vencimento",
       type: "string",
+      valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
     },
   },
   hideSubHeader: true,

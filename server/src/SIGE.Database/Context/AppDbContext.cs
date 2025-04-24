@@ -4,6 +4,7 @@ using SIGE.Core.Models.Sistema;
 using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.Core.Models.Sistema.Externo;
 using SIGE.Core.Models.Sistema.Geral;
+using SIGE.Core.Models.Sistema.Geral.FaturaEnergia;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.Models.Sistema.Gerencial;
 using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
@@ -60,6 +61,8 @@ namespace SIGE.DataAccess.Context
         public DbSet<ValorAnualContratoModel> ValoresAnuaisContrato { get; set; }
         public DbSet<ValorConcessionariaModel> ValoresConcessionaria { get; set; }
         public DbSet<ValorMensalContratoModel> ValoresMensaisContrato { get; set; }
+        public DbSet<FaturaEnergiaModel> FaturasEnergia { get; set; }
+        public DbSet<LancamentoAdicionalModel> LancamentosAdicionais { get; set; }
         public DbSet<TokenModel> Tokens { get; set; }
     }
 }
