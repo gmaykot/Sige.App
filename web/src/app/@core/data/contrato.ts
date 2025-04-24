@@ -13,7 +13,6 @@ export interface IContrato {
     takeMaximo?: number,
     energiaContratada?: number;
     status?: string,
-    segmento?: string,
     ativo?: boolean,
     concessionariaId?: string,
     fornecedorId?: string,

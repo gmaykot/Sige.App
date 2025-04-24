@@ -74,5 +74,14 @@ namespace SIGE.Controller.Gerencial
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> ObterDropDown(Guid Id) =>
             Ok(await _service.ObterDropDownPorEmpresa(Id));
+
+        [HttpGet("drop-down/segmento")]
+        [SwaggerOperation(Description = "Obtém dropdown filtrado.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ObterDropDownComSegmento() =>
+            Ok(await _service.ObterDropDownComSegmento());
     }
 }

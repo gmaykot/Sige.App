@@ -6,12 +6,6 @@ export const BANDEIRAS =
     { id: 3, desc: 'Vermelha 2'}
 ]
 
-export const SEGMENTOS = 
-[
-    { id: 0, desc: 'AZUL'}, 
-    { id: 1, desc: 'VERDE'}, 
-]
-
 export const SUB_GRUPOS = 
 [
     { id: 0, desc: 'A4 (13.8 - 23 KV)'}, 

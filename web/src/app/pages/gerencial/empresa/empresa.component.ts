@@ -330,6 +330,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
   }
 
   async onPontoEdit() {
+    console.log(this.pontosChecked[0]);
     if (this.pontosChecked.length > 0){
       this.dialogService
       .open(PontoMedicaoComponent, { context: { ponto: this.pontosChecked[0], agentes: await this.sourceAgenteMedicao.getAll()}, })

@@ -4,5 +4,6 @@ export interface IPontoMedicao {
     codigo: string,
     agenteMedicao: string,
     agenteMedicaoId?: string,
+    segmento?: string,
     ativo: boolean
 }

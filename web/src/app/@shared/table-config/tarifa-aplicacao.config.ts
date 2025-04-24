@@ -1,5 +1,5 @@
-import { DatePipe } from '@angular/common';
-import { SEGMENTOS, SUB_GRUPOS } from '../../@core/enum/const-dropbox';
+import { SUB_GRUPOS } from '../../@core/enum/const-dropbox';
+import { SEGMENTO } from '../../@core/enum/status-contrato';
 
 export const settingsTarifaAplicacao = {
     add: {
@@ -30,7 +30,7 @@ export const settingsTarifaAplicacao = {
       segmento: {
         title: 'Segmento',
         type: 'string',
-        valuePrepareFunction: (value:number) => { return SEGMENTOS.find(f => f.id == value).desc},
+        valuePrepareFunction: (value:number) => { return SEGMENTO.find(f => f.id == value).desc},
       },
       dataUltimoReajuste: {
         title: 'Último Reajuste',

@@ -16,4 +16,10 @@ export class PontoMedicaoService extends DefaultService<IPontoMedicao> {
       `/${this.urlBase}/drop-down/empresa/${empresaId}`
     );
   }
+
+  public async getDropDownComSegmento(): Promise<IResponseInterface<IDropDown[]>> {
+    return await this.http.get<IResponseInterface<IDropDown[]>>(
+      `/${this.urlBase}/drop-down/segmento`
+    );
+  }
 }

@@ -3,6 +3,8 @@ import { NbDialogRef } from '@nebular/theme';
 import { IPontoMedicao } from '../../@core/data/ponto-medicao';
 import { IAgenteMedicao } from '../../@core/data/agente-medicao';
 import { FormBuilder } from '@angular/forms';
+import { SEGMENTO } from '../../@core/enum/status-contrato';
+
 
 @Component({
   selector: 'ngx-ponto-medicao-component',
@@ -40,6 +42,16 @@ import { FormBuilder } from '@angular/forms';
         </div>
     </div>
     <div class="row">       
+        <div class="col-sm-12">
+        <div class="form-group">
+            <label for="inputLastName" class="label">Segmento*</label>
+            <nb-select fullWidth placeholder="Selecione" formControlName="segmento">
+              <nb-option *ngFor="let sg of segmento" value="{{sg.id}}">{{sg.desc}}</nb-option>
+            </nb-select>
+        </div>
+        </div>
+    </div>
+    <div class="row">       
       <div class="col-sm-12">
         <div class="form-group">
             <nb-toggle labelPosition="end" formControlName="ativo">Ativo*</nb-toggle>
@@ -60,12 +72,14 @@ import { FormBuilder } from '@angular/forms';
 export class PontoMedicaoComponent implements OnInit {
   @Input() ponto: IPontoMedicao;
   @Input() agentes: IAgenteMedicao[];
+  segmento = SEGMENTO
   public control = this.formBuilder.group({
     id: '',
     nome: '',
     codigo: '',
     agenteMedicaoId: '',
     agenteMedicao: '',
+    segmento: '',
     ativo: true
   });
   
@@ -84,6 +98,7 @@ export class PontoMedicaoComponent implements OnInit {
       codigo: this.ponto.codigo,
       agenteMedicaoId: this.ponto.agenteMedicaoId,
       ativo: this.ponto.ativo,
+      segmento: this.ponto.segmento.toString(),
       agenteMedicao: ''
     });
   }
