@@ -1,4 +1,5 @@
-﻿using SIGE.Core.Models.Defaults;
+﻿using SIGE.Core.Enumerators;
+using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,6 +10,7 @@ namespace SIGE.Core.Models.Sistema.Geral.FaturaEnergia
     {
         public required DateOnly MesReferencia { get; set; }
         public required DateOnly DataVencimento { get; set; }
+        public required ETipoSegmento Segmento { get; set; }
 
         public double? ValorContratadoPonta { get; set; }
         public required double ValorContratadoForaPonta { get; set; }

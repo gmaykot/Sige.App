@@ -1,4 +1,5 @@
 import { DatePipe } from "@angular/common";
+import { TIPO_LANCAMENTO } from "../../@core/enum/status-contrato";
 
 export const settingsFatura = {
   delete: {
@@ -49,7 +50,7 @@ export const settingsLancamentos = {
     columnTitle: "",
   },
   columns: {
-    lancamento: {
+    descricao: {
       title: "Lançamento",
       type: "string",
     },
@@ -63,9 +64,10 @@ export const settingsLancamentos = {
         }).format(value);
       },
     },
-    tipo: {
+    tipoLancamento: {
       title: "Tipo",
       type: "string",
+      valuePrepareFunction: (value) => { return TIPO_LANCAMENTO.find(f => f.id == value).desc},
     },
   },
   hideSubHeader: true,

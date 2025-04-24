@@ -15,8 +15,14 @@ export const TIPO_ENERGIA =
     { id: 3, desc: 'CONVENCIONAL - LP'}, 
 ]
 
+export const TIPO_LANCAMENTO = 
+[
+    { id: 0, desc: 'Débito'}, 
+    { id: 1, desc: 'Crédito'},
+]
+
 export const SEGMENTO = 
 [
-    { id: 1, desc: 'AZUL'}, 
     { id: 0, desc: 'VERDE'},
+    { id: 1, desc: 'AZUL'}
 ]

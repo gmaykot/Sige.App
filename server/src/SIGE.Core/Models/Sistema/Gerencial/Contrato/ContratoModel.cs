@@ -15,7 +15,7 @@ namespace SIGE.Core.Models.Sistema.Gerencial.Contrato
         public required decimal TakeMaximo { get; set; }
         public required EStatusContrato Status { get; set; }
         public required ETipoEnergia TipoEnergia { get; set; }
-        public required ETipoSegmentoContrato Segmento { get; set; }
+        public required ETipoSegmento Segmento { get; set; }
         public Guid FornecedorId { get; set; }
         public virtual FornecedorModel? Fornecedor { get; set; }
         public Guid ConcessionariaId { get; set; }

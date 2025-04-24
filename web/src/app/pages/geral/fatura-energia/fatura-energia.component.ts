@@ -31,6 +31,7 @@ export class FaturaEnergiaComponent implements OnInit {
   public lancamentos: any[] = [];
   public selected: boolean = false;
   public loading: boolean = false;
+  public demandaPonta : boolean = false;
 
   public controlSearch = this.formBuilder.group({
     mesReferencia: ["", Validators.required],
@@ -101,24 +102,23 @@ export class FaturaEnergiaComponent implements OnInit {
   async onItemSelected(selectedItem: IDropDown) {
     if (selectedItem) {
       this.loading = true;
-      this.pontoMedicao = selectedItem;
-      console.log(this.pontoMedicao);
+      this.pontoMedicao = selectedItem;      
+      if (selectedItem.obs == '0'){
+        this.demandaPonta = true;
+      } else {
+        this.demandaPonta = false;
+      }
+
       await this.concessionariaService
         .getPorPontoMedicao(selectedItem.id)
         .then((response: IResponseInterface<IDropDown[]>) => {
           if (response.success && response.data.length > 0) {
             this.concessionarias = response.data;
             if (response.data.length == 1) {
-              this.control
-                .get("concessionariaId")
-                .setValue(response.data[0]?.id);
-              this.control
-                .get("concessionariaDesc")
-                .setValue(response.data[0]?.descricao);
+              this.control.get("concessionariaId").setValue(response.data[0]?.id);
+              this.control.get("concessionariaDesc").setValue(response.data[0]?.descricao);
               this.control.get("pontoMedicaoId").setValue(selectedItem.id);
-              this.control
-                .get("pontoMedicaoDesc")
-                .setValue(selectedItem.descricao);
+              this.control.get("pontoMedicaoDesc").setValue(selectedItem.descricao);           
             }
           } else {
             this.source.load([]);
@@ -188,6 +188,12 @@ export class FaturaEnergiaComponent implements OnInit {
     await this.populateForm(null);
   }
 
+  async onCancel() {
+    this.selected = !this.selected;
+    this.demandaPonta = false;
+    await this.loadFaturas();
+  }
+
   async loadFaturas() {
     this.loading = true;
     await this.faturaEnergiaService
@@ -202,16 +208,6 @@ export class FaturaEnergiaComponent implements OnInit {
       .finally(() => {
         this.loading = false;
       });
-  }
-
-  desabilitaValoresPonta() {
-    this.control.get("valorContratadoPonta")?.disable();
-    this.control.get("valorFaturadoPonta")?.disable();
-    this.control.get("valorReativoPonta")?.disable();
-    this.control.get("valorConsumoTUSDPonta")?.disable();
-    this.control.get("valorConsumoTEPonta")?.disable();
-    this.control.get("valorBandeiraPonta")?.disable();
-    this.control.get("valorMedidoReativoPonta")?.disable();
   }
 
   async populateForm(dto: IFaturaEnergia): Promise<void> {
@@ -255,7 +251,11 @@ export class FaturaEnergiaComponent implements OnInit {
         { id: dto.concessionariaId, descricao: dto.descConcessionaria },
       ];
 
-      this.desabilitaValoresPonta();
+      this.source.load(dto.lancamentosAdicionais);
+
+      if (dto.segmento == '0'){
+        this.demandaPonta = true;
+      }      
     }
   }
 }

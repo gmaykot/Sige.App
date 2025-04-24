@@ -1,4 +1,4 @@
-﻿using SIGE.Core.Models.Sistema.Geral.FaturaEnergia;
+﻿using SIGE.Core.Enumerators;
 
 namespace SIGE.Core.Models.Dto.Geral.FaturaEnergia
 {
@@ -9,6 +9,7 @@ namespace SIGE.Core.Models.Dto.Geral.FaturaEnergia
         public Guid? ConcessionariaId { get; set; }
         public required DateOnly MesReferencia { get; set; }
         public required DateOnly DataVencimento { get; set; }
+        public required ETipoSegmento Segmento { get; set; }
 
         public string? DescPontoMedicao { get; set; }
         public string? DescConcessionaria { get; set; }
