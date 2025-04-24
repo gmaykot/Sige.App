@@ -11,7 +11,8 @@ import { DefaultComponent } from '../../../@shared/custom-component/default/defa
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { Classes } from '../../../@core/enum/classes.const';
 import { DateService } from '../../../@core/services/util/date.service';
-import { SEGMENTOS, SUB_GRUPOS } from '../../../@core/enum/const-dropbox';
+import { SUB_GRUPOS } from '../../../@core/enum/const-dropbox';
+import { SEGMENTO } from '../../../@core/enum/status-contrato';
 
 @Component({
   selector: 'ngx-tarifa-aplicacao',
@@ -21,7 +22,7 @@ import { SEGMENTOS, SUB_GRUPOS } from '../../../@core/enum/const-dropbox';
 export default class TarifaAplicacaoComponent extends DefaultComponent<ITarifaAplicacao> implements OnInit {
   settings = settingsTarifaAplicacao;
   public concessionarias?: IDropDown[];  
-  segmentos = SEGMENTOS;
+  segmentos = SEGMENTO;
   subgrupos = SUB_GRUPOS;
 
   constructor(

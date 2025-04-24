@@ -4,6 +4,7 @@
     {
         public Guid Id { get; set; }
         public required string Descricao { get; set; }
+        public string? Obs { get; set; }
         public IEnumerable<DropDownDto>? SubGrupo { get; set; }
     }
 }
