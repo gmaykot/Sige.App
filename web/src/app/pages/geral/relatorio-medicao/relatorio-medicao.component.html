@@ -15,12 +15,19 @@
                         </div>
                     </div>
                 </div>
-                <br />
-                <label class="h7">Relatórios Emitidos</label><br />
-                <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
-                </ng2-smart-table>
             </nb-card-body>
         </nb-card>
+        <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+            <nb-card-header>Relatórios Emitidos</nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+                        </ng2-smart-table>
+                    </div>
+                </div>
+            </nb-card-body>
+        </nb-card>        
     </div>
 </div>
 <form [formGroup]="control" *ngIf="selected">

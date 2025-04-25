@@ -14,6 +14,7 @@ import { FaturaEnergiaService } from "../../../@core/services/geral/fatura-energ
 import { IFaturaEnergia } from "../../../@core/data/fatura.energia";
 import { DatePipe } from "@angular/common";
 import { AlertService } from "../../../@core/services/util/alert.service";
+import * as uuid from 'uuid';
 
 @Component({
   selector: "ngx-fatura-energia",
@@ -37,36 +38,46 @@ export class FaturaEnergiaComponent implements OnInit {
     mesReferencia: ["", Validators.required],
   });
 
-  public control = this.formBuilder.group({
+   public control = this.formBuilder.group({
     id: [null],
-    concessionariaId: ['', Validators.required],
+    pontoMedicaoId: [null],
+    pontoMedicaoDesc: [null],
+    concessionariaId: [null],
     concessionariaDesc: [null],
-    pontoMedicaoId: ['', Validators.required],
-    pontoMedicaoDesc: [""],
-    mesReferencia: ['', Validators.required],
-    segmento: [null],
-    dataVencimento: ['', Validators.required],
-    valorContratadoPonta: [null],
-    valorContratadoForaPonta: [null],
-    valorFaturadoPonta: [null],
-    valorFaturadoForaPonta: [null],
-    valorUltrapassagemForaPonta: [null],
-    valorReativoPonta: [null],
-    valorReativoForaPonta: [null],
+    mesReferencia: [''], // string em formato yyyy-MM-dd
+    dataVencimento: [''],
+    segmento: [''],
+    validado: [false],
+    // Demanda
+    valorDemandaContratadaPonta: [null],
+    valorDemandaContratadaForaPonta: [0],
+    valorDemandaFaturadaPontaConsumida: [null],
+    valorDemandaFaturadaForaPontaConsumida: [0],
+    valorDemandaFaturadaPontaNaoConsumida: [null],
+    valorDemandaFaturadaForaPontaNaoConsumida: [0],
+    valorDemandaUltrapassagemPonta: [0],
+    valorDemandaUltrapassagemForaPonta: [0],
+    valorDemandaReativaPonta: [null],
+    valorDemandaReativaForaPonta: [0],
+    // Consumo
     valorConsumoTUSDPonta: [null],
-    valorConsumoTUSDForaPonta: [null],
+    valorConsumoTUSDForaPonta: [0],
     valorConsumoTEPonta: [null],
-    valorConsumoTEForaPonta: [null],
-    valorBandeiraPonta: [null],
-    valorBandeiraForaPonta: [null],
-    valorMedidoReativoPonta: [null],
-    valorMedidoReativoForaPonta: [null],
-    valorSubvencaoTarifaria: [null],
+    valorConsumoTEForaPonta: [0],
+    valorConsumoMedidoReativoPonta: [null],
+    valorConsumoMedidoReativoForaPonta: [0],
+    // Adicional Bandeira, Subvenção e Desconto TUSD
+    valorAdicionalBandeiraPonta: [null],
+    valorAdicionalBandeiraForaPonta: [0],
+    valorSubvencaoTarifaria: [0],
+    valorDescontoTUSD: [0],
+    lancamentosAdicionais: [null]
   });
 
   public lancamentoControl = this.formBuilder.group({
     id: [null],
-    lancamento: [null],
+    faturaEnergiaId: [null],
+    descricao: [null],
     valor: [null],
     tipo: [null],
   });
@@ -82,6 +93,7 @@ export class FaturaEnergiaComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    this.selected = false;
     await this.loadFaturas();
   }
 
@@ -106,7 +118,10 @@ export class FaturaEnergiaComponent implements OnInit {
   async onItemSelected(selectedItem: IDropDown) {
     if (selectedItem) {
       this.loading = true;
-      this.pontoMedicao = selectedItem;      
+      this.pontoMedicao = selectedItem;
+      this.control.get("pontoMedicaoId").setValue(selectedItem.id);
+      this.control.get("pontoMedicaoDesc").setValue(selectedItem.descricao);
+      this.control.get("segmento").setValue(selectedItem.obs);
 
       await this.concessionariaService
         .getPorPontoMedicao(selectedItem.id)
@@ -116,9 +131,6 @@ export class FaturaEnergiaComponent implements OnInit {
             if (response.data.length == 1) {
               this.control.get("concessionariaId").setValue(response.data[0]?.id);
               this.control.get("concessionariaDesc").setValue(response.data[0]?.descricao);
-              this.control.get("pontoMedicaoId").setValue(selectedItem.id);
-              this.control.get("pontoMedicaoDesc").setValue(selectedItem.descricao);
-              this.control.get("segmento").setValue(selectedItem.obs);
             }
           } else {
             this.source.load([]);
@@ -136,16 +148,17 @@ export class FaturaEnergiaComponent implements OnInit {
     );
     if (lancamentoIndex !== -1) {
       this.lancamentos.splice(lancamentoIndex, 1);
-      this.source.load(this.lancamentos);
     }
+    this.source.load(this.lancamentos);
   }
 
   emitirFatura() {
-    console.log("Emitindo fatura com os dados:", this.control.value);
+    console.log("Emitindo fatura com os dados:", this.populateModel(this.control.value));
   }
 
   adicionarLancamento() {
-    this.lancamentoControl.value.id = this.lancamentos.length + 1;
+    this.lancamentoControl.value.id = uuid.v4();
+    this.lancamentoControl.value.faturaEnergiaId = this.getControlValues("id");
     this.lancamentos.push(this.lancamentoControl.value);
     this.source.load(this.lancamentos);
     this.lancamentoControl.reset();
@@ -162,14 +175,9 @@ export class FaturaEnergiaComponent implements OnInit {
 
   async selecionarFatura($event: any) {
     this.selected = !this.selected;
+    this.editLabel = $event.data.pontoMedicaoDesc;
+    this.lancamentos = $event.data.lancamentosAdicionais;
     this.populateForm($event.data);
-  }
-
-  habilitaNovaFatura() {
-    return (
-      this.controlSearch.get("mesReferencia").value != null &&
-      this.controlSearch.get("mesReferencia").value != ""
-    );
   }
 
   habilitaFatura() {
@@ -184,12 +192,18 @@ export class FaturaEnergiaComponent implements OnInit {
     return this.dateService.getMesesReferencia(6);
   }
 
+  showInput(){
+    return this.getControlValues("segmento") != "0";
+  }
+
   async onSearch($event: any) {
     await this.loadFaturas();
   }
 
   async onSelect() {
     this.selected = !this.selected;
+    this.lancamentos = [];
+    this.source.load([]);
     await this.populateForm(null);
   }
 
@@ -198,6 +212,7 @@ export class FaturaEnergiaComponent implements OnInit {
     this.lancamentos = [];
     this.pontoMedicao = null;
     this.control.reset();
+    this.editLabel = null;
     await this.loadFaturas();
   }
 
@@ -219,53 +234,65 @@ export class FaturaEnergiaComponent implements OnInit {
 
   async populateForm(dto: IFaturaEnergia): Promise<void> {
     this.loading = true;
+    await this.getPontosMedicao();
     if (dto == null) {
-      this.control.reset();      
-      await this.getPontosMedicao();
-    } else {
-      this.control.patchValue({
-        id: dto.id,
-        concessionariaId: dto.concessionariaId,
-        concessionariaDesc: dto.descConcessionaria,
-        pontoMedicaoId: dto.pontoMedicaoId,
-        pontoMedicaoDesc: dto.descPontoMedicao,
-        mesReferencia: this.datePipe.transform(dto.mesReferencia, "MM/yyyy"),
-        dataVencimento: this.datePipe.transform(
-          dto.dataVencimento,
-          "dd/MM/yyyy"
-        ),
-        segmento: dto.segmento,
-        valorContratadoPonta: dto.valorContratadoPonta,
-        valorContratadoForaPonta: dto.valorContratadoForaPonta,
-        valorFaturadoPonta: dto.valorFaturadoPonta,
-        valorFaturadoForaPonta: dto.valorFaturadoForaPonta,
-        valorUltrapassagemForaPonta: dto.valorUltrapassagemForaPonta,
-        valorReativoPonta: dto.valorReativoPonta,
-        valorReativoForaPonta: dto.valorReativoForaPonta,
-        valorConsumoTUSDPonta: dto.valorConsumoTUSDPonta,
-        valorConsumoTUSDForaPonta: dto.valorConsumoTUSDForaPonta,
-        valorConsumoTEPonta: dto.valorConsumoTEPonta,
-        valorConsumoTEForaPonta: dto.valorConsumoTEForaPonta,
-        valorBandeiraPonta: dto.valorBandeiraPonta,
-        valorBandeiraForaPonta: dto.valorBandeiraForaPonta,
-        valorMedidoReativoPonta: dto.valorMedidoReativoPonta,
-        valorMedidoReativoForaPonta: dto.valorMedidoReativoForaPonta,
-        valorSubvencaoTarifaria: dto.valorSubvencaoTarifaria,
-      });
-
-      this.pontosMedicao = [
-        { id: dto.pontoMedicaoId, descricao: dto.descPontoMedicao },
-      ];
+      this.control.reset();    
+      } else {
+      // Mapeando as propriedades e tratando as datas
+      const dtoWithParsedDates = Object.keys(this.control.controls).reduce((acc, key) => {
+        // Verificando se o campo é uma data e fazendo o parse        
+        if (typeof dto[key] === 'string' && !isNaN(Date.parse(dto[key]))) {          
+          acc[key] = this.datePipe.transform(dto[key], key === "mesReferencia" ? "MM/yyyy" : "dd/MM/yyyy");
+        } else {
+          acc[key] = dto[key];
+        }
+        return acc;
+      }, {});
+  
+      this.control.patchValue(dtoWithParsedDates);
+      this.editLabel = dto.pontoMedicaoDesc;
       this.concessionarias = [
-        { id: dto.concessionariaId, descricao: dto.descConcessionaria },
+        { id: dto.concessionariaId, descricao: dto.concessionariaDesc },
       ];
-
+  
       this.source.load(dto.lancamentosAdicionais);
-
+  
       this.loading = false;
     }
   }
+  
+  populateLancamentos(){
+    this.source.getAll().then((itemsArray: any[]) => {
+      this.control.patchValue({
+        lancamentosAdicionais: itemsArray
+      });
+    });
+    this.populateModel(this.control.value);
+  }
 
+  populateModel(formValue): any {
+    const dto: any = Object.keys(formValue).reduce((acc, key) => {
+      const value = formValue[key];
+
+      if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+        // Detecta se o campo é uma data no formato esperado
+        if (key === 'mesReferencia') {
+          const [month, year] = value.split('/');
+          acc[key] = new Date(Number(year), Number(month) - 1, 1); // mês começa em 0
+        } else {
+          const [day, month, year] = value.split('/');
+          acc[key] = new Date(Number(year), Number(month) - 1, Number(day));
+        }
+      } else {
+        acc[key] = value;
+      }
+
+      return acc;
+    }, {});
+  
+  return dto;
+}
+  
   getSettingsLancamentos(){   
     var settingsLancamentosEmissao = settingsLancamentos;
     settingsLancamentosEmissao.actions.delete = false;

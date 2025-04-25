@@ -61,15 +61,13 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label *ngIf="pontosMedicao?.length == 1" for="inputLastName" class="label">Ponto de Medição*</label>
-                                    <input *ngIf="pontosMedicao?.length == 1" readonly nbInput fullWidth [value]="pontosMedicao?.length == 1 ? pontosMedicao[0]?.descricao : ''">
-                                    <ngx-auto-complete *ngIf="pontosMedicao.length > 1" [label]="'Ponto de Medição'" [items]="pontosMedicao" [editLabel]="editLabel" [placeholder]="'Nome do Ponto de Medição...'"
+                                    <ngx-auto-complete *ngIf="pontosMedicao.length > 1" [label]="'Ponto de Medição'" [items]="pontosMedicao" [editLabel]="editLabel"
                                         (itemSelected)="onItemSelected($event)"></ngx-auto-complete>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="inputLastName" class="label">Concessionária*</label>
-                                        <input *ngIf="concessionarias.length <= 1" readonly nbInput fullWidth [value]="concessionarias.length == 1 ? concessionarias[0].descricao : ''">
+                                        <input *ngIf="concessionarias.length <= 1" readonly nbInput fullWidth [value]="concessionarias.length == 1 ? concessionarias[0].descricao : ''" style="background-color: transparent; border: 0px;">
                                         <nb-select *ngIf="concessionarias.length > 1" fullWidth placeholder="Selecione" formControlName="concessionariaId">
                                             <nb-option *ngFor="let con of concessionarias"
                                                 value="{{con.id}}">{{con.descricao}}</nb-option>
@@ -82,6 +80,7 @@
                 </nb-card>
                 <button nbButton (click)="onCancel()">Cancelar</button>
                 <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>
+                <button *ngIf="editLabel" nbButton style="margin-left: 0.5rem;" status="danger" nbStepperNext>Excluir</button>
             </nb-step>
 
             <!-- Lançamentos -->
@@ -95,45 +94,44 @@
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row" style="margin-bottom: 0.7rem;">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label">Contratada - Ponta*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorContratadoPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaContratadaPonta">
                                         </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Contratada - Fora de Ponta*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorContratadoForaPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaContratadaForaPonta">
                                         </div> 
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Faturada - Ponta (Consumida)*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorFaturadoPonta">
-                                        </div>                                      
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Faturada - Ponta (Não Utilizada)*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorFaturadoPonta">
+                                        <div class="col-sm-4" *ngIf="showInput()">                                            <label for="inputLastName" class="label">Faturada - Ponta (Consumida)*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaPontaConsumida">
                                         </div>                                      
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Faturada - Fora de Ponta (Consumida)*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorFaturadoForaPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaForaPontaConsumida">
+                                        </div>                                      
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label">Faturada - Ponta (Não Utilizada)*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaPontaNaoConsumida">
                                         </div>                                      
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Faturada - Fora de Ponta (Não Utilizada)*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorFaturadoForaPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaForaPontaNaoConsumida">
                                         </div>                                      
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label">Ultrapassagem - Ponta*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorUltrapassagemForaPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaUltrapassagemPonta">
                                         </div>  
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Ultrapassagem - Fora de Ponta*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorUltrapassagemForaPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaUltrapassagemForaPonta">
                                         </div>  
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label">Reativa - Ponta*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorMedidoReativoPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaReativaPonta">
                                         </div> 
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Reativa - Fora de Ponta*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorMedidoReativoForaPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaReativaForaPonta">
                                         </div>                                         
                                     </div>                      
                                 </form>
@@ -148,15 +146,15 @@
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label">Medido - Ponta - TUSD*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDForaPonta">
-                                        </div>          
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Medido - Fora de Ponta - TUSD*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDPonta">
                                         </div>          
                                         <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Medido - Fora de Ponta - TUSD*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDForaPonta">
+                                        </div>          
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label">Medido - Ponta - TE*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTEPonta">
                                         </div>          
@@ -164,13 +162,13 @@
                                             <label for="inputLastName" class="label">Medido - Fora de Ponta - TE*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTEForaPonta">
                                         </div>          
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label">Medido Reativo - Ponta*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorMedidoReativoPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoMedidoReativoPonta">
                                         </div>                    
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Medido Reativo - Fora de Ponta*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorMedidoReativoForaPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoMedidoReativoForaPonta">
                                         </div>                    
                                     </div>
                                 </form>     
@@ -181,17 +179,17 @@
                 <div class="card-row">                                     
                     <div class="card-col">  
                         <nb-card>
-                            <nb-card-header>Adicional Bandeira Vigente, Subvenção e Desconto TUSD)</nb-card-header>
+                            <nb-card-header>Adicional Bandeira Vigente, Subvenção e Desconto TUSD</nb-card-header>
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label">Adicional Bandeira Ponta*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorBandeiraPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorAdicionalBandeiraPonta">
                                         </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Adicional Bandeira Fora de Ponta*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorBandeiraForaPonta">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorAdicionalBandeiraForaPonta">
                                         </div>      
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Subvenção*</label>
@@ -199,14 +197,14 @@
                                         </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Desconto TUSD*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorSubvencaoTarifaria">
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDescontoTUSD">
                                         </div>          
                                     </div>
                                 </form>                
                             </nb-card-body>
                         </nb-card>
                     </div>       
-                </div>                
+                </div>
                 <button nbButton nbStepperPrevious>Voltar</button>
                 <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>           
             </nb-step>
@@ -222,7 +220,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="label">Descrição do Lançamento*</label>
-                                        <input type="text" nbInput fullWidth formControlName="lancamento">
+                                        <input type="text" nbInput fullWidth formControlName="descricao">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -235,8 +233,8 @@
                                     <div class="form-group">
                                         <label class="label">Tipo*</label>
                                         <nb-select fullWidth placeholder="Selecione" formControlName="tipo">
-                                            <nb-option value="Debito">Débito</nb-option>
-                                            <nb-option value="Credito">Crédito</nb-option>
+                                            <nb-option value="0">Débito</nb-option>
+                                            <nb-option value="1">Crédito</nb-option>
                                         </nb-select>
                                     </div>
                                 </div>  
@@ -256,7 +254,7 @@
                     </nb-card-body>
                 </nb-card>
                 <button nbButton nbStepperPrevious>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>
+                <button nbButton style="margin-left: 0.5rem;" nbStepperNext (click)="populateLancamentos()">Próximo</button>
             </nb-step>  
 
             <!-- Emissão -->
@@ -307,52 +305,34 @@
                                     <div class="row" style="margin-bottom: 0.7rem;">
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Contratada - Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>          
+                                            <div>{{getControlValues('valorDemandaContratadaPonta') ?? '-'}}</div>                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Contratada - Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div> 
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Faturada - Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>                                      
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>                                      
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>                                      
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Ultrapassagem - Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>  
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Reativa - Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div> 
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Reativa - Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div> 
+                                            <div>{{getControlValues('valorDemandaContratadaForaPonta') ?? '-'}}</div>                                        </div> 
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Faturada - Ponta (Consumida)*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>
+                                            <div>{{getControlValues('valorDemandaFaturadaPontaConsumida') ?? '-'}}</div>                                        </div>                                      
                                         <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Faturada - Fora Ponta (Consumida)*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>
+                                            <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta (Consumida)*</label>
+                                            <div>{{getControlValues('valorDemandaFaturadaForaPontaConsumida') ?? '-'}}</div>                                        </div>                                      
                                         <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Faturada - Ponta (Não Consumida)*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>
+                                            <label for="inputLastName" class="label-emissao">Faturada - Ponta (Não Utilizada)*</label>
+                                            <div>{{getControlValues('valorDemandaFaturadaPontaNaoConsumida') ?? '-'}}</div>                                        </div>                                      
                                         <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta (Não Consumida)*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>
+                                            <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta (Não Utilizada)*</label>
+                                            <div>{{getControlValues('valorDemandaFaturadaForaPontaNaoConsumida') ?? '-'}}</div>                                        </div>                                      
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Ultrapassagem - Ponta*</label>
+                                            <div>{{getControlValues('valorDemandaUltrapassagemPonta') ?? '-'}}</div>                                        </div>  
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Ultrapassagem - Fora de Ponta*</label>
+                                            <div>{{getControlValues('valorDemandaUltrapassagemForaPonta') ?? '-'}}</div>                                        </div>  
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Reativa - Ponta*</label>
+                                            <div>{{getControlValues('valorDemandaReativaPonta') ?? '-'}}</div>                                        </div> 
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Reativa - Fora de Ponta*</label>
+                                            <div>{{getControlValues('valorDemandaReativaForaPonta') ?? '-'}}</div>                                        </div>                                         
                                     </div>                      
                                 </form>
                             </nb-card-body>
@@ -367,29 +347,23 @@
                                 <form [formGroup]="control">
                                     <div class="row">
                                         <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Medido - Fora de Ponta - TUSD*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>          
-                                        <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Medido - Ponta - TUSD*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>          
+                                            <div>{{getControlValues('valorConsumoTUSDPonta') ?? '-'}}</div>                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Medido - Fora de Ponta - TUSD*</label>
+                                            <div>{{getControlValues('valorConsumoTUSDForaPonta') ?? '-'}}</div>                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Medido - Ponta - TE*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>          
+                                            <div>{{getControlValues('valorConsumoTEPonta') ?? '-'}}</div>                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Medido - Fora de Ponta - TE*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>          
+                                            <div>{{getControlValues('valorConsumoTEForaPonta') ?? '-'}}</div>                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Medido Reativo - Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>                    
+                                            <div>{{getControlValues('valorConsumoMedidoReativoPonta') ?? '-'}}</div>                                        </div>                    
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Medido Reativo - Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>                    
+                                            <div>{{getControlValues('valorConsumoMedidoReativoForaPonta') ?? '-'}}</div>                                        </div>                    
                                     </div>
                                 </form>     
                             </nb-card-body>
@@ -399,22 +373,22 @@
                 <div class="card-row">                                     
                     <div class="card-col">  
                         <nb-card>
-                            <nb-card-header>Adicional Bandeira Vigente e Subvenção (Tarifária)</nb-card-header>
+                            <nb-card-header>Adicional Bandeira Vigente, Subvenção e Desconto TUSD</nb-card-header>
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Adicional Bandeira Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>          
+                                            <div>{{getControlValues('valorAdicionalBandeiraPonta') ?? '-'}}</div>                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Adicional Bandeira Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>          
+                                            <div>{{getControlValues('valorAdicionalBandeiraForaPonta') ?? '-'}}</div>                                        </div>      
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Subvenção*</label>
-                                            <div>{{getControlValues('valorMedidoReativoPonta') ?? '-'}}</div>
-                                        </div>          
+                                            <div>{{getControlValues('valorSubvencaoTarifaria') ?? '-'}}</div>                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Desconto TUSD*</label>
+                                            <div>{{getControlValues('valorDescontoTUSD') ?? '-'}}</div>                                        </div>          
                                     </div>
                                 </form>                
                             </nb-card-body>
@@ -433,8 +407,8 @@
                     </div>
                 </div>
                 <button nbButton nbStepperPrevious>Voltar</button>
+                <button nbButton style="margin-left: 0.5rem;" status="warning" (click)="emitirFatura()" nbStepperNext>{{editLabel ? 'Alterar' : 'Emitir'}} Fatura</button>
                 <button nbButton style="margin-left: 0.5rem;" status="danger" nbStepperNext>Validar</button>
-                <button nbButton style="margin-left: 0.5rem;" status="warning" nbStepperNext>Emitir Fatura</button>
             </nb-step>
         </nb-stepper>
     </nb-card-body>
