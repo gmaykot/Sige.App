@@ -1,1 +1,10 @@
 @import '/src/app/@theme/styles/sige.custom.scss';
+
+.label-emissao {
+    color: #545454;
+    font-family: var(--card-header-text-font-family);
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 0rem;
+    margin-top: 0.5rem;
+}
