@@ -13,6 +13,7 @@ import { DateService } from "../../../@core/services/util/date.service";
 import { FaturaEnergiaService } from "../../../@core/services/geral/fatura-energia.service";
 import { IFaturaEnergia } from "../../../@core/data/fatura.energia";
 import { DatePipe } from "@angular/common";
+import { AlertService } from "../../../@core/services/util/alert.service";
 
 @Component({
   selector: "ngx-fatura-energia",
@@ -31,7 +32,6 @@ export class FaturaEnergiaComponent implements OnInit {
   public lancamentos: any[] = [];
   public selected: boolean = false;
   public loading: boolean = false;
-  public demandaPonta : boolean = false;
 
   public controlSearch = this.formBuilder.group({
     mesReferencia: ["", Validators.required],
@@ -44,6 +44,7 @@ export class FaturaEnergiaComponent implements OnInit {
     pontoMedicaoId: [null],
     pontoMedicaoDesc: [""],
     mesReferencia: [null],
+    segmento: [null],
     dataVencimento: [null],
     valorContratadoPonta: [null],
     valorContratadoForaPonta: [null],
@@ -76,7 +77,8 @@ export class FaturaEnergiaComponent implements OnInit {
     private concessionariaService: ConcessionariaService,
     private dateService: DateService,
     private faturaEnergiaService: FaturaEnergiaService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private alertService: AlertService
   ) { }
 
   async ngOnInit() {
@@ -85,12 +87,14 @@ export class FaturaEnergiaComponent implements OnInit {
 
   async getPontosMedicao() {
     this.loading = true;
+    this.concessionarias = [];
     await this.pontoMedicaoService
       .getDropDownComSegmento()
-      .then((response: IResponseInterface<IDropDown[]>) => {
+      .then((response: IResponseInterface<IDropDown[]>) => {        
         if (response.success) {
           this.pontosMedicao = response.data;
         } else {
+          this.alertService.showError(response.message, 20000)
           this.source.load([]);
         }
       })
@@ -103,11 +107,6 @@ export class FaturaEnergiaComponent implements OnInit {
     if (selectedItem) {
       this.loading = true;
       this.pontoMedicao = selectedItem;      
-      if (selectedItem.obs == '0'){
-        this.demandaPonta = true;
-      } else {
-        this.demandaPonta = false;
-      }
 
       await this.concessionariaService
         .getPorPontoMedicao(selectedItem.id)
@@ -118,7 +117,8 @@ export class FaturaEnergiaComponent implements OnInit {
               this.control.get("concessionariaId").setValue(response.data[0]?.id);
               this.control.get("concessionariaDesc").setValue(response.data[0]?.descricao);
               this.control.get("pontoMedicaoId").setValue(selectedItem.id);
-              this.control.get("pontoMedicaoDesc").setValue(selectedItem.descricao);           
+              this.control.get("pontoMedicaoDesc").setValue(selectedItem.descricao);
+              this.control.get("segmento").setValue(selectedItem.obs);
             }
           } else {
             this.source.load([]);
@@ -152,7 +152,7 @@ export class FaturaEnergiaComponent implements OnInit {
   }
 
   getControlValues(controlName: string) {
-    return this.control.get(controlName).value;
+    return this.control.get(controlName)?.value;
   }
 
   async selecionarFatura($event: any) {
@@ -190,7 +190,6 @@ export class FaturaEnergiaComponent implements OnInit {
 
   async onCancel() {
     this.selected = !this.selected;
-    this.demandaPonta = false;
     await this.loadFaturas();
   }
 
@@ -211,8 +210,9 @@ export class FaturaEnergiaComponent implements OnInit {
   }
 
   async populateForm(dto: IFaturaEnergia): Promise<void> {
+    this.loading = true;
     if (dto == null) {
-      this.control.reset();
+      this.control.reset();      
       await this.getPontosMedicao();
     } else {
       this.control.patchValue({
@@ -226,6 +226,7 @@ export class FaturaEnergiaComponent implements OnInit {
           dto.dataVencimento,
           "dd/MM/yyyy"
         ),
+        segmento: dto.segmento,
         valorContratadoPonta: dto.valorContratadoPonta,
         valorContratadoForaPonta: dto.valorContratadoForaPonta,
         valorFaturadoPonta: dto.valorFaturadoPonta,
@@ -253,9 +254,13 @@ export class FaturaEnergiaComponent implements OnInit {
 
       this.source.load(dto.lancamentosAdicionais);
 
-      if (dto.segmento == '0'){
-        this.demandaPonta = true;
-      }      
+      this.loading = false;
     }
+  }
+
+  getSettingsLancamentos(){   
+    var settingsLancamentosEmissao = settingsLancamentos;
+    settingsLancamentosEmissao.actions.delete = false;
+    return settingsLancamentosEmissao;
   }
 }
