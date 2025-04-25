@@ -10,33 +10,45 @@ namespace SIGE.Core.Models.Sistema.Geral.FaturaEnergia
     {
         public required DateOnly MesReferencia { get; set; }
         public required DateOnly DataVencimento { get; set; }
-        public required ETipoSegmento Segmento { get; set; }
+        public required ETipoSegmento Segmento { get; set; } = ETipoSegmento.VERDE;
+        public bool Validado { get; set; } = false;
 
-        public double? ValorContratadoPonta { get; set; }
-        public required double ValorContratadoForaPonta { get; set; }
-        
-        public double? ValorFaturadoPonta { get; set; }
-        public required double ValorFaturadoForaPonta { get; set; }
+        #region Demanda
+        public double? ValorDemandaContratadaPonta { get; set; }
+        public required double ValorDemandaContratadaForaPonta { get; set; }
 
-        public required double ValorUltrapassagemForaPonta { get; set; }
-        
-        public double? ValorReativoPonta { get; set; }
-        public required double ValorReativoForaPonta { get; set; }
-        
+        public double? ValorDemandaFaturadaPontaConsumida { get; set; }
+        public required double ValorDemandaFaturadaForaPontaConsumida { get; set; }
+
+        public double? ValorDemandaFaturadaPontaNaoConsumida { get; set; }
+        public required double ValorDemandaFaturadaForaPontaNaoConsumida { get; set; }
+
+        public required double ValorDemandaUltrapassagemPonta { get; set; }
+        public required double ValorDemandaUltrapassagemForaPonta { get; set; }
+
+        public double? ValorDemandaReativaPonta { get; set; }
+        public required double ValorDemandaReativaForaPonta { get; set; }
+        #endregion
+
+        #region Consumo
         public double? ValorConsumoTUSDPonta { get; set; }
         public required double ValorConsumoTUSDForaPonta { get; set; }
         
         public double? ValorConsumoTEPonta { get; set; }
         public required double ValorConsumoTEForaPonta { get; set; }
-        
-        public double? ValorBandeiraPonta { get; set; }
-        public required double ValorBandeiraForaPonta { get; set; }
-        
-        public double? ValorMedidoReativoPonta { get; set; }
-        public required double ValorMedidoReativoForaPonta { get; set; }
-        
+
+        public double? ValorConsumoMedidoReativoPonta { get; set; }
+        public required double ValorConsumoMedidoReativoForaPonta { get; set; }
+        #endregion
+
+        #region Adicional Bandeira, Subvenção e Desconto TUSD
+        public double? ValorAdicionalBandeiraPonta { get; set; }
+        public required double ValorAdicionalBandeiraForaPonta { get; set; }
+
         public required double ValorSubvencaoTarifaria { get; set; }
-        
+        public required double ValorDescontoTUSD { get; set; }
+        #endregion
+
         [ForeignKey("PontoMedicao")]
         public Guid PontoMedicaoId { get; set; }
         [ForeignKey("Concessionaria")]
