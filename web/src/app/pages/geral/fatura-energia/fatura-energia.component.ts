@@ -155,6 +155,11 @@ export class FaturaEnergiaComponent implements OnInit {
     return this.control.get(controlName)?.value;
   }
 
+  getPontoMedicaoDesc(){
+    var pontoMedicao = this.pontosMedicao.find(p => p.id == this.getControlValues("pontoMedicaoId"));
+    return pontoMedicao ? " - " + pontoMedicao.descricao : '';
+  }
+
   async selecionarFatura($event: any) {
     this.selected = !this.selected;
     this.populateForm($event.data);
@@ -189,7 +194,10 @@ export class FaturaEnergiaComponent implements OnInit {
   }
 
   async onCancel() {
-    this.selected = !this.selected;
+    this.selected = false;
+    this.lancamentos = [];
+    this.pontoMedicao = null;
+    this.control.reset();
     await this.loadFaturas();
   }
 
