@@ -3,5 +3,5 @@ export interface ILancamentoAdicional {
     faturaEnergiaId: string;
     descricao: string;
     valor: number;
-    tipoLancamento: string;
+    tipo: string;
 }

@@ -1,29 +1,48 @@
 import { ILancamentoAdicional } from "./lancamento-adicional";
 
 export interface IFaturaEnergia {
-  id: string;
-  concessionariaId: string;
-  pontoMedicaoId: string;
-  mesReferencia: string;
-  dataVencimento: string;
+  id: string | null;
+  pontoMedicaoDesc: string | null;
+  pontoMedicaoId: string | null;
+  concessionariaId: string | null;
+  concessionariaDesc: string | null;
+  mesReferencia: string; // formato 'yyyy-MM-dd'
+  dataVencimento: string; // formato 'yyyy-MM-dd'
   segmento: string;
-  descConcessionaria: string;
-  descPontoMedicao: string;
-  valorContratadoPonta: number;
-  valorContratadoForaPonta: number;
-  valorFaturadoPonta: number;
-  valorFaturadoForaPonta: number;
-  valorUltrapassagemForaPonta: number;
-  valorReativoPonta: number;
-  valorReativoForaPonta: number;
-  valorConsumoTUSDPonta: number;
+  validado: boolean;
+
+  // Demanda
+  valorDemandaContratadaPonta: number | null;
+  valorDemandaContratadaForaPonta: number;
+
+  valorDemandaFaturadaPontaConsumida: number | null;
+  valorDemandaFaturadaForaPontaConsumida: number;
+
+  valorDemandaFaturadaPontaNaoConsumida: number | null;
+  valorDemandaFaturadaForaPontaNaoConsumida: number;
+
+  valorDemandaUltrapassagemPonta: number;
+  valorDemandaUltrapassagemForaPonta: number;
+
+  valorDemandaReativaPonta: number | null;
+  valorDemandaReativaForaPonta: number;
+
+  // Consumo
+  valorConsumoTUSDPonta: number | null;
   valorConsumoTUSDForaPonta: number;
-  valorConsumoTEPonta: number;
+
+  valorConsumoTEPonta: number | null;
   valorConsumoTEForaPonta: number;
-  valorBandeiraPonta: number;
-  valorBandeiraForaPonta: number;
-  valorMedidoReativoPonta: number;
-  valorMedidoReativoForaPonta: number;
+
+  valorConsumoMedidoReativoPonta: number | null;
+  valorConsumoMedidoReativoForaPonta: number;
+
+  // Adicional Bandeira, Subvenção e Desconto TUSD
+  valorAdicionalBandeiraPonta: number | null;
+  valorAdicionalBandeiraForaPonta: number;
+
   valorSubvencaoTarifaria: number;
-  lancamentosAdicionais: ILancamentoAdicional[];
+  valorDescontoTUSD: number;
+
+  lancamentosAdicionais?: ILancamentoAdicional[] | null;
 }

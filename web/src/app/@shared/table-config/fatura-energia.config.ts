@@ -14,11 +14,11 @@ export const settingsFatura = {
     columnTitle: "",
   },
   columns: {
-    descPontoMedicao: {
+    pontoMedicaoDesc: {
       title: "Ponto de Medição",
       type: "string",
     },
-    descConcessionaria: {
+    ConcessionariaDesc: {
       title: "Concessionária",
       type: "string",
     },
@@ -31,6 +31,13 @@ export const settingsFatura = {
       title: "Data de Vencimento",
       type: "string",
       valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
+    },
+    validado: {
+      title: "Validado",
+      type: "string",
+      valuePrepareFunction: (value) => {
+        return value == true ? 'SIM' : 'NÃO';
+      },
     },
   },
   hideSubHeader: true,
@@ -64,10 +71,10 @@ export const settingsLancamentos = {
         }).format(value);
       },
     },
-    tipoLancamento: {
+    tipo: {
       title: "Tipo",
       type: "string",
-      valuePrepareFunction: (value) => { return TIPO_LANCAMENTO.find(f => f.id == value).desc},
+      valuePrepareFunction: (value) => { return TIPO_LANCAMENTO.find(f => f.id == value)?.desc},
     },
   },
   hideSubHeader: true,
