@@ -39,7 +39,7 @@
             <!-- Dados Fatura -->
             <nb-step [label]="labelOne">
                 <ng-template #labelOne>Fatura</ng-template>
-                <h6>Dados da Fatura {{' - ' + getControlValues('pontoMedicaoDesc') ?? '-'}} <div *ngIf="getControlValues('pontoMedicaoDesc') != null" class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
+                <h6>Dados da Fatura {{ getPontoMedicaoDesc() }} <div *ngIf="getControlValues('pontoMedicaoDesc') != null" class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
                 <nb-card style="border: 0rem;" [nbSpinner]="loading">
                     <nb-card-body>
                         <form [formGroup]="control">
@@ -87,7 +87,7 @@
             <!-- Lançamentos -->
             <nb-step [label]="labelTwo">
                 <ng-template #labelTwo>Lançamentos</ng-template>
-                <h6>Lançamentos {{' - ' + getControlValues('pontoMedicaoDesc') ?? '-'}} <div class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
+                <h6>Lançamentos {{ getPontoMedicaoDesc() }} <div class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
                 <div class="card-row">
                     <div class="card-col">  
                         <nb-card>
@@ -218,7 +218,7 @@
             <!-- Lançamentos Adicionais -->
             <nb-step [label]="labelThree">
                 <ng-template #labelThree>Lançamentos Adicionais</ng-template>
-                <h6>Lançamentos Adicionais {{' - ' + getControlValues('pontoMedicaoDesc') ?? '-'}} <div class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
+                <h6>Lançamentos Adicionais {{ getPontoMedicaoDesc() }} <div class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
                         <form [formGroup]="lancamentoControl">
@@ -266,6 +266,7 @@
             <!-- Emissão -->
             <nb-step [label]="labelFour">
                 <ng-template #labelFour>Emissão da Fatura &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ng-template>
+                <h6 style="margin-bottom: 1.7rem;">Emissão da Fatura</h6>                
                 <div class="card-row">                                     
                     <div class="card-col">  
                         <nb-card>
