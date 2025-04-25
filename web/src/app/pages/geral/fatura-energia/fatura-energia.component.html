@@ -35,14 +35,14 @@
 <!-- Stepper -->
 <nb-card *ngIf="selected">
     <nb-card-body>
-        <nb-stepper orientation="horizontal">
+        <nb-stepper orientation="horizontal" disableStepNavigation="true" linear="false">
             <!-- Dados Fatura -->
-            <nb-step [label]="labelOne">
+            <nb-step [label]="labelOne" [stepControl]="control">
                 <ng-template #labelOne>Fatura</ng-template>
                 <h6>Dados da Fatura {{ getPontoMedicaoDesc() }} <div *ngIf="getControlValues('pontoMedicaoDesc') != null" class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
                 <nb-card style="border: 0rem;" [nbSpinner]="loading">
                     <nb-card-body>
-                        <form [formGroup]="control">
+                        <form [formGroup]="control" (ngSubmit)="onFirstSubmit()">
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -81,7 +81,7 @@
                     </nb-card-body>
                 </nb-card>
                 <button nbButton (click)="onCancel()">Cancelar</button>
-                <button nbButton style="margin-left: 0.5rem;" [disabled]="!habilitaFatura()" nbStepperNext>Próximo</button>
+                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>
             </nb-step>
 
             <!-- Lançamentos -->
@@ -104,17 +104,25 @@
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorContratadoForaPonta">
                                         </div> 
                                         <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Faturada - Ponta*</label>
+                                            <label for="inputLastName" class="label">Faturada - Ponta (Consumida)*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorFaturadoPonta">
                                         </div>                                      
                                         <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Faturada - Fora de Ponta*</label>
+                                            <label for="inputLastName" class="label">Faturada - Ponta (Não Utilizada)*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorFaturadoPonta">
+                                        </div>                                      
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Faturada - Fora de Ponta (Consumida)*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorFaturadoForaPonta">
                                         </div>                                      
                                         <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Faturada - Fora de Ponta*</label>
+                                            <label for="inputLastName" class="label">Faturada - Fora de Ponta (Não Utilizada)*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorFaturadoForaPonta">
                                         </div>                                      
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Ultrapassagem - Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorUltrapassagemForaPonta">
+                                        </div>  
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Ultrapassagem - Fora de Ponta*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorUltrapassagemForaPonta">
@@ -126,23 +134,7 @@
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Reativa - Fora de Ponta*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorMedidoReativoForaPonta">
-                                        </div> 
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Faturada - Ponta (Consumida)*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorMedidoReativoForaPonta">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Faturada - Fora Ponta (Consumida)*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorMedidoReativoForaPonta">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Faturada - Ponta (Não Consumida)*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorMedidoReativoForaPonta">
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Faturada - Fora de Ponta (Não Consumida)*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorMedidoReativoForaPonta">
-                                        </div>
+                                        </div>                                         
                                     </div>                      
                                 </form>
                             </nb-card-body>
@@ -157,12 +149,12 @@
                                 <form [formGroup]="control">
                                     <div class="row">
                                         <div class="col-sm-4">
-                                            <label for="inputLastName" class="label">Medido - Fora de Ponta - TUSD*</label>
-                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDPonta">
-                                        </div>          
-                                        <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Medido - Ponta - TUSD*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDForaPonta">
+                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Medido - Fora de Ponta - TUSD*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDPonta">
                                         </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Medido - Ponta - TE*</label>
@@ -189,7 +181,7 @@
                 <div class="card-row">                                     
                     <div class="card-col">  
                         <nb-card>
-                            <nb-card-header>Adicional Bandeira Vigente e Subvenção (Tarifária)</nb-card-header>
+                            <nb-card-header>Adicional Bandeira Vigente, Subvenção e Desconto TUSD)</nb-card-header>
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row">
@@ -200,9 +192,13 @@
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Adicional Bandeira Fora de Ponta*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorBandeiraForaPonta">
-                                        </div>          
+                                        </div>      
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label">Subvenção*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorSubvencaoTarifaria">
+                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Desconto TUSD*</label>
                                             <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorSubvencaoTarifaria">
                                         </div>          
                                     </div>
@@ -265,7 +261,7 @@
 
             <!-- Emissão -->
             <nb-step [label]="labelFour">
-                <ng-template #labelFour>Emissão da Fatura &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ng-template>
+                <ng-template #labelFour>Emissão da Fatura</ng-template>
                 <h6 style="margin-bottom: 1.7rem;">Emissão da Fatura</h6>                
                 <div class="card-row">                                     
                     <div class="card-col">  

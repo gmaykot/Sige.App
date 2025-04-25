@@ -39,13 +39,13 @@ export class FaturaEnergiaComponent implements OnInit {
 
   public control = this.formBuilder.group({
     id: [null],
-    concessionariaId: [null],
+    concessionariaId: ['', Validators.required],
     concessionariaDesc: [null],
-    pontoMedicaoId: [null],
+    pontoMedicaoId: ['', Validators.required],
     pontoMedicaoDesc: [""],
-    mesReferencia: [null],
+    mesReferencia: ['', Validators.required],
     segmento: [null],
-    dataVencimento: [null],
+    dataVencimento: ['', Validators.required],
     valorContratadoPonta: [null],
     valorContratadoForaPonta: [null],
     valorFaturadoPonta: [null],
@@ -270,5 +270,9 @@ export class FaturaEnergiaComponent implements OnInit {
     var settingsLancamentosEmissao = settingsLancamentos;
     settingsLancamentosEmissao.actions.delete = false;
     return settingsLancamentosEmissao;
+  }
+
+  onFirstSubmit() {
+    this.control.markAsDirty();
   }
 }
