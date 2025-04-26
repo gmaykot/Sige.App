@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { IDropDown } from "../../../@core/data/drop-down";
 import { LocalDataSource } from "ng2-smart-table";
 import { FormBuilder, Validators } from "@angular/forms";
@@ -16,6 +16,8 @@ import { IFaturaEnergia } from "../../../@core/data/fatura.energia";
 import { DatePipe } from "@angular/common";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import * as uuid from 'uuid';
+import { NbStepperComponent } from "@nebular/theme";
+
 
 @Component({
   selector: "ngx-fatura-energia",
@@ -23,6 +25,7 @@ import * as uuid from 'uuid';
   styleUrls: ["./fatura-energia.component.scss"],
 })
 export class FaturaEnergiaComponent implements OnInit {
+  public stepperIndex: number = 0;
   public settings = settingsFatura;
   public settingsLancamentos = settingsLancamentos;
   public settingsLancamentosSemDelete = settingsLancamentosSemDelete;
@@ -65,9 +68,9 @@ export class FaturaEnergiaComponent implements OnInit {
   novoFormControl(){
     return this.formBuilder.group({
       id: [null],
-      pontoMedicaoId: [null],
+      pontoMedicaoId: [''],
       pontoMedicaoDesc: [null],
-      concessionariaId: [null],
+      concessionariaId: [''],
       concessionariaDesc: [null],
       mesReferencia: [''],
       dataVencimento: [''],
@@ -200,7 +203,7 @@ export class FaturaEnergiaComponent implements OnInit {
     fatura.validado = valid;
     await this.faturaEnergiaService.put(fatura).then(async (response: IResponseInterface<IFaturaEnergia>) => {
       if (response.success) {
-        this.alertService.showSuccess("Fatura emitida com sucesso.", 20000);
+        this.alertService.showSuccess("Validação alterada com sucesso.", 20000);
         this.control.patchValue({
           validado: valid
         });
@@ -230,7 +233,10 @@ export class FaturaEnergiaComponent implements OnInit {
     return pontoMedicao ? " - " + pontoMedicao.descricao : '';
   }
 
-  async selecionarFatura($event: any) {
+  async selecionarFatura($event: any) {    
+    if ($event.data.validado == true)
+      this.stepperIndex = 3;
+
     this.selected = !this.selected;
     this.editLabel = $event.data.pontoMedicaoDesc;
     this.lancamentos = $event.data.lancamentosAdicionais;
@@ -239,9 +245,9 @@ export class FaturaEnergiaComponent implements OnInit {
 
   habilitaFatura() {
     return (
-      this.getControlValues("dataVencimento") != null &&
-      this.getControlValues("concessionariaId") != null &&
-      this.getControlValues("mesReferencia") != null
+      this.getControlValues("dataVencimento") != '' &&
+      this.getControlValues("concessionariaId") != '' &&
+      this.getControlValues("mesReferencia") != ''
     );
   }
 
@@ -259,6 +265,7 @@ export class FaturaEnergiaComponent implements OnInit {
 
   async onSelect() {
     this.selected = true;
+    this.control = this.novoFormControl();
     this.editLabel = null;
     this.lancamentos = [];
     this.source.load([]);    
@@ -344,10 +351,7 @@ export class FaturaEnergiaComponent implements OnInit {
 
       return acc;
     }, {});  
-  return dto as IFaturaEnergia;
-}
-
-  onFirstSubmit() {
-    this.control.markAsDirty();
+    return dto as IFaturaEnergia;
   }
+
 }
