@@ -21,10 +21,20 @@ namespace SIGE.Services.Services.Geral
 
         public async Task<Response> Alterar(FaturaEnergiaDto req)
         {
-            var fornecedor = await _appDbContext.FaturasEnergia.FindAsync(req.Id);
-
+            var fornecedor = await _appDbContext.FaturasEnergia.Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.Id == req.Id);
+            var lancamentos = fornecedor.LancamentosAdicionais;
             _mapper.Map(req, fornecedor);
+            fornecedor.LancamentosAdicionais = null;
+            _appDbContext.LancamentosAdicionais.RemoveRange(lancamentos);
+
             _ = await _appDbContext.SaveChangesAsync();
+
+            if (!req.LancamentosAdicionais.IsNullOrEmpty())
+            {
+                lancamentos = _mapper.Map<IEnumerable<LancamentoAdicionalModel>>(req.LancamentosAdicionais);
+                await _appDbContext.AddRangeAsync(lancamentos);
+                _ = await _appDbContext.SaveChangesAsync();
+            }
 
             return new Response().SetOk().SetMessage("Dados alterados com sucesso.");
         }
