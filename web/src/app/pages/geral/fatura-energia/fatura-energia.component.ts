@@ -5,6 +5,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 import {
   settingsFatura,
   settingsLancamentos,
+  settingsLancamentosSemDelete,
 } from "../../../@shared/table-config/fatura-energia.config";
 import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-medicao.service";
 import { IResponseInterface } from "../../../@core/data/response.interface";
@@ -24,6 +25,7 @@ import * as uuid from 'uuid';
 export class FaturaEnergiaComponent implements OnInit {
   public settings = settingsFatura;
   public settingsLancamentos = settingsLancamentos;
+  public settingsLancamentosSemDelete = settingsLancamentosSemDelete;
   public source: LocalDataSource = new LocalDataSource();
   
   public faturas: Array<IFaturaEnergia> = [];
@@ -263,10 +265,6 @@ export class FaturaEnergiaComponent implements OnInit {
     await this.populateForm(null);
   }
 
-  onResetSettings(){
-    this.settingsLancamentos = settingsLancamentos;
-  }
-
   async onCancel() {
     this.selected = false;
     this.lancamentos = [];
@@ -348,12 +346,6 @@ export class FaturaEnergiaComponent implements OnInit {
     }, {});  
   return dto as IFaturaEnergia;
 }
-  
-  getSettingsLancamentos(){   
-    var settingsLancamentosEmissao = settingsLancamentos;
-    settingsLancamentosEmissao.actions.delete = false;
-    return settingsLancamentosEmissao;
-  }
 
   onFirstSubmit() {
     this.control.markAsDirty();
