@@ -13,6 +13,7 @@ export class AutoCompleteComponent implements OnInit {
   @Input() label: string = 'Selecione';
   @Input() placeholder: string = 'Pesquise pelo nome...';
   @Input() editLabel: string = null;
+  @Input() required: boolean = false;
   @Input() items: IDropDown[] = []; // Lista de objetos IDropDown
   @Output() itemSelected = new EventEmitter<IDropDown>(); // Evento ao selecionar
   options: string[];

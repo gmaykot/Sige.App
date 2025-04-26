@@ -35,19 +35,19 @@
 <!-- Stepper -->
 <nb-card *ngIf="selected">
     <nb-card-body>
-        <nb-stepper orientation="horizontal" disableStepNavigation="true" linear="false">
+        <nb-stepper #stepper orientation="horizontal" disableStepNavigation="true" linear="false" [(selectedIndex)]="stepperIndex">
             <!-- Dados Fatura -->
             <nb-step [label]="labelOne" [stepControl]="control">
                 <ng-template #labelOne>Fatura</ng-template>
                 <h6>Dados da Fatura {{ getPontoMedicaoDesc() }} <div *ngIf="getControlValues('pontoMedicaoDesc') != null" class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
                 <nb-card style="border: 0rem;" [nbSpinner]="loading">
                     <nb-card-body>
-                        <form [formGroup]="control" (ngSubmit)="onFirstSubmit()">
+                        <form [formGroup]="control">
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="label">Mês Referência*</label>
-                                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____" required
+                                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____" 
                                             [dropSpecialCharacters]="false" formControlName="mesReferencia">
                                     </div>
                                 </div>
@@ -79,8 +79,8 @@
                     </nb-card-body>
                 </nb-card>
                 <button nbButton (click)="onCancel()">Cancelar</button>
-                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>
-                <button *ngIf="editLabel" nbButton style="margin-left: 0.5rem;" status="danger" (click)="onDelete()">Excluir</button>
+                <button *ngIf="getControlValues('id') != null && getControlValues('validado') == false" nbButton style="margin-left: 0.5rem;" status="danger" (click)="onDelete()">Excluir</button>
+                <button nbButton style="margin-left: 0.5rem;" nbStepperNext [disabled]="!habilitaFatura()">Próximo</button>
             </nb-step>
 
             <!-- Lançamentos -->
@@ -206,7 +206,7 @@
                     </div>       
                 </div>
                 <button nbButton nbStepperPrevious>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" nbStepperNext (click)="onResetSettings()">Próximo</button>           
+                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>           
             </nb-step>
             
             <!-- Lançamentos Adicionais -->
@@ -407,7 +407,7 @@
                     </div>
                 </div>
                 <button nbButton nbStepperPrevious>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" status="warning" [disabled]="getControlValues('validado') == true" (click)="emitirFatura()">{{editLabel ? 'Alterar' : 'Emitir'}} Fatura</button>
+                <button nbButton style="margin-left: 0.5rem;" status="warning" *ngIf="getControlValues('validado') == false" (click)="emitirFatura()">{{editLabel ? 'Alterar' : 'Emitir'}} Fatura</button>
                 <button nbButton style="margin-left: 0.5rem;" status="danger" *ngIf="getControlValues('id') != null" (click)="onValid(!getControlValues('validado'))">{{getControlValues('validado') == false ? 'Validar' : 'Limpar Validação'}}</button>
                 <button nbButton style="margin-left: 0.5rem;" (click)="onCancel()">Sair</button>
             </nb-step>
