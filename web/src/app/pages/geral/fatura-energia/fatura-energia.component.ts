@@ -25,7 +25,8 @@ export class FaturaEnergiaComponent implements OnInit {
   public settings = settingsFatura;
   public settingsLancamentos = settingsLancamentos;
   public source: LocalDataSource = new LocalDataSource();
-
+  
+  public faturas: Array<IFaturaEnergia> = [];
   public pontosMedicao: Array<IDropDown> = [];
   public concessionarias: Array<IDropDown> = [];
   public pontoMedicao: IDropDown = null;
@@ -38,41 +39,8 @@ export class FaturaEnergiaComponent implements OnInit {
     mesReferencia: ["", Validators.required],
   });
 
-   public control = this.formBuilder.group({
-    id: [null],
-    pontoMedicaoId: [null],
-    pontoMedicaoDesc: [null],
-    concessionariaId: [null],
-    concessionariaDesc: [null],
-    mesReferencia: [''], // string em formato yyyy-MM-dd
-    dataVencimento: [''],
-    segmento: [''],
-    validado: [false],
-    // Demanda
-    valorDemandaContratadaPonta: [null],
-    valorDemandaContratadaForaPonta: [0],
-    valorDemandaFaturadaPontaConsumida: [null],
-    valorDemandaFaturadaForaPontaConsumida: [0],
-    valorDemandaFaturadaPontaNaoConsumida: [null],
-    valorDemandaFaturadaForaPontaNaoConsumida: [0],
-    valorDemandaUltrapassagemPonta: [0],
-    valorDemandaUltrapassagemForaPonta: [0],
-    valorDemandaReativaPonta: [null],
-    valorDemandaReativaForaPonta: [0],
-    // Consumo
-    valorConsumoTUSDPonta: [null],
-    valorConsumoTUSDForaPonta: [0],
-    valorConsumoTEPonta: [null],
-    valorConsumoTEForaPonta: [0],
-    valorConsumoMedidoReativoPonta: [null],
-    valorConsumoMedidoReativoForaPonta: [0],
-    // Adicional Bandeira, Subvenção e Desconto TUSD
-    valorAdicionalBandeiraPonta: [null],
-    valorAdicionalBandeiraForaPonta: [0],
-    valorSubvencaoTarifaria: [0],
-    valorDescontoTUSD: [0],
-    lancamentosAdicionais: [null]
-  });
+  public control = this.novoFormControl();
+  
 
   public lancamentoControl = this.formBuilder.group({
     id: [null],
@@ -91,6 +59,48 @@ export class FaturaEnergiaComponent implements OnInit {
     private datePipe: DatePipe,
     private alertService: AlertService
   ) { }
+
+  novoFormControl(){
+    return this.formBuilder.group({
+      id: [null],
+      pontoMedicaoId: [null],
+      pontoMedicaoDesc: [null],
+      concessionariaId: [null],
+      concessionariaDesc: [null],
+      mesReferencia: [''],
+      dataVencimento: [''],
+      segmento: [''],
+      validado: [false],
+    
+      // Demanda
+      valorDemandaContratadaPonta: [0, [Validators.required, Validators.min(0)]],
+      valorDemandaContratadaForaPonta: [0, [Validators.required, Validators.min(0)]],
+      valorDemandaFaturadaPontaConsumida: [0, [Validators.required, Validators.min(0)]],
+      valorDemandaFaturadaForaPontaConsumida: [0, [Validators.required, Validators.min(0)]],
+      valorDemandaFaturadaPontaNaoConsumida: [0, [Validators.required, Validators.min(0)]],
+      valorDemandaFaturadaForaPontaNaoConsumida: [0, [Validators.required, Validators.min(0)]],
+      valorDemandaUltrapassagemPonta: [0, [Validators.required, Validators.min(0)]],
+      valorDemandaUltrapassagemForaPonta: [0, [Validators.required, Validators.min(0)]],
+      valorDemandaReativaPonta: [0, [Validators.required, Validators.min(0)]],
+      valorDemandaReativaForaPonta: [0, [Validators.required, Validators.min(0)]],
+    
+      // Consumo
+      valorConsumoTUSDPonta: [0, [Validators.required, Validators.min(0)]],
+      valorConsumoTUSDForaPonta: [0, [Validators.required, Validators.min(0)]],
+      valorConsumoTEPonta: [0, [Validators.required, Validators.min(0)]],
+      valorConsumoTEForaPonta: [0, [Validators.required, Validators.min(0)]],
+      valorConsumoMedidoReativoPonta: [0, [Validators.required, Validators.min(0)]],
+      valorConsumoMedidoReativoForaPonta: [0, [Validators.required, Validators.min(0)]],
+    
+      // Adicional Bandeira, Subvenção e Desconto TUSD
+      valorAdicionalBandeiraPonta: [0, [Validators.required, Validators.min(0)]],
+      valorAdicionalBandeiraForaPonta: [0, [Validators.required, Validators.min(0)]],
+      valorSubvencaoTarifaria: [0, [Validators.required, Validators.min(0)]],
+      valorDescontoTUSD: [0, [Validators.required, Validators.min(0)]],
+    
+      lancamentosAdicionais: [null]
+    });
+  }
 
   async ngOnInit() {
     this.selected = false;
@@ -152,8 +162,53 @@ export class FaturaEnergiaComponent implements OnInit {
     this.source.load(this.lancamentos);
   }
 
-  emitirFatura() {
-    console.log("Emitindo fatura com os dados:", this.populateModel(this.control.value));
+  async emitirFatura() {
+    await this.faturaEnergiaService.post(this.populateModel(this.control.value)).then(async (response: IResponseInterface<IFaturaEnergia>) => {
+      if (response.success) {
+        this.alertService.showSuccess("Fatura emitida com sucesso.", 20000);
+        this.onSelect();
+      } else {
+        this.alertService.showError(response.message, 20000);
+      }
+      await this.ngOnInit();
+    }).catch((error) => {
+      this.alertService.showError(error.message, 20000);
+    });
+  }
+
+  async onDelete() {
+    this.loading = true;
+    await this.faturaEnergiaService.delete(this.getControlValues("id")).then(async (response: IResponseInterface<IFaturaEnergia>) => {
+      if (response.success) {
+        this.selected = false;
+        this.alertService.showSuccess("Fatura excluida com sucesso.", 20000);
+        this.onSelect();
+      } else {
+        this.alertService.showError(response.message, 20000);
+      }
+      await this.ngOnInit();
+    }).catch((error) => {
+      this.alertService.showError(error.message, 20000);
+    });
+    this.loading = false;
+  }
+
+  async onValid(valid: boolean) {
+    var fatura = this.faturas.find(f => f.id == this.getControlValues("id"));
+    fatura.validado = valid;
+    await this.faturaEnergiaService.put(fatura).then(async (response: IResponseInterface<IFaturaEnergia>) => {
+      if (response.success) {
+        this.alertService.showSuccess("Fatura emitida com sucesso.", 20000);
+        this.control.patchValue({
+          validado: valid
+        });
+  
+      } else {
+        this.alertService.showError(response.message, 20000);
+      }
+    }).catch((error) => {
+      this.alertService.showError(error.message, 20000);
+    });
   }
 
   adicionarLancamento() {
@@ -201,17 +256,22 @@ export class FaturaEnergiaComponent implements OnInit {
   }
 
   async onSelect() {
-    this.selected = !this.selected;
+    this.selected = true;
+    this.editLabel = null;
     this.lancamentos = [];
-    this.source.load([]);
+    this.source.load([]);    
     await this.populateForm(null);
+  }
+
+  onResetSettings(){
+    this.settingsLancamentos = settingsLancamentos;
   }
 
   async onCancel() {
     this.selected = false;
     this.lancamentos = [];
     this.pontoMedicao = null;
-    this.control.reset();
+    this.control = this.novoFormControl();
     this.editLabel = null;
     await this.loadFaturas();
   }
@@ -222,6 +282,7 @@ export class FaturaEnergiaComponent implements OnInit {
       .get()
       .then((response: IResponseInterface<IFaturaEnergia[]>) => {
         if (response.success) {
+          this.faturas = response.data;
           this.source.load(response.data);
         } else {
           this.source.load([]);
@@ -236,8 +297,8 @@ export class FaturaEnergiaComponent implements OnInit {
     this.loading = true;
     await this.getPontosMedicao();
     if (dto == null) {
-      this.control.reset();    
-      } else {
+      this.control = this.novoFormControl();
+    } else {
       // Mapeando as propriedades e tratando as datas
       const dtoWithParsedDates = Object.keys(this.control.controls).reduce((acc, key) => {
         // Verificando se o campo é uma data e fazendo o parse        
@@ -270,27 +331,22 @@ export class FaturaEnergiaComponent implements OnInit {
     this.populateModel(this.control.value);
   }
 
-  populateModel(formValue): any {
+  populateModel(formValue): IFaturaEnergia {
     const dto: any = Object.keys(formValue).reduce((acc, key) => {
-      const value = formValue[key];
-
-      if (typeof value === 'string' && !isNaN(Date.parse(value))) {
-        // Detecta se o campo é uma data no formato esperado
-        if (key === 'mesReferencia') {
-          const [month, year] = value.split('/');
-          acc[key] = new Date(Number(year), Number(month) - 1, 1); // mês começa em 0
-        } else {
-          const [day, month, year] = value.split('/');
-          acc[key] = new Date(Number(year), Number(month) - 1, Number(day));
-        }
+      const value = formValue[key];      
+      if (key === "mesReferencia") {
+        const [month, year] = value.split('/');
+        acc[key] = `${year}-${month}-01`; // formato ISO yyyy-MM-dd
+      } else if (key === "dataVencimento") {
+        const [day, month, year] = value.split('/');
+        acc[key] = `${year}-${month}-${day}`; // também no formato yyyy-MM-dd
       } else {
         acc[key] = value;
       }
 
       return acc;
-    }, {});
-  
-  return dto;
+    }, {});  
+  return dto as IFaturaEnergia;
 }
   
   getSettingsLancamentos(){   

@@ -10,8 +10,9 @@ namespace SIGE.Core.Mapper
         {
             CreateMap<FaturaEnergiaModel, FaturaEnergiaDto>()
                 .ForMember(dst => dst.PontoMedicaoDesc, map => map.MapFrom(src => src.PontoMedicao == null ? string.Empty : src.PontoMedicao.Nome))
-                .ForMember(dst => dst.ConcessionariaDesc, map => map.MapFrom(src => src.Concessionaria == null ? string.Empty : src.Concessionaria.Nome))                
+                .ForMember(dst => dst.ConcessionariaDesc, map => map.MapFrom(src => src.Concessionaria == null ? string.Empty : src.Concessionaria.Nome))
                 .ReverseMap();
+
             CreateMap<LancamentoAdicionalModel, LancamentoAdicionalDto>().ReverseMap();
         }
     }

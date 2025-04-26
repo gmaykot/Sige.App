@@ -31,7 +31,10 @@ namespace SIGE.Services.Services.Administrativo
         {
             var token = await _appDbContext.Tokens.FirstOrDefaultAsync(t => t.Id.Equals(req));
 
-            if (token == null || !token.Ativo || token.DataExpiracao < DataSige.Hoje())
+            if (token == null)
+                return new TokenDto();
+
+            if (token.DataExpiracao < DataSige.Hoje())
                 token.Ativo = false;
 
             return _mapper.Map<TokenDto>(token);
