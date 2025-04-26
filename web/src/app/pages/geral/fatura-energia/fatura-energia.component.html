@@ -80,7 +80,7 @@
                 </nb-card>
                 <button nbButton (click)="onCancel()">Cancelar</button>
                 <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>
-                <button *ngIf="editLabel" nbButton style="margin-left: 0.5rem;" status="danger" nbStepperNext>Excluir</button>
+                <button *ngIf="editLabel" nbButton style="margin-left: 0.5rem;" status="danger" (click)="onDelete()">Excluir</button>
             </nb-step>
 
             <!-- Lançamentos -->
@@ -303,31 +303,31 @@
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row" style="margin-bottom: 0.7rem;">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Contratada - Ponta*</label>
                                             <div>{{getControlValues('valorDemandaContratadaPonta') ?? '-'}}</div>                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Contratada - Fora de Ponta*</label>
                                             <div>{{getControlValues('valorDemandaContratadaForaPonta') ?? '-'}}</div>                                        </div> 
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Faturada - Ponta (Consumida)*</label>
                                             <div>{{getControlValues('valorDemandaFaturadaPontaConsumida') ?? '-'}}</div>                                        </div>                                      
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta (Consumida)*</label>
                                             <div>{{getControlValues('valorDemandaFaturadaForaPontaConsumida') ?? '-'}}</div>                                        </div>                                      
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Faturada - Ponta (Não Utilizada)*</label>
                                             <div>{{getControlValues('valorDemandaFaturadaPontaNaoConsumida') ?? '-'}}</div>                                        </div>                                      
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta (Não Utilizada)*</label>
                                             <div>{{getControlValues('valorDemandaFaturadaForaPontaNaoConsumida') ?? '-'}}</div>                                        </div>                                      
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Ultrapassagem - Ponta*</label>
                                             <div>{{getControlValues('valorDemandaUltrapassagemPonta') ?? '-'}}</div>                                        </div>  
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Ultrapassagem - Fora de Ponta*</label>
                                             <div>{{getControlValues('valorDemandaUltrapassagemForaPonta') ?? '-'}}</div>                                        </div>  
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Reativa - Ponta*</label>
                                             <div>{{getControlValues('valorDemandaReativaPonta') ?? '-'}}</div>                                        </div> 
                                         <div class="col-sm-4">
@@ -346,19 +346,19 @@
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Medido - Ponta - TUSD*</label>
                                             <div>{{getControlValues('valorConsumoTUSDPonta') ?? '-'}}</div>                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Medido - Fora de Ponta - TUSD*</label>
                                             <div>{{getControlValues('valorConsumoTUSDForaPonta') ?? '-'}}</div>                                        </div>          
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Medido - Ponta - TE*</label>
                                             <div>{{getControlValues('valorConsumoTEPonta') ?? '-'}}</div>                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Medido - Fora de Ponta - TE*</label>
                                             <div>{{getControlValues('valorConsumoTEForaPonta') ?? '-'}}</div>                                        </div>          
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Medido Reativo - Ponta*</label>
                                             <div>{{getControlValues('valorConsumoMedidoReativoPonta') ?? '-'}}</div>                                        </div>                    
                                         <div class="col-sm-4">
@@ -377,7 +377,7 @@
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Adicional Bandeira Ponta*</label>
                                             <div>{{getControlValues('valorAdicionalBandeiraPonta') ?? '-'}}</div>                                        </div>          
                                         <div class="col-sm-4">
@@ -406,9 +406,10 @@
                         </nb-card>
                     </div>
                 </div>
-                <button nbButton nbStepperPrevious>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" status="warning" (click)="emitirFatura()" nbStepperNext>{{editLabel ? 'Alterar' : 'Emitir'}} Fatura</button>
-                <button nbButton style="margin-left: 0.5rem;" status="danger" nbStepperNext>Validar</button>
+                <button nbButton nbStepperPrevious (click)="onResetSettings()">Voltar</button>
+                <button nbButton style="margin-left: 0.5rem;" status="warning" [disabled]="getControlValues('validado') == true" (click)="emitirFatura()">{{editLabel ? 'Alterar' : 'Emitir'}} Fatura</button>
+                <button nbButton style="margin-left: 0.5rem;" status="danger" (click)="onValid(!getControlValues('validado'))">{{getControlValues('validado') == false ? 'Validar' : 'Limpar Validação'}}</button>
+                <button nbButton style="margin-left: 0.5rem;" (click)="onCancel()">Sair</button>
             </nb-step>
         </nb-stepper>
     </nb-card-body>

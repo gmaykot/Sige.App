@@ -9,5 +9,10 @@
         public Guid GestorId { get; set; }
         public DateTime DataExpiracao { get; set; }
         public bool Ativo { get; set; }
+
+        public TokenDto()
+        {
+            Ativo = false;
+        }
     }
 }

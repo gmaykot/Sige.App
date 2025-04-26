@@ -6,6 +6,7 @@ using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Geral.FaturaEnergia;
 using SIGE.Core.Models.Requests;
+using SIGE.Core.Models.Sistema.Geral.FaturaEnergia;
 using SIGE.Core.Models.Sistema.Gerencial;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
@@ -30,9 +31,7 @@ namespace SIGE.Services.Services.Geral
 
         public async Task<Response> Excluir(Guid Id)
         {
-            var ret = await _appDbContext.FaturasEnergia.Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.Id.Equals(Id));
-            if (!ret.LancamentosAdicionais.IsNullOrEmpty())
-                return new Response().SetServiceUnavailable().AddError("Entity", "Existem lançamentos adicionais vinculados que impossibilitam a exclusão.");
+            var ret = await _appDbContext.FaturasEnergia.FirstOrDefaultAsync(f => f.Id.Equals(Id));
 
             _appDbContext.FaturasEnergia.Remove(ret);
             _ = await _appDbContext.SaveChangesAsync();
@@ -42,11 +41,14 @@ namespace SIGE.Services.Services.Geral
 
         public async Task<Response> Incluir(FaturaEnergiaDto req)
         {
-            var fornecedor = _mapper.Map<FornecedorModel>(req);
-            _ = await _appDbContext.AddAsync(fornecedor);
+            if (req.Id != null)
+                return await Alterar(req);
+
+            var fatura = _mapper.Map<FaturaEnergiaModel>(req);
+            _ = await _appDbContext.AddAsync(fatura);
             _ = await _appDbContext.SaveChangesAsync();
 
-            return new Response().SetOk().SetData(_mapper.Map<FaturaEnergiaDto>(fornecedor)).SetMessage("Fartura cadastrada com sucesso.");
+            return new Response().SetOk().SetData(_mapper.Map<FaturaEnergiaDto>(fatura)).SetMessage("Fartura cadastrada com sucesso.");
         }
 
         public async Task<Response> Obter(Guid Id)
@@ -64,7 +66,7 @@ namespace SIGE.Services.Services.Geral
             var ret = new Response();
             var res = await _appDbContext.FaturasEnergia.Include(f => f.Concessionaria).Include(f => f.PontoMedicao).Include(f => f.LancamentosAdicionais).ToListAsync();
             if (res.Count > 0)
-                return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturaEnergiaDto>>(res.OrderBy(f => f.MesReferencia)));
+                return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturaEnergiaDto>>(res.OrderByDescending(f => f.MesReferencia).ThenBy(f => f.PontoMedicao.Nome)));
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe fatura ativo.");
         }
