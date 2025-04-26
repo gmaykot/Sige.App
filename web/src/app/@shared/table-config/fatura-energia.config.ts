@@ -18,7 +18,7 @@ export const settingsFatura = {
       title: "Ponto de Medição",
       type: "string",
     },
-    ConcessionariaDesc: {
+    concessionariaDesc: {
       title: "Concessionária",
       type: "string",
     },
@@ -55,6 +55,37 @@ export const settingsLancamentos = {
     delete: true,
     position: "right",
     columnTitle: "",
+  },
+  columns: {
+    descricao: {
+      title: "Lançamento",
+      type: "string",
+    },
+    valor: {
+      title: "Valor (R$)",
+      type: "string",
+      valuePrepareFunction: (value) => {
+        return Intl.NumberFormat("pt-BR", {
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+        }).format(value);
+      },
+    },
+    tipo: {
+      title: "Tipo",
+      type: "string",
+      valuePrepareFunction: (value) => { return TIPO_LANCAMENTO.find(f => f.id == value)?.desc},
+    },
+  },
+  hideSubHeader: true,
+  noDataMessage: "Nenhum registro encontrado.",
+};
+
+export const settingsLancamentosSemDelete = {
+  actions: {
+    add: false,
+    edit: false,
+    delete: false,
   },
   columns: {
     descricao: {

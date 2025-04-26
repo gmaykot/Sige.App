@@ -47,7 +47,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="label">Mês Referência*</label>
-                                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____"
+                                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____" required
                                             [dropSpecialCharacters]="false" formControlName="mesReferencia">
                                     </div>
                                 </div>
@@ -400,15 +400,15 @@
                         <nb-card>
                             <nb-card-header>Lançamentos Adicionais</nb-card-header>
                             <nb-card-body>
-                                <ng2-smart-table [settings]="getSettingsLancamentos()" [source]="source">
+                                <ng2-smart-table [settings]="settingsLancamentosSemDelete" [source]="source">
                                 </ng2-smart-table>
                             </nb-card-body>
                         </nb-card>
                     </div>
                 </div>
-                <button nbButton nbStepperPrevious (click)="onResetSettings()">Voltar</button>
+                <button nbButton nbStepperPrevious>Voltar</button>
                 <button nbButton style="margin-left: 0.5rem;" status="warning" [disabled]="getControlValues('validado') == true" (click)="emitirFatura()">{{editLabel ? 'Alterar' : 'Emitir'}} Fatura</button>
-                <button nbButton style="margin-left: 0.5rem;" status="danger" (click)="onValid(!getControlValues('validado'))">{{getControlValues('validado') == false ? 'Validar' : 'Limpar Validação'}}</button>
+                <button nbButton style="margin-left: 0.5rem;" status="danger" *ngIf="getControlValues('id') != null" (click)="onValid(!getControlValues('validado'))">{{getControlValues('validado') == false ? 'Validar' : 'Limpar Validação'}}</button>
                 <button nbButton style="margin-left: 0.5rem;" (click)="onCancel()">Sair</button>
             </nb-step>
         </nb-stepper>
