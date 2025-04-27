@@ -33,6 +33,7 @@ export class DashboardComponent extends DashboardConfigSettings implements OnDes
     this.faturamentoCard,
     this.viabilidadeCard,
     this.economiaCard,    
+    this.medicaoCard,    
     this.contratoCard
   ];
 

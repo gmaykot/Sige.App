@@ -55,6 +55,7 @@ import { BandeiraTarifariaVigenteComponent } from '../@shared/custom-component/b
 import { DeleteActionLinkComponent } from '../@shared/custom-component/delete-action-link/delete-action-link.component';
 import { FaturaEnergiaComponent } from './geral/fatura-energia/fatura-energia.component';
 import { GhostComponent } from './administrativo/ghost/ghost.component';
+import { RelatorioEconomiaPdfService } from './geral/relatorio-economia/relatorio-economia-pdf.service';
 
 @NgModule({
   imports: [
@@ -141,7 +142,7 @@ import { GhostComponent } from './administrativo/ghost/ghost.component';
     FaturaEnergiaComponent,
     GhostComponent
   ],
-  providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService]
+  providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService,RelatorioEconomiaPdfService, AlertService]
 })
 export class PagesModule {
 }
