@@ -1,6 +1,6 @@
 ﻿namespace SIGE.Core.Enumerators
 {
-    public enum ETipoValor
+    public enum ETipoTarifa
     {
         RS_MWH,
         RS_KW,

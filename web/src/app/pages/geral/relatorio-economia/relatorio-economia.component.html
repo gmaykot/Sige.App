@@ -1,39 +1,37 @@
-<div class="card-row">
-  <div class="card-col">
-    <nb-card>
-      <nb-card-body>
-        <nb-tabset>
-          <nb-tab tabTitle="Comparativo Economia">
-            <nb-card style="border: 0rem">
-              <nb-card-body> </nb-card-body>
-            </nb-card>
-          </nb-tab>
-          <nb-tab tabTitle="Lançamentos Fatura">
-            <nb-card style="border: 0rem">
-              <nb-card-body> </nb-card-body>
-            </nb-card>
-          </nb-tab>
-          <nb-tab tabTitle="Total Distribuidora">
-            <nb-card style="border: 0rem">
-              <nb-card-body> </nb-card-body>
-            </nb-card>
-          </nb-tab>
-          <nb-tab tabTitle="Sub-total Valores Distribuidora">
-            <nb-card style="border: 0rem">
-              <nb-card-body> </nb-card-body>
-            </nb-card>
-          </nb-tab>
-          <nb-tab tabTitle="Sub-total Custos Mercado Livre">
-            <nb-card style="border: 0rem">
-              <nb-card-body> </nb-card-body>
-            </nb-card>
-          </nb-tab>
-        </nb-tabset>
-      </nb-card-body>
-
-      <button nbButton status="primary" (click)="downloadAsPdf()">
-        Download Relatorio
-      </button>
-    </nb-card>
+<div class="row">
+  <div class="col-md-12">
+      <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+          <nb-card-header>Relatório de Economia</nb-card-header>
+          <nb-card-body>
+              <div class="row">
+                  <div class="col-sm-2">
+                      <div class="form-group">
+                          <label for="inputEmail" class="label">Mês Referência</label><br />
+                          <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+                              <nb-option>Selecione</nb-option>
+                              <nb-option *ngFor="let mes of getMeses()"
+                                  value="{{mes.id}}">{{mes.descricao}}</nb-option>
+                          </nb-select>
+                      </div>
+                    </div>
+                  <div class="col-sm-8">
+                    <div class="form-group">
+                      <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="downloadAsPdf()">Download PDF de EXEMPLO</button>
+                    </div>
+                  </div>                      
+              </div>
+          </nb-card-body>
+      </nb-card>
+      <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+          <nb-card-header>Relatórios Emitidos</nb-card-header>
+          <nb-card-body>
+              <div class="row">
+                  <div class="col-sm-12">
+                      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+                      </ng2-smart-table>
+                  </div>
+              </div>
+          </nb-card-body>
+      </nb-card>        
   </div>
 </div>

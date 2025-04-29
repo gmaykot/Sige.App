@@ -1,9 +1,10 @@
 ﻿namespace SIGE.Core.Enumerators
 {
-    public enum ETipoQuantidade
+    public enum ETipoMontante
     {
         MWH,
         KW,
-        KWH
+        KWH,
+        Percentual
     }
 }
