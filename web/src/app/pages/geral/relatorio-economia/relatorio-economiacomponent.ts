@@ -3,8 +3,7 @@ import { RelatorioEconomiaPdfService } from "./relatorio-economia-pdf.service";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import { LocalDataSource } from "ng2-smart-table";
 import { settingsFatura } from "../../../@shared/table-config/fatura-energia.config";
-import { RelatorioMedicaoService } from "../../../@core/services/geral/relatorio-medicao.service";
-
+import { RelatorioEconomiaService } from "../../../@core/services/geral/relatorio-economia.service";
 @Component({
   selector: "ngx-relatorio-economia",
   templateUrl: "./relatorio-economia.component.html",
@@ -27,7 +26,7 @@ export class RelatorioEconomiaComponent {
   constructor(
     private relatorioEconomiaPdfService: RelatorioEconomiaPdfService,
     private alertService: AlertService,
-    private relatorioMedicao: RelatorioMedicaoService
+    private relatorioService: RelatorioEconomiaService
   ) {}
 
   public async downloadAsPdf(): Promise<void> {
@@ -35,8 +34,7 @@ export class RelatorioEconomiaComponent {
       "Iniciando a geração e download do relatório de economia em PDF.",
       120
     );
-    await this.relatorioMedicao.getFinal().then(r => {
-      console.log(r.data);
+    await this.relatorioService.getFinal().then(r => {
       this.relatorioEconomiaPdfService.downloadPDF(r.data);
     });
   }

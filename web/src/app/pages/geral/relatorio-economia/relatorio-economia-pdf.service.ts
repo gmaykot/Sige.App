@@ -111,7 +111,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela2);
     var inicioMarginTop = (doc as any)?.lastAutoTable?.finalY;
 
-    for(const grupo of relatorio.grupos) {
+    for(const grupo of relatorio.grupos.sort((a, b) => a.ordem - b.ordem)) {
       const secaoMercadoCativoMarginTop = this.pdfConfig.adicionarTextoMultilinha(
         doc,
         [grupo.titulo],
@@ -180,9 +180,9 @@ export class RelatorioEconomiaPdfService {
           const totalFormatado = formatadorMoeda.format(subGrupo.total.total ?? 0);
           linhasSubGrupo.push([
             { content: subGrupo.total.descricao, styles: { halign: 'left', fontStyle: 'bold' } },
-            formatadorNumero.format(subGrupo.total.montante ?? 0),
-            formatadorNumero.format(subGrupo.total.tarifa ?? 0),
-            totalFormatado
+            { content: formatadorNumero.format(subGrupo.total.montante ?? 0), styles: { fontStyle: 'bold' } },
+            { content: formatadorNumero.format(subGrupo.total.tarifa ?? 0), styles: { fontStyle: 'bold' } },
+            { content: totalFormatado, styles: { fontStyle: 'bold' } },
           ]);
         }
       
