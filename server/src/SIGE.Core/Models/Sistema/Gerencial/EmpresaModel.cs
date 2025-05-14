@@ -9,6 +9,7 @@ namespace SIGE.Core.Models.Sistema.Gerencial
     public class EmpresaModel : BaseModel
     {
         public required string CNPJ { get; set; }
+        public string? InscricaoEstadual { get; set; }
         public required string Nome { get; set; }
         public required string NomeFantasia { get; set; }
         public string? DadosCtaUc { get; set; }

@@ -30,6 +30,7 @@ export class RelatorioEconomiaComponent implements OnInit {
   public selected: boolean = false;
   public loading: boolean = false;
   public relatorioEconomia: any;
+  public relatorioFinal: any;
   public mesReferencia: any;
   public habilitaValidar: boolean = false;
   public habilitaOperacoes: boolean = false;
@@ -106,10 +107,15 @@ export class RelatorioEconomiaComponent implements OnInit {
       "Iniciando a geração e download do relatório de economia em PDF.",
       120
     );
-    await this.relatorioService.getFinalPdf(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia).then((r) => {
-      r.data.cabecalho = this.relatorioEconomia.cabecalho;
-      this.relatorioEconomiaPdfService.downloadPDF(r.data);
-    });
+    if (this.relatorioFinal) {
+      this.relatorioEconomiaPdfService.downloadPDF(this.relatorioFinal);
+    } else {
+      await this.relatorioService.getFinalPdf(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia).then((r) => {
+        r.data.cabecalho = this.relatorioEconomia.cabecalho;
+        r.data.grupos.sort((a, b) => a.ordem - b.ordem);
+        this.relatorioEconomiaPdfService.downloadPDF(r.data);
+      });
+    }
   }
 
   clear() {
@@ -122,8 +128,13 @@ export class RelatorioEconomiaComponent implements OnInit {
     this.loading = true;
     this.relatorioEconomia = $event.data;
     this.mesReferencia = this.relatorioEconomia.mesReferencia;
-    await this.getRelatorio().then(() => {
-      this.selected = true;
+    await this.getRelatorio().then(async () => {
+      await this.relatorioService.getFinalPdf(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia).then((r) => {
+        r.data.cabecalho = this.relatorioEconomia.cabecalho;
+        this.relatorioFinal = r.data;
+        this.relatorioFinal.grupos.sort((a, b) => a.ordem - b.ordem);
+        this.selected = true;
+      });      
     });
     this.loading = false;
   }
@@ -144,5 +155,21 @@ export class RelatorioEconomiaComponent implements OnInit {
     getMeses()
     {
       return this.dateService.getMesesReferencia(6);
+    }
+
+    getTipo(tipo: number)
+    {
+      switch (tipo) {
+        case 0:
+          return 'MWh';
+        case 1:
+          return 'Kw';
+        case 2:
+          return 'KwH';
+        case 3:
+          return '%';
+        default:
+          return '';
+      }
     }
 }
