@@ -24,26 +24,34 @@
                     </div>
                   </div>
                 </div>
-                  <div class="row">
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                        <label for="inputFirstName" class="label">CPF/CNPJ*</label>
-                        <input type="text" [mask]="control.get('cnpj').value?.length !== 11 ? '00.000.000/0000-00' : '000.000.000-009'" nbInput fullWidth id="inputFirstName" placeholder="00.000.000/0000-00" formControlName="cnpj">
-                      </div>
-                    </div>          
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                        <label for="inputFirstName" class="label">Nome*</label>
-                        <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="nome">
-                      </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="inputFirstName" class="label">CPF/CNPJ*</label>
+                      <input type="text" [mask]="control.get('cnpj').value?.length !== 11 ? '00.000.000/0000-00' : '000.000.000-009'" nbInput fullWidth id="inputFirstName" placeholder="00.000.000/0000-00" formControlName="cnpj">
                     </div>
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                        <label for="inputFirstName" class="label">Nome Fantasia*</label>
-                        <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="nomeFantasia">
-                      </div>
+                  </div>          
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="inputFirstName" class="label">Inscrição Estadual</label>
+                      <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="inscricaoEstadual">
                     </div>
                   </div>
+                </div>
+                <div class="row">     
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="inputFirstName" class="label">Nome*</label>
+                      <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="nome">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="inputFirstName" class="label">Nome Fantasia*</label>
+                      <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="nomeFantasia">
+                    </div>
+                  </div>
+                </div>                
                   <div class="row" *ngIf="false">
                     <div class="col-sm-3">
                       <div class="form-group">

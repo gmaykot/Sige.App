@@ -44,7 +44,7 @@ namespace SIGE.Services.Services.Geral
                 },
                 Grupos = [
                     new GrupoRelatorioFinalDto {
-                        Ordem = 0,
+                        Ordem = 1,
                         Titulo = "MERCADO CATIVO - A4 - TOTAL",
                         ColunaQuantidade = "Montante",
                         ColunaValor = "Tarifa",
@@ -149,7 +149,7 @@ namespace SIGE.Services.Services.Geral
                         ],
                     },
                     new GrupoRelatorioFinalDto {
-                        Ordem = 1,
+                        Ordem = 2,
                         Titulo = "MERCADO LIVRE - A4",
                         ColunaQuantidade = "Montante",
                         ColunaValor = "Tarifa",
@@ -261,12 +261,10 @@ namespace SIGE.Services.Services.Geral
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Ajustes da TUSD",
                                         Total = 36.85,
-                                        SubTotalizador = true
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Credito Subv. Tarifa ACL Tusd",
                                         Total = -13517.83,
-                                        SubTotalizador = true
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Total distribuidora",
@@ -275,15 +273,12 @@ namespace SIGE.Services.Services.Geral
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Ressarcimento",
-                                        SubTotalizador = true
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Multa",
-                                        SubTotalizador = true
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Juros",
-                                        SubTotalizador = true
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Sub-total de valores referente a Distribuidora",
@@ -293,22 +288,18 @@ namespace SIGE.Services.Services.Geral
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Serviço Depositário Qualificado - Bradesco Ref.: 12/23",
                                         Total = 42.24,
-                                        SubTotalizador = true
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "EER - Energia de Reserva - 11/23",
                                         Total = 1741.31,
-                                        SubTotalizador = true
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Contribuição Associativa mensal CCEE - 12/23- Vcto. 29.12.23",
                                         Total = 63.13,
-                                        SubTotalizador = true
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Liq. Fin. CCEE - DEVEDOR/CREDOR (ref. 10/23) Vcto.: 11.12.23",
                                         Total = 174.27,
-                                        SubTotalizador = true
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Sub-total dos outros custos mercado livre",
