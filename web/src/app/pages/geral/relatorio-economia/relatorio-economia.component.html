@@ -138,11 +138,15 @@
                                     </tr>
 
                                     <ng-container *ngFor="let lanc of grupo?.subGrupos[0]?.lancamentos">
-                                      <tr [ngClass]="lanc.totalizador == true ? 'total-linha' : lanc.subTotalizador == true ? 'sub-total-linha' : ''" *ngIf="(lanc.montante && lanc.montante !== 0) || (lanc.tarifa && lanc.tarifa !== 0) || (lanc.total && lanc.total !== 0)">
+                                      <tr [ngClass]="lanc.totalizador == true ? 'total-linha' : lanc.subTotalizador == true ? 'sub-total-linha' : ''" *ngIf="lanc.observacao == null && (lanc.montante && lanc.montante !== 0) || (lanc.total && lanc.total !== 0)">
                                         <td style="text-align: left;">{{ lanc.descricao }}</td>
                                         <td style="text-align: center;">{{ lanc.montante | number:'1.2-2' }} {{getTipo(lanc.tipoMontante)}}</td>
                                         <td style="text-align: center;">{{ lanc.tarifa | number:'1.2-2' }} {{getTipo(lanc.tipoTarifa)}}</td>
                                         <td style="text-align: center;">{{ lanc.total | currency:'BRL':'symbol':'1.2-2' }}</td>
+                                      </tr>
+                                      <tr [ngClass]="lanc.totalizador == true ? 'total-linha' : lanc.subTotalizador == true ? 'sub-total-linha' : ''" *ngIf="lanc.observacao != null">
+                                        <td colspan="2">{{ lanc.descricao }}</td>
+                                        <td colspan="2">{{ lanc.observacao }}</td>
                                       </tr>
                                     </ng-container>                                   
 

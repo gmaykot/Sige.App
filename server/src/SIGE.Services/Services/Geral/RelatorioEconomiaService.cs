@@ -2,10 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Dto.Geral.FaturaEnergia;
 using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
+using System.Runtime.Intrinsics.Arm;
 
 namespace SIGE.Services.Services.Geral
 {
@@ -328,14 +330,209 @@ namespace SIGE.Services.Services.Geral
             var res = await _appDbContext.Database.SqlQueryRaw<CabecalhoRelatorioFinalDto>(RelatorioEconomiaFactory.RelatorioFinal(pontoMedicaoId, mesReferencia)).FirstOrDefaultAsync();
             if (res != null)
             {
-                var relatorio = new RelatorioFinalDto
+                var fatura = _mapper.Map<FaturaEnergiaDto>(await _appDbContext.FaturasEnergia.Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.PontoMedicaoId == pontoMedicaoId && f.MesReferencia == mesReferencia));
+                if (fatura != null)
                 {
-                    Cabecalho = res
-                };
-                return ret.SetOk().SetData(relatorio);
+                    var relatorio = new RelatorioFinalDto
+                    {
+                        Cabecalho = res,
+                        Grupos = [grupoCativoMapper(0, fatura), grupoLivreMapper(1, fatura)]
+                    };
+                    return ret.SetOk().SetData(relatorio);
+                }
             }
             
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de economia no período.");
+        }
+
+        private GrupoRelatorioFinalDto grupoCativoMapper(int ordem, FaturaEnergiaDto? fatura = null)
+        {
+            var grupo = new GrupoRelatorioFinalDto
+            {
+                Ordem = ordem,
+                Titulo = "MERCADO CATIVO - A4 - TOTAL",
+                ColunaQuantidade = "Montante",
+                ColunaValor = "Tarifa",
+                ColunaTotal = "Total",
+                SubGrupos = [
+                            new SubGrupoRelatorioFinalDto {
+                                Lancamentos = [
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Contratada - Ponta",
+                                        Observacao = "Tarifa Fornecimento - Resolução ANEEL nº 3.206, 13/06/2023"
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Contratada - Ponta",
+                                        Montante = fatura.ValorDemandaContratadaPonta,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 40,
+                                        TipoTarifa = ETipoTarifa.RS_KW
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Contratada - Fora de Ponta",
+                                        Montante = fatura.ValorDemandaContratadaForaPonta,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 40,
+                                        TipoTarifa = ETipoTarifa.RS_KW
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Faturada - Ponta (Consumida)",
+                                        Montante = fatura.ValorDemandaFaturadaPontaConsumida,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 40,
+                                        TipoTarifa = ETipoTarifa.RS_KW
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Faturada - Fora de Ponta (Consumida)",
+                                        Montante = fatura.ValorDemandaFaturadaForaPontaConsumida,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 32.70933401,
+                                        TipoTarifa = ETipoTarifa.RS_KW
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Faturada - Ponta (Não Utilizada)",
+                                        Montante = fatura.ValorDemandaFaturadaPontaNaoConsumida,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 40,
+                                        TipoTarifa = ETipoTarifa.RS_KW
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Faturada - Fora de Ponta (Não Utilizada)",
+                                        Montante = fatura.ValorDemandaFaturadaForaPontaNaoConsumida,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 32.70933401,
+                                        TipoTarifa = ETipoTarifa.RS_KW
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Ultrapassagem - Ponta",
+                                        Montante = fatura.ValorDemandaUltrapassagemPonta,
+                                        Tarifa = 65.41866801,
+                                        TipoTarifa = ETipoTarifa.RS_KW
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Ultrapassagem - Fora de Ponta",
+                                        Montante = fatura.ValorDemandaUltrapassagemForaPonta,
+                                        Tarifa = 65.41866801,
+                                        TipoTarifa = ETipoTarifa.RS_KW
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Reativa - Ponta",
+                                        Montante = fatura.ValorDemandaReativaPonta,
+                                        Tarifa = 65.41866801,
+                                        TipoTarifa = ETipoTarifa.RS_KW
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Demanda Reativa - Fora de Ponta",
+                                        Montante = fatura.ValorDemandaReativaForaPonta,
+                                        Tarifa = 65.41866801,
+                                        TipoTarifa = ETipoTarifa.RS_KW
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Consumo Medido - Ponta - TUSD",
+                                        Montante = fatura.ValorConsumoTUSDPonta,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 2.04303417,
+                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Consumo Medido - Fora de Ponta - TUSD",
+                                        Montante = fatura.ValorConsumoTUSDForaPonta,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 0.11999791,
+                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Consumo Medido - Ponta - TE",
+                                        Montante = fatura.ValorConsumoTEPonta,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 0.49644406,
+                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Consumo Medido - Fora de Ponta - TE",
+                                        Montante = fatura.ValorConsumoTEForaPonta,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 0.31480680,
+                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Consumo Medido Reativo - Ponta",
+                                        Montante = fatura.ValorConsumoMedidoReativoPonta,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 0.31480680,
+                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Consumo Medido Reativo - Fora de Ponta",
+                                        Montante = fatura.ValorConsumoMedidoReativoForaPonta,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 0.31480680,
+                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Adicional Bandeira Verde Ponta",
+                                        Montante = fatura.ValorAdicionalBandeiraPonta,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 0.31480680,
+                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Adicional Bandeira Fora de Ponta",
+                                        Montante = fatura.ValorAdicionalBandeiraForaPonta,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 0.31480680,
+                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Subvenção Tarifária",
+                                        Montante = fatura.ValorSubvencaoTarifaria,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 0.31480680,
+                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                    },
+                                    new LancamentoRelatorioFinalDto {
+                                        Descricao = "Desconto TUSD",
+                                        Montante = fatura.ValorDescontoTUSD,
+                                        TipoMontante = ETipoMontante.KW,
+                                        Tarifa = 0.31480680,
+                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                    },
+                                ],
+                                Total = new LancamentoRelatorioFinalDto {
+                                    Descricao = "Total geral mercado cativo (impostos inclusos)",
+                                    TipoMontante = ETipoMontante.KWH,
+                                    TipoTarifa = ETipoTarifa.RS_KWH,
+                                }
+                            }
+                        ]
+            };
+
+            foreach (var sg in grupo.SubGrupos)
+            {
+                foreach (var lc in sg.Lancamentos)
+                {
+                    lc.Total = (lc.Montante ?? 0) * (lc.Tarifa ?? 0);
+                }
+
+                sg.Total.Total = sg.Lancamentos?.Sum(l => l.Total) ?? 0;
+            }
+
+            return grupo;
+        }
+
+        private GrupoRelatorioFinalDto grupoLivreMapper(int ordem, FaturaEnergiaDto? fatura = null)
+        {
+            var grupo = new GrupoRelatorioFinalDto
+            {
+                Ordem = ordem,
+                Titulo = "MERCADO LIVRE - A4",
+                ColunaQuantidade = "Montante",
+                ColunaValor = "Tarifa",
+                ColunaTotal = "Total",
+                SubGrupos = []
+            };
+
+            return grupo;
         }
     }
 }
