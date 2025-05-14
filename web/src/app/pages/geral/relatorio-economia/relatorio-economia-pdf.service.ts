@@ -322,6 +322,7 @@ export class RelatorioEconomiaPdfService {
       cabecalho: {
         titulo: '',
         subTitulo: '',
+        tarifaFornecimento: '',
         unidade: '',
         subMercado: '',
         conexao: '',

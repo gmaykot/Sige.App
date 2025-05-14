@@ -95,4 +95,15 @@ $shadow-green: #00977e;
     }
   }
   
+  .tarifa-header-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    margin-bottom: 5px; /* espaçamento opcional entre título e tabela */
+  }
   
+  .tarifa-label {
+    font-style: italic;
+    text-align: right;
+    font-size: 13px;
+  }

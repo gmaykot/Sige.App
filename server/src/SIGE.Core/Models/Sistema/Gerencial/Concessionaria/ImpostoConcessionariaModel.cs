@@ -8,6 +8,6 @@ namespace SIGE.Core.Models.Sistema.Gerencial.Concessionaria
         public virtual ConcessionariaModel? Concessionaria { get; set; }
         public required double ValorPis { get; set; }
         public required double ValorCofins { get; set; }
-        public required DateTime MesReferencia { get; set; }
+        public required DateOnly MesReferencia { get; set; }
     }
 }

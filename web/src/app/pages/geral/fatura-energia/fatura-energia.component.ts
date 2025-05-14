@@ -256,7 +256,8 @@ export class FaturaEnergiaComponent implements OnInit {
   }
 
   showInput(){
-    return this.getControlValues("segmento") != "0";
+    return true;
+    //return this.getControlValues("segmento") != "0";
   }
 
   async onSearch($event: any) {
