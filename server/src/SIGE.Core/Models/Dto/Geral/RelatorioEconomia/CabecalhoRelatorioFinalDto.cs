@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using SIGE.Core.Enumerators;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
 {
@@ -8,6 +9,9 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
         public string? Titulo { get; set; }
         [NotMapped]
         public string? SubTitulo { get; set; }
+        [NotMapped]
+        public string? TarifaFornecimento { get; set; }
+        public ETipoSegmento? Segmento { get; set; }
         public required string Unidade { get; set; }
         public required string SubMercado { get; set; }
         public required string Conexao { get; set; }

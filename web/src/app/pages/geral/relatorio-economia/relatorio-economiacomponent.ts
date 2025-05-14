@@ -86,7 +86,11 @@ export class RelatorioEconomiaComponent implements OnInit {
       .getFinal(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia)
       .then((response: IResponseInterface<IRelatorioFinal>) => {
         if (response.success) {
+          console.log(response.data);
           this.relatorioEconomia.cabecalho = response.data.cabecalho;
+          this.relatorioFinal = response.data;
+          this.relatorioFinal.grupos.sort((a, b) => a.ordem - b.ordem);
+          this.selected = true;
         } else {
           
         }
@@ -128,14 +132,7 @@ export class RelatorioEconomiaComponent implements OnInit {
     this.loading = true;
     this.relatorioEconomia = $event.data;
     this.mesReferencia = this.relatorioEconomia.mesReferencia;
-    await this.getRelatorio().then(async () => {
-      await this.relatorioService.getFinal(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia).then((r) => {
-        r.data.cabecalho = this.relatorioEconomia.cabecalho;
-        this.relatorioFinal = r.data;
-        this.relatorioFinal.grupos.sort((a, b) => a.ordem - b.ordem);
-        this.selected = true;
-      });      
-    });
+    await this.getRelatorio();
     this.loading = false;
   }
 
@@ -157,15 +154,18 @@ export class RelatorioEconomiaComponent implements OnInit {
       return this.dateService.getMesesReferencia(6);
     }
 
-    getTipo(tipo: number)
+    getTipo(tipo: number, valor: number)
     {
+      if (!valor || valor == 0)
+        return '';
+      
       switch (tipo) {
         case 0:
           return 'MWh';
         case 1:
-          return 'Kw';
+          return 'kW';
         case 2:
-          return 'KwH';
+          return 'kWh';
         case 3:
           return '%';
         default:

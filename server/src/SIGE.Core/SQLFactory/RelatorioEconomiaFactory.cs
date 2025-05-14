@@ -4,7 +4,7 @@ namespace SIGE.Core.SQLFactory
 {
     public static class RelatorioEconomiaFactory
     {
-        public static string ListaRelatoriosMedicao(DateOnly mesReferencia)
+        public static string ListaRelatorios(DateOnly mesReferencia)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("SELECT null AS 'Id', ponto.Id AS 'PontoMedicaoId' , contrato.Id AS 'ContratoId', ponto.Nome AS 'DescPontoMedicao', concessionaria.Nome AS 'DescConcessionaria', fatura.MesReferencia, fatura.DataVencimento, false as 'Validado' ");
@@ -26,7 +26,7 @@ namespace SIGE.Core.SQLFactory
         public static string RelatorioFinal(Guid PontoMedicaoId, DateOnly mesReferencia)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append("SELECT null AS 'Id', ponto.Nome AS 'Unidade', 'Sul' AS 'SubMercado', '-' AS 'Conexao', concessionaria.Nome AS 'Concessao', empresa.CNPJ AS 'CNPJ', empresa.InscricaoEstadual AS 'InscricaoEstadual', empresa.Logradouro AS 'Endereco', empresa.Bairro AS 'Municipio', empresa.Estado AS 'UF' ");
+            builder.Append("SELECT null AS 'Id', ponto.Nome AS 'Unidade', ponto.Segmento AS 'Segmento','Sul' AS 'SubMercado', '-' AS 'Conexao', concessionaria.Nome AS 'Concessao', empresa.CNPJ AS 'CNPJ', empresa.InscricaoEstadual AS 'InscricaoEstadual', empresa.Logradouro AS 'Endereco', empresa.Bairro AS 'Municipio', empresa.Estado AS 'UF' ");
             builder.Append("FROM Contratos contrato ");
             builder.Append("INNER JOIN ContratoEmpresas contratoEmpresa ON contratoEmpresa.ContratoId = contrato.Id ");
             builder.Append("INNER JOIN Empresas empresa ON empresa.Id = contratoEmpresa.EmpresaId ");

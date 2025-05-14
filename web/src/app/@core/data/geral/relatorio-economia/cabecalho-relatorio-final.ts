@@ -1,5 +1,6 @@
 export interface ICabecalhoRelatorioFinal {
     titulo: string;
+    tarifaFornecimento: string
     subTitulo: string;
     unidade: string;
     subMercado: string;
