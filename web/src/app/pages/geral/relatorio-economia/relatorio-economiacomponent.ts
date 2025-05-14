@@ -129,7 +129,7 @@ export class RelatorioEconomiaComponent implements OnInit {
     this.relatorioEconomia = $event.data;
     this.mesReferencia = this.relatorioEconomia.mesReferencia;
     await this.getRelatorio().then(async () => {
-      await this.relatorioService.getFinalPdf(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia).then((r) => {
+      await this.relatorioService.getFinal(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia).then((r) => {
         r.data.cabecalho = this.relatorioEconomia.cabecalho;
         this.relatorioFinal = r.data;
         this.relatorioFinal.grupos.sort((a, b) => a.ordem - b.ordem);
