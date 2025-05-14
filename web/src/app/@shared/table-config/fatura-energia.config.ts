@@ -14,11 +14,11 @@ export const settingsFatura = {
     columnTitle: "",
   },
   columns: {
-    descPontoMedicao: {
+    pontoMedicaoDesc: {
       title: "Ponto de Medição",
       type: "string",
     },
-    descConcessionaria: {
+    concessionariaDesc: {
       title: "Concessionária",
       type: "string",
     },

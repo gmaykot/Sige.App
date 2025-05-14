@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { RelatorioEconomiaPdfService } from "./relatorio-economia-pdf.service";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import { LocalDataSource } from "ng2-smart-table";
-import { settingsFatura } from "../../../@shared/table-config/fatura-energia.config";
 import { RelatorioEconomiaService } from "../../../@core/services/geral/relatorio-economia.service";
 import { IRelatorioEconomiaList } from "../../../@core/data/gerencial/relatorio-economia";
 import { IResponseInterface } from "../../../@core/data/response.interface";
@@ -12,6 +11,7 @@ import { NbDialogService } from "@nebular/theme";
 import { ValidacaoMedicaoComponent } from "../../../@shared/custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component";
 import { DateService } from "../../../@core/services/util/date.service";
 import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/relatorio-final";
+import { settingsRelatorioEconomia } from "../../../@shared/table-config/relatorio-economia.config";
 @Component({
   selector: "ngx-relatorio-economia",
   templateUrl: "./relatorio-economia.component.html",
@@ -25,7 +25,7 @@ export class RelatorioEconomiaComponent implements OnInit {
     return true;
   }
 
-  public settings = settingsFatura;
+  public settings = settingsRelatorioEconomia;
   public source: LocalDataSource = new LocalDataSource();
   public selected: boolean = false;
   public loading: boolean = false;

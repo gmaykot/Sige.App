@@ -190,3 +190,46 @@ export const settingsResultadoAnalitico =  {
   hideSubHeader: true,
   noDataMessage: 'Nenhum registro encontrado.'
 };
+
+export const settingsRelatorioEconomia = {
+  delete: {
+    deleteButtonContent: '<i class="nb-compose"></i>',
+    confirmDelete: true,
+  },   
+  actions: {
+    add: false,
+    edit: false,
+    delete: true,
+    position: "right",
+    columnTitle: "",
+  },
+  columns: {
+    descPontoMedicao: {
+      title: "Ponto de Medição",
+      type: "string",
+    },
+    descConcessionaria: {
+      title: "Concessionária",
+      type: "string",
+    },
+    mesReferencia: {
+      title: "Mês de Referência",
+      type: "string",
+      valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'MM/yyyy')},
+    },
+    dataVencimento: {
+      title: "Data de Vencimento",
+      type: "string",
+      valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
+    },
+    validado: {
+      title: "Validado",
+      type: "string",
+      valuePrepareFunction: (value) => {
+        return value == true ? 'SIM' : 'NÃO';
+      },
+    },
+  },
+  hideSubHeader: true,
+  noDataMessage: "Nenhum registro encontrado.",
+};
