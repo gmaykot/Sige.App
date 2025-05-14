@@ -39,14 +39,14 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                       <div class="form-group">
                         <label for="inputFirstName" class="label">Take Mínimo (%)*</label>
                         <input type="number" nbInput fullWidth id="inputFirstName" placeholder=""
                           formControlName="takeMinimo">
                       </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                       <div class="form-group">
                         <label for="inputFirstName" class="label">Take Máximo (%)*</label>
                         <input type="number" nbInput fullWidth id="inputFirstName" placeholder=""
@@ -58,14 +58,6 @@
                         <label for="inputLastName" class="label">Status*</label>
                         <nb-select fullWidth placeholder="Selecione" formControlName="status">
                           <nb-option *ngFor="let sta of status" value="{{sta.id}}">{{sta.desc}}</nb-option>
-                        </nb-select>
-                      </div>
-                    </div>
-                    <div class="col-md-2">
-                      <div class="form-group">
-                        <label for="inputLastName" class="label">Segmento*</label>
-                        <nb-select fullWidth placeholder="Selecione" formControlName="status">
-                          <nb-option *ngFor="let sg of segmento" value="{{sg.id}}">{{sg.desc}}</nb-option>
                         </nb-select>
                       </div>
                     </div>

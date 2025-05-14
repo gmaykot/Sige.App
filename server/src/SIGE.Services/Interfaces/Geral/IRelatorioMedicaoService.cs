@@ -8,7 +8,6 @@ namespace SIGE.Services.Interfaces.Geral
     {
         Task<Response> ListarRelatorios(RelatorioMedicaoRequest req);
         Task<Response> Obter(Guid contratoId, DateTime mesReferencia);
-        Task<Response> ObterFinal(Guid contratoId, DateTime mesReferencia);
         Task<Response> Alterar(RelatorioMedicaoDto req);
     }
 }

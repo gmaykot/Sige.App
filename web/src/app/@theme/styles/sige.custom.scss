@@ -2,7 +2,7 @@ table {
   width: 100%;
 }
 
-input, select {
+select {
   text-transform: uppercase;
 }
 
@@ -12,6 +12,14 @@ input, select {
 
 .Ang-invalid {
   border-color: #ff6b83;
+}
+
+.green {
+  color: green !important;
+}
+
+.blue {
+  color: var(--stepper-step-index-completed-background-color) !important;
 }
 
 .card-row {
@@ -67,11 +75,6 @@ input, select {
 .table-header {
   margin-left: 15px;
   margin-right: 15px;
-  //color: #1e6bb8;
-  //font-family: var(--tabset-tab-text-font-family);
-  //font-size: var(--tabset-tab-text-font-size);
-  //font-weight: var(--tabset-tab-text-font-weight);
-  //text-transform: var(--tabset-tab-text-transform);   
 }
 
 .float-right {
@@ -116,12 +119,6 @@ input, select {
       width: 80px;
   }
 }
-
-//:host {
-//  ::ng-deep ng2-smart-table tbody > tr > td {
-//    text-align: center;
-//  }  
-//}
 
 :host {
   ::ng-deep .ng2-smart-titles {

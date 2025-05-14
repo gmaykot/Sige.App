@@ -19,5 +19,28 @@ $shadow-green: #00977e;
   }
 
   .top-up {
-    margin-top: 0.7rem;
+    margin-top: 1.2rem;
   }
+
+  .sub-med {
+    font-weight: normal !important;
+  }
+
+  :host {
+    ::ng-deep .ng2-smart-row td:nth-child(3) {
+        text-align: center;
+    }
+  }
+
+  :host {
+    ::ng-deep .ng2-smart-row td:nth-child(4) {
+        text-align: center;
+    }
+  }
+
+  :host {
+    ::ng-deep .ng2-smart-row td:nth-child(5) {
+        text-align: center;
+    }
+  }
+  

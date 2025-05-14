@@ -31,6 +31,7 @@ namespace SIGE.Services
             services.AddAutoMapper(typeof(GerencialMapper));
             services.AddAutoMapper(typeof(ContratoMapper));
             services.AddAutoMapper(typeof(GeralMapper));
+            services.AddAutoMapper(typeof(FaturaEnergiaMapper));
 
             return services;
         }

@@ -9,6 +9,6 @@ namespace SIGE.Core.Models.Dto.Administrativo.Ccee
         public string? PontoMedicao { get; set; }
         public string? DescPontoMedicao { get; set; }
         public ETipoMedicaoCcee TipoMedicao { get; set; } = ETipoMedicaoCcee.FINAL;
-        public DateTime Periodo { get; set; }
+        public DateOnly Periodo { get; set; }
     }
 }

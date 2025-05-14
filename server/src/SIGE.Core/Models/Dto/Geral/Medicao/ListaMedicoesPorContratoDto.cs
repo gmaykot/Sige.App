@@ -9,6 +9,5 @@
         public string? SubTipo { get; set; }
         public string? Status { get; set; }
         public double? TotalConsumoAtivo { get; set; }
-        public double? TotalConsumoReativo { get; set; }
     }
 }

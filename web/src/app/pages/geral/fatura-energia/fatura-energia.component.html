@@ -1,202 +1,415 @@
-<nb-card>
+<form [formGroup]="controlSearch">
+<!-- Seleção do Mês de Referência -->
+  <nb-card [nbSpinner]="loading" nbSpinnerStatus="info" *ngIf="!selected">
+    <nb-card-header>Emitir Faturas</nb-card-header>      
     <nb-card-body>
-        <nb-stepper orientation="horizontal">
-            <nb-step [label]="labelOne">
-                <ng-template #labelOne>Informações</ng-template>
-                <h6>Dados da Fatura</h6>
-                <nb-card style="border: 0rem;">
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="form-group">
+            <label class="label">Mês Referência</label><br />
+            <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+              <nb-option>Selecione</nb-option>
+              <nb-option *ngFor="let mes of getMeses()" value="{{mes.id}}">{{mes.descricao}}</nb-option>
+          </nb-select>
+          </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="form-group">
+              <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSelect()">Nova Fatura</button>
+            </div>
+          </div>           
+      </div>        
+    </nb-card-body>      
+  </nb-card>
+</form>
+
+<!-- Lista de Faturas Emitidas -->
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info" *ngIf="!selected">
+    <nb-card-header>Faturas Emitidas</nb-card-header>      
+    <nb-card-body>    
+        <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="selecionarFatura($event)">
+        </ng2-smart-table>
+    </nb-card-body>  
+</nb-card>
+
+<!-- Stepper -->
+<nb-card *ngIf="selected">
+    <nb-card-body>
+        <nb-stepper #stepper orientation="horizontal" disableStepNavigation="true" linear="false" [(selectedIndex)]="stepperIndex">
+            <!-- Dados Fatura -->
+            <nb-step [label]="labelOne" [stepControl]="control">
+                <ng-template #labelOne>Fatura</ng-template>
+                <h6>Dados da Fatura {{ getPontoMedicaoDesc() }} <div *ngIf="getControlValues('pontoMedicaoDesc') != null" class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
+                <nb-card style="border: 0rem;" [nbSpinner]="loading">
                     <nb-card-body>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="label">Mês Referência*</label>
-                                    <input nbInput fullWidth mask="M0/0000" placeholder="__/____"
-                                        [dropSpecialCharacters]="false" formControlName="mesReferencia">
+                        <form [formGroup]="control">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="label">Mês Referência*</label>
+                                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____" 
+                                            [dropSpecialCharacters]="false" formControlName="mesReferencia">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="label">Data Vencimento*</label>
+                                        <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
+                                            [dropSpecialCharacters]="false" formControlName="dataVencimento">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="label">Data Vencimento*</label>
-                                    <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
-                                        [dropSpecialCharacters]="false" formControlName="dataVencimento">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ngx-auto-complete *ngIf="pontosMedicao.length > 1" [label]="'Ponto de Medição'" [items]="pontosMedicao" [editLabel]="editLabel"
+                                        (itemSelected)="onItemSelected($event)"></ngx-auto-complete>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">Concessionária*</label>
+                                        <input *ngIf="concessionarias.length <= 1" readonly nbInput fullWidth [value]="concessionarias.length == 1 ? concessionarias[0].descricao : ''" style="background-color: transparent; border: 0px;">
+                                        <nb-select *ngIf="concessionarias.length > 1" fullWidth placeholder="Selecione" formControlName="concessionariaId">
+                                            <nb-option *ngFor="let con of concessionarias"
+                                                value="{{con.id}}">{{con.descricao}}</nb-option>
+                                        </nb-select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ngx-auto-complete [label]="'Empresa'" [items]="empresas" [editLabel]="editLabel"
-                                    (itemSelected)="onItemSelected($event)"></ngx-auto-complete>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Concessionária*</label>
-                                    <nb-select fullWidth placeholder="Selecione" formControlName="concessionariaId">
-                                        <nb-option *ngFor="let con of concessionarias"
-                                            value="{{con.id}}">{{con.descricao}}</nb-option>
-                                    </nb-select>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </nb-card-body>
                 </nb-card>
-                <button nbButton disabled nbStepperNext>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>
+                <button nbButton (click)="onCancel()">Cancelar</button>
+                <button *ngIf="getControlValues('id') != null && getControlValues('validado') == false" nbButton style="margin-left: 0.5rem;" status="danger" (click)="onDelete()">Excluir</button>
+                <button nbButton style="margin-left: 0.5rem;" nbStepperNext [disabled]="!habilitaFatura()">Próximo</button>
             </nb-step>
+
+            <!-- Lançamentos -->
             <nb-step [label]="labelTwo">
                 <ng-template #labelTwo>Lançamentos</ng-template>
-                <h6>Lançamentos da Fatura</h6>
-                <nb-card style="border: 0rem;">
-                    <nb-card-body>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Demanda Contratada - Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPta">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Demanda Contratada - Fora de Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPta">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Demanda Faturada - Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
-                                </div>                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Demanda Faturada - Fora de Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Demanda Ultrapassagem - Fora de Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
-                                </div>                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Demanda Reativa - Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Demanda Reativa - Fora de Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPta">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Consumo Medido - Ponta - TUSD*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPta">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Consumo Medido - Fora de Ponta - TUSD*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
-                                </div>                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Consumo Medido - Fora de Ponta - TUSD*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Consumo Medido - Fora de Ponta - TE*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
-                                </div>                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Adicional Bandeira Tarifária Vigente Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
-                                </div>
-                            </div>
-                        </div>  
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Adicional Bandeira Tarifária Vigente F. Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPta">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Consumo Medido Reativo - Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPta">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Consumo Medido Reativo - Fora de Ponta*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPtaFaturada">
-                                </div>                           
-                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="inputLastName" class="label">Subvenção Tarifária*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPtaFaturada">
-                                </div>
-                            </div>                           
-                        </div>                                                
-                    </nb-card-body>
-                </nb-card>
+                <h6>Lançamentos {{ getPontoMedicaoDesc() }} <div class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
+                <div class="card-row">
+                    <div class="card-col">  
+                        <nb-card>
+                            <nb-card-header>Demanda</nb-card-header>
+                            <nb-card-body>
+                                <form [formGroup]="control">
+                                    <div class="row" style="margin-bottom: 0.7rem;">
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label">Contratada - Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaContratadaPonta">
+                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Contratada - Fora de Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaContratadaForaPonta">
+                                        </div> 
+                                        <div class="col-sm-4" *ngIf="showInput()">                                            <label for="inputLastName" class="label">Faturada - Ponta (Consumida)*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaPontaConsumida">
+                                        </div>                                      
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Faturada - Fora de Ponta (Consumida)*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaForaPontaConsumida">
+                                        </div>                                      
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label">Faturada - Ponta (Não Utilizada)*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaPontaNaoConsumida">
+                                        </div>                                      
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Faturada - Fora de Ponta (Não Utilizada)*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaForaPontaNaoConsumida">
+                                        </div>                                      
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label">Ultrapassagem - Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaUltrapassagemPonta">
+                                        </div>  
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Ultrapassagem - Fora de Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaUltrapassagemForaPonta">
+                                        </div>  
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label">Reativa - Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaReativaPonta">
+                                        </div> 
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Reativa - Fora de Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaReativaForaPonta">
+                                        </div>                                         
+                                    </div>                      
+                                </form>
+                            </nb-card-body>
+                    </nb-card>
+                    </div>                    
+                </div>
+                <div class="card-row">
+                    <div class="card-col">  
+                        <nb-card>
+                            <nb-card-header>Consumo</nb-card-header>
+                            <nb-card-body>
+                                <form [formGroup]="control">
+                                    <div class="row">
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label">Medido - Ponta - TUSD*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDPonta">
+                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Medido - Fora de Ponta - TUSD*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDForaPonta">
+                                        </div>          
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label">Medido - Ponta - TE*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTEPonta">
+                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Medido - Fora de Ponta - TE*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTEForaPonta">
+                                        </div>          
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label">Medido Reativo - Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoMedidoReativoPonta">
+                                        </div>                    
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Medido Reativo - Fora de Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoMedidoReativoForaPonta">
+                                        </div>                    
+                                    </div>
+                                </form>     
+                            </nb-card-body>
+                        </nb-card>
+                    </div>                      
+                </div>
+                <div class="card-row">                                     
+                    <div class="card-col">  
+                        <nb-card>
+                            <nb-card-header>Adicional Bandeira Vigente, Subvenção e Desconto TUSD</nb-card-header>
+                            <nb-card-body>
+                                <form [formGroup]="control">
+                                    <div class="row">
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label">Adicional Bandeira Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorAdicionalBandeiraPonta">
+                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Adicional Bandeira Fora de Ponta*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorAdicionalBandeiraForaPonta">
+                                        </div>      
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Subvenção*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorSubvencaoTarifaria">
+                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label">Desconto TUSD*</label>
+                                            <input type="number" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDescontoTUSD">
+                                        </div>          
+                                    </div>
+                                </form>                
+                            </nb-card-body>
+                        </nb-card>
+                    </div>       
+                </div>
                 <button nbButton nbStepperPrevious>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>
+                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>           
             </nb-step>
+            
+            <!-- Lançamentos Adicionais -->
             <nb-step [label]="labelThree">
                 <ng-template #labelThree>Lançamentos Adicionais</ng-template>
+                <h6>Lançamentos Adicionais {{ getPontoMedicaoDesc() }} <div class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Lançamento*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demPta">
+                        <form [formGroup]="lancamentoControl">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="label">Descrição do Lançamento*</label>
+                                        <input type="text" nbInput fullWidth formControlName="descricao">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Valor*</label>
+                                        <input type="number" nbInput fullWidth formControlName="valor">
+                                    </div>
+                                </div>                            
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="label">Tipo*</label>
+                                        <nb-select fullWidth placeholder="Selecione" formControlName="tipo">
+                                            <nb-option value="0">Débito</nb-option>
+                                            <nb-option value="1">Crédito</nb-option>
+                                        </nb-select>
+                                    </div>
+                                </div>  
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <button nbButton style="margin-top: 1.7rem;" status="warning" (click)="adicionarLancamento()">Adicionar</button>
+                                    </div>
+                                </div>                            
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <ng2-smart-table [settings]="settingsLancamentos" [source]="source" (deleteConfirm)="excluirLancamento($event)">
+                                    </ng2-smart-table>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Valor*</label>
-                                    <input type="number" nbInput fullWidth formControlName="demForaPta">
-                                </div>
-                            </div>                            
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="label">Tipo*</label>
-                                    <nb-select fullWidth placeholder="Selecione" formControlName="concessionariaId">
-                                        <nb-option>Débito</nb-option>
-                                        <nb-option>Credito</nb-option>
-                                    </nb-select>
-                                </div>
-                            </div>  
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <button nbButton style="margin-top: 1.7rem;" status="warning">Adicionar</button>
-                                </div>
-                            </div>                            
-                        </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="selecionarColeta($event)">
-                            </ng2-smart-table>
-                        </div>
-                    </div>
+                        </form>
                     </nb-card-body>
                 </nb-card>
                 <button nbButton nbStepperPrevious>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Próximo</button>                
-            </nb-step>
+                <button nbButton style="margin-left: 0.5rem;" nbStepperNext (click)="populateLancamentos()">Próximo</button>
+            </nb-step>  
+
+            <!-- Emissão -->
             <nb-step [label]="labelFour">
-                <ng-template #labelFour>Emissão</ng-template>
+                <ng-template #labelFour>Emissão da Fatura</ng-template>
+                <h6 style="margin-bottom: 1.7rem;">Emissão da Fatura</h6>                
+                <div class="card-row">                                     
+                    <div class="card-col">  
+                        <nb-card>
+                            <nb-card-header>Dados da Fatura</nb-card-header>
+                            <nb-card-body>
+                                <form [formGroup]="control">
+                                    <div class="row" style="margin-bottom: 0.7rem;">
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Mês de Referência</label>
+                                            <div>{{getControlValues('mesReferencia') ?? '-'}}</div>
+                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Data de Vencimento</label>
+                                            <div>{{getControlValues('dataVencimento') ?? '-'}}</div>
+                                        </div> 
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Segmento</label>
+                                            <div class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}">{{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div>
+                                        </div> 
+                                    </div>
+                                    <div class="row" style="margin-bottom: 0.7rem;">
+                                        <div class="col-sm-5">
+                                            <label for="inputLastName" class="label-emissao">Ponto de Medição</label>
+                                            <div>{{getControlValues('pontoMedicaoDesc') ?? '-'}}</div>
+                                        </div>          
+                                        <div class="col-sm-5">
+                                            <label for="inputLastName" class="label-emissao">Concessiária</label>
+                                            <div>{{getControlValues('concessionariaDesc') ?? '-'}}</div>
+                                        </div> 
+                                    </div>                                    
+                                </form>
+                            </nb-card-body>
+                        </nb-card>
+                    </div>
+                </div>
+                <div class="card-row">
+                    <div class="card-col">  
+                        <nb-card>
+                            <nb-card-header>Demanda</nb-card-header>
+                            <nb-card-body>
+                                <form [formGroup]="control">
+                                    <div class="row" style="margin-bottom: 0.7rem;">
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label-emissao">Contratada - Ponta*</label>
+                                            <div>{{getControlValues('valorDemandaContratadaPonta') ?? '-'}}</div>                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Contratada - Fora de Ponta*</label>
+                                            <div>{{getControlValues('valorDemandaContratadaForaPonta') ?? '-'}}</div>                                        </div> 
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label-emissao">Faturada - Ponta (Consumida)*</label>
+                                            <div>{{getControlValues('valorDemandaFaturadaPontaConsumida') ?? '-'}}</div>                                        </div>                                      
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta (Consumida)*</label>
+                                            <div>{{getControlValues('valorDemandaFaturadaForaPontaConsumida') ?? '-'}}</div>                                        </div>                                      
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label-emissao">Faturada - Ponta (Não Utilizada)*</label>
+                                            <div>{{getControlValues('valorDemandaFaturadaPontaNaoConsumida') ?? '-'}}</div>                                        </div>                                      
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta (Não Utilizada)*</label>
+                                            <div>{{getControlValues('valorDemandaFaturadaForaPontaNaoConsumida') ?? '-'}}</div>                                        </div>                                      
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label-emissao">Ultrapassagem - Ponta*</label>
+                                            <div>{{getControlValues('valorDemandaUltrapassagemPonta') ?? '-'}}</div>                                        </div>  
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Ultrapassagem - Fora de Ponta*</label>
+                                            <div>{{getControlValues('valorDemandaUltrapassagemForaPonta') ?? '-'}}</div>                                        </div>  
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label-emissao">Reativa - Ponta*</label>
+                                            <div>{{getControlValues('valorDemandaReativaPonta') ?? '-'}}</div>                                        </div> 
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Reativa - Fora de Ponta*</label>
+                                            <div>{{getControlValues('valorDemandaReativaForaPonta') ?? '-'}}</div>                                        </div>                                         
+                                    </div>                      
+                                </form>
+                            </nb-card-body>
+                    </nb-card>
+                    </div>                    
+                </div>
+                <div class="card-row">
+                    <div class="card-col">  
+                        <nb-card>
+                            <nb-card-header>Consumo</nb-card-header>
+                            <nb-card-body>
+                                <form [formGroup]="control">
+                                    <div class="row">
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label-emissao">Medido - Ponta - TUSD*</label>
+                                            <div>{{getControlValues('valorConsumoTUSDPonta') ?? '-'}}</div>                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Medido - Fora de Ponta - TUSD*</label>
+                                            <div>{{getControlValues('valorConsumoTUSDForaPonta') ?? '-'}}</div>                                        </div>          
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label-emissao">Medido - Ponta - TE*</label>
+                                            <div>{{getControlValues('valorConsumoTEPonta') ?? '-'}}</div>                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Medido - Fora de Ponta - TE*</label>
+                                            <div>{{getControlValues('valorConsumoTEForaPonta') ?? '-'}}</div>                                        </div>          
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label-emissao">Medido Reativo - Ponta*</label>
+                                            <div>{{getControlValues('valorConsumoMedidoReativoPonta') ?? '-'}}</div>                                        </div>                    
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Medido Reativo - Fora de Ponta*</label>
+                                            <div>{{getControlValues('valorConsumoMedidoReativoForaPonta') ?? '-'}}</div>                                        </div>                    
+                                    </div>
+                                </form>     
+                            </nb-card-body>
+                        </nb-card>
+                    </div>                      
+                </div>
+                <div class="card-row">                                     
+                    <div class="card-col">  
+                        <nb-card>
+                            <nb-card-header>Adicional Bandeira Vigente, Subvenção e Desconto TUSD</nb-card-header>
+                            <nb-card-body>
+                                <form [formGroup]="control">
+                                    <div class="row">
+                                        <div class="col-sm-4" *ngIf="showInput()">
+                                            <label for="inputLastName" class="label-emissao">Adicional Bandeira Ponta*</label>
+                                            <div>{{getControlValues('valorAdicionalBandeiraPonta') ?? '-'}}</div>                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Adicional Bandeira Fora de Ponta*</label>
+                                            <div>{{getControlValues('valorAdicionalBandeiraForaPonta') ?? '-'}}</div>                                        </div>      
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Subvenção*</label>
+                                            <div>{{getControlValues('valorSubvencaoTarifaria') ?? '-'}}</div>                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName" class="label-emissao">Desconto TUSD*</label>
+                                            <div>{{getControlValues('valorDescontoTUSD') ?? '-'}}</div>                                        </div>          
+                                    </div>
+                                </form>                
+                            </nb-card-body>
+                        </nb-card>
+                    </div>       
+                </div>
+                <div class="card-row">                                     
+                    <div class="card-col">  
+                        <nb-card>
+                            <nb-card-header>Lançamentos Adicionais</nb-card-header>
+                            <nb-card-body>
+                                <ng2-smart-table [settings]="settingsLancamentosSemDelete" [source]="source">
+                                </ng2-smart-table>
+                            </nb-card-body>
+                        </nb-card>
+                    </div>
+                </div>
                 <button nbButton nbStepperPrevious>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" nbStepperNext>Emitir Fatura</button>                
+                <button nbButton style="margin-left: 0.5rem;" status="warning" *ngIf="getControlValues('validado') == false" (click)="emitirFatura()">{{editLabel ? 'Alterar' : 'Emitir'}} Fatura</button>
+                <button nbButton style="margin-left: 0.5rem;" status="danger" *ngIf="getControlValues('id') != null" (click)="onValid(!getControlValues('validado'))">{{getControlValues('validado') == false ? 'Validar' : 'Limpar Validação'}}</button>
+                <button nbButton style="margin-left: 0.5rem;" (click)="onCancel()">Sair</button>
             </nb-step>
         </nb-stepper>
     </nb-card-body>

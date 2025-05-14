@@ -1,41 +1,149 @@
-<div class="card-row">
-    <div class="card-col">
-        <nb-card>
-            <nb-card-body>
-                <nb-tabset>
-                    <nb-tab tabTitle="Comparativo Economia">
-                        <nb-card style="border: 0rem;">
-                            <nb-card-body>
-                                
-                            </nb-card-body>
-                        </nb-card>
-                    </nb-tab>
-                    <nb-tab tabTitle="Lançamentos Fatura">
-                        <nb-card style="border: 0rem;">
-                            <nb-card-body>
-                            </nb-card-body>
-                        </nb-card>
-                    </nb-tab>
-                    <nb-tab tabTitle="Total Distribuidora">
-                        <nb-card style="border: 0rem;">
-                            <nb-card-body>
-                            </nb-card-body>
-                        </nb-card>
-                    </nb-tab>
-                    <nb-tab tabTitle="Sub-total Valores Distribuidora">
-                        <nb-card style="border: 0rem;">
-                            <nb-card-body>
-                            </nb-card-body>
-                        </nb-card>
-                    </nb-tab>
-                    <nb-tab tabTitle="Sub-total Custos Mercado Livre">
-                        <nb-card style="border: 0rem;">
-                            <nb-card-body>
-                            </nb-card-body>
-                        </nb-card>
-                    </nb-tab>
-                </nb-tabset>
-            </nb-card-body>
-        </nb-card>
-    </div>
+<div class="row"  *ngIf="!selected">
+  <div class="col-md-12">
+      <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+          <nb-card-header>Relatório de Economia</nb-card-header>
+          <nb-card-body>
+              <div class="row">
+                  <div class="col-sm-2">
+                      <div class="form-group">
+                          <label for="inputEmail" class="label">Mês Referência</label><br />
+                          <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+                              <nb-option>Selecione</nb-option>
+                              <nb-option *ngFor="let mes of getMeses()"
+                                  value="{{mes.id}}">{{mes.descricao}}</nb-option>
+                          </nb-select>
+                      </div>
+                    </div>                   
+              </div>
+          </nb-card-body>
+      </nb-card>
+      <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+          <nb-card-header>Relatórios Emitidos</nb-card-header>
+          <nb-card-body>
+              <div class="row">
+                  <div class="col-sm-12">
+                      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+                      </ng2-smart-table>
+                  </div>
+              </div>
+          </nb-card-body>
+      </nb-card>        
+  </div>
 </div>
+
+<form [formGroup]="control" *ngIf="selected">
+    <div class="row">
+        <div class="col-md-12">
+            <nb-card accent="warning" [nbSpinner]="loading">
+                <nb-card-header>Relatório de Economia {{relatorioEconomia.mesReferencia | date: 'MM/yyyy'}}</nb-card-header>
+                <nb-card-body>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="subtitle sub-med">Unidade</div>
+                            <div class="h7">{{relatorioEconomia.cabecalho.unidade}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Submercado</div>
+                            <div class="h7">{{relatorioEconomia.cabecalho.subMercado}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Conexão</div>
+                            <div class="h7">{{relatorioEconomia.cabecalho.conexao}}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="subtitle sub-med">Concessão</div>
+                            <div class="h7">{{relatorioEconomia.cabecalho.concessao}}</div>
+                        </div>
+                    </div>
+                    <div class="row top-up">
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">CNPJ</div>
+                            <div class="h7">{{relatorioEconomia.cabecalho.cnpj}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Inscrição Estadual</div>
+                            <div class="h7">{{relatorioEconomia.cabecalho.inscricaoEstadual}}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="subtitle sub-med">Endereço</div>
+                            <div class="h7">{{relatorioEconomia.cabecalho.endereco}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Munucípio</div>
+                            <div class="h7">{{relatorioEconomia.cabecalho.municipio}}</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">UF</div>
+                            <div class="h7">{{relatorioEconomia.cabecalho.uf}}</div>
+                        </div>
+                    </div>
+                </nb-card-body>
+            </nb-card>
+        </div>
+    </div>
+
+    <div class="card-row" [nbSpinner]="loading">
+        <div class="card-col">
+            <nb-card accent="primary">
+                <nb-card-body>
+                    <nb-tabset>
+                        <nb-tab tabTitle="Economia Mercado Livre vs. Mercado Cativo">
+                            <nb-card style="border: 0rem;">
+                                <nb-card-body>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">Total Medido CCEE</div>
+                                            <div class="h7">1111 kWh
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">Perdas 3% (+)</div>
+                                            <div class="h7">2222 MWh</div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">PROINFA</div>
+                                            <div class="h7">3333 MWh
+                                            </div>
+                                        </div> 
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">ICMS</div>
+                                            <div class="h7">4444 %
+                                            </div>
+                                        </div>                                                                                                                                                                
+                                    </div>
+                                    <div class="row top-up">  
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">Dentro do Take</div>
+                                            <div class="h7" style="color: #e5003d;">NÃO</div>
+                                        </div>                                                                              
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">À faturar a longo prazo</div>
+                                            <div class="h7">5555 MWh
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">À comprar a curto prazo</div>
+                                            <div class="h7">6666 MWh
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="subtitle sub-med">À vender a curto prazo</div>
+                                            <div class="h7">7777 MWh</div>
+                                        </div>
+                                    </div>
+                                </nb-card-body>
+                            </nb-card>
+                        </nb-tab>
+                    </nb-tabset>
+                </nb-card-body>
+                <nb-card-footer>
+                    <button type="submit" nbButton status="basic" (click)="clear()">Voltar</button>
+                    <button *ngIf="habilitaOperacoes" [disabled]="!control.valid || !habilitaPdf()" type="submit" nbButton status="info" style="margin-left: 0.5rem;" (click)="salvar()">Salvar</button>
+                    <button *ngIf="habilitaOperacoes" [disabled]="!habilitaPdf()" type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;">Validar</button>
+
+                    <button [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsPdf()">Gerar PDF</button>
+                </nb-card-footer>                
+            </nb-card>
+        </div>
+    </div>
+</form>

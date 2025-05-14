@@ -15,12 +15,19 @@
                         </div>
                     </div>
                 </div>
-                <br />
-                <label class="h7">Relatórios Emitidos</label><br />
-                <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
-                </ng2-smart-table>
             </nb-card-body>
         </nb-card>
+        <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+            <nb-card-header>Relatórios Emitidos</nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+                        </ng2-smart-table>
+                    </div>
+                </div>
+            </nb-card-body>
+        </nb-card>        
     </div>
 </div>
 <form [formGroup]="control" *ngIf="selected">
@@ -103,12 +110,12 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="subtitle sub-med">PROINFA</div>
-                                            <div class="h7">{{relatorioMedicao.proinfa | number:'2.2-2':'pt'}}
+                                            <div class="h7">{{relatorioMedicao.proinfa | number:'2.3-3':'pt'}} MWh
                                             </div>
                                         </div> 
                                         <div class="col-md-3">
                                             <div class="subtitle sub-med">ICMS</div>
-                                            <div class="h7">{{relatorioMedicao.icms | number:'2.2-2':'pt'}}
+                                            <div class="h7">{{relatorioMedicao.icms | number:'2.2-2':'pt'}} %
                                             </div>
                                         </div>                                                                                                                                                                
                                     </div>

@@ -9,6 +9,7 @@ import { NbDialogRef } from '@nebular/theme';
 })
 export class ValidacaoMedicaoComponent implements OnInit {
   @Input() observacao: string = '';
+  @Input() tipoRelatorio: string = 'Medição';
   @Input() validado: boolean = null;
   
   public control = this.formBuilder.group({

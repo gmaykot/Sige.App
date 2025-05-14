@@ -32,7 +32,7 @@ namespace SIGE.Core.SQLFactory
         public static string ListaMedicoesPorContrato(Guid contratoId, DateTime periodoMedicao)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append("SELECT empresa.NomeFantasia 'DescEmpresa', medicao.Periodo 'DiaMedicaoo', agente.Nome 'DescAgenteMedicao', ponto.Codigo 'DescPontoMedicao', medicao.SubTipo, medicao.Status, medicao.ConsumoAtivo 'TotalConsumoAtivo', medicao.ConsumoReativo 'TotalConsumoReativo' ");
+            builder.Append("SELECT empresa.NomeFantasia 'DescEmpresa', medicao.Periodo 'DiaMedicaoo', agente.Nome 'DescAgenteMedicao', ponto.Codigo 'DescPontoMedicao', medicao.SubTipo, medicao.Status, medicao.ConsumoAtivo 'TotalConsumoAtivo' ");
             builder.Append("FROM Contratos contrato ");
             builder.Append("INNER JOIN ContratoEmpresas contratoEmpresa ON contratoEmpresa.ContratoId = contrato.Id ");
             builder.Append("INNER JOIN Empresas empresa ON empresa.Id = contratoEmpresa.EmpresaId ");

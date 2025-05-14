@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import jsPDF, { TextOptionsLight } from "jspdf";
+import autoTable, { Styles, UserOptions } from "jspdf-autotable";
 
 export interface PdfTextoType {
   text: string;
@@ -12,6 +13,7 @@ export interface PdfTextoType {
   align?: TextOptionsLight["align"];
   borderColor?: string;
   fontSize?: number;
+  textColor?: string;
 }
 
 export interface CustomOptions {
@@ -20,6 +22,12 @@ export interface CustomOptions {
   setMargin: string;
   getMargin: string;
   spacing?: number;
+}
+
+export interface CustomUserOptions extends Omit<UserOptions, "head" | "body"> {
+  colunas?: UserOptions["head"];
+  linhas?: UserOptions["body"];
+  inicioMarginTop?: number;
 }
 
 // Múltiplos de 4
@@ -41,6 +49,101 @@ export const margins = {
 export class PdfConfigService {
   constructor() {}
 
+  public criarTabela(doc: jsPDF, options: CustomUserOptions): void {
+    autoTable(doc, {
+      head: options.colunas,
+      showHead: options.showHead || "firstPage",
+      body: options.linhas,
+      startY: options.inicioMarginTop,
+      theme: options.theme || "plain",
+      margin: options.margin || { left: margins?.marginLeft },
+      headStyles: {
+        fontSize: 8,
+        lineWidth: 1.5,
+        lineColor: "#F5F5F5",
+        fillColor: "#E9E9E9",
+        textColor: "#000000",
+        fontStyle: "bold",
+        halign: "center",
+        ...options.headStyles,
+      },
+      bodyStyles: {
+        fontSize: 8,
+        lineWidth: 1.5,
+        lineColor: "#F5F5F5",
+        fillColor: "#FFFFFF",
+        textColor: "#000000",
+        fontStyle: "normal",
+        halign: "center",
+        ...options.bodyStyles,
+      },
+      didDrawPage: (data) => {
+        if (options.didDrawPage) {
+          options.didDrawPage(data);
+        }
+      },
+      ...options,
+    });
+  }
+
+  public adicionarTextoMultilinha(
+    doc: jsPDF,
+    text: string[],
+    options: {
+      fontSize?: number;
+      fontStyle?: "normal" | "bold" | "italic";
+      align?: "left" | "center" | "right";
+      lineSpacing?: number;
+      textColor?: string;
+      inicioMarginTop?: number;
+      inicioMarginLeft?: number;
+    } = {}
+  ): number {
+    const {
+      fontSize = 9,
+      fontStyle = "normal",
+      align = "left",
+      lineSpacing = 12,
+      textColor = "#000000",
+      inicioMarginTop = margins.marginTop,
+      inicioMarginLeft,
+    } = options;
+
+    const [font, style] = this.obterFonteEEstilo(fontStyle);
+
+    doc.setFont(font, style);
+    doc.setFontSize(fontSize);
+    doc.setTextColor(textColor);
+
+    let currentMarginTop = inicioMarginTop;
+
+    text.forEach((line) => {
+      if (line) {
+        doc.text(line, inicioMarginLeft, currentMarginTop, { align });
+        currentMarginTop += lineSpacing;
+      }
+    });
+
+    return currentMarginTop; // Retorna a posição vertical final
+  }
+
+  private obterFonteEEstilo(
+    fontStyle: "normal" | "bold" | "italic" | "bolditalic"
+  ): [string, string] {
+    const styleMap: Record<
+      "normal" | "bold" | "italic" | "bolditalic",
+      [string, string]
+    > = {
+      normal: ["helvetica", "normal"],
+      bold: ["helvetica", "bold"],
+      italic: ["helvetica", "italic"],
+      bolditalic: ["helvetica", "bolditalic"],
+    };
+
+    return styleMap[fontStyle] || styleMap.normal;
+  }
+
+  /* MÉTODOS ANTIGOS - REFATORAR MAIS TARDE E AJUSTAR USO */
   public formatarPdfData(data: {
     [key: string]: PdfTextoType[];
   }): PdfTextoType[] {
@@ -88,14 +191,16 @@ export class PdfConfigService {
   }
 
   public addImagem(
-    doc: jsPDF, options: {
-    src: string;
-    type?: string;
-    marginLeft: number;
-    marginTop?: number;
-    width?: number;
-    height?: number;
-  }) {
+    doc: jsPDF,
+    options: {
+      src: string;
+      type?: string;
+      marginLeft: number;
+      marginTop?: number;
+      width?: number;
+      height?: number;
+    }
+  ) {
     const image = new Image();
     let type = "png";
     let marginLeft = margins?.marginLeft;

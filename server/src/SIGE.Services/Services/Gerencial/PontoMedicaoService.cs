@@ -6,6 +6,7 @@ using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Gerencial.Empresa;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
+using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Gerencial;
 
@@ -82,6 +83,17 @@ namespace SIGE.Services.Services.Gerencial
         {
             var ret = new Response();
             var res = await _appDbContext.PontosMedicao.Include(p => p.AgenteMedicao).Where(a => a.AgenteMedicao.EmpresaId.Equals(EmpresaId)).ToListAsync();
+            if (res.Count > 0)
+                return ret.SetOk().SetData(_mapper.Map<IEnumerable<DropDownDto>>(res).OrderBy(d => d.Descricao));
+
+            return ret.SetNotFound()
+                .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
+        }
+
+        async public Task<Response> ObterDropDownComSegmento()
+        {
+            var ret = new Response();
+            var res = await _appDbContext.Database.SqlQueryRaw<DropDownDto>(PontosMedicaoFactory.ObterDropDownComSegmento()).ToListAsync(); ;
             if (res.Count > 0)
                 return ret.SetOk().SetData(_mapper.Map<IEnumerable<DropDownDto>>(res).OrderBy(d => d.Descricao));
 
