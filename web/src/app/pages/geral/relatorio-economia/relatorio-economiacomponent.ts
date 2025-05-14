@@ -63,7 +63,6 @@ export class RelatorioEconomiaComponent implements OnInit {
   }
 
   private async getRelatorios() {
-    var relatorio: IRelatorioEconomiaRequest = {};
     await this.service
       .getRelatorios(this.mesReferencia)
       .then((response: IResponseInterface<IRelatorioEconomiaList[]>) => {
@@ -75,11 +74,16 @@ export class RelatorioEconomiaComponent implements OnInit {
       })
       .catch((httpMessage: any) => {
         this.alertService.showError("Não foi possível conectar ao servidor.");
+        console.error('Erro ao gerar relatório', {
+          metodo: 'getRelatorios',
+          pontoMedicaoId: this.relatorioEconomia.pontoMedicaoId,
+          mesReferencia: this.mesReferencia,
+          httpMessage: httpMessage
+        });
       });
   }
 
   private async getRelatorio() {
-    var relatorio: IRelatorioEconomiaRequest = {};
     await this.service
       .getFinal(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia)
       .then((response: IResponseInterface<IRelatorioFinal>) => {
@@ -91,6 +95,12 @@ export class RelatorioEconomiaComponent implements OnInit {
       })
       .catch((httpMessage: any) => {
         this.alertService.showError("Não foi possível conectar ao servidor.");
+        console.error('Erro ao gerar relatório', {
+          metodo: 'getRelatorio',
+          pontoMedicaoId: this.relatorioEconomia.pontoMedicaoId,
+          mesReferencia: this.mesReferencia,
+          httpMessage: httpMessage
+        });
       });
   }
 

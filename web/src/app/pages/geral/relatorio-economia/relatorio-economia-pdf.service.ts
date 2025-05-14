@@ -17,7 +17,6 @@ export class RelatorioEconomiaPdfService {
     return pdf.output("blob");
   }
   public downloadPDF(relatorio: IRelatorioFinal) {
-    console.log(relatorio);
     const pdf = this.createPDF(relatorio);
     pdf.save(`relatorio_economia_${relatorio.cabecalho.unidade.replace(" ", "_").toLocaleLowerCase()}.pdf`);
   }
