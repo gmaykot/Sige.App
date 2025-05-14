@@ -4,10 +4,7 @@ import { AlertService } from "../../../@core/services/util/alert.service";
 import { LocalDataSource } from "ng2-smart-table";
 import { settingsFatura } from "../../../@shared/table-config/fatura-energia.config";
 import { RelatorioEconomiaService } from "../../../@core/services/geral/relatorio-economia.service";
-import {
-  IRelatorioEconomiaRequest,
-  IRelatorioEconomiaList,
-} from "../../../@core/data/gerencial/relatorio-economia";
+import { IRelatorioEconomiaList } from "../../../@core/data/gerencial/relatorio-economia";
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { FormBuilder, Validators } from "@angular/forms";
 import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
