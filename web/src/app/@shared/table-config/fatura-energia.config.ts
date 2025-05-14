@@ -3,7 +3,7 @@ import { TIPO_LANCAMENTO } from "../../@core/enum/status-contrato";
 
 export const settingsFatura = {
   delete: {
-    deleteButtonContent: '<i class="nb-edit"></i>',
+    deleteButtonContent: '<i class="nb-compose"></i>',
     confirmDelete: true,
   },   
   actions: {
@@ -14,11 +14,11 @@ export const settingsFatura = {
     columnTitle: "",
   },
   columns: {
-    pontoMedicaoDesc: {
+    descPontoMedicao: {
       title: "Ponto de Medição",
       type: "string",
     },
-    concessionariaDesc: {
+    descConcessionaria: {
       title: "Concessionária",
       type: "string",
     },

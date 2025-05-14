@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
 using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
 using SIGE.Core.Models.Requests;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
@@ -35,7 +34,7 @@ namespace SIGE.Services.Services.Geral
             if (res != null && res.Count != 0)
                 return ret.SetOk().SetData(res.DistinctBy(m => m.DescGrupo).OrderByDescending(m => m.MesReferencia));
 
-            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de economia no período.");
+            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de medição no período.");
         }
 
         public async Task<Response> Obter(Guid contratoId, DateTime mesReferencia)

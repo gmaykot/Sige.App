@@ -7,7 +7,6 @@ using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Geral.FaturaEnergia;
 using SIGE.Core.Models.Requests;
 using SIGE.Core.Models.Sistema.Geral.FaturaEnergia;
-using SIGE.Core.Models.Sistema.Gerencial;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
 

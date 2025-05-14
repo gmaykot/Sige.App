@@ -1,13 +1,30 @@
-﻿using SIGE.Core.Enumerators;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
+using SIGE.Core.SQLFactory;
+using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
 
 namespace SIGE.Services.Services.Geral
 {
-    public class RelatorioEconomiaService : IRelatorioEconomiaService
+    public class RelatorioEconomiaService(AppDbContext appDbContext, IMapper mapper) : IRelatorioEconomiaService
     {
-        public async Task<Response> ObterFinal(Guid contratoId, DateTime mesReferencia)
+        private readonly AppDbContext _appDbContext = appDbContext;
+        private readonly IMapper _mapper = mapper;
+
+        public async Task<Response> ListarRelatorios(DateOnly mesReferencia)
+        {
+            var ret = new Response();
+            var res = await _appDbContext.Database.SqlQueryRaw<RelatorioEconomiaListDto>(RelatorioEconomiaFactory.ListaRelatoriosMedicao(mesReferencia)).ToListAsync();
+            if (res != null && res.Count != 0)
+                return ret.SetOk().SetData(res.DistinctBy(m => (m.DescPontoMedicao, m.MesReferencia)).OrderByDescending(m => (m.MesReferencia, m.DescPontoMedicao)));
+
+            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de economia no período.");
+        }
+
+        public async Task<Response> ObterFinalPdf(Guid pontoMedicaoId, DateOnly mesReferencia)
         {
             var ret = new Response();
             var relatorio = new RelatorioFinalDto
@@ -312,6 +329,22 @@ namespace SIGE.Services.Services.Geral
             };
 
             return ret.SetOk().SetData(relatorio);
+        }
+
+        public async Task<Response> ObterFinal(Guid pontoMedicaoId, DateOnly mesReferencia)
+        {
+            var ret = new Response();
+            var res = await _appDbContext.Database.SqlQueryRaw<CabecalhoRelatorioFinalDto>(RelatorioEconomiaFactory.RelatorioFinal(pontoMedicaoId, mesReferencia)).FirstOrDefaultAsync();
+            if (res != null)
+            {
+                var relatorio = new RelatorioFinalDto
+                {
+                    Cabecalho = res
+                };
+                return ret.SetOk().SetData(relatorio);
+            }
+            
+            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de economia no período.");
         }
     }
 }

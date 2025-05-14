@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Ocsp;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
-using SIGE.Core.Models.Dto.Geral.Medicao;
 using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
 using SIGE.Core.Models.Requests;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;

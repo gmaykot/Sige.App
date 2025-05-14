@@ -5,6 +5,11 @@ export interface ICabecalhoRelatorioFinal {
     subMercado: string;
     conexao: string;
     concessao: string;
+    cnpj: string;
+    inscricaoEstadual: string;
+    endereco: string;
+    municipio: string;
+    uf: string;
     dataAnalise: string;
     mesReferencia: string;
     numerorDiasMes: number;

@@ -118,8 +118,10 @@ export class PdfConfigService {
     let currentMarginTop = inicioMarginTop;
 
     text.forEach((line) => {
-      doc.text(line, inicioMarginLeft, currentMarginTop, { align });
-      currentMarginTop += lineSpacing;
+      if (line) {
+        doc.text(line, inicioMarginLeft, currentMarginTop, { align });
+        currentMarginTop += lineSpacing;
+      }
     });
 
     return currentMarginTop; // Retorna a posição vertical final

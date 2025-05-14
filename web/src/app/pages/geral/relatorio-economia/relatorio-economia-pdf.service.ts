@@ -17,8 +17,9 @@ export class RelatorioEconomiaPdfService {
     return pdf.output("blob");
   }
   public downloadPDF(relatorio: IRelatorioFinal) {
+    console.log(relatorio);
     const pdf = this.createPDF(relatorio);
-    pdf.save(`relatorio_economia.pdf`);
+    pdf.save(`relatorio_economia_${relatorio.cabecalho.unidade.replace(" ", "_").toLocaleLowerCase()}.pdf`);
   }
 
   private createPDF(relatorio: IRelatorioFinal): jsPDF {
@@ -89,19 +90,19 @@ export class RelatorioEconomiaPdfService {
       linhas: [
         [
           {
-            content: "00.000.000/0001-00",
+            content: relatorio.cabecalho.cnpj,
           },
           {
-            content: "1234567890",
+            content: relatorio.cabecalho.inscricaoEstadual,
           },
           {
-            content: "Rua das Flores, 123",
+            content: relatorio.cabecalho.endereco,
           },
           {
-            content: "São Paulo",
+            content: relatorio.cabecalho.municipio,
           },
           {
-            content: "SP",
+            content: relatorio.cabecalho.uf,
           },
         ],
       ],
@@ -226,6 +227,11 @@ export class RelatorioEconomiaPdfService {
         subMercado: '',
         conexao: '',
         concessao: '',
+        cnpj: '',
+        inscricaoEstadual: '',
+        endereco: '',
+        municipio: '',
+        uf: '',
         dataAnalise: new Date().toISOString(),
         mesReferencia: '',
         numerorDiasMes: 0,
