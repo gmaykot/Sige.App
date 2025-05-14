@@ -90,47 +90,36 @@
                         <nb-tab tabTitle="Economia Mercado Livre vs. Mercado Cativo">
                             <nb-card style="border: 0rem;">
                                 <nb-card-body>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="subtitle sub-med">Total Medido CCEE</div>
-                                            <div class="h7">1111 kWh
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="subtitle sub-med">Perdas 3% (+)</div>
-                                            <div class="h7">2222 MWh</div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="subtitle sub-med">PROINFA</div>
-                                            <div class="h7">3333 MWh
-                                            </div>
-                                        </div> 
-                                        <div class="col-md-3">
-                                            <div class="subtitle sub-med">ICMS</div>
-                                            <div class="h7">4444 %
-                                            </div>
-                                        </div>                                                                                                                                                                
-                                    </div>
-                                    <div class="row top-up">  
-                                        <div class="col-md-3">
-                                            <div class="subtitle sub-med">Dentro do Take</div>
-                                            <div class="h7" style="color: #e5003d;">NÃO</div>
-                                        </div>                                                                              
-                                        <div class="col-md-3">
-                                            <div class="subtitle sub-med">À faturar a longo prazo</div>
-                                            <div class="h7">5555 MWh
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="subtitle sub-med">À comprar a curto prazo</div>
-                                            <div class="h7">6666 MWh
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="subtitle sub-med">À vender a curto prazo</div>
-                                            <div class="h7">7777 MWh</div>
-                                        </div>
-                                    </div>
+                                    <table class="fatura-tabela">
+                                        <tr>
+                                          <td>Diferença cativo versus livre</td>
+                                          <td>Economia = 16%</td>
+                                          <td>Total Economizado = R$ 16.403,12</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Valor devido a Coenel-DE</td>
+                                          <td>2 Sal. Mín. + 10% economia</td>
+                                          <td>Venc.: 16/01/2024 10%</td>
+                                        </tr>
+                                        <tr class="total-linha">
+                                            <td><strong>Economia mensal líquida</strong></td>
+                                            <td><strong>10,79%</strong></td>
+                                            <td><strong>R$ 7.823,12</strong></td>
+                                        </tr>                                        
+                                        <tr class="total-linha">
+                                            <td colspan="2"><strong>Economia acumulada</strong></td>
+                                            <td><strong>R$ 1.262.582,18</strong></td>
+                                        </tr>
+                                    </table>
+                                    <table class="fatura-tabela" style="margin-top: 1rem;">
+                                        <tr class="total-linha">
+                                            <td colspan="2"><strong>Observação: todos os valores contemplam PIS/COFINS e ICMS</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Valor devido a esta Coenel-DE</td>
+                                            <td>R$ 2.640,00</td>
+                                          </tr>                                        
+                                    </table>
                                 </nb-card-body>
                             </nb-card>
                         </nb-tab>
@@ -199,8 +188,7 @@
                                           <td colspan="3"><strong>Total geral mercado cativo (impostos inclusos)</strong></td>
                                           <td><strong>R$ 73.099,18</strong></td>
                                         </tr>
-                                      </table>
-                                                               
+                                      </table>                                                               
                                 </nb-card-body>
                             </nb-card>
                         </nb-tab>
