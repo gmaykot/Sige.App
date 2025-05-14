@@ -44,3 +44,25 @@ $shadow-green: #00977e;
     }
   }
   
+  .fatura-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+  
+    th, td {
+      border: 1px solid #ddd;
+      padding: 6px 12px;
+      text-align: left;
+    }
+  
+    th {
+      background-color: #f1f1f1;
+      font-weight: bold;
+    }
+  
+    .total-linha {
+      background-color: #efefef;
+      font-weight: bold;
+    }
+  }
+  
