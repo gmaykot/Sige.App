@@ -7,14 +7,27 @@ import {
   PdfConfigService,
 } from "../../../@core/services/util/pdf-config.service";
 import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/relatorio-final";
+import { CurrencyPipe } from "@angular/common";
 
 @Injectable({ providedIn: "root" })
 export class RelatorioEconomiaPdfService {
-  constructor(private pdfConfig: PdfConfigService) {}
+  constructor(
+    private pdfConfig: PdfConfigService,
+    private currencyPipe: CurrencyPipe
+  ) {}
 
   public downloadPDF(response: IRelatorioFinal) {
+    console.log(
+      "%c response",
+      "font-weight: bold; text-transform: uppercase; color: #50fa7b",
+      response
+    );
     const pdf = this.createPDF(response);
-    pdf.save(`relatorio_economia_${response.cabecalho.unidade.replace(" ", "_").toLocaleLowerCase()}.pdf`);
+    pdf.save(
+      `relatorio_economia_${response.cabecalho.unidade
+        .replace(" ", "_")
+        .toLocaleLowerCase()}.pdf`
+    );
   }
 
   private createPDF(response?: IRelatorioFinal): jsPDF {
@@ -116,7 +129,11 @@ export class RelatorioEconomiaPdfService {
           { content: lanc.descricao },
           { content: lanc.montante ? lanc.montante.toString() : "-" },
           { content: lanc.tarifa ? lanc.tarifa.toString() : "-" },
-          { content: lanc.total ? lanc.total.toString() : "-" },
+          {
+            content: lanc.total
+              ? this.currencyPipe.transform(lanc.total, "BRL")
+              : "-",
+          },
         ];
       }
     );
@@ -165,7 +182,10 @@ export class RelatorioEconomiaPdfService {
           },
           {
             content: mercadoCativo.subGrupos[0].total.total
-              ? mercadoCativo.subGrupos[0].total.total
+              ? this.currencyPipe.transform(
+                  mercadoCativo.subGrupos[0].total.total,
+                  "BRL"
+                )
               : "-",
           },
         ],
@@ -184,7 +204,11 @@ export class RelatorioEconomiaPdfService {
           { content: lanc.descricao },
           { content: lanc.montante ? lanc.montante.toString() : "-" },
           { content: lanc.tarifa ? lanc.tarifa.toString() : "-" },
-          { content: lanc.total ? lanc.total.toString() : "-" },
+          {
+            content: lanc.total
+              ? this.currencyPipe.transform(lanc.total, "BRL")
+              : "-",
+          },
         ];
       }
     );
@@ -320,21 +344,21 @@ export class RelatorioEconomiaPdfService {
   public mock(): IRelatorioFinal {
     const relatorioFinal: IRelatorioFinal = {
       cabecalho: {
-        titulo: '',
-        subTitulo: '',
-        unidade: '',
-        subMercado: '',
-        conexao: '',
-        concessao: '',
-        cnpj: '',
-        inscricaoEstadual: '',
-        endereco: '',
-        municipio: '',
-        uf: '',
+        titulo: "",
+        subTitulo: "",
+        unidade: "",
+        subMercado: "",
+        conexao: "",
+        concessao: "",
+        cnpj: "",
+        inscricaoEstadual: "",
+        endereco: "",
+        municipio: "",
+        uf: "",
         dataAnalise: new Date().toISOString(),
-        mesReferencia: '',
+        mesReferencia: "",
         numerorDiasMes: 0,
-        periodoHoroSazonal: ''
+        periodoHoroSazonal: "",
       },
       grupos: [],
       comparativo: {
@@ -342,7 +366,7 @@ export class RelatorioEconomiaPdfService {
       },
       grafico: {
         // preencher os campos conforme a interface correspondente
-      }
+      },
     };
 
     return relatorioFinal;
