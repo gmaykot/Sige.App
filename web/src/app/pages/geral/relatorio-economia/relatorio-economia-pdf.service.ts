@@ -7,21 +7,12 @@ import {
   PdfConfigService,
 } from "../../../@core/services/util/pdf-config.service";
 import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/relatorio-final";
-import { CurrencyPipe } from "@angular/common";
 
 @Injectable({ providedIn: "root" })
 export class RelatorioEconomiaPdfService {
-  constructor(
-    private pdfConfig: PdfConfigService,
-    private currencyPipe: CurrencyPipe
-  ) {}
+  constructor(private pdfConfig: PdfConfigService) {}
 
   public downloadPDF(response: IRelatorioFinal) {
-    console.log(
-      "%c response",
-      "font-weight: bold; text-transform: uppercase; color: #50fa7b",
-      response
-    );
     const pdf = this.createPDF(response);
     pdf.save(
       `relatorio_economia_${response.cabecalho.unidade
@@ -35,14 +26,33 @@ export class RelatorioEconomiaPdfService {
     const doc = new jsPDF("p", "pt", "a4");
 
     const cabecalho = response.cabecalho;
-    const grupos = response.grupos;
     const relatorio = response;
 
-    /* CABECAlHO COM IMAGEM E TITULO ---------------------------------------------------------------- */
+    const formatadorMoeda = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+
+    const formatadorNumero = new Intl.NumberFormat("pt-BR", {
+      style: "decimal",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    /* CABEÇALHO COM IMAGEM E TITULO ---------------------------------------------------------------- */
     this.pdfConfig.addImagem(doc, {
       src: "assets/images/logo.png",
       marginLeft: margins.marginLeft,
     });
+
+    const criarTituloSecao = (texto: string, marginTop: number) => {
+      return this.pdfConfig.adicionarTextoMultilinha(doc, [texto], {
+        fontStyle: "bold",
+        textColor: "#6C6C6C",
+        inicioMarginTop: marginTop,
+        inicioMarginLeft: margins.marginLeft,
+      });
+    };
 
     const cabecalhoMarginTop = this.pdfConfig.adicionarTextoMultilinha(
       doc,
@@ -57,211 +67,163 @@ export class RelatorioEconomiaPdfService {
     );
 
     /* SEÇÃO DADOS EMPRESA ---------------------------------------------------------------------------- */
-    const secaoEmpresaMarginTop = this.pdfConfig.adicionarTextoMultilinha(
-      doc,
-      ["DADOS EMPRESA"],
-      {
-        fontStyle: "bold",
-        textColor: "#6C6C6C",
-        inicioMarginTop: cabecalhoMarginTop + margins.sectionMarginTop,
-        inicioMarginLeft: margins.marginLeft,
-      }
+    const secaoEmpresaMarginTop = criarTituloSecao(
+      "DADOS EMPRESA",
+      cabecalhoMarginTop + margins.sectionMarginTop
     );
 
-    /* DADOS TABELA 1 */
+    /* EMPRESA TABELA 1 */
     const dadosEmpresaTabela1: CustomUserOptions = {
       colunas: [["Unidade", "Submercado", "Conexão", "Concessão"]],
       linhas: [
         [
-          {
-            content: cabecalho.unidade,
-          },
-          {
-            content: cabecalho.subMercado,
-          },
-          {
-            content: cabecalho.conexao,
-          },
-          {
-            content: cabecalho.concessao,
-          },
+          { content: cabecalho.unidade },
+          { content: cabecalho.subMercado },
+          { content: cabecalho.conexao },
+          { content: cabecalho.concessao },
         ],
       ],
       inicioMarginTop: secaoEmpresaMarginTop,
     };
 
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela1);
-    const dadosEmpresaTabela1Height = (doc as any)?.lastAutoTable?.finalY;
+    let margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
 
-    /* DADOS TABELA 2 */
+    /* EMPRESA TABELA 2 */
     const dadosEmpresaTabela2: CustomUserOptions = {
       colunas: [["CNPJ", "Inscrição Estadual", "Endereço", "Município", "UF"]],
       linhas: [
         [
-          {
-            content: relatorio.cabecalho.cnpj,
-          },
-          {
-            content: relatorio.cabecalho.inscricaoEstadual,
-          },
-          {
-            content: relatorio.cabecalho.endereco,
-          },
-          {
-            content: relatorio.cabecalho.municipio,
-          },
-          {
-            content: relatorio.cabecalho.uf,
-          },
+          { content: relatorio.cabecalho.cnpj },
+          { content: relatorio.cabecalho.inscricaoEstadual },
+          { content: relatorio.cabecalho.endereco },
+          { content: relatorio.cabecalho.municipio },
+          { content: relatorio.cabecalho.uf },
         ],
       ],
-      inicioMarginTop: dadosEmpresaTabela1Height + margins.headerMarginTop,
+      inicioMarginTop: margintTopTabelaDinamico + margins.headerMarginTop,
     };
 
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela2);
-    const dadosEmpresaTabela2Height = (doc as any)?.lastAutoTable?.finalY;
+    margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
 
-    /* SEÇÃO MERCADO CATIVO -------------------------------------------------------------------------- */
-    const mercadoCativo = grupos[0];
-    const mercadoCativoLinhas = mercadoCativo.subGrupos[0].lancamentos.map(
-      (lanc) => {
+    /* SEÇÃO MERCADO CATIVO E LIVE ----------------------------------------------------------------------------- */
+    const criarLinhaLancamento = (lancamento: any) => {
+      const valorFormatado = formatadorMoeda.format(lancamento.total ?? 0);
+
+      if (!lancamento.observacao) {
+        if (lancamento.totalizador) {
+          return [
+            {
+              content: lancamento.descricao,
+              styles: {
+                halign: "left",
+                fontStyle: "bold",
+                fillColor: "#F2F2F2",
+              },
+              colSpan: 3,
+            },
+            {
+              content: valorFormatado,
+              styles: { fontStyle: "bold", fillColor: "#F2F2F2" },
+            },
+          ];
+        } else if (lancamento.subTotalizador) {
+          return [
+            {
+              content: lancamento.descricao,
+              styles: {
+                halign: "left",
+                fontStyle: lancamento.descricao.startsWith("Subvenção")
+                  ? "italic"
+                  : "normal",
+              },
+              colSpan: 3,
+            },
+            { content: valorFormatado },
+          ];
+        } else {
+          return [
+            { content: lancamento.descricao, styles: { halign: "left" } },
+            formatadorNumero.format(lancamento.montante ?? 0),
+            formatadorNumero.format(lancamento.tarifa ?? 0),
+            valorFormatado,
+          ];
+        }
+      } else {
         return [
-          { content: lanc.descricao },
-          { content: lanc.montante ? lanc.montante.toString() : "-" },
-          { content: lanc.tarifa ? lanc.tarifa.toString() : "-" },
-          {
-            content: lanc.total
-              ? this.currencyPipe.transform(lanc.total, "BRL")
-              : "-",
-          },
+          { content: lancamento.descricao, styles: { halign: "left" } },
+          "",
+          { content: lancamento.observacao, colSpan: 2 },
         ];
       }
-    );
-
-    const secaoMercadoCativoMarginTop = this.pdfConfig.adicionarTextoMultilinha(
-      doc,
-      [mercadoCativo.titulo],
-      {
-        fontStyle: "bold",
-        textColor: "#6C6C6C",
-        inicioMarginTop: dadosEmpresaTabela2Height + margins.sectionMarginTop,
-        inicioMarginLeft: margins.marginLeft,
-      }
-    );
-
-    /* DADOS TABELA */
-    const dadosMercadoCativoTabela: CustomUserOptions = {
-      colunas: [
-        [
-          { content: "", styles: { cellWidth: 180 } },
-          {
-            content: mercadoCativo.colunaQuantidade,
-            styles: { cellWidth: 90 },
-          },
-          mercadoCativo.colunaValor,
-          mercadoCativo.colunaTotal,
-        ],
-      ],
-      linhas: [
-        ...mercadoCativoLinhas,
-        [
-          {
-            content: mercadoCativo.subGrupos[0].total.descricao
-              ? mercadoCativo.subGrupos[0].total.descricao
-              : "-",
-          },
-          {
-            content: mercadoCativo.subGrupos[0].total.montante
-              ? mercadoCativo.subGrupos[0].total.montante
-              : "-",
-          },
-          {
-            content: mercadoCativo.subGrupos[0].total.tarifa
-              ? mercadoCativo.subGrupos[0].total.tarifa
-              : "-",
-          },
-          {
-            content: mercadoCativo.subGrupos[0].total.total
-              ? this.currencyPipe.transform(
-                  mercadoCativo.subGrupos[0].total.total,
-                  "BRL"
-                )
-              : "-",
-          },
-        ],
-      ],
-      inicioMarginTop: secaoMercadoCativoMarginTop,
     };
 
-    this.pdfConfig.criarTabela(doc, dadosMercadoCativoTabela);
-    const dadosMercadoCativoTabelaHeight = (doc as any)?.lastAutoTable?.finalY;
+    if (relatorio.grupos && relatorio.grupos.length > 0) {
+      for (const grupo of relatorio.grupos) {
+        const secaoGrupoMarginTop = criarTituloSecao(
+          grupo.titulo,
+          margintTopTabelaDinamico + margins.sectionMarginTop
+        );
 
-    /* SEÇÃO MERCADO LIVRE -------------------------------------------------------------------------- */
-    const mercadoLivre = grupos[1];
-    const mercadoLivreLinhas = mercadoLivre.subGrupos[0].lancamentos.map(
-      (lanc) => {
-        return [
-          { content: lanc.descricao },
-          { content: lanc.montante ? lanc.montante.toString() : "-" },
-          { content: lanc.tarifa ? lanc.tarifa.toString() : "-" },
-          {
-            content: lanc.total
-              ? this.currencyPipe.transform(lanc.total, "BRL")
-              : "-",
-          },
-        ];
+        const linhas: any[] = [];
+
+        if (grupo.subGrupos && grupo.subGrupos.length > 0) {
+          grupo.subGrupos.forEach((subGrupo) => {
+            if (subGrupo.lancamentos && subGrupo.lancamentos.length > 0) {
+              subGrupo.lancamentos.forEach((lancamento) => {
+                linhas.push(criarLinhaLancamento(lancamento));
+              });
+            }
+
+            if (subGrupo.total) {
+              const totalFormatado = formatadorMoeda.format(
+                subGrupo.total.total ?? 0
+              );
+              linhas.push([
+                {
+                  content: subGrupo.total.descricao,
+                  styles: { halign: "left", fontStyle: "bold" },
+                },
+                formatadorNumero.format(subGrupo.total.montante ?? 0),
+                formatadorNumero.format(subGrupo.total.tarifa ?? 0),
+                totalFormatado,
+              ]);
+            }
+          });
+        }
+
+        const dadosTabela: CustomUserOptions = {
+          colunas: [
+            [
+              { content: "", styles: { cellWidth: 180 } },
+              { content: grupo.colunaQuantidade, styles: { cellWidth: 90 } },
+              { content: grupo.colunaValor },
+              { content: grupo.colunaTotal },
+            ],
+          ],
+          linhas: linhas,
+          inicioMarginTop: secaoGrupoMarginTop,
+        };
+
+        this.pdfConfig.criarTabela(doc, dadosTabela);
+        margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
       }
-    );
-
-    const secaoMercadoLivreMarginTop = this.pdfConfig.adicionarTextoMultilinha(
-      doc,
-      [mercadoLivre.titulo],
-      {
-        fontStyle: "bold",
-        textColor: "#6C6C6C",
-        inicioMarginTop:
-          dadosMercadoCativoTabelaHeight + margins.sectionMarginTop,
-        inicioMarginLeft: margins.marginLeft,
-      }
-    );
-
-    /* DADOS TABELA */
-    const dadosMercadoLivreTabela: CustomUserOptions = {
-      colunas: [
-        [
-          { content: "", styles: { cellWidth: 180 } },
-          { content: mercadoLivre.colunaQuantidade, styles: { cellWidth: 90 } },
-          mercadoLivre.colunaValor,
-          mercadoLivre.colunaTotal,
-        ],
-      ],
-      linhas: mercadoLivreLinhas,
-      inicioMarginTop: secaoMercadoLivreMarginTop,
-    };
-
-    this.pdfConfig.criarTabela(doc, dadosMercadoLivreTabela);
-    const dadosMercadoLivreTabelaHeight = (doc as any)?.lastAutoTable?.finalY;
+    }
 
     /* SEÇÃO COMPARATIVO CATIVO X LIVRE --------------------------------------------------------------- */
-    const secaoComparativoMarginTop = this.pdfConfig.adicionarTextoMultilinha(
-      doc,
-      ["COMPARAÇÃO MERCADO CATIVO X LIVRE"],
-      {
-        fontStyle: "bold",
-        textColor: "#6C6C6C",
-        inicioMarginTop:
-          dadosMercadoLivreTabelaHeight + margins.sectionMarginTop,
-        inicioMarginLeft: margins.marginLeft,
-      }
+    const secaoComparativoMarginTop = criarTituloSecao(
+      "COMPARAÇÃO MERCADO CATIVO X LIVRE",
+      margintTopTabelaDinamico + margins.sectionMarginTop
     );
 
-    /* DADOS TABELA */
+    /* COMPARATIVO TABELA */
     const dadosComparativoTabela: CustomUserOptions = {
       linhas: [
         [
           {
             content: "Diferença cativo versus livre",
-            styles: { halign: "left" },
+            styles: { halign: "left" as const },
           },
           { content: "Economia = 16,00 %" },
           { content: "R$ 11.696,70" },
@@ -269,7 +231,7 @@ export class RelatorioEconomiaPdfService {
         [
           {
             content: "Valor devido a Coenel-DE",
-            styles: { halign: "left" },
+            styles: { halign: "left" as const },
           },
           { content: "2 Sal. Mín. + 10% economia" },
           { content: "Venc.: 16/01/2024 10% " },
@@ -278,26 +240,34 @@ export class RelatorioEconomiaPdfService {
         [
           {
             content: "Economia mensal líquida",
-            styles: { halign: "left", fontStyle: "bold", fillColor: "#F2F2F2" },
+            styles: {
+              halign: "left" as const,
+              fontStyle: "bold" as const,
+              fillColor: "#F2F2F2",
+            },
           },
           {
             content: "10,79 %",
-            styles: { fontStyle: "bold", fillColor: "#F2F2F2" },
+            styles: { fontStyle: "bold" as const, fillColor: "#F2F2F2" },
           },
           {
             content: "R$ 7.887,03",
-            styles: { fontStyle: "bold", fillColor: "#F2F2F2" },
+            styles: { fontStyle: "bold" as const, fillColor: "#F2F2F2" },
           },
         ],
         [
           {
             content: "Economia acumulada",
-            styles: { halign: "left", fontStyle: "bold", fillColor: "#F2F2F2" },
+            styles: {
+              halign: "left" as const,
+              fontStyle: "bold" as const,
+              fillColor: "#F2F2F2",
+            },
             colSpan: 2,
           },
           {
             content: "R$ 1.262.582,18",
-            styles: { fontStyle: "bold", fillColor: "#F2F2F2" },
+            styles: { fontStyle: "bold" as const, fillColor: "#F2F2F2" },
           },
         ],
       ],
@@ -305,7 +275,7 @@ export class RelatorioEconomiaPdfService {
     };
 
     this.pdfConfig.criarTabela(doc, dadosComparativoTabela);
-    const dadosComparativoTabelaHeight = (doc as any)?.lastAutoTable?.finalY;
+    margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
 
     /* SEÇÃO OBSERVAÇÃO ------------------------------------------------------------------------------- */
     this.pdfConfig.criarTabela(doc, {
@@ -328,13 +298,12 @@ export class RelatorioEconomiaPdfService {
           { content: "R$ 2.640,00" },
         ],
       ],
-      inicioMarginTop: dadosComparativoTabelaHeight + margins.sectionMarginTop,
+      inicioMarginTop: margintTopTabelaDinamico + margins.sectionMarginTop,
     });
 
     return doc;
   }
 
-  // função de verificação
   public linhaValida(linha: any[]): boolean {
     const item = linha[1];
     const valor = typeof item === "string" ? item : item?.content;
