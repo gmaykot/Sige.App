@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Enumerators;
+using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Geral.FaturaEnergia;
 using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
+using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
 using SIGE.Core.Models.Dto.Gerencial;
 using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
@@ -11,14 +13,14 @@ using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
 using System.Globalization;
-using System.Runtime.Intrinsics.Arm;
 
 namespace SIGE.Services.Services.Geral
 {
-    public class RelatorioEconomiaService(AppDbContext appDbContext, IMapper mapper) : IRelatorioEconomiaService
+    public class RelatorioEconomiaService(AppDbContext appDbContext, IMapper mapper, IRelatorioMedicaoService relatorioMedicaoService) : IRelatorioEconomiaService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
+        private readonly IRelatorioMedicaoService _relatorioMedicaoService = relatorioMedicaoService;
 
         public async Task<Response> ListarRelatorios(DateOnly mesReferencia)
         {
@@ -334,6 +336,14 @@ namespace SIGE.Services.Services.Geral
             var res = await _appDbContext.Database.SqlQueryRaw<CabecalhoRelatorioFinalDto>(RelatorioEconomiaFactory.RelatorioFinal(pontoMedicaoId, mesReferencia)).FirstOrDefaultAsync();
             if (res != null)
             {
+                var relMedicao = await _relatorioMedicaoService.Obter(res.ContratoId.Value, mesReferencia.GetPrimeiraHoraMes());
+                if (relMedicao == null)
+                    return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de medição deve ser emitido.");
+
+                var relMedicoes = relMedicao.Data as RelatorioMedicaoDto;
+                var calculo = new CalculoEconomiaService();
+                var valores = calculo.Calcular(relMedicoes);
+
                 var fatura = _mapper.Map<FaturaEnergiaDto>(await _appDbContext.FaturasEnergia.Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.PontoMedicaoId == pontoMedicaoId && f.MesReferencia == mesReferencia));
                 if (fatura != null)
                 {
@@ -354,7 +364,7 @@ namespace SIGE.Services.Services.Geral
                             var relatorio = new RelatorioFinalDto
                             {                                
                                 Cabecalho = res,
-                                Grupos = [GrupoCativoMapper(0, fatura, consumo, tarifaCalculada), GrupoLivreMapper(1, fatura, tarifa)]
+                                Grupos = [GrupoCativoMapper(0, fatura, consumo, tarifaCalculada), GrupoLivreMapper(1, fatura, consumo, tarifaCalculada, relMedicoes, valores)]
                             };
                             return ret.SetOk().SetData(relatorio);
                         }
@@ -522,8 +532,34 @@ namespace SIGE.Services.Services.Geral
             return grupo;
         }
 
-        private GrupoRelatorioFinalDto GrupoLivreMapper(int ordem, FaturaEnergiaDto fatura, TarifaAplicacaoDto tarifa)
+        private GrupoRelatorioFinalDto GrupoLivreMapper(int ordem, FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores)
         {
+            var listaFinal = new List<LancamentoRelatorioFinalDto>();
+            var parte1 = LancMercadoLivreParte1(fatura, consumo, tarifaCalculada, relMedicoes, valores);
+            var parte2 = LancMercadoLivreParte2(fatura, consumo, tarifaCalculada, relMedicoes, valores);
+            var parte3 = LancMercadoLivreParte3(fatura, consumo, tarifaCalculada, relMedicoes, valores);
+            listaFinal.AddRange(parte1);
+            listaFinal.Add(new LancamentoRelatorioFinalDto
+            {
+                Descricao = "Sub-total de compra de energia elétrica",
+                Total = parte1.Where(p => p.TipoMontante != ETipoMontante.Percentual).Sum(p => p.Total),
+                Totalizador = true
+            });
+            listaFinal.AddRange(parte2);
+            listaFinal.Add(new LancamentoRelatorioFinalDto
+            {
+                Descricao = "Sub-total para base de cálculo imposto ICMS/PIS/COFINS",
+                Total = parte2.Where(p => p.TipoMontante != ETipoMontante.Percentual).Sum(p => p.Total),
+                Totalizador = true
+            });
+            listaFinal.AddRange(parte3);
+            listaFinal.Add(new LancamentoRelatorioFinalDto
+            {
+                Descricao = "Total distribuidora",
+                Total = parte2.Where(p => p.TipoMontante != ETipoMontante.Percentual).Sum(p => p.Total)+parte3.Where(p => p.TipoMontante != ETipoMontante.Percentual).Sum(p => p.Total),
+                Totalizador = true
+            });
+
             var grupo = new GrupoRelatorioFinalDto
             {
                 Ordem = ordem,
@@ -531,10 +567,133 @@ namespace SIGE.Services.Services.Geral
                 ColunaQuantidade = "Montante",
                 ColunaValor = "Tarifa",
                 ColunaTotal = "Total",
-                SubGrupos = []
+                SubGrupos = [
+                            new SubGrupoRelatorioFinalDto {
+                                Lancamentos = listaFinal,
+                                Total = new LancamentoRelatorioFinalDto {
+                                    Descricao = "Total geral mercado cativo (impostos inclusos)",
+                                    TipoMontante = ETipoMontante.KWH,
+                                    TipoTarifa = ETipoTarifa.RS_KWH,
+                                }
+                            }
+                        ]
             };
 
+            foreach (var sg in grupo.SubGrupos)
+            {
+                foreach (var lc in sg.Lancamentos)
+                {
+                    lc.Total = lc.Total.HasValue ? lc.Total : (lc.Montante ?? 0) * (lc.Tarifa ?? 0);
+                }
+
+                sg.Total.Total = sg.Lancamentos?.Where(l => l.Totalizador == false).Sum(l => l.Total) ?? 0;
+            }
+
             return grupo;
+        }
+
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte1(FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores)
+        {
+            List<LancamentoRelatorioFinalDto> parte1 = 
+                [
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Perdas Reais",
+                        Montante = 3,
+                        TipoMontante = ETipoMontante.Percentual
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Consumo de energia considerando perdas e PROINFA",
+                        Montante = (double)valores.ValorPerdas,
+                        TipoMontante = ETipoMontante.MWH,
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "PROINFA",
+                        Montante = consumo.Proinfa,
+                        TipoMontante = ETipoMontante.MWH,
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Consumo de energia - Longo Prazo",
+                        Montante = (double)valores.ResultadoFaturamento.Quantidade,
+                        TipoMontante = ETipoMontante.MWH,
+                        Tarifa = (double)valores.ResultadoFaturamento.ValorUnitario,
+                        Total = (double)valores.ResultadoFaturamento.ValorNota,
+                        TipoTarifa = ETipoTarifa.RS_MWH
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Venda de energia - Curto Prazo",
+                        TipoMontante = ETipoMontante.KW,
+                        Tarifa = tarifaCalculada.KWPontaSemICMS,
+                        TipoTarifa = ETipoTarifa.RS_KW
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Desconto TUSD (RETUSD)",
+                        Montante = fatura.ValorDemandaFaturadaForaPontaNaoConsumida,
+                        TipoMontante = ETipoMontante.KW,
+                        Tarifa = tarifaCalculada.KWForaPontaSemICMS,
+                        TipoTarifa = ETipoTarifa.RS_KW
+                    },
+            ];
+
+            return parte1;
+        }
+
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte2(FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores)
+        {
+            List<LancamentoRelatorioFinalDto> parte2 =
+                [
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "TUSD - Fora de Ponta",
+                        Montante = fatura.ValorDemandaFaturadaForaPontaConsumida,
+                        TipoMontante = ETipoMontante.KW,
+                        Tarifa = 16.30780023,
+                        TipoTarifa = ETipoTarifa.RS_KW
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "TUSD encargos - Ponta",
+                        Montante = fatura.ValorConsumoTUSDPonta,
+                        TipoMontante = ETipoMontante.KW,
+                        Tarifa =  0.99297600,
+                        TipoTarifa = ETipoTarifa.RS_KW
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "TUSD encargos - Fora de Ponta",
+                        Montante = fatura.ValorConsumoTUSDForaPonta,
+                        TipoMontante = ETipoMontante.KW,
+                        Tarifa =  0.13692468,
+                        TipoTarifa = ETipoTarifa.RS_KW
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Consumo Reativo - Fora de Ponta",
+                        Montante = fatura.ValorConsumoMedidoReativoForaPonta,
+                        TipoMontante = ETipoMontante.KW,
+                        Tarifa =  0.36492267,
+                        TipoTarifa = ETipoTarifa.RS_KW
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Subvenção Tarifária",
+                        Total=  fatura.ValorSubvencaoTarifaria,
+                        SubTotalizador = true
+                    },
+            ];
+
+            return parte2;
+        }
+
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte3(FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores)
+        {
+            List<LancamentoRelatorioFinalDto> parte2 =
+                [
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Ajustes da TUSD",
+                        Total = 99.11
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Credito Subv. Tarifa ACL Tusd",
+                        Total = -7390.14
+                    },
+            ];
+
+            return parte2;
         }
     }
 }

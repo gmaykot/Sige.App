@@ -19,10 +19,11 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
         {
             get
             {
+                if (_total.HasValue)
+                    return _total;
                 if (Montante.HasValue && Tarifa.HasValue)
                     return Montante.Value * Tarifa.Value;
-
-                return _total;
+                return 0;
             }
             set
             {
