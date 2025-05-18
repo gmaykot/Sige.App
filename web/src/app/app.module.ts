@@ -20,10 +20,9 @@ import {
   NbButtonModule,
 } from '@nebular/theme';
 import { registerLocaleData } from '@angular/common';
-import { MoedaParentesesPipe } from './@core/pipe/moeda-parenteses.pipe';
 
 @NgModule({
-  declarations: [AppComponent, MoedaParentesesPipe],
+  declarations: [AppComponent],
   imports: [
     FormsModule,
     ReactiveFormsModule,
