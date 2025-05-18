@@ -4,7 +4,7 @@ public class CalculoEconomiaService
 {
     private RelatorioMedicaoDto? _relatorio;
     private decimal _consumoTotal = 0m;
-    private decimal _multiplicadorPerda = 1.03m;
+    private readonly decimal _multiplicadorPerda = 1.03m;
 
     public ValoresCaltuloMedicaoDto Calcular(RelatorioMedicaoDto relatorio)
     {
@@ -27,6 +27,12 @@ public class CalculoEconomiaService
             ValorConsumoTotal = _consumoTotal,
             ResultadoFaturamento = ResultadoFaturamento()
         };
+    }
+
+    private decimal CustomTruncate(decimal valor, int casasDecimais = 3)
+    {
+        decimal fator = (decimal)Math.Pow(10, casasDecimais);
+        return Math.Truncate(valor * fator) / fator;
     }
 
     public List<ValoresMedicaoAnaliticoDto> CalcularAnalitico(RelatorioMedicaoDto relatorio)
@@ -92,19 +98,19 @@ public class CalculoEconomiaService
 
     private decimal CalculaValorProduto()
     {
-        return FaturarLongoPrazo() * _relatorio.ValorUnitarioKwh.Value;
+        return CustomTruncate(FaturarLongoPrazo() * _relatorio.ValorUnitarioKwh.Value);
     }
 
     private decimal CalculaTakeMinimo()
     {
-        return _relatorio.EnergiaContratada.Value -
-               (_relatorio.EnergiaContratada.Value * (_relatorio.TakeMinimo.Value / 100m));
+        return CustomTruncate(_relatorio.EnergiaContratada.Value -
+               (_relatorio.EnergiaContratada.Value * (_relatorio.TakeMinimo.Value / 100m)));
     }
 
     private decimal CalculaTakeMaximo()
     {
-        return _relatorio.EnergiaContratada.Value +
-               (_relatorio.EnergiaContratada.Value * (_relatorio.TakeMaximo.Value / 100m));
+        return CustomTruncate(_relatorio.EnergiaContratada.Value +
+               (_relatorio.EnergiaContratada.Value * (_relatorio.TakeMaximo.Value / 100m)));
     }
 
     private bool DentroTake()
@@ -165,18 +171,18 @@ public class CalculoEconomiaService
     private void CalculaConsumoTotal()
     {
         var total = _relatorio.TotalMedido.Value / 1000.0m;
-        _consumoTotal = (total * 1.03m) - _relatorio.Proinfa.Value;
+        _consumoTotal = CustomTruncate((total * 1.03m) - _relatorio.Proinfa.Value);
     }
 
     public decimal CalculaConsumoTotalUnitario(decimal totalMedidoKWh, decimal proinfa)
     {
-        return (totalMedidoKWh / 1000.0m * 1.03m) - proinfa;
+        return CustomTruncate((totalMedidoKWh / 1000.0m * 1.03m) - proinfa);
     }
 
     public decimal CurtoPrazoUnitario(decimal? totalGeral, decimal? totalUnitario, decimal? valorGeral)
     {
         if (valorGeral > 0)
-            return (totalUnitario.Value / totalGeral.Value) * valorGeral.Value;
+            return CustomTruncate((totalUnitario.Value / totalGeral.Value) * valorGeral.Value);
         return 0.0m;
     }
 }

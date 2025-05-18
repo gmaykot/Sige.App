@@ -16,7 +16,6 @@ import { IFaturaEnergia } from "../../../@core/data/fatura.energia";
 import { DatePipe } from "@angular/common";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import * as uuid from 'uuid';
-import { NbStepperComponent } from "@nebular/theme";
 
 
 @Component({
@@ -53,6 +52,8 @@ export class FaturaEnergiaComponent implements OnInit {
     descricao: [null],
     valor: [null],
     tipo: [null],
+    contabilizaFatura: [true],
+    tipoCCEE: [false],
   });
 
   constructor(
@@ -355,4 +356,9 @@ export class FaturaEnergiaComponent implements OnInit {
     return dto as IFaturaEnergia;
   }
 
+  bloquearMenos(event: KeyboardEvent): void {
+    if (event.key === '-' || event.key === '+' || event.code === 'Minus') {
+      event.preventDefault();
+    }
+  }
 }
