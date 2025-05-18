@@ -9,6 +9,8 @@ namespace SIGE.Core.Models.Sistema.Geral.FaturaEnergia
         public required string Descricao { get; set; }
         public required double Valor { get; set; }
         public required ETipoLancamento Tipo { get; set; }
+        public required bool ContabilizaFatura { get; set; } = false;
+        public required bool TipoCCEE { get; set; } = false;
 
         [ForeignKey("FaturaEnergia")]
         public Guid FaturaEnergiaId { get; set; }

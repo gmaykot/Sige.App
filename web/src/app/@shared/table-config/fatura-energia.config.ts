@@ -76,6 +76,16 @@ export const settingsLancamentos = {
       type: "string",
       valuePrepareFunction: (value) => { return TIPO_LANCAMENTO.find(f => f.id == value)?.desc},
     },
+    contabilizaFatura: {
+      title: "Contabiliza",
+      type: "string",
+      valuePrepareFunction: (value) => { return value == true ? 'SIM' : 'NÃO';},
+    },
+    tipoCCEE: {
+      title: "CCEE",
+      type: "string",
+      valuePrepareFunction: (value) => { return value == true ? 'SIM' : 'NÃO';},
+    },
   },
   hideSubHeader: true,
   noDataMessage: "Nenhum registro encontrado.",
@@ -107,6 +117,17 @@ export const settingsLancamentosSemDelete = {
       type: "string",
       valuePrepareFunction: (value) => { return TIPO_LANCAMENTO.find(f => f.id == value)?.desc},
     },
+    contabilizaFatura: {
+      title: "Contabiliza",
+      type: "string",
+      valuePrepareFunction: (value) => { return value == true ? 'SIM' : 'NÃO';},
+    },
+    tipoCCEE: {
+      title: "CCEE",
+      type: "string",
+      valuePrepareFunction: (value) => { return value == true ? 'SIM' : 'NÃO';},
+    },
+
   },
   hideSubHeader: true,
   noDataMessage: "Nenhum registro encontrado.",

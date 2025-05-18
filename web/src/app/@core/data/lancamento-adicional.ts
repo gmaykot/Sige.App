@@ -4,4 +4,6 @@ export interface ILancamentoAdicional {
     descricao: string;
     valor: number;
     tipo: string;
+    contabilizaFatura: boolean;
+    tipoCCEE: boolean;
 }
