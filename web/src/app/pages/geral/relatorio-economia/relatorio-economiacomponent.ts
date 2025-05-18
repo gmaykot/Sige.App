@@ -86,7 +86,6 @@ export class RelatorioEconomiaComponent implements OnInit {
       .getFinal(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia)
       .then((response: IResponseInterface<IRelatorioFinal>) => {
         if (response.success) {
-          console.log(response.data);
           this.relatorioEconomia.cabecalho = response.data.cabecalho;
           this.relatorioFinal = response.data;
           this.relatorioFinal.grupos.sort((a, b) => a.ordem - b.ordem);
