@@ -13,7 +13,7 @@ export class RelatorioEconomiaService extends DefaultService<IRelatorioFinal> {
     }
 
     public async getRelatorios(mesReferencia: string): Promise<IResponseInterface<IRelatorioEconomiaList[]>> {
-        return await this.http.get<IResponseInterface<IRelatorioEconomiaList[]>>(`/${this.urlBase}/${mesReferencia ?? ''    }`);
+        return await this.http.get<IResponseInterface<IRelatorioEconomiaList[]>>(`/${this.urlBase}/${mesReferencia ?? new Date().toISOString().split("T")[0]}`);
     }
    
     public async getFinal(pontoMedicaoId: string, mesReferencia: string): Promise<IResponseInterface<IRelatorioFinal>> {

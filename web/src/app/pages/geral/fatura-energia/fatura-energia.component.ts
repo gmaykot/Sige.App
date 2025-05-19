@@ -38,13 +38,9 @@ export class FaturaEnergiaComponent implements OnInit {
   public lancamentos: any[] = [];
   public selected: boolean = false;
   public loading: boolean = false;
+  public mesReferencia: any;
 
-  public controlSearch = this.formBuilder.group({
-    mesReferencia: ["", Validators.required],
-  });
-
-  public control = this.novoFormControl();
-  
+  public control = this.novoFormControl(); 
 
   public lancamentoControl = this.formBuilder.group({
     id: [null],
@@ -109,8 +105,11 @@ export class FaturaEnergiaComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.loading = true;
     this.selected = false;
+    this.mesReferencia = new Date().toISOString().split("T")[0];
     await this.loadFaturas();
+    this.loading = false;
   }
 
   async getPontosMedicao() {
@@ -262,7 +261,10 @@ export class FaturaEnergiaComponent implements OnInit {
   }
 
   async onSearch($event: any) {
+    this.loading = true;
+    this.mesReferencia = $event;
     await this.loadFaturas();
+    this.loading = false;
   }
 
   async onSelect() {
@@ -286,7 +288,7 @@ export class FaturaEnergiaComponent implements OnInit {
   async loadFaturas() {
     this.loading = true;
     await this.faturaEnergiaService
-      .get()
+      .obterFaturas(this.mesReferencia)
       .then((response: IResponseInterface<IFaturaEnergia[]>) => {
         if (response.success) {
           this.faturas = response.data;
@@ -360,5 +362,11 @@ export class FaturaEnergiaComponent implements OnInit {
     if (event.key === '-' || event.key === '+' || event.code === 'Minus') {
       event.preventDefault();
     }
+  }
+
+  public totalizador(contabilizaFatura: boolean, tipoCCEE: boolean): number {
+    return this.lancamentos
+      .filter(lanc => lanc.contabilizaFatura == contabilizaFatura && lanc.tipoCCEE == tipoCCEE)
+      .reduce((soma, lanc) => soma + (lanc.valor || 0)*(lanc.tipo == 0 ? -1 : 1), 0);
   }
 }

@@ -22,10 +22,15 @@ namespace SIGE.Services.Services.Geral
         private readonly IMapper _mapper = mapper;
         private readonly IRelatorioMedicaoService _relatorioMedicaoService = relatorioMedicaoService;
 
-        public async Task<Response> ListarRelatorios(DateOnly mesReferencia)
+        public async Task<Response> ListarRelatorios(DateOnly? mesReferencia)
         {
+            if (mesReferencia == null)
+                mesReferencia = DateOnly.FromDateTime(DateTime.Now).GetPrimeiroDiaMes();
             var ret = new Response();
-            var res = await _appDbContext.Database.SqlQueryRaw<RelatorioEconomiaListDto>(RelatorioEconomiaFactory.ListaRelatorios(mesReferencia)).ToListAsync();
+            var res = await _appDbContext.Database.SqlQueryRaw<RelatorioEconomiaListDto>(RelatorioEconomiaFactory.ListaRelatorios(mesReferencia.Value)).ToListAsync();
+            if (res == null || res.Count == 0)
+                res = await _appDbContext.Database.SqlQueryRaw<RelatorioEconomiaListDto>(RelatorioEconomiaFactory.ListaRelatorios(mesReferencia.Value.AddMonths(-1))).ToListAsync();
+
             if (res != null && res.Count != 0)
                 return ret.SetOk().SetData(res.DistinctBy(m => (m.DescPontoMedicao, m.MesReferencia)).OrderByDescending(m => (m.MesReferencia, m.DescPontoMedicao)));
 
@@ -244,9 +249,9 @@ namespace SIGE.Services.Services.Geral
             var listaFinal = new List<LancamentoRelatorioFinalDto>();
             var parte1 = LancMercadoLivreParte1(fatura, consumo, tarifaCalculada, relMedicoes, valores);
             var parte2 = LancMercadoLivreParte2(fatura, consumo, tarifaCalculada, relMedicoes, valores);
-            var parte3 = LancMercadoLivreParte3(fatura, consumo, tarifaCalculada, relMedicoes, valores);
-            var parte4 = LancMercadoLivreParte4(fatura, consumo, tarifaCalculada, relMedicoes, valores);
-            var parte5 = LancMercadoLivreParte5(fatura, consumo, tarifaCalculada, relMedicoes, valores);
+            var parte3 = LancMercadoLivreParte3(fatura);
+            var parte4 = LancMercadoLivreParte4(fatura);
+            var parte5 = LancMercadoLivreParte5(fatura);
             listaFinal.AddRange(parte1);
             listaFinal.Add(new LancamentoRelatorioFinalDto
             {
@@ -398,7 +403,7 @@ namespace SIGE.Services.Services.Geral
             return parte2;
         }
 
-        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte3(FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores)
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte3(FaturaEnergiaDto fatura)
         {
             List<LancamentoRelatorioFinalDto> ret = [];
 
@@ -414,7 +419,7 @@ namespace SIGE.Services.Services.Geral
             return ret;
         }
 
-        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte4(FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores)
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte4(FaturaEnergiaDto fatura)
         {
             List<LancamentoRelatorioFinalDto> ret = [];
 
@@ -430,7 +435,7 @@ namespace SIGE.Services.Services.Geral
             return ret;
         }
 
-        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte5(FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores)
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte5(FaturaEnergiaDto fatura)
         {
             List<LancamentoRelatorioFinalDto> ret = [];
 

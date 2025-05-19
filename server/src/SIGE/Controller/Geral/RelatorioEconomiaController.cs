@@ -11,13 +11,13 @@ namespace SIGE.Controller.Geral
     {
         private readonly IRelatorioEconomiaService _service = service;
 
-        [HttpGet]
+        [HttpGet("{mesReferencia}")]
         [SwaggerOperation(Description = "Obtém o cálculo do relatório de economia.")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ListarRelatorios([FromRoute] DateOnly mesReferencia) =>
+        public async Task<IActionResult> ListarRelatorios([FromRoute] DateOnly? mesReferencia) =>
             Ok(await _service.ListarRelatorios(mesReferencia));
 
         [HttpGet("final/{pontoMedicaoId}/{mesReferencia}")]

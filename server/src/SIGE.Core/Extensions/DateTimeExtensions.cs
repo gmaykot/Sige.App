@@ -14,6 +14,9 @@
         public static DateTime GetPrimeiraHoraMes(this DateOnly dataInicial) =>
             new(dataInicial.Year, dataInicial.Month, 1, 0, 0, 0);
 
+        public static DateOnly GetPrimeiroDiaMes(this DateOnly dataInicial) =>
+            new(dataInicial.Year, dataInicial.Month, 1);
+
         public static DateTime GetUltimaHoraMes(this DateTime dataInicial) =>
             dataInicial.GetPrimeiraHoraMes().AddMonths(1).AddSeconds(-1);
 
