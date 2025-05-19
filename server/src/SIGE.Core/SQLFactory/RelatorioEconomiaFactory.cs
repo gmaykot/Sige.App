@@ -17,6 +17,7 @@ namespace SIGE.Core.SQLFactory
             builder.Append("INNER JOIN FaturasEnergia fatura ON fatura.PontoMedicaoId = ponto.Id ");
             builder.Append("INNER JOIN ConsumosMensais consumo ON consumo.PontoMedicaoId = ponto.Id ");
             builder.Append("WHERE contrato.Ativo = true ");
+            builder.Append(string.Format("AND DATE_FORMAT(fatura.MesReferencia, '%Y-%m-01') = '{0}' ", mesReferencia.ToString("yyyy-MM-01")));
             builder.Append("AND consumo.MesReferencia = fatura.MesReferencia ");
             builder.Append("ORDER BY ponto.Nome, fatura.MesReferencia DESC;");
 

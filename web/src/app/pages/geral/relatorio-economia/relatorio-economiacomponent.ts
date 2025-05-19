@@ -18,7 +18,7 @@ import { settingsRelatorioEconomia } from "../../../@shared/table-config/relator
   styleUrls: ["./relatorio-economia.component.scss"],
 })
 export class RelatorioEconomiaComponent implements OnInit {
-  onSearch($event: any) {}
+  
   salvar() {}
 
   habilitaPdf() {
@@ -56,6 +56,7 @@ export class RelatorioEconomiaComponent implements OnInit {
     this.habilitaValidar = SessionStorageService.habilitaValidarRelatorio();
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
     this.loading = true;
+    this.mesReferencia = new Date().toISOString().split("T")[0];
     await this.getRelatorios();
     this.loading = false;
   }
@@ -170,5 +171,12 @@ export class RelatorioEconomiaComponent implements OnInit {
         default:
           return '';
       }
+    }
+
+    async onSearch($event: any) {
+      this.loading = true;
+      this.mesReferencia = $event;
+      await this.getRelatorios();
+      this.loading = false;
     }
 }

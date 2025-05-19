@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Enumerators;
+using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Geral.FaturaEnergia;
@@ -75,6 +76,22 @@ namespace SIGE.Services.Services.Geral
             var ret = new Response();
             var res = await _appDbContext.FaturasEnergia.Include(f => f.Concessionaria).Include(f => f.PontoMedicao).Include(f => f.LancamentosAdicionais).ToListAsync();
             if (res.Count > 0)
+                return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturaEnergiaDto>>(res.OrderByDescending(f => f.MesReferencia).ThenBy(f => f.PontoMedicao.Nome)));
+
+            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe fatura ativo.");
+        }
+
+        public async Task<Response> ObterFaturas(DateOnly? mesReferencia)
+        {
+            if (mesReferencia == null)
+                mesReferencia = DateOnly.FromDateTime(DateTime.Now).GetPrimeiroDiaMes();
+
+            var ret = new Response();
+            var res = await _appDbContext.FaturasEnergia.Include(f => f.Concessionaria).Include(f => f.PontoMedicao).Include(f => f.LancamentosAdicionais).Where(f => f.MesReferencia == mesReferencia.Value.GetPrimeiroDiaMes()).ToListAsync();
+            if (res == null || res.Count == 0)
+                res = await _appDbContext.FaturasEnergia.Include(f => f.Concessionaria).Include(f => f.PontoMedicao).Include(f => f.LancamentosAdicionais).Where(f => f.MesReferencia == mesReferencia.Value.GetPrimeiroDiaMes().AddMonths(-1)).ToListAsync();
+
+            if (res != null && res.Count != 0)
                 return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturaEnergiaDto>>(res.OrderByDescending(f => f.MesReferencia).ThenBy(f => f.PontoMedicao.Nome)));
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe fatura ativo.");

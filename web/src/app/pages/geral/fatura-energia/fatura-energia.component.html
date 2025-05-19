@@ -1,4 +1,3 @@
-<form [formGroup]="controlSearch">
 <!-- Seleção do Mês de Referência -->
   <nb-card [nbSpinner]="loading" nbSpinnerStatus="info" *ngIf="!selected">
     <nb-card-header>Emitir Faturas</nb-card-header>      
@@ -21,7 +20,6 @@
       </div>        
     </nb-card-body>      
   </nb-card>
-</form>
 
 <!-- Lista de Faturas Emitidas -->
 <nb-card [nbSpinner]="loading" nbSpinnerStatus="info" *ngIf="!selected">
@@ -323,34 +321,44 @@
                                     <div class="row" style="margin-bottom: 0.7rem;">
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Contratada - Ponta*</label>
-                                            <div>{{getControlValues('valorDemandaContratadaPonta') ?? '-'}}</div>                                        </div>          
+                                            <div>{{getControlValues('valorDemandaContratadaPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Contratada - Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorDemandaContratadaForaPonta') ?? '-'}}</div>                                        </div> 
+                                            <div>{{getControlValues('valorDemandaContratadaForaPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div> 
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Faturada - Ponta (Consumida)*</label>
-                                            <div>{{getControlValues('valorDemandaFaturadaPontaConsumida') ?? '-'}}</div>                                        </div>                                      
+                                            <div>{{getControlValues('valorDemandaFaturadaPontaConsumida') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>                                      
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta (Consumida)*</label>
-                                            <div>{{getControlValues('valorDemandaFaturadaForaPontaConsumida') ?? '-'}}</div>                                        </div>                                      
+                                            <div>{{getControlValues('valorDemandaFaturadaForaPontaConsumida') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>                                      
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Faturada - Ponta (Não Utilizada)*</label>
-                                            <div>{{getControlValues('valorDemandaFaturadaPontaNaoConsumida') ?? '-'}}</div>                                        </div>                                      
+                                            <div>{{getControlValues('valorDemandaFaturadaPontaNaoConsumida') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>                                      
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Faturada - Fora de Ponta (Não Utilizada)*</label>
-                                            <div>{{getControlValues('valorDemandaFaturadaForaPontaNaoConsumida') ?? '-'}}</div>                                        </div>                                      
+                                            <div>{{getControlValues('valorDemandaFaturadaForaPontaNaoConsumida') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>                                      
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Ultrapassagem - Ponta*</label>
-                                            <div>{{getControlValues('valorDemandaUltrapassagemPonta') ?? '-'}}</div>                                        </div>  
+                                            <div>{{getControlValues('valorDemandaUltrapassagemPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>  
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Ultrapassagem - Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorDemandaUltrapassagemForaPonta') ?? '-'}}</div>                                        </div>  
+                                            <div>{{getControlValues('valorDemandaUltrapassagemForaPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>  
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Reativa - Ponta*</label>
-                                            <div>{{getControlValues('valorDemandaReativaPonta') ?? '-'}}</div>                                        </div> 
+                                            <div>{{getControlValues('valorDemandaReativaPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div> 
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Reativa - Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorDemandaReativaForaPonta') ?? '-'}}</div>                                        </div>                                         
+                                            <div>{{getControlValues('valorDemandaReativaForaPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>                                         
                                     </div>                      
                                 </form>
                             </nb-card-body>
@@ -366,22 +374,28 @@
                                     <div class="row">
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Medido - Ponta - TUSD*</label>
-                                            <div>{{getControlValues('valorConsumoTUSDPonta') ?? '-'}}</div>                                        </div>          
+                                            <div>{{getControlValues('valorConsumoTUSDPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Medido - Fora de Ponta - TUSD*</label>
-                                            <div>{{getControlValues('valorConsumoTUSDForaPonta') ?? '-'}}</div>                                        </div>          
+                                            <div>{{getControlValues('valorConsumoTUSDForaPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>          
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Medido - Ponta - TE*</label>
-                                            <div>{{getControlValues('valorConsumoTEPonta') ?? '-'}}</div>                                        </div>          
+                                            <div>{{getControlValues('valorConsumoTEPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Medido - Fora de Ponta - TE*</label>
-                                            <div>{{getControlValues('valorConsumoTEForaPonta') ?? '-'}}</div>                                        </div>          
+                                            <div>{{getControlValues('valorConsumoTEForaPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>          
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Medido Reativo - Ponta*</label>
-                                            <div>{{getControlValues('valorConsumoMedidoReativoPonta') ?? '-'}}</div>                                        </div>                    
+                                            <div>{{getControlValues('valorConsumoMedidoReativoPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>                    
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Medido Reativo - Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorConsumoMedidoReativoForaPonta') ?? '-'}}</div>                                        </div>                    
+                                            <div>{{getControlValues('valorConsumoMedidoReativoForaPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>                    
                                     </div>
                                 </form>     
                             </nb-card-body>
@@ -397,16 +411,20 @@
                                     <div class="row">
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName" class="label-emissao">Adicional Bandeira Ponta*</label>
-                                            <div>{{getControlValues('valorAdicionalBandeiraPonta') ?? '-'}}</div>                                        </div>          
+                                            <div>{{getControlValues('valorAdicionalBandeiraPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Adicional Bandeira Fora de Ponta*</label>
-                                            <div>{{getControlValues('valorAdicionalBandeiraForaPonta') ?? '-'}}</div>                                        </div>      
+                                            <div>{{getControlValues('valorAdicionalBandeiraForaPonta') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>      
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Subvenção*</label>
-                                            <div>{{getControlValues('valorSubvencaoTarifaria') ?? '-'}}</div>                                        </div>          
+                                            <div>{{getControlValues('valorSubvencaoTarifaria') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Desconto TUSD*</label>
-                                            <div>{{getControlValues('valorDescontoTUSD') ?? '-'}}</div>                                        </div>          
+                                            <div>{{getControlValues('valorDescontoTUSD') | number:'1.2-3' ?? '-'}}</div>                                        
+                                        </div>          
                                     </div>
                                 </form>                
                             </nb-card-body>
@@ -418,8 +436,55 @@
                         <nb-card>
                             <nb-card-header>Lançamentos Adicionais</nb-card-header>
                             <nb-card-body>
-                                <ng2-smart-table [settings]="settingsLancamentosSemDelete" [source]="source">
-                                </ng2-smart-table>
+                                <table class="fatura-tabela">
+                                    <tr>
+                                      <th></th>
+                                      <th style="text-align: center;">Valor</th>
+                                    </tr>
+                                    <ng-container *ngFor="let lanc of lancamentos">
+                                    <tr *ngIf="lanc.contabilizaFatura == false && lanc.tipoCCEE == false">
+                                        <td style="text-align: left;">{{ lanc.descricao }}</td>
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '0' ? 'red' : '' }">
+                                            {{ lanc.tipo == '0' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-3') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-3') }}
+                                          </td>
+                                    </tr>
+                                    </ng-container>
+                                    <tr class="total-linha">
+                                        <td style="text-align: left;">Total distribuidora</td>
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': totalizador(false, false) < 0 ? 'red' : '' }">
+                                            {{ totalizador(false, false) | moedaParenteses }}
+                                        </td>
+
+                                    </tr>                                    
+                                    <ng-container *ngFor="let lanc of lancamentos">
+                                        <tr *ngIf="lanc.contabilizaFatura == true && lanc.tipoCCEE == false">
+                                          <td style="text-align: left;">{{ lanc.descricao }}</td>
+                                          <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '0' ? 'red' : '' }">
+                                            {{ lanc.tipo == '0' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-3') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-3') }}
+                                          </td>
+                                        </tr>
+                                    </ng-container>  
+                                    <tr class="total-linha">
+                                        <td style="text-align: left;">Sub-total distribuidora</td>
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': totalizador(true, false) < 0 ? 'red' : '' }">
+                                            {{ totalizador(true, false) | moedaParenteses }}
+                                        </td>
+                                    </tr>
+                                    <ng-container *ngFor="let lanc of lancamentos">
+                                        <tr *ngIf="lanc.contabilizaFatura == true && lanc.tipoCCEE == true">
+                                          <td style="text-align: left;">{{ lanc.descricao }}</td>
+                                          <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '0' ? 'red' : '' }">
+                                            {{ lanc.tipo == '0' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-3') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-3') }}
+                                          </td>
+                                        </tr>
+                                    </ng-container>
+                                    <tr class="total-linha">
+                                        <td style="text-align: left;">Sub-total dos outros custos Mercado Livre</td>
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': totalizador(true, true) < 0 ? 'red' : '' }">
+                                            {{ totalizador(true, true) | moedaParenteses }}
+                                        </td>
+                                    </tr>
+                                </table>
                             </nb-card-body>
                         </nb-card>
                     </div>
