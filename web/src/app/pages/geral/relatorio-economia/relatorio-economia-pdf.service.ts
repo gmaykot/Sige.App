@@ -28,6 +28,7 @@ export class RelatorioEconomiaPdfService {
     const cabecalho = response.cabecalho;
     const relatorio = response;
 
+    /* MÉTODOS HELPERS ---------------------------------------------------------------- */
     const formatadorMoeda = new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
@@ -39,37 +40,79 @@ export class RelatorioEconomiaPdfService {
       maximumFractionDigits: 2,
     });
 
-    /* CABEÇALHO COM IMAGEM E TITULO ---------------------------------------------------------------- */
-    this.pdfConfig.addImagem(doc, {
-      src: "assets/images/logo.png",
-      marginLeft: margins.marginLeft,
-    });
+    const formatarValorComUnidade = (
+      valor: number | undefined,
+      unidade: string
+    ): string => {
+      return valor === undefined || valor === null || valor === 0
+        ? "-"
+        : `${formatadorNumero.format(valor)} ${unidade}`;
+    };
 
     const criarTituloSecao = (texto: string, marginTop: number) => {
       return this.pdfConfig.adicionarTextoMultilinha(doc, [texto], {
         fontStyle: "bold",
-        textColor: "#6C6C6C",
+        textColor: "#000",
         inicioMarginTop: marginTop,
         inicioMarginLeft: margins.marginLeft,
       });
     };
 
-    const cabecalhoMarginTop = this.pdfConfig.adicionarTextoMultilinha(
-      doc,
-      [cabecalho.titulo, cabecalho.subTitulo],
-      {
-        fontStyle: "bold",
-        align: "right",
-        textColor: "#666666",
-        inicioMarginTop: margins.sectionMarginTop,
-        inicioMarginLeft: margins.right,
-      }
-    );
+    /* LOGO ---------------------------------------------------------------- */
+    const logoImage = new Image();
+    logoImage.src = "assets/images/logo.png";
+
+    let logoWidth = 140; // Largura padrão
+    let logoHeight = 57; // Altura padrão
+
+    const logoMarginTop = margins.marginTop;
+
+    this.pdfConfig.addImagem(doc, {
+      src: "assets/images/logo.png",
+      marginLeft: margins.marginLeft,
+      marginTop: logoMarginTop,
+      width: logoWidth,
+      height: logoHeight,
+    });
+
+    const imageBottomY = logoMarginTop + logoHeight + 10;
+
+    const estilosTabela = {
+      headStyles: {
+        fontSize: 7,
+        lineWidth: 0.5,
+        lineColor: "#DDDDDD",
+        fillColor: "#f5f9fc",
+        textColor: "#4285F4",
+        fontStyle: "bold" as const,
+        halign: "center" as const,
+        valign: "middle" as const,
+        cellPadding: 4,
+      },
+      bodyStyles: {
+        fontSize: 7,
+        lineWidth: 0.5,
+        lineColor: "#DDDDDD",
+        textColor: "#333333",
+        fontStyle: "normal" as const,
+        halign: "center" as const,
+        valign: "middle" as const,
+        cellPadding: 3,
+      },
+      alternateRowStyles: {
+        fillColor: "#f5f9fc",
+      },
+      footStyles: {
+        fillColor: "#E9E9E9",
+        textColor: "#000000",
+        fontStyle: "bold" as const,
+      },
+    };
 
     /* SEÇÃO DADOS EMPRESA ---------------------------------------------------------------------------- */
     const secaoEmpresaMarginTop = criarTituloSecao(
       "DADOS EMPRESA",
-      cabecalhoMarginTop + margins.sectionMarginTop
+      Math.max(imageBottomY, margins.sectionMarginTop)
     );
 
     /* EMPRESA TABELA 1 */
@@ -84,6 +127,7 @@ export class RelatorioEconomiaPdfService {
         ],
       ],
       inicioMarginTop: secaoEmpresaMarginTop,
+      ...estilosTabela,
     };
 
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela1);
@@ -102,6 +146,7 @@ export class RelatorioEconomiaPdfService {
         ],
       ],
       inicioMarginTop: margintTopTabelaDinamico + margins.headerMarginTop,
+      ...estilosTabela,
     };
 
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela2);
@@ -119,13 +164,13 @@ export class RelatorioEconomiaPdfService {
               styles: {
                 halign: "left",
                 fontStyle: "bold",
-                fillColor: "#F2F2F2",
+                fillColor: "#f5f9fc",
               },
               colSpan: 3,
             },
             {
               content: valorFormatado,
-              styles: { fontStyle: "bold", fillColor: "#F2F2F2" },
+              styles: { fontStyle: "bold", fillColor: "#f5f9fc" },
             },
           ];
         } else if (lancamento.subTotalizador) {
@@ -145,8 +190,8 @@ export class RelatorioEconomiaPdfService {
         } else {
           return [
             { content: lancamento.descricao, styles: { halign: "left" } },
-            formatadorNumero.format(lancamento.montante ?? 0),
-            formatadorNumero.format(lancamento.tarifa ?? 0),
+            formatarValorComUnidade(lancamento.montante, "kW"),
+            formatarValorComUnidade(lancamento.tarifa, "kWh"),
             valorFormatado,
           ];
         }
@@ -183,11 +228,13 @@ export class RelatorioEconomiaPdfService {
               linhas.push([
                 {
                   content: subGrupo.total.descricao,
+                  colSpan: 3,
                   styles: { halign: "left", fontStyle: "bold" },
                 },
-                formatadorNumero.format(subGrupo.total.montante ?? 0),
-                formatadorNumero.format(subGrupo.total.tarifa ?? 0),
-                totalFormatado,
+                {
+                  content: totalFormatado,
+                  styles: { halign: "center", fontStyle: "bold" },
+                },
               ]);
             }
           });
@@ -204,6 +251,7 @@ export class RelatorioEconomiaPdfService {
           ],
           linhas: linhas,
           inicioMarginTop: secaoGrupoMarginTop,
+          ...estilosTabela,
         };
 
         this.pdfConfig.criarTabela(doc, dadosTabela);
@@ -219,6 +267,9 @@ export class RelatorioEconomiaPdfService {
 
     /* COMPARATIVO TABELA */
     const dadosComparativoTabela: CustomUserOptions = {
+      colunas: [
+        [{ content: "Comparativo", styles: { halign: "center" }, colSpan: 3 }],
+      ],
       linhas: [
         [
           {
@@ -243,16 +294,16 @@ export class RelatorioEconomiaPdfService {
             styles: {
               halign: "left" as const,
               fontStyle: "bold" as const,
-              fillColor: "#F2F2F2",
+              fillColor: "#f5f9fc",
             },
           },
           {
             content: "10,79 %",
-            styles: { fontStyle: "bold" as const, fillColor: "#F2F2F2" },
+            styles: { fontStyle: "bold" as const, fillColor: "#f5f9fc" },
           },
           {
             content: "R$ 7.887,03",
-            styles: { fontStyle: "bold" as const, fillColor: "#F2F2F2" },
+            styles: { fontStyle: "bold" as const, fillColor: "#f5f9fc" },
           },
         ],
         [
@@ -261,17 +312,18 @@ export class RelatorioEconomiaPdfService {
             styles: {
               halign: "left" as const,
               fontStyle: "bold" as const,
-              fillColor: "#F2F2F2",
+              fillColor: "#f5f9fc",
             },
             colSpan: 2,
           },
           {
             content: "R$ 1.262.582,18",
-            styles: { fontStyle: "bold" as const, fillColor: "#F2F2F2" },
+            styles: { fontStyle: "bold" as const, fillColor: "#f5f9fc" },
           },
         ],
       ],
       inicioMarginTop: secaoComparativoMarginTop,
+      ...estilosTabela,
     };
 
     this.pdfConfig.criarTabela(doc, dadosComparativoTabela);
@@ -299,6 +351,7 @@ export class RelatorioEconomiaPdfService {
         ],
       ],
       inicioMarginTop: margintTopTabelaDinamico + margins.sectionMarginTop,
+      ...estilosTabela,
     });
 
     return doc;
@@ -328,7 +381,7 @@ export class RelatorioEconomiaPdfService {
         mesReferencia: "",
         numerorDiasMes: 0,
         periodoHoroSazonal: "",
-        tarifaFornecimento: ""
+        tarifaFornecimento: "",
       },
       grupos: [],
       comparativo: {
