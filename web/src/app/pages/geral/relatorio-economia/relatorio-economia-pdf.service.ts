@@ -77,11 +77,71 @@ export class RelatorioEconomiaPdfService {
 
     const imageBottomY = logoMarginTop + logoHeight + 10;
 
+    // Função global para desenhar bordas personalizadas em todas as tabelas
+    const desenharBordasPersonalizadas = {
+      // Função para evitar o desenho automático de bordas
+      willDrawCell: function (data) {
+        // Desativa qualquer desenho automático de bordas
+        if (data.cell.styles) {
+          data.cell.styles.lineWidth = 0;
+        }
+        return true;
+      },
+
+      // Função para desenhar manualmente as bordas horizontais e a borda externa
+      didDrawCell: function (data) {
+        const doc = data.doc;
+        const cell = data.cell;
+        const cursor = data.cursor;
+
+        // Configuração consistente de linha
+        doc.setDrawColor("#DDDDDD");
+        doc.setLineWidth(0.5);
+
+        // Identifica posição da célula na tabela
+        const isFirstRow = data.row.index === 0;
+        const isLastRow = data.row.index === data.table.body.length - 1;
+        const isFirstCol = data.column.index === 0;
+        const isLastCol = data.column.index === data.table.columns.length - 1;
+        const isNewPage =
+          data.row.raw?.pageNumber > 1 ||
+          data.row.raw?.startPageNumber < data.row.raw?.pageNumber;
+        const isFirstRowOnPage = data.cell.raw?.y === data.table.startPageY;
+
+        // Desenha borda inferior (para todas as células)
+        doc.line(
+          cursor.x,
+          cursor.y + cell.height,
+          cursor.x + cell.width,
+          cursor.y + cell.height
+        );
+
+        // Desenha borda superior para primeira linha e qualquer linha em nova página
+        if (isFirstRow || isFirstRowOnPage) {
+          doc.line(cursor.x, cursor.y, cursor.x + cell.width, cursor.y);
+        }
+
+        // Desenha borda esquerda (apenas primeira coluna)
+        if (isFirstCol) {
+          doc.line(cursor.x, cursor.y, cursor.x, cursor.y + cell.height);
+        }
+
+        // Desenha borda direita (apenas última coluna)
+        if (isLastCol) {
+          doc.line(
+            cursor.x + cell.width,
+            cursor.y,
+            cursor.x + cell.width,
+            cursor.y + cell.height
+          );
+        }
+      },
+    };
+
+    // Estilos básicos para tabelas (sem definições de borda)
     const estilosTabela = {
       headStyles: {
         fontSize: 7,
-        lineWidth: 0.5,
-        lineColor: "#DDDDDD",
         fillColor: "#f5f9fc",
         textColor: "#4285F4",
         fontStyle: "bold" as const,
@@ -91,8 +151,6 @@ export class RelatorioEconomiaPdfService {
       },
       bodyStyles: {
         fontSize: 7,
-        lineWidth: 0.5,
-        lineColor: "#DDDDDD",
         textColor: "#333333",
         fontStyle: "normal" as const,
         halign: "center" as const,
@@ -107,6 +165,8 @@ export class RelatorioEconomiaPdfService {
         textColor: "#000000",
         fontStyle: "bold" as const,
       },
+      // Aplicar as funções de desenho personalizado
+      ...desenharBordasPersonalizadas,
     };
 
     /* SEÇÃO DADOS EMPRESA ---------------------------------------------------------------------------- */
@@ -117,16 +177,31 @@ export class RelatorioEconomiaPdfService {
 
     /* EMPRESA TABELA 1 */
     const dadosEmpresaTabela1: CustomUserOptions = {
-      colunas: [["Unidade", "Submercado", "Conexão", "Concessão"]],
+      colunas: [
+        [
+          { content: "Unidade", styles: { halign: "left" as const } },
+          { content: "Submercado", styles: { halign: "left" as const } },
+          { content: "Conexão", styles: { halign: "left" as const } },
+          { content: "Concessão", styles: { halign: "left" as const } },
+        ],
+      ],
       linhas: [
         [
-          { content: cabecalho.unidade },
-          { content: cabecalho.subMercado },
-          { content: cabecalho.conexao },
-          { content: cabecalho.concessao },
+          { content: cabecalho.unidade, styles: { halign: "left" as const } },
+          {
+            content: cabecalho.subMercado,
+            styles: { halign: "left" as const },
+          },
+          { content: cabecalho.conexao, styles: { halign: "left" as const } },
+          { content: cabecalho.concessao, styles: { halign: "left" as const } },
         ],
       ],
       inicioMarginTop: secaoEmpresaMarginTop,
+      theme: "plain",
+      styles: {
+        lineColor: "#DDDDDD",
+        lineWidth: 0.5,
+      },
       ...estilosTabela,
     };
 
@@ -135,17 +210,48 @@ export class RelatorioEconomiaPdfService {
 
     /* EMPRESA TABELA 2 */
     const dadosEmpresaTabela2: CustomUserOptions = {
-      colunas: [["CNPJ", "Inscrição Estadual", "Endereço", "Município", "UF"]],
+      colunas: [
+        [
+          { content: "CNPJ", styles: { halign: "left" as const } },
+          {
+            content: "Inscrição Estadual",
+            styles: { halign: "left" as const },
+          },
+          { content: "Endereço", styles: { halign: "left" as const } },
+          { content: "Município", styles: { halign: "left" as const } },
+          { content: "UF", styles: { halign: "left" as const } },
+        ],
+      ],
       linhas: [
         [
-          { content: relatorio.cabecalho.cnpj },
-          { content: relatorio.cabecalho.inscricaoEstadual },
-          { content: relatorio.cabecalho.endereco },
-          { content: relatorio.cabecalho.municipio },
-          { content: relatorio.cabecalho.uf },
+          {
+            content: relatorio.cabecalho.cnpj,
+            styles: { halign: "left" as const },
+          },
+          {
+            content: relatorio.cabecalho.inscricaoEstadual,
+            styles: { halign: "left" as const },
+          },
+          {
+            content: relatorio.cabecalho.endereco,
+            styles: { halign: "left" as const },
+          },
+          {
+            content: relatorio.cabecalho.municipio,
+            styles: { halign: "left" as const },
+          },
+          {
+            content: relatorio.cabecalho.uf,
+            styles: { halign: "left" as const },
+          },
         ],
       ],
       inicioMarginTop: margintTopTabelaDinamico + margins.headerMarginTop,
+      theme: "plain",
+      styles: {
+        lineColor: "#DDDDDD",
+        lineWidth: 0.5,
+      },
       ...estilosTabela,
     };
 
@@ -251,6 +357,11 @@ export class RelatorioEconomiaPdfService {
           ],
           linhas: linhas,
           inicioMarginTop: secaoGrupoMarginTop,
+          theme: "plain",
+          styles: {
+            lineColor: "#DDDDDD",
+            lineWidth: 0.5,
+          },
           ...estilosTabela,
         };
 
@@ -276,7 +387,10 @@ export class RelatorioEconomiaPdfService {
             content: "Diferença cativo versus livre",
             styles: { halign: "left" as const },
           },
-          { content: "Economia = 16,00 %" },
+          {
+            content: "Economia = 16,00 %",
+            styles: { halign: "left" as const },
+          },
           { content: "R$ 11.696,70" },
         ],
         [
@@ -284,8 +398,13 @@ export class RelatorioEconomiaPdfService {
             content: "Valor devido a Coenel-DE",
             styles: { halign: "left" as const },
           },
-          { content: "2 Sal. Mín. + 10% economia" },
-          { content: "Venc.: 16/01/2024 10% " },
+          {
+            content: "2 Sal. Mín. + 10% economia",
+            styles: { halign: "left" as const },
+          },
+          {
+            content: "Venc.: 16/01/2024 10% ",
+          },
           { content: "R$ 11.696,70" },
         ],
         [
@@ -299,7 +418,11 @@ export class RelatorioEconomiaPdfService {
           },
           {
             content: "10,79 %",
-            styles: { fontStyle: "bold" as const, fillColor: "#f5f9fc" },
+            styles: {
+              fontStyle: "bold" as const,
+              fillColor: "#f5f9fc",
+              halign: "left",
+            },
           },
           {
             content: "R$ 7.887,03",
@@ -323,6 +446,11 @@ export class RelatorioEconomiaPdfService {
         ],
       ],
       inicioMarginTop: secaoComparativoMarginTop,
+      theme: "plain",
+      styles: {
+        lineColor: "#DDDDDD",
+        lineWidth: 0.5,
+      },
       ...estilosTabela,
     };
 
@@ -351,6 +479,11 @@ export class RelatorioEconomiaPdfService {
         ],
       ],
       inicioMarginTop: margintTopTabelaDinamico + margins.sectionMarginTop,
+      theme: "plain",
+      styles: {
+        lineColor: "#DDDDDD",
+        lineWidth: 0.5,
+      },
       ...estilosTabela,
     });
 
