@@ -41,19 +41,14 @@ export class RelatorioEconomiaPdfService {
       maximumFractionDigits: 3,
     });
 
-    // const formatarValorComUnidade = (
-    //   valor: number | undefined,
-    //   unidade: string
-    // ): string => {
-    //   return valor === undefined || valor === null || valor === 0
-    //     ? "-"
-    //     : `${formatadorNumero.format(valor)} ${unidade}`;
-    // };
-
     const formatarTotal = (valor: number | undefined): string => {
-      return valor === undefined || valor === null || valor === 0
-        ? "-"
-        : formatadorMoeda.format(valor);
+      if (valor === undefined || valor === null) return "-";
+
+      if (valor < 0) {
+        return `(${formatadorMoeda.format(Math.abs(valor))})`;
+      }
+
+      return formatadorMoeda.format(valor);
     };
 
     const formatarValorComUnidade = (tipo: number, valor: number) => {
@@ -313,6 +308,7 @@ export class RelatorioEconomiaPdfService {
       }
 
       const valorFormatado = formatarTotal(lancamento.total);
+      const valorNegativo = lancamento.total < 0;
 
       if (lancamento.observacao) {
         return [
@@ -349,6 +345,7 @@ export class RelatorioEconomiaPdfService {
               fontStyle: "bold",
               fillColor: "#f5f9fc",
               halign: "center",
+              textColor: valorNegativo ? "#ff0000" : "#333333",
             },
           },
         ];
@@ -368,7 +365,10 @@ export class RelatorioEconomiaPdfService {
           },
           {
             content: valorFormatado,
-            styles: { halign: "center" },
+            styles: {
+              halign: "center",
+              textColor: valorNegativo ? "#ff0000" : "#333333",
+            },
           },
         ];
       }
@@ -394,7 +394,10 @@ export class RelatorioEconomiaPdfService {
         },
         {
           content: valorFormatado,
-          styles: { halign: "center" },
+          styles: {
+            halign: "center",
+            textColor: valorNegativo ? "#ff0000" : "#333333",
+          },
         },
       ];
     };
