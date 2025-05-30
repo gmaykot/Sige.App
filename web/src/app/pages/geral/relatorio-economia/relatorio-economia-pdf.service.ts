@@ -92,38 +92,22 @@ export class RelatorioEconomiaPdfService {
 
     const imageBottomY = logoMarginTop + logoHeight + 10;
 
-    // Função global para desenhar bordas personalizadas em todas as tabelas
     const desenharBordasPersonalizadas = {
-      // Função para evitar o desenho automático de bordas
       willDrawCell: function (data) {
-        // Desativa qualquer desenho automático de bordas
         if (data.cell.styles) {
           data.cell.styles.lineWidth = 0;
         }
         return true;
       },
 
-      // Função para desenhar manualmente as bordas horizontais e a borda externa
       didDrawCell: function (data) {
         const doc = data.doc;
         const cell = data.cell;
         const cursor = data.cursor;
 
-        // Configuração consistente de linha
         doc.setDrawColor("#DDDDDD");
         doc.setLineWidth(0.5);
 
-        // Identifica posição da célula na tabela
-        const isFirstRow = data.row.index === 0;
-        const isLastRow = data.row.index === data.table.body.length - 1;
-        const isFirstCol = data.column.index === 0;
-        const isLastCol = data.column.index === data.table.columns.length - 1;
-        const isNewPage =
-          data.row.raw?.pageNumber > 1 ||
-          data.row.raw?.startPageNumber < data.row.raw?.pageNumber;
-        const isFirstRowOnPage = data.cell.raw?.y === data.table.startPageY;
-
-        // Desenha borda inferior (para todas as células)
         doc.line(
           cursor.x,
           cursor.y + cell.height,
@@ -131,24 +115,33 @@ export class RelatorioEconomiaPdfService {
           cursor.y + cell.height
         );
 
-        // Desenha borda superior para primeira linha e qualquer linha em nova página
+        const isFirstRow = data.row.index === 0;
+        const isFirstRowOnPage = data.cell.raw?.y === data.table.startPageY;
         if (isFirstRow || isFirstRowOnPage) {
           doc.line(cursor.x, cursor.y, cursor.x + cell.width, cursor.y);
         }
 
-        // Desenha borda esquerda (apenas primeira coluna)
+        const isFirstCol = data.column.index === 0;
+
+        const isLastVisualCol =
+          data.column.index + (cell.colSpan ?? 1) === data.table.columns.length;
+
         if (isFirstCol) {
           doc.line(cursor.x, cursor.y, cursor.x, cursor.y + cell.height);
         }
 
-        // Desenha borda direita (apenas última coluna)
-        if (isLastCol) {
-          doc.line(
-            cursor.x + cell.width,
-            cursor.y,
-            cursor.x + cell.width,
-            cursor.y + cell.height
-          );
+        if (isLastVisualCol) {
+          const rightX = cursor.x + cell.width;
+          doc.line(rightX, cursor.y, rightX, cursor.y + cell.height);
+        }
+
+        if (
+          data.section === "head" &&
+          cell.colSpan &&
+          cell.colSpan === data.table.columns.length
+        ) {
+          const rightX = cursor.x + cell.width;
+          doc.line(rightX, cursor.y, rightX, cursor.y + cell.height);
         }
       },
     };
