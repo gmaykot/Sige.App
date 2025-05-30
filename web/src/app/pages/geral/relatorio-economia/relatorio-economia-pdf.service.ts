@@ -7,6 +7,7 @@ import {
   PdfConfigService,
 } from "../../../@core/services/util/pdf-config.service";
 import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/relatorio-final";
+import { ILancamentoRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/lancamento-relatorio-final";
 
 @Injectable({ providedIn: "root" })
 export class RelatorioEconomiaPdfService {
@@ -37,16 +38,35 @@ export class RelatorioEconomiaPdfService {
     const formatadorNumero = new Intl.NumberFormat("pt-BR", {
       style: "decimal",
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      maximumFractionDigits: 3,
     });
 
-    const formatarValorComUnidade = (
-      valor: number | undefined,
-      unidade: string
-    ): string => {
+    // const formatarValorComUnidade = (
+    //   valor: number | undefined,
+    //   unidade: string
+    // ): string => {
+    //   return valor === undefined || valor === null || valor === 0
+    //     ? "-"
+    //     : `${formatadorNumero.format(valor)} ${unidade}`;
+    // };
+
+    const formatarTotal = (valor: number | undefined): string => {
       return valor === undefined || valor === null || valor === 0
         ? "-"
-        : `${formatadorNumero.format(valor)} ${unidade}`;
+        : formatadorMoeda.format(valor);
+    };
+
+    const formatarValorComUnidade = (tipo: number, valor: number) => {
+      if (valor === undefined || valor === null || valor === 0) return "-";
+
+      const tipos = {
+        0: "MWh",
+        1: "kW",
+        2: "kWh",
+        3: "%",
+      };
+
+      return `${formatadorNumero.format(valor)} ${tipos[tipo]}`;
     };
 
     const criarTituloSecao = (texto: string, marginTop: number) => {
@@ -259,71 +279,147 @@ export class RelatorioEconomiaPdfService {
     margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
 
     /* SEÇÃO MERCADO CATIVO E LIVE ----------------------------------------------------------------------------- */
-    const criarLinhaLancamento = (lancamento: any) => {
-      const valorFormatado = formatadorMoeda.format(lancamento.total ?? 0);
+    const criarLinhaLancamento = (lancamento: ILancamentoRelatorioFinal) => {
+      const temDescricaoSignificativa =
+        lancamento.descricao && lancamento.descricao.trim() !== "";
+      const temObservacaoSignificativa =
+        lancamento.observacao && lancamento.observacao.trim() !== "";
+      const temValorSignificativo =
+        (lancamento.montante && lancamento.montante !== 0) ||
+        (lancamento.total && lancamento.total !== 0);
 
-      if (!lancamento.observacao) {
-        if (lancamento.totalizador) {
-          return [
-            {
-              content: lancamento.descricao,
-              styles: {
-                halign: "left",
-                fontStyle: "bold",
-                fillColor: "#f5f9fc",
-              },
-              colSpan: 3,
-            },
-            {
-              content: valorFormatado,
-              styles: { fontStyle: "bold", fillColor: "#f5f9fc" },
-            },
-          ];
-        } else if (lancamento.subTotalizador) {
-          return [
-            {
-              content: lancamento.descricao,
-              styles: {
-                halign: "left",
-                fontStyle: lancamento.descricao.startsWith("Subvenção")
-                  ? "italic"
-                  : "normal",
-              },
-              colSpan: 3,
-            },
-            { content: valorFormatado },
-          ];
-        } else {
-          return [
-            { content: lancamento.descricao, styles: { halign: "left" } },
-            formatarValorComUnidade(lancamento.montante, "kW"),
-            formatarValorComUnidade(lancamento.tarifa, "kWh"),
-            valorFormatado,
-          ];
-        }
-      } else {
+      const testeTarifa = lancamento.tarifa || lancamento.tarifa !== 0;
+
+      const isTotalizador = lancamento.totalizador || lancamento.subTotalizador;
+      if (
+        !isTotalizador &&
+        !temValorSignificativo &&
+        !temObservacaoSignificativa &&
+        testeTarifa
+      ) {
+        return null;
+      }
+
+      if (
+        !isTotalizador &&
+        !temValorSignificativo &&
+        !temObservacaoSignificativa
+      ) {
+        return null;
+      }
+
+      if (isTotalizador && !temDescricaoSignificativa) {
+        return null;
+      }
+
+      const valorFormatado = formatarTotal(lancamento.total);
+
+      if (lancamento.observacao) {
         return [
-          { content: lancamento.descricao, styles: { halign: "left" } },
-          "",
-          { content: lancamento.observacao, colSpan: 2 },
+          {
+            content: lancamento.descricao,
+            styles: { halign: "left" },
+          },
+          {
+            content: "",
+            styles: { halign: "center" },
+          },
+          {
+            content: lancamento.observacao,
+            colsPan: 2,
+            styles: { halign: "left" },
+          },
         ];
       }
+
+      if (lancamento.totalizador) {
+        return [
+          {
+            content: lancamento.descricao,
+            styles: {
+              halign: "left",
+              fontStyle: "bold",
+              fillColor: "#f5f9fc",
+            },
+            colSpan: 3,
+          },
+          {
+            content: formatarTotal(lancamento.total),
+            styles: {
+              fontStyle: "bold",
+              fillColor: "#f5f9fc",
+              halign: "center",
+            },
+          },
+        ];
+      }
+
+      if (lancamento.subTotalizador) {
+        return [
+          {
+            content: lancamento.descricao,
+            styles: {
+              halign: "left",
+              fontStyle: lancamento.descricao.startsWith("Subvenção")
+                ? "italic"
+                : "normal",
+            },
+            colSpan: 3,
+          },
+          {
+            content: valorFormatado,
+            styles: { halign: "center" },
+          },
+        ];
+      }
+
+      return [
+        {
+          content: lancamento.descricao,
+          styles: { halign: "left" },
+        },
+        {
+          content: formatarValorComUnidade(
+            +lancamento.tipoMontante,
+            lancamento.montante
+          ),
+          styles: { halign: "center" },
+        },
+        {
+          content: formatarValorComUnidade(
+            +lancamento.tipoLancamento,
+            lancamento.tarifa
+          ),
+          styles: { halign: "center" },
+        },
+        {
+          content: valorFormatado,
+          styles: { halign: "center" },
+        },
+      ];
     };
 
-    if (relatorio.grupos && relatorio.grupos.length > 0) {
+    const processarGruposRelatorio = (): number => {
+      if (!relatorio.grupos?.length) {
+        return margintTopTabelaDinamico;
+      }
+
       for (const grupo of relatorio.grupos) {
         const secaoGrupoMarginTop = criarTituloSecao(
           grupo.titulo,
           margintTopTabelaDinamico + margins.sectionMarginTop
         );
 
-        const linhas: any[] = [];
+        const linhas: any[][] = [];
 
-        if (grupo.subGrupos && grupo.subGrupos.length > 0) {
+        if (grupo.subGrupos?.length) {
           grupo.subGrupos.forEach((subGrupo) => {
-            if (subGrupo.lancamentos && subGrupo.lancamentos.length > 0) {
+            if (subGrupo.lancamentos?.length) {
               subGrupo.lancamentos.forEach((lancamento) => {
-                linhas.push(criarLinhaLancamento(lancamento));
+                const linha = criarLinhaLancamento(lancamento);
+                if (linha !== null) {
+                  linhas.push(linha);
+                }
               });
             }
 
@@ -350,9 +446,12 @@ export class RelatorioEconomiaPdfService {
           colunas: [
             [
               { content: "", styles: { cellWidth: 180 } },
-              { content: grupo.colunaQuantidade, styles: { cellWidth: 90 } },
-              { content: grupo.colunaValor },
-              { content: grupo.colunaTotal },
+              {
+                content: grupo.colunaQuantidade || "",
+                styles: { cellWidth: 90 },
+              },
+              { content: grupo.colunaValor || "" },
+              { content: grupo.colunaTotal || "" },
             ],
           ],
           linhas: linhas,
@@ -366,9 +465,18 @@ export class RelatorioEconomiaPdfService {
         };
 
         this.pdfConfig.criarTabela(doc, dadosTabela);
-        margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
+
+        const autoTableDoc = doc as unknown as {
+          lastAutoTable?: { finalY: number };
+        };
+        margintTopTabelaDinamico =
+          autoTableDoc.lastAutoTable?.finalY || margintTopTabelaDinamico;
       }
-    }
+
+      return margintTopTabelaDinamico;
+    };
+
+    margintTopTabelaDinamico = processarGruposRelatorio();
 
     /* SEÇÃO COMPARATIVO CATIVO X LIVRE --------------------------------------------------------------- */
     const secaoComparativoMarginTop = criarTituloSecao(
