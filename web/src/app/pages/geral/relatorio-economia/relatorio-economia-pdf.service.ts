@@ -42,7 +42,7 @@ export class RelatorioEconomiaPdfService {
     });
 
     const formatarTotal = (valor: number | undefined): string => {
-      if (valor === undefined || valor === null) return "-";
+      if (valor === undefined || valor === null || valor === 0) return "-";
 
       if (valor < 0) {
         return `(${formatadorMoeda.format(Math.abs(valor))})`;
@@ -66,6 +66,7 @@ export class RelatorioEconomiaPdfService {
 
     const criarTituloSecao = (texto: string, marginTop: number) => {
       return this.pdfConfig.adicionarTextoMultilinha(doc, [texto], {
+        fontSize: 7,
         fontStyle: "bold",
         textColor: "#000",
         inicioMarginTop: marginTop,
@@ -149,16 +150,16 @@ export class RelatorioEconomiaPdfService {
     // Estilos básicos para tabelas (sem definições de borda)
     const estilosTabela = {
       headStyles: {
-        fontSize: 7,
+        fontSize: 6,
         fillColor: "#f5f9fc",
         textColor: "#4285F4",
         fontStyle: "bold" as const,
         halign: "center" as const,
         valign: "middle" as const,
-        cellPadding: 4,
+        cellPadding: 3,
       },
       bodyStyles: {
-        fontSize: 7,
+        fontSize: 6,
         textColor: "#333333",
         fontStyle: "normal" as const,
         halign: "center" as const,
@@ -476,7 +477,7 @@ export class RelatorioEconomiaPdfService {
 
     /* SEÇÃO COMPARATIVO CATIVO X LIVRE --------------------------------------------------------------- */
     const secaoComparativoMarginTop = criarTituloSecao(
-      "COMPARAÇÃO MERCADO CATIVO X LIVRE",
+      "ECONOMIA MERCADO LIVRE VS. MERCADO CATIVO",
       margintTopTabelaDinamico + margins.sectionMarginTop
     );
 
@@ -492,10 +493,10 @@ export class RelatorioEconomiaPdfService {
             styles: { halign: "left" as const },
           },
           {
-            content: "Economia = 16,00 %",
+            content: "Economia = 16 %",
             styles: { halign: "left" as const },
           },
-          { content: "R$ 11.696,70" },
+          { content: "Total Economizado = R$ 16.403,12" },
         ],
         [
           {
@@ -509,7 +510,6 @@ export class RelatorioEconomiaPdfService {
           {
             content: "Venc.: 16/01/2024 10% ",
           },
-          { content: "R$ 11.696,70" },
         ],
         [
           {
@@ -529,7 +529,7 @@ export class RelatorioEconomiaPdfService {
             },
           },
           {
-            content: "R$ 7.887,03",
+            content: "R$ 7.823,12",
             styles: { fontStyle: "bold" as const, fillColor: "#f5f9fc" },
           },
         ],
