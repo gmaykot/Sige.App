@@ -256,8 +256,7 @@ export class FaturaEnergiaComponent implements OnInit {
   }
 
   showInput(){
-    return true;
-    //return this.getControlValues("segmento") != "0";
+    return this.getControlValues("segmento") != "0";
   }
 
   async onSearch($event: any) {
@@ -368,5 +367,19 @@ export class FaturaEnergiaComponent implements OnInit {
     return this.lancamentos
       .filter(lanc => lanc.contabilizaFatura == contabilizaFatura && lanc.tipoCCEE == tipoCCEE)
       .reduce((soma, lanc) => soma + (lanc.valor || 0)*(lanc.tipo == 0 ? -1 : 1), 0);
+  }
+
+  filtrarLancamentos(contabilizaFatura: boolean, tipoCCEE: boolean) {
+    return this.lancamentos.filter(lanc =>
+      lanc.contabilizaFatura === contabilizaFatura &&
+      lanc.tipoCCEE === tipoCCEE
+    );
+  }
+  
+  onValueChange(value: string, controlName: string) {
+    console.log('Input changed:', value);
+    this.control.patchValue({
+      [controlName]: value
+    });
   }
 }
