@@ -36,7 +36,8 @@
                         <div class="col-sm-2">
                             <div class="form-group">
                             <label for="inputEmail" class="label">Último Reajuste*</label>
-                            <app-date-input formControlName="dataUltimoReajuste" full="true"></app-date-input>
+                            <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
+                            [dropSpecialCharacters]="false" formControlName="dataUltimoReajuste">
                             </div>
                         </div>
                         

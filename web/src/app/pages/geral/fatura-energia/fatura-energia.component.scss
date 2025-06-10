@@ -10,7 +10,7 @@
 }
 
 
-.fatura-tabela {
+  .fatura-tabela {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
@@ -19,6 +19,14 @@
     font-size: 14px;
     color: #333;
   
+    table, th {
+      font-family: var(--smart-table-header-font-family);
+      font-size: var(--smart-table-header-font-size);
+      font-weight: var(--smart-table-header-font-weight);
+      line-height: var(--smart-table-header-line-height);
+      color: var(--smart-table-header-fg);
+  }
+
     th, td {
       padding: 4px 10px;      
       border-bottom: 1px solid #e0e0e0;
@@ -26,14 +34,13 @@
     }
   
     th {
-      background-color: #f5f9fc;
-      font-weight: 600;
-      color: #1a73e8;
+      color: #1e6bb8;
       border-bottom: 2px solid #d0e2ff;
+      font-size: var(--smart-table-header-font-size);
     }
   
     tr:nth-child(even) {
-      background-color: #f9fbfd;
+      background-color: var(--smart-table-bg-even);
     }
   
     tr:hover {
