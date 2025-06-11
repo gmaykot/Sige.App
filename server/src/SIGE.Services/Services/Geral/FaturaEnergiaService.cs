@@ -81,7 +81,7 @@ namespace SIGE.Services.Services.Geral
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe fatura ativo.");
         }
 
-        public async Task<Response> ObterFaturas(DateOnly? mesReferencia)
+        public async Task<Response> ObterFaturas(DateOnly? mesReferencia, Guid? pontoMedicaoId)
         {
             if (mesReferencia == null)
                 mesReferencia = DateOnly.FromDateTime(DateTime.Now).GetPrimeiroDiaMes();
@@ -90,6 +90,9 @@ namespace SIGE.Services.Services.Geral
             var res = await _appDbContext.FaturasEnergia.Include(f => f.Concessionaria).Include(f => f.PontoMedicao).Include(f => f.LancamentosAdicionais).Where(f => f.MesReferencia == mesReferencia.Value.GetPrimeiroDiaMes()).ToListAsync();
             if (res == null || res.Count == 0)
                 res = await _appDbContext.FaturasEnergia.Include(f => f.Concessionaria).Include(f => f.PontoMedicao).Include(f => f.LancamentosAdicionais).Where(f => f.MesReferencia == mesReferencia.Value.GetPrimeiroDiaMes().AddMonths(-1)).ToListAsync();
+
+            if (pontoMedicaoId != null)
+                res = res.Where(f => f.PontoMedicaoId == pontoMedicaoId).ToList();
 
             if (res != null && res.Count != 0)
                 return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturaEnergiaDto>>(res.OrderByDescending(f => f.MesReferencia).ThenBy(f => f.PontoMedicao.Nome)));

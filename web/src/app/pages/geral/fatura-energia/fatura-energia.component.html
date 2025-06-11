@@ -232,8 +232,8 @@
                                     <div class="form-group">
                                         <label class="label">Tipo*</label>
                                         <nb-select fullWidth placeholder="Selecione" formControlName="tipo">
-                                            <nb-option value="0">Débito</nb-option>
-                                            <nb-option value="1">Crédito</nb-option>
+                                            <nb-option [value]="0">Débito</nb-option>
+                                            <nb-option [value]="1">Crédito</nb-option>
                                         </nb-select>
                                     </div>
                                 </div>  
@@ -255,15 +255,17 @@
                                         </nb-select>
                                     </div>
                                 </div>  
-                                <div class="col-md-2">
+                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <button nbButton style="margin-top: 1.7rem;" status="warning" (click)="adicionarLancamento()">Adicionar</button>
+                                        <button [disabled]="!lancamentoControl.valid" nbButton status="warning" (click)="adicionarLancamento()">{{showLancamento() ? 'Alterar' : 'Adicionar'}}</button>
+                                        <button *ngIf="showLancamento()" nbButton style="margin-left: 0.5rem;" status="danger" (click)="excluirLancamento()">Excluir</button>
+                                        <button *ngIf="showLancamento()" nbButton style="margin-left: 0.5rem;" (click)="resetLancamento()">Limpar</button>                        
                                     </div>
                                 </div>                            
                             </div>
-                            <div class="row">
+                            <div class="row" style="margin-top: 1rem;">
                                 <div class="col-md-12">
-                                    <ng2-smart-table [settings]="settingsLancamentos" [source]="source" (deleteConfirm)="excluirLancamento($event)">
+                                    <ng2-smart-table [settings]="settingsLancamentos" [source]="source" (deleteConfirm)="loadLancamento($event)">
                                     </ng2-smart-table>
                                 </div>
                             </div>

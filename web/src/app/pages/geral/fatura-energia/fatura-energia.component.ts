@@ -39,17 +39,18 @@ export class FaturaEnergiaComponent implements OnInit {
   public selected: boolean = false;
   public loading: boolean = false;
   public mesReferencia: any;
+  public lancamento: any = null;
 
   public control = this.novoFormControl(); 
 
   public lancamentoControl = this.formBuilder.group({
     id: [null],
     faturaEnergiaId: [null],
-    descricao: [null],
-    valor: [null],
-    tipo: [null],
-    contabilizaFatura: [true],
-    tipoCCEE: [false],
+    descricao: [null, Validators.required],
+    valor: [null, Validators.required],
+    tipo: [null, Validators.required],
+    contabilizaFatura: [true, Validators.required],
+    tipoCCEE: [false, Validators.required],
   });
 
   constructor(
@@ -153,18 +154,34 @@ export class FaturaEnergiaComponent implements OnInit {
         })
         .finally(() => {
           this.loading = false;
+          this.onNext(selectedItem.id);
         });
     }
   }
 
-  excluirLancamento(event) {
+  loadLancamento(event) {
+    this.lancamentoControl.patchValue(event.data);
+    this.lancamento = event.data;
+  }
+
+  showLancamento(){
+    return this.lancamentoControl.get("id")?.value != null;
+  }  
+
+  resetLancamento(){
+    this.lancamentoControl.reset();
+    this.lancamento = null;
+  }  
+
+  excluirLancamento() {
     const lancamentoIndex = this.lancamentos.findIndex(
-      (l) => l.id === event.data?.id
+      (l) => l.id === this.lancamento?.id
     );
     if (lancamentoIndex !== -1) {
       this.lancamentos.splice(lancamentoIndex, 1);
     }
     this.source.load(this.lancamentos);
+    this.resetLancamento();
   }
 
   async emitirFatura() {
@@ -179,6 +196,40 @@ export class FaturaEnergiaComponent implements OnInit {
     }).catch((error) => {
       this.alertService.showError(error.message, 20000);
     });
+  }
+
+  async selecionarFatura($event: any) {    
+    if ($event.data.validado == true)
+      this.stepperIndex = 3;
+
+    this.selected = !this.selected;
+    this.editLabel = $event.data.pontoMedicaoDesc;
+    this.lancamentos = $event.data.lancamentosAdicionais;
+    this.populateForm($event.data);
+  }
+
+  async onNext(pontoMedicaoId?: any) {
+    this.loading = true;
+    const [month, year] = this.getControlValues("mesReferencia").split('/');
+    const mesReferencia = new Date(+year, +month - 1, 1);
+    await this.faturaEnergiaService
+      .obterFaturas(mesReferencia ? this.datePipe.transform(mesReferencia, 'yyyy-MM-dd') : this.mesReferencia, pontoMedicaoId)
+      .then((response: IResponseInterface<IFaturaEnergia[]>) => {
+        if (response.success) {
+          this.alertService.showWarning("Fatura já cadastrada no sistema.", 20000);
+          if (response.data[0].validado == true)
+            this.stepperIndex = 3;
+
+          this.selected = true;
+          this.editLabel = response.data[0].pontoMedicaoDesc;
+          this.lancamentos = response.data[0].lancamentosAdicionais;
+          this.populateForm(response.data[0]);
+        } else {
+        }
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 
   async onDelete() {
@@ -220,8 +271,9 @@ export class FaturaEnergiaComponent implements OnInit {
     this.lancamentoControl.value.id = uuid.v4();
     this.lancamentoControl.value.faturaEnergiaId = this.getControlValues("id");
     this.lancamentos.push(this.lancamentoControl.value);
-    this.source.load(this.lancamentos);
+    this.source.load(this.lancamentos.sort((a, b) => a.descricao.localeCompare(b.descricao)));
     this.lancamentoControl.reset();
+    this.excluirLancamento();
   }
 
   getControlValues(controlName: string) {
@@ -231,16 +283,6 @@ export class FaturaEnergiaComponent implements OnInit {
   getPontoMedicaoDesc(){
     var pontoMedicao = this.pontosMedicao.find(p => p.id == this.getControlValues("pontoMedicaoId"));
     return pontoMedicao ? " - " + pontoMedicao.descricao : '';
-  }
-
-  async selecionarFatura($event: any) {    
-    if ($event.data.validado == true)
-      this.stepperIndex = 3;
-
-    this.selected = !this.selected;
-    this.editLabel = $event.data.pontoMedicaoDesc;
-    this.lancamentos = $event.data.lancamentosAdicionais;
-    this.populateForm($event.data);
   }
 
   habilitaFatura() {
@@ -276,11 +318,11 @@ export class FaturaEnergiaComponent implements OnInit {
   }
 
   async onCancel() {
-    this.selected = false;
     this.lancamentos = [];
     this.pontoMedicao = null;
     this.control = this.novoFormControl();
     this.editLabel = null;
+    this.selected = false;
     await this.loadFaturas();
   }
 
@@ -307,9 +349,7 @@ export class FaturaEnergiaComponent implements OnInit {
     if (dto == null) {
       this.control = this.novoFormControl();
     } else {
-      // Mapeando as propriedades e tratando as datas
       const dtoWithParsedDates = Object.keys(this.control.controls).reduce((acc, key) => {
-        // Verificando se o campo é uma data e fazendo o parse        
         if (typeof dto[key] === 'string' && !isNaN(Date.parse(dto[key]))) {          
           acc[key] = this.datePipe.transform(dto[key], key === "mesReferencia" ? "MM/yyyy" : "dd/MM/yyyy");
         } else {
@@ -324,7 +364,7 @@ export class FaturaEnergiaComponent implements OnInit {
         { id: dto.concessionariaId, descricao: dto.concessionariaDesc },
       ];
   
-      this.source.load(dto.lancamentosAdicionais);
+      this.source.load(dto.lancamentosAdicionais.sort((a, b) => a.descricao.localeCompare(b.descricao)));
   
       this.loading = false;
     }
@@ -344,10 +384,10 @@ export class FaturaEnergiaComponent implements OnInit {
       const value = formValue[key];      
       if (key === "mesReferencia") {
         const [month, year] = value.split('/');
-        acc[key] = `${year}-${month}-01`; // formato ISO yyyy-MM-dd
+        acc[key] = `${year}-${month}-01`;
       } else if (key === "dataVencimento") {
         const [day, month, year] = value.split('/');
-        acc[key] = `${year}-${month}-${day}`; // também no formato yyyy-MM-dd
+        acc[key] = `${year}-${month}-${day}`;
       } else {
         acc[key] = value;
       }
@@ -377,7 +417,6 @@ export class FaturaEnergiaComponent implements OnInit {
   }
   
   onValueChange(value: string, controlName: string) {
-    console.log('Input changed:', value);
     this.control.patchValue({
       [controlName]: value
     });

@@ -46,7 +46,7 @@ export const settingsFatura = {
 
 export const settingsLancamentos = {
   delete: {
-    deleteButtonContent: '<i class="nb-trash"></i>',
+    deleteButtonContent: '<i class="nb-edit"></i>',
     confirmDelete: true,
   },
   actions: {
@@ -66,7 +66,7 @@ export const settingsLancamentos = {
       type: "string",
       valuePrepareFunction: (value) => {
         return Intl.NumberFormat("pt-BR", {
-          maximumFractionDigits: 2,
+          maximumFractionDigits: 8,
           minimumFractionDigits: 2,
         }).format(value);
       },

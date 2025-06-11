@@ -54,6 +54,13 @@ import { SEGMENTO } from '../../@core/enum/status-contrato';
     <div class="row">       
       <div class="col-sm-12">
         <div class="form-group">
+            <nb-toggle labelPosition="end" formControlName="acumulacaoLiquida">Acumulação Líquida*</nb-toggle>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="form-group">
             <nb-toggle labelPosition="end" formControlName="ativo">Ativo*</nb-toggle>
         </div>
       </div>
@@ -80,6 +87,7 @@ export class PontoMedicaoComponent implements OnInit {
     agenteMedicaoId: '',
     agenteMedicao: '',
     segmento: '',
+    acumulacaoLiquida: false,
     ativo: true
   });
   
@@ -97,6 +105,7 @@ export class PontoMedicaoComponent implements OnInit {
       nome: this.ponto.nome,
       codigo: this.ponto.codigo,
       agenteMedicaoId: this.ponto.agenteMedicaoId,
+      acumulacaoLiquida: this.ponto.acumulacaoLiquida,
       ativo: this.ponto.ativo,
       segmento: this.ponto.segmento.toString(),
       agenteMedicao: ''

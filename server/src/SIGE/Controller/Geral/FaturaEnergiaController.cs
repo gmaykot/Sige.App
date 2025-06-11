@@ -57,13 +57,13 @@ namespace SIGE.Controller.Geral
         public async Task<IActionResult> Obter() =>
             Ok(await _service.Obter());
 
-        [HttpGet("faturas/{mesReferencia}")]
+        [HttpGet("faturas/{mesReferencia}/{pontoMedicaoId?}")]
         [SwaggerOperation(Description = "Obtém a lista com todos os dados.")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ObterFaturas([FromRoute] DateOnly? mesReferencia) =>
-            Ok(await _service.ObterFaturas(mesReferencia));
+        public async Task<IActionResult> ObterFaturas([FromRoute] DateOnly? mesReferencia, Guid? pontoMedicaoId) =>
+            Ok(await _service.ObterFaturas(mesReferencia, pontoMedicaoId));
     }
 }

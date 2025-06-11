@@ -4,6 +4,7 @@ using SIGE.Core.Models.Sistema;
 using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.Core.Models.Sistema.Externo;
 using SIGE.Core.Models.Sistema.Geral;
+using SIGE.Core.Models.Sistema.Geral.Economia;
 using SIGE.Core.Models.Sistema.Geral.FaturaEnergia;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.Models.Sistema.Gerencial;
@@ -64,5 +65,6 @@ namespace SIGE.DataAccess.Context
         public DbSet<FaturaEnergiaModel> FaturasEnergia { get; set; }
         public DbSet<LancamentoAdicionalModel> LancamentosAdicionais { get; set; }
         public DbSet<TokenModel> Tokens { get; set; }
+        public DbSet<EnergiaAcumuladaModel> EnergiasAcumuladas { get; set; }
     }
 }
