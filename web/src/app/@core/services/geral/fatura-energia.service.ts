@@ -10,7 +10,7 @@ export class FaturaEnergiaService extends DefaultService<IFaturaEnergia> {
     super(http, "fatura-energia");
   }
 
-  public async obterFaturas(mesReferencia: string): Promise<IResponseInterface<IFaturaEnergia[]>> {
-      return await this.http.get<IResponseInterface<IFaturaEnergia[]>>(`/${this.urlBase}/faturas/${mesReferencia ?? new Date().toISOString().split("T")[0]}`);
+  public async obterFaturas(mesReferencia: string, pontoMedicaoId?: string): Promise<IResponseInterface<IFaturaEnergia[]>> {
+      return await this.http.get<IResponseInterface<IFaturaEnergia[]>>(`/${this.urlBase}/faturas/${mesReferencia ?? new Date().toISOString().split("T")[0]}/${pontoMedicaoId ?? ''}`);
   }
 }

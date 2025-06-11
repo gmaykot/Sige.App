@@ -8,6 +8,7 @@ using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
 using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
 using SIGE.Core.Models.Dto.Gerencial;
 using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
+using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
@@ -66,7 +67,11 @@ namespace SIGE.Services.Services.Geral
                         var consumo = await _appDbContext.ConsumosMensais.FirstOrDefaultAsync(c => c.PontoMedicaoId == pontoMedicaoId && c.MesReferencia == mesReferencia);
                         if (consumo != null)
                         {
-                            var imposto = _mapper.Map<ImpostoConcessionariaDto>(await _appDbContext.ImpostosConcessionarias.Where(i => i.ConcessionariaId == fatura.ConcessionariaId && i.MesReferencia == fatura.MesReferencia).FirstOrDefaultAsync());                            
+                            var faturamento = await _appDbContext.FaturamentosCoenel.OrderByDescending(f => f.VigenciaInicial).FirstOrDefaultAsync(f => f.PontoMedicaoId == pontoMedicaoId);
+                            var imposto = _mapper.Map<ImpostoConcessionariaDto>(await _appDbContext.ImpostosConcessionarias.FirstOrDefaultAsync(i => i.ConcessionariaId == fatura.ConcessionariaId && i.MesReferencia == fatura.MesReferencia));
+                            var salarioMinimo = await _appDbContext.SalariosMinimos.OrderByDescending(s => s.VigenciaInicial).FirstOrDefaultAsync();
+                            var energiaAcumulada = await _appDbContext.EnergiasAcumuladas.OrderByDescending(e => e.MesReferencia).FirstOrDefaultAsync(e => e.PontoMedicaoId == pontoMedicaoId);
+
                             tarifaCalculada.ICMS = consumo.Icms;
                             tarifaCalculada.Cofins = imposto.ValorCofins;
                             tarifaCalculada.Proinfa = consumo.Proinfa;
@@ -76,8 +81,9 @@ namespace SIGE.Services.Services.Geral
                             var relatorio = new RelatorioFinalDto
                             {                                
                                 Cabecalho = res,
-                                Grupos = [GrupoCativoMapper(0, fatura, consumo, tarifaCalculada), GrupoLivreMapper(1, fatura, consumo, tarifaCalculada, relMedicoes, valores)]
+                                Grupos = [GrupoCativoMapper(0, fatura, consumo, tarifaCalculada), GrupoLivreMapper(1, fatura, consumo, tarifaCalculada, relMedicoes, valores)],
                             };
+                            relatorio.Comparativo = CompartivoFinal(relatorio, faturamento, salarioMinimo?.Valor, energiaAcumulada?.ValorTotalAcumulado);
                             return ret.SetOk().SetData(relatorio);
                         }
                     }
@@ -85,6 +91,70 @@ namespace SIGE.Services.Services.Geral
             }
             
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de economia no período.");
+        }
+
+        private ComparativoRelatorioFinalDto CompartivoFinal(RelatorioFinalDto relatorio, FaturamentoCoenelModel faturamento, double? valorSalarioMinimo, double? totalAcumulado)
+        {
+            if (faturamento == null)
+                return new ComparativoRelatorioFinalDto { Observacao = "ATENÇÃO! Cadastre o faturamento em Menu > Geral > Faturamento Coenel" };
+
+            var totalCativo = relatorio.Grupos.ElementAt(0).SubGrupos?.ElementAt(0)?.Total?.Total;
+            var totalLivre = relatorio.Grupos.ElementAt(1).SubGrupos?.ElementAt(0)?.Total?.Total;
+            var totalEconomia = totalCativo - totalLivre;
+            var lancamentoCoenel = LancamentoCoenel(faturamento, totalEconomia, valorSalarioMinimo);
+
+            var ret = new ComparativoRelatorioFinalDto
+            {
+                Titulo = "Comparativo – Mercado Cativo vs. Mercado Livre",
+                Observacao = "Observação: Todos os valores contemplam PIS/COFINS e ICMS",
+                Lancamentos = [
+                    new LancamentoComparativoDto {
+                        Descricao = "Diferença Cativo vs. Livre",
+                        Percentual = (totalEconomia/totalCativo)*100,
+                        Valor = totalEconomia,
+                        Observacao = "Economia total bruta"
+                    },
+                    lancamentoCoenel,
+                    new LancamentoComparativoDto {
+                        Descricao = "Economia mensal líquida",
+                        Percentual = ((totalEconomia-lancamentoCoenel.Valor)/totalCativo)*100,
+                        Valor = totalEconomia-lancamentoCoenel.Valor,
+                        Observacao = "Após desconto Coenel-DE",
+                        SubTotal = true
+                    },
+                    new LancamentoComparativoDto {
+                        Descricao = "Economia acumulada",
+                        Valor = totalAcumulado+totalEconomia,
+                        Total = true
+                    },
+                ]
+            };
+
+            return ret;
+        }
+
+        private LancamentoComparativoDto LancamentoCoenel(FaturamentoCoenelModel faturamento, double? totalEconomia, double? valorSalarioMinimo)
+        {
+            if (faturamento == null)
+                return new LancamentoComparativoDto();
+
+            double? totalDevido = totalEconomia ?? 0;
+
+            if (faturamento?.Porcentagem != null && faturamento.Porcentagem > 0)
+                totalDevido = totalDevido * (faturamento?.Porcentagem / 100);
+
+            if (faturamento?.ValorFixo != null && faturamento.ValorFixo > 0)
+                totalDevido = totalDevido - faturamento?.ValorFixo;
+
+            if (faturamento?.QtdeSalarios != null && faturamento.QtdeSalarios > 0)
+                totalDevido = totalDevido - (faturamento?.QtdeSalarios + valorSalarioMinimo);
+
+            return new LancamentoComparativoDto
+            {
+                Descricao = "Valor devido à Coenel-DE",
+                Valor = totalDevido,
+                Observacao = faturamento.ToString()
+            };
         }
 
         private GrupoRelatorioFinalDto GrupoCativoMapper(int ordem, FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada)
@@ -218,7 +288,7 @@ namespace SIGE.Services.Services.Geral
                                         Descricao = "Consumo Medido Reativo - Fora de Ponta",
                                         Montante = fatura.ValorConsumoMedidoReativoForaPonta,
                                         TipoMontante = ETipoMontante.KW,
-                                        Tarifa = 0.31480680,
+                                        Tarifa =  0.36492267,
                                         TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                 ],
@@ -412,7 +482,7 @@ namespace SIGE.Services.Services.Geral
                 ret.Add(new LancamentoRelatorioFinalDto
                 {
                     Descricao = lanc.Descricao,
-                    Total = lanc.Tipo.Equals(ETipoLancamento.CREDITO) ? lanc.Valor : lanc.Valor * -1
+                    Total = lanc.Tipo.Equals(ETipoLancamento.DEBITO) ? lanc.Valor : lanc.Valor * -1
                 });
             }
 
@@ -428,7 +498,7 @@ namespace SIGE.Services.Services.Geral
                 ret.Add(new LancamentoRelatorioFinalDto
                 {
                     Descricao = lanc.Descricao,
-                    Total = lanc.Tipo.Equals(ETipoLancamento.CREDITO) ? lanc.Valor : lanc.Valor * -1
+                    Total = lanc.Tipo.Equals(ETipoLancamento.DEBITO) ? lanc.Valor : lanc.Valor * -1
                 });
             }
 
@@ -444,7 +514,7 @@ namespace SIGE.Services.Services.Geral
                 ret.Add(new LancamentoRelatorioFinalDto
                 {
                     Descricao = lanc.Descricao,
-                    Total = lanc.Tipo.Equals(ETipoLancamento.CREDITO) ? lanc.Valor : lanc.Valor * -1
+                    Total = lanc.Tipo.Equals(ETipoLancamento.DEBITO) ? lanc.Valor : lanc.Valor * -1
                 });
             }
 

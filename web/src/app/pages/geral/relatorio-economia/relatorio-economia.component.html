@@ -87,41 +87,31 @@
             <nb-card accent="primary">
                 <nb-card-body>
                     <nb-tabset>
-                      <nb-tab tabTitle="Economia Mercado Livre vs. Mercado Cativo">
+                      <nb-tab tabTitle="Mercado Cativo vs. Mercado Livre">
                         <nb-card style="border: 0rem;">
                             <nb-card-body>
-                                <table class="fatura-tabela">
+                                <table class="fatura-tabela" *ngIf="relatorioFinal?.comparativo?.lancamentos?.length > 0">
                                     <tr>
-                                        <th colspan="3">Comparativo</th>
-                                      </tr>
-                                    <tr>
-                                      <td>Diferença cativo versus livre</td>
-                                      <td>Economia = 16%</td>
-                                      <td>Total Economizado = R$ 16.403,12</td>
+                                        <th colspan="4">{{relatorioFinal?.comparativo?.titulo}}</th>
                                     </tr>
                                     <tr>
-                                      <td>Valor devido a Coenel-DE</td>
-                                      <td>2 Sal. Mín. + 10% economia</td>
-                                      <td>Venc.: 16/01/2024 10%</td>
+                                        <th></th>
+                                        <th style="text-align: center;">Percentual (%)</th>
+                                        <th style="text-align: center;">Valor (R$)</th>
+                                        <th>Observação</th>
                                     </tr>
-                                    <tr class="total-linha">
-                                        <td><strong>Economia mensal líquida</strong></td>
-                                        <td><strong>10,79%</strong></td>
-                                        <td><strong>R$ 7.823,12</strong></td>
-                                    </tr>                                        
-                                    <tr class="total-linha">
-                                        <td colspan="2"><strong>Economia acumulada</strong></td>
-                                        <td><strong>R$ 1.262.582,18</strong></td>
+                                    <tr *ngFor="let lanc of relatorioFinal?.comparativo?.lancamentos" [ngClass]="lanc.subTotal ? 'sub-total-linha' : lanc.total ? 'total-linha' : ''">
+                                        <td>{{lanc.descricao}}</td>
+                                        <td style="text-align: center; {{lanc.percentual && lanc.percentual < 0 ? 'color: red' : ''}}">{{lanc.percentual | number:'1.2-2'}}{{lanc.percentual && lanc.percentual > 0 ? '%' : ''}}</td>
+                                        <td style="text-align: center; {{lanc.valor && lanc.valor < 0 ? 'color: red' : ''}}">{{lanc.valor | currency:'BRL':'symbol':'1.2-2'}}</td>
+                                        <td>{{lanc.observacao}}</td>
                                     </tr>
                                 </table>
+                                
                                 <table class="fatura-tabela" style="margin-top: 1rem;">
                                     <tr class="total-linha">
-                                        <th colspan="3"><strong>Observação: Todos os valores contemplam PIS/COFINS e ICMS</strong></th>
-                                    </tr>
-                                    <tr>
-                                        <td>Valor devido a esta Coenel-DE</td>
-                                        <td>R$ 2.640,00</td>
-                                      </tr>                                        
+                                        <th colspan="3"><strong>{{relatorioFinal?.comparativo?.observacao}}</strong></th>
+                                    </tr>                                      
                                 </table>
                             </nb-card-body>
                         </nb-card>
