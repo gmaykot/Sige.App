@@ -199,6 +199,7 @@ export class EnergiaAcumuladaComponent extends EnergiaAcumuladaConfigSettings im
     this.edit = false;
     this.selected = false;
     this.energiaAcumulada = null;
+    this.sourceHistorico.load([]);
   }
 
   carregarHistorico() {

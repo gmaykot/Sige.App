@@ -210,7 +210,13 @@ export class FaturaEnergiaComponent implements OnInit {
 
   async onNext(pontoMedicaoId?: any) {
     this.loading = true;
-    const [month, year] = this.getControlValues("mesReferencia").split('/');
+    const mesRef = this.getControlValues("mesReferencia");
+    if (!mesRef) {
+      this.alertService.showWarning("Selecione um mês de referência.", 20000);
+      this.loading = false;
+      return;
+    }
+    const [month, year] = mesRef.split('/');
     const mesReferencia = new Date(+year, +month - 1, 1);
     await this.faturaEnergiaService
       .obterFaturas(mesReferencia ? this.datePipe.transform(mesReferencia, 'yyyy-MM-dd') : this.mesReferencia, pontoMedicaoId)
