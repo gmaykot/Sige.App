@@ -25,6 +25,7 @@ import { FaturaEnergiaComponent } from './geral/fatura-energia/fatura-energia.co
 import { SAGuard } from '../@core/guards/SAGuard';
 import { GhostComponent } from './administrativo/ghost/ghost.component';
 import { UnauthorizedComponent } from '../@core/pages/unauthorized/unauthorized.component';
+import { EnergiaAcumuladaComponent } from './gerencial/energia-acumulada/energia-acumulada.component';
 
 const routes: Routes = [{
   path: '',
@@ -107,6 +108,11 @@ const routes: Routes = [{
     {
       path: 'ghost',
       component: GhostComponent,
+      canActivate: [ SAGuard ],
+    },
+    {
+      path: 'energia-acumulada',
+      component: EnergiaAcumuladaComponent,
       canActivate: [ SAGuard ],
     },
     {

@@ -37,8 +37,7 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
     valorBandeiraVermelha1: [0, Validators.required],
     valorBandeiraVermelha2: [0, Validators.required],
     ativo: true
-  });  
-
+  });
 
   constructor(
     private formBuilder: FormBuilder,

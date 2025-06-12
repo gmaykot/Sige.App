@@ -8,7 +8,9 @@ namespace SIGE.Core.Mapper
     {
         public EconomiaMapper()
         {
-            CreateMap<EnergiaAcumuladaModel, EnergiaAcumuladaDto>().ReverseMap();
+            CreateMap<EnergiaAcumuladaModel, EnergiaAcumuladaDto>()
+                .ForMember(dst => dst.PontoMedicaoDesc, map => map.MapFrom(src => src.PontoMedicao == null ? string.Empty : src.PontoMedicao.Nome))
+                .ReverseMap();
         }
     }
 }
