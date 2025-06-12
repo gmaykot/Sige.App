@@ -2,8 +2,11 @@
 using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MimeKit;
+using Org.BouncyCastle.Asn1.Ocsp;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
@@ -17,11 +20,12 @@ using System.Text;
 
 namespace SIGE.Services.Services.Externo
 {
-    public class EmailService(IOptions<EmailSettingsOption> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService) : IEmailService
+    public class EmailService(IOptions<EmailSettingsOption> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService, IHttpContextAccessor httpContextAccessor) : IEmailService
     {
         private readonly EmailSettingsOption _opt = mailSettingsOptions.Value;
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMedicaoService _medicaoService = medicaoService;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         public async Task<Response> SendEmail(EmailDataDto req)
         {
@@ -40,9 +44,13 @@ namespace SIGE.Services.Services.Externo
 
                     req.ContatosCCO?.ForEach(c => mensagem.Cc.Add(new MailboxAddress(c.NomeContato, c.EmailContato)));
 
+                    var request = _httpContextAccessor.HttpContext?.Request;
+                    var baseUrl = $"{request?.Scheme}://{request?.Host}";
+                    var pixelUrl = $"{baseUrl}/email/open/{req.RelatorioMedicaoId}";
+
                     var builder = new BodyBuilder
                     {
-                        HtmlBody = EmailExtensions.GetEmailTemplate(req.Contato.NomeContato, req.MesReferencia, _opt.ContactPhone, _opt.ContactMail, req.DescEmpresa)
+                        HtmlBody = EmailExtensions.GetEmailTemplate(req.Contato.NomeContato, req.MesReferencia, _opt.ContactPhone, _opt.ContactMail, req.DescEmpresa, pixelUrl, baseUrl)
                     };
 
                     if (req.Relatorios != null)
@@ -88,7 +96,7 @@ namespace SIGE.Services.Services.Externo
                     await mailClient.AuthenticateAsync(_opt.UserName, _opt.Password);
                     await mailClient.SendAsync(mensagem);
 
-                    if (_opt.Imap != null)
+                    if (!_opt.Imap.IsNullOrEmpty())
                     {
                         using var imapClient = new ImapClient();
 
@@ -161,6 +169,13 @@ namespace SIGE.Services.Services.Externo
             {
                 return ret.SetInternalServerError().AddError("Message", ex.Message).AddError("InnerException", ex.InnerException?.Message);
             }
+        }
+
+        public async Task<Response> OpenEmail(Guid req)
+        {
+            var ret = new Response();
+
+            return ret.SetOk();
         }
     }
 }

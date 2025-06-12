@@ -26,6 +26,7 @@ import { SAGuard } from '../@core/guards/SAGuard';
 import { GhostComponent } from './administrativo/ghost/ghost.component';
 import { UnauthorizedComponent } from '../@core/pages/unauthorized/unauthorized.component';
 import { EnergiaAcumuladaComponent } from './gerencial/energia-acumulada/energia-acumulada.component';
+import { AcompanhamentoEmailComponent } from './administrativo/acompanhamento-email/acompanhamento-email.component';
 
 const routes: Routes = [{
   path: '',
@@ -113,6 +114,11 @@ const routes: Routes = [{
     {
       path: 'energia-acumulada',
       component: EnergiaAcumuladaComponent,
+      canActivate: [ SAGuard ],
+    },
+    {
+      path: 'acompanhamento-email',
+      component: AcompanhamentoEmailComponent,
       canActivate: [ SAGuard ],
     },
     {

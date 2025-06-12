@@ -83,7 +83,7 @@ namespace SIGE.Services.Services.Geral
                                 Cabecalho = res,
                                 Grupos = [GrupoCativoMapper(0, fatura, consumo, tarifaCalculada), GrupoLivreMapper(1, fatura, consumo, tarifaCalculada, relMedicoes, valores)],
                             };
-                            relatorio.Comparativo = CompartivoFinal(relatorio, faturamento, salarioMinimo?.Valor, energiaAcumulada?.ValorTotalAcumulado);
+                            relatorio.Comparativo = CompartivoFinal(relatorio, faturamento, salarioMinimo?.Valor, energiaAcumulada?.ValorTotalAcumulado);                            
                             return ret.SetOk().SetData(relatorio);
                         }
                     }
@@ -102,7 +102,14 @@ namespace SIGE.Services.Services.Geral
             var totalLivre = relatorio.Grupos.ElementAt(1).SubGrupos?.ElementAt(0)?.Total?.Total;
             var totalEconomia = totalCativo - totalLivre;
             var lancamentoCoenel = LancamentoCoenel(faturamento, totalEconomia, valorSalarioMinimo);
-
+            
+            relatorio.Grafico = new GraficoRelatorioFinalDto { Titulo = "GRÁFICO ECONOMIA NO MÊS" };
+            relatorio.Grafico.Linhas.Add(new LinhaGraficoFinalDto { Label = "Mercado Cativo", Valor = totalCativo });
+            relatorio.Grafico.Linhas.Add(new LinhaGraficoFinalDto { Label = "Mercado Livre", Valor = totalLivre });
+            relatorio.Grafico.Linhas.Add(new LinhaGraficoFinalDto { Label = "Economia", Valor = totalEconomia });
+            relatorio.Grafico.Linhas = relatorio.Grafico.Linhas
+                .OrderBy(l => l.Valor)
+                .ToList();
             var ret = new ComparativoRelatorioFinalDto
             {
                 Titulo = "Comparativo – Mercado Cativo vs. Mercado Livre",

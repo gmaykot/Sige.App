@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Email;
 using SIGE.Services.Interfaces.Externo;
@@ -20,5 +21,18 @@ namespace SIGE.Controller.Externo
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> SendEmail([FromBody] EmailDataDto req) =>
             Ok(await _service.SendEmail(req));
+
+        [HttpGet("open/{id}")]
+        [AllowAnonymous]
+        [SwaggerOperation(Description = "Envia E-mail")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> OpenEmail([FromRoute] Guid id)
+        {
+            _= await _service.OpenEmail(id);
+            return File(""u8.ToArray(), "image/gif");
+        }            
     }
 }
