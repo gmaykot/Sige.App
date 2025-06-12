@@ -1,0 +1,19 @@
+﻿using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Sistema.Geral.Medicao;
+
+namespace SIGE.Core.Models.Sistema.Administrativo
+{
+    public class LogEnvioEmail : BaseModel
+    {
+        public required string Email { get; set; }
+        public string? CcoEmail { get; set; }
+        public string? Response { get; set; }
+        public string? InnerException { get; set; }
+        public Guid? UsuarioEnvioId { get; set; }
+        public Guid? RelatorioMedicaoId { get; set; }
+        public bool Aberto { get; set; } = false;
+
+        public UsuarioModel? UsuarioEnvio { get; set; }
+        public RelatorioMedicaoModel? RelatorioMedicaoModel { get; set; }
+    }
+}

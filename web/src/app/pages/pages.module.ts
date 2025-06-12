@@ -59,6 +59,7 @@ import { RelatorioEconomiaPdfService } from './geral/relatorio-economia/relatori
 import { MoedaParentesesPipe } from '../@core/pipe/moeda-parenteses.pipe';
 import { EnergiaAcumuladaComponent } from './gerencial/energia-acumulada/energia-acumulada.component';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { AcompanhamentoEmailComponent } from './administrativo/acompanhamento-email/acompanhamento-email.component';
 
 @NgModule({
   imports: [
@@ -147,7 +148,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
     ValidacaoMedicaoComponent,
     ValorAnualComponent,
     ValorConcessionariaComponent,
-    ValorMensalComponent
+    ValorMensalComponent,
+    AcompanhamentoEmailComponent
   ],
   providers: [
     AlertService,

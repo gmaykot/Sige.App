@@ -7,5 +7,6 @@ namespace SIGE.Services.Interfaces.Externo
     {
         Task<Response> SendEmail(EmailDataDto req);
         Task<Response> SendFullEmail(EmailFullDataDto req);
+        Task<Response> OpenEmail(Guid req);
     }
 }
