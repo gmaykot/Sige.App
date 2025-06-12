@@ -9,6 +9,5 @@ namespace SIGE.Core.Models.Dto.Gerencial.BandeiraTarifaria
         public ETipoBandeira Bandeira { get; set; }
         public Guid BandeiraTarifariaId { get; set; }
         public BandeiraTarifariaDto? BandeiraTarifaria { get; set; }
-
     }
 }

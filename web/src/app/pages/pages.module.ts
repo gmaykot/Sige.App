@@ -57,6 +57,7 @@ import { FaturaEnergiaComponent } from './geral/fatura-energia/fatura-energia.co
 import { GhostComponent } from './administrativo/ghost/ghost.component';
 import { RelatorioEconomiaPdfService } from './geral/relatorio-economia/relatorio-economia-pdf.service';
 import { MoedaParentesesPipe } from '../@core/pipe/moeda-parenteses.pipe';
+import { EnergiaAcumuladaComponent } from './gerencial/energia-acumulada/energia-acumulada.component';
 
 @NgModule({
   imports: [
@@ -142,7 +143,8 @@ import { MoedaParentesesPipe } from '../@core/pipe/moeda-parenteses.pipe';
     DeleteActionLinkComponent,
     FaturaEnergiaComponent,
     GhostComponent,
-    MoedaParentesesPipe
+    MoedaParentesesPipe,
+    EnergiaAcumuladaComponent
   ],
   providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService,RelatorioEconomiaPdfService, AlertService]
 })

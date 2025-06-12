@@ -2,6 +2,7 @@
 {
     public class EnergiaAcumuladaDto
     {
+        public Guid? Id { get; set; }
         public DateTime MesReferencia { get; set; }
         public double ValorMensalAcumulado { get; set; }
         public double ValorTotalAcumulado { get; set; }
