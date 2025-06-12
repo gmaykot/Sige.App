@@ -32,7 +32,16 @@ namespace SIGE.Controller.Externo
         public async Task<IActionResult> OpenEmail([FromRoute] Guid id)
         {
             _= await _service.OpenEmail(id);
-            return File(""u8.ToArray(), "image/gif");
+            var pixel = new byte[]
+                {
+                        71, 73, 70, 56, 57, 97, 1, 0,
+                        1, 0, 128, 0, 0, 255, 255, 255,
+                        0, 0, 0, 33, 249, 4, 1, 0,
+                        0, 1, 0, 44, 0, 0, 0, 0,
+                        1, 0, 1, 0, 0, 2, 2, 68,
+                        1, 0, 59
+                };
+            return File(pixel, "image/gif");
         }            
     }
 }

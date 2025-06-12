@@ -51,7 +51,7 @@
                   <div class=""container"">
                     <header>
                       <img src=""{5}"" width=""1"" height=""1"" style=""display:none;"" />
-                      <img src=""{6}/assets/images/logo.png"" alt=""Coenel - DE"">
+                      <img src=""https://app.coenel-de.com.br/assets/images/logo.png"" alt=""Coenel - DE"">
                       <h2>Relatório de Medição</h2>
                     </header>
                     <div class=""content"">
@@ -67,7 +67,7 @@
                 </body>
                 </html>
             ";
-            template = string.Format(template, recipientName, month, phoneNumber, emailAddress, empresa, pixelUrl, urlBase);
+            template = string.Format(template, recipientName, month, phoneNumber, emailAddress, empresa, pixelUrl);
 
             return template;
         }
