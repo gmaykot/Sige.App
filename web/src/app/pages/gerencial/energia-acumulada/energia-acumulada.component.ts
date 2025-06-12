@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { NbLayoutScrollService } from '@nebular/theme';
+import { NbLayoutScrollService, NbTabsetComponent } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
@@ -10,6 +10,7 @@ import { PontoMedicaoService } from '../../../@core/services/gerencial/ponto-med
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { EnergiaAcumuladaService } from '../../../@core/services/gerencial/energia-acumulada.service';
 import { IEnergiaAcumulada } from '../../../@core/data/gerencial/energia-acumulada';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'ngx-energia-acumulada',
@@ -17,6 +18,8 @@ import { IEnergiaAcumulada } from '../../../@core/data/gerencial/energia-acumula
   styleUrls: ['./energia-acumulada.component.scss']
 })
 export class EnergiaAcumuladaComponent extends EnergiaAcumuladaConfigSettings implements OnInit{
+  @ViewChild(NbTabsetComponent) tabset!: NbTabsetComponent;
+
   public source: LocalDataSource = new LocalDataSource();
   public sourceHistorico: LocalDataSource = new LocalDataSource();
   public loading: boolean;
@@ -62,6 +65,8 @@ export class EnergiaAcumuladaComponent extends EnergiaAcumuladaConfigSettings im
     this.edit = true;
     this.selected = true;
     this.scroolService.scrollTo(0,0);  
+    this.tabset?.selectTab(this.tabset.tabs.toArray()[0]);
+
     this.loadHistorico(this.energiaAcumulada.pontoMedicaoId);
   }
 
@@ -103,8 +108,42 @@ export class EnergiaAcumuladaComponent extends EnergiaAcumuladaConfigSettings im
     this.edit = !this.edit;
   }
 
-  onDeleteConfirm() {
- 
+  async onDeleteConfirm() {
+    this.loading = true;
+    await this.energiaAcumuladaService
+      .delete(this.energiaAcumulada.id)
+      .then((response: IResponseInterface<IEnergiaAcumulada>) => {        
+        if (response.success) {
+          this.alertService.showSuccess(response.message, 20000)
+          this.getEnergiasAcumuladas();
+        } else {
+          this.alertService.showError(response.message, 20000)
+        }
+      })
+      .finally(() => {
+        this.limparFormulario();
+        this.loading = false;
+      });
+  }
+
+  async onSubmit() {
+    this.loading = true;
+    const dados = this.control.value;
+  
+    const operacao = dados.id ? this.energiaAcumuladaService.put(dados) : this.energiaAcumuladaService.post(dados);  
+    await operacao
+      .then((response: IResponseInterface<IEnergiaAcumulada>) => {
+        if (response.success) {
+          this.alertService.showSuccess(response.message, 20000);
+          this.getEnergiasAcumuladas();
+        } else {
+          this.alertService.showError(response.message, 20000);
+        }
+      })
+      .finally(() => {
+        this.limparFormulario();
+        this.loading = false;
+      });
   }
 
   async onItemSelected(event: IDropDown) {
@@ -132,6 +171,17 @@ export class EnergiaAcumuladaComponent extends EnergiaAcumuladaConfigSettings im
       .finally(() => {
         this.loading = false;
       });
+  }
+
+  onCreate() {
+    this.selected = false;
+    this.control.patchValue({
+      id: '',
+      mesReferencia: '',
+      ValorMensalAcumulado: 0,
+      ValorTotalAcumulado: 0,
+    });
+
   }
 
   limparFormulario(): void {

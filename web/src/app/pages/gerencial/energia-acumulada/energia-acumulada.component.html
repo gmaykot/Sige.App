@@ -3,7 +3,7 @@
       <div class="card-col">
         <nb-card>
           <nb-card-body>
-            <nb-tabset>
+            <nb-tabset #tabset>
               <nb-tab tabTitle="Cadastro de Energia Acumulada">
                 <nb-card style="border: 0rem;">
                   <nb-card-body>
@@ -42,6 +42,7 @@
                   <nb-card-footer>
                     <button type="submit" nbButton status="info" (click)="onSubmit()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
                     <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()">Excluir</button>
+                    <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton style="margin-left: 0.5rem;" (click)="onCreate()">Novo</button>
                     <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="limparFormulario()">Voltar</button>
                   </nb-card-footer>
                 </nb-card>
