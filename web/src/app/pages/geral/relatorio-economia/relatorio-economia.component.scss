@@ -116,3 +116,23 @@ $shadow-green: #00977e;
     text-align: right;
     font-size: 13px;
   }
+
+  @include nb-install-component() {
+    ngx-chartjs-bar,
+    ngx-chartjs-bar-horizontal ,
+    ngx-chartjs-radar {
+      display: block;
+      height: 370px;
+      width: 100%;
+  
+      ::ng-deep chart {
+        display: block;
+        height: 90%;
+        width: 100%;
+      }
+  
+      ::ng-deep nb-layout-column {
+        height: 130vw;
+      }
+    }
+  }

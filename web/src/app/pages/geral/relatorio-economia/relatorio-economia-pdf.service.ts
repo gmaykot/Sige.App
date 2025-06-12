@@ -13,8 +13,8 @@ import { ILancamentoRelatorioFinal } from "../../../@core/data/geral/relatorio-e
 export class RelatorioEconomiaPdfService {
   constructor(private pdfConfig: PdfConfigService) {}
 
-  public downloadPDF(response: IRelatorioFinal) {
-    const pdf = this.createPDF(response);
+  public downloadPDF(response: IRelatorioFinal, imgData:string) {
+    const pdf = this.createPDF(response, imgData);
     pdf.save(
       `relatorio_economia_${response.cabecalho.unidade
         .replace(" ", "_")
@@ -22,9 +22,12 @@ export class RelatorioEconomiaPdfService {
     );
   }
 
-  private createPDF(response?: IRelatorioFinal): jsPDF {
+  private createPDF(response?: IRelatorioFinal, imgData?: string): jsPDF {
     // TAMANHO A4 EM PT: 595.35 x 841.995
     const doc = new jsPDF("p", "pt", "a4");
+    const imgProps = doc.getImageProperties(imgData);
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
     const cabecalho = response.cabecalho;
     const relatorio = response;
@@ -561,28 +564,35 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.criarTabela(doc, dadosComparativoTabela);
     margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
 
+    const graficoMarginTop = criarTituloSecao(
+      relatorio?.grafico?.titulo,
+      margintTopTabelaDinamico + margins.sectionMarginTop
+    );
+    this.pdfConfig.addImagem(doc, {
+      src: imgData,
+      marginLeft: 20,
+      marginTop: graficoMarginTop,
+      width: pdfWidth - 20,
+      height: pdfHeight,
+    });
+    
+    margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
+
     /* SEÇÃO OBSERVAÇÃO ------------------------------------------------------------------------------- */
     this.pdfConfig.criarTabela(doc, {
       colunas: [
         [
           {
             content:
-              "Observação: todos os valores deste demonstrativo contemplam PIS/COFINS e ICMS",
+              relatorio?.comparativo?.observacao,
             styles: { fontStyle: "bold", halign: "center" },
             colSpan: 2,
           },
         ],
       ],
-      linhas: [
-        [
-          {
-            content: "Valor devido a esta Coenel-DE",
-            styles: { halign: "left" },
-          },
-          { content: "R$ 2.640,00" },
-        ],
+      linhas: [        
       ],
-      inicioMarginTop: margintTopTabelaDinamico + margins.sectionMarginTop,
+      inicioMarginTop: margintTopTabelaDinamico + margins.sectionMarginTop + graficoMarginTop,
       theme: "plain",
       styles: {
         lineColor: "#DDDDDD",

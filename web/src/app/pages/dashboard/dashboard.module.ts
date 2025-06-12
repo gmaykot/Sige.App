@@ -45,5 +45,9 @@ import { EchartsBarComponent } from '../../@shared/charts/echarts-bar.component'
     EchartsPieComponent,
     EchartsBarComponent
   ],
+  exports: [
+    EchartsPieComponent,
+    EchartsBarComponent
+  ]
 })
 export class DashboardModule { }

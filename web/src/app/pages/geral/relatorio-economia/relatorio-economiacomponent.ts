@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { RelatorioEconomiaPdfService } from "./relatorio-economia-pdf.service";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import { LocalDataSource } from "ng2-smart-table";
@@ -12,13 +12,82 @@ import { ValidacaoMedicaoComponent } from "../../../@shared/custom-component/val
 import { DateService } from "../../../@core/services/util/date.service";
 import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/relatorio-final";
 import { settingsRelatorioEconomia } from "../../../@shared/table-config/relatorio-economia.config";
+import { EChartsOption } from 'echarts';
+import jsPDF from "jspdf";
+import * as echarts from 'echarts';
+import html2canvas from 'html2canvas';
+
 @Component({
   selector: "ngx-relatorio-economia",
   templateUrl: "./relatorio-economia.component.html",
   styleUrls: ["./relatorio-economia.component.scss"],
 })
-export class RelatorioEconomiaComponent implements OnInit {
+export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
+  public chartOption: EChartsOption = null;
+  chartInstance!: echarts.ECharts;
+
+  onChartInit(chart: echarts.ECharts): void {
+    this.chartInstance = chart;
+  }
+
+  ngAfterViewInit(): void {
+    // garante que o gráfico foi renderizado
+  }
   
+  initChart() {
+    this.chartOption = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+        type: 'shadow'
+      },
+      formatter: (params: any) => {
+        const val = params[0].value;
+        return `${params[0].name}: R$ ${val.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      }
+    },
+    grid: {
+      left: '5%',
+      right: '10%',
+      bottom: '5%',
+      top: '10%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'value',
+      axisLabel: {
+        formatter: (val: number) => `R$ ${val.toLocaleString('pt-BR')}`
+      }
+    },
+    yAxis: {
+      type: 'category',
+      data: this.relatorioFinal?.grafico?.linhas?.map((g: any) => g.label)
+    },
+    series: [
+      {
+        type: 'bar',
+        data: this.relatorioFinal?.grafico?.linhas?.map((g: any) =>
+          Math.round(g.valor * 100) / 100
+        ),
+        itemStyle: {
+          color: (params: any) => {
+            const colors = ['#d9534f', '#a4cd39', '#3b8de3'];
+            return colors[params.dataIndex];
+          },
+          barBorderRadius: [0, 5, 5, 0]
+        },
+        label: {
+          show: true,
+          position: 'right',
+          formatter: (params: any) =>
+            `R$ ${params.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+        },
+        barWidth: 20
+      }
+    ]
+  };
+}
+
   salvar() {}
 
   habilitaPdf() {
@@ -34,7 +103,6 @@ export class RelatorioEconomiaComponent implements OnInit {
   public mesReferencia: any;
   public habilitaValidar: boolean = false;
   public habilitaOperacoes: boolean = false;
-
   constructor(
     private relatorioEconomiaPdfService: RelatorioEconomiaPdfService,
     private service: RelatorioEconomiaService,
@@ -91,6 +159,7 @@ export class RelatorioEconomiaComponent implements OnInit {
           this.relatorioFinal = response.data;
           this.relatorioFinal.grupos.sort((a, b) => a.ordem - b.ordem);
           this.selected = true;
+          this.initChart();
         } else {
           
         }
@@ -111,15 +180,19 @@ export class RelatorioEconomiaComponent implements OnInit {
       "Iniciando a geração e download do relatório de economia em PDF.",
       120
     );
-    if (this.relatorioFinal) {
-      this.relatorioEconomiaPdfService.downloadPDF(this.relatorioFinal);
-    } else {
-      await this.relatorioService.getFinalPdf(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia).then((r) => {
-        r.data.cabecalho = this.relatorioEconomia.cabecalho;
-        r.data.grupos.sort((a, b) => a.ordem - b.ordem);
-        this.relatorioEconomiaPdfService.downloadPDF(r.data);
-      });
-    }
+    const chartDiv = this.chartInstance.getDom();
+    html2canvas(chartDiv).then(async (canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      if (this.relatorioFinal) {
+        this.relatorioEconomiaPdfService.downloadPDF(this.relatorioFinal, imgData);
+      } else {
+        await this.relatorioService.getFinalPdf(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia).then((r) => {
+          r.data.cabecalho = this.relatorioEconomia.cabecalho;
+          r.data.grupos.sort((a, b) => a.ordem - b.ordem);
+          this.relatorioEconomiaPdfService.downloadPDF(r.data, imgData);
+        });
+      }
+  });
   }
 
   clear() {
