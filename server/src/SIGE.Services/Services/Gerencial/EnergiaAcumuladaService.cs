@@ -32,10 +32,7 @@ namespace SIGE.Services.Services.Gerencial
                 query = query.Where(e => e.MesReferencia <= MesReferencia);
             }
 
-            var res = await query
-                .GroupBy(e => e.PontoMedicaoId)
-                .Select(g => g.OrderByDescending(e => e.MesReferencia).First())
-                .ToListAsync();
+            var res = await query.GroupBy(e => e.PontoMedicaoId).Select(g => g.OrderByDescending(e => e.MesReferencia).First()).ToListAsync();
 
             if (res != null)
                 return ret.SetOk().SetData(_mapper.Map<IEnumerable<EnergiaAcumuladaDto>>(res));

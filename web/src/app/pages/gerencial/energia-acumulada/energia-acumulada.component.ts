@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { NbLayoutScrollService, NbTabsetComponent } from '@nebular/theme';
+import { NbDialogService, NbLayoutScrollService, NbTabsetComponent } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
@@ -11,6 +11,7 @@ import { IResponseInterface } from '../../../@core/data/response.interface';
 import { EnergiaAcumuladaService } from '../../../@core/services/gerencial/energia-acumulada.service';
 import { IEnergiaAcumulada } from '../../../@core/data/gerencial/energia-acumulada';
 import { ViewChild } from '@angular/core';
+import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 
 @Component({
   selector: 'ngx-energia-acumulada',
@@ -32,6 +33,7 @@ export class EnergiaAcumuladaComponent extends EnergiaAcumuladaConfigSettings im
   constructor(
     private formBuilder: FormBuilder,
     private alertService: AlertService,
+    private dialogService: NbDialogService,
     private scroolService: NbLayoutScrollService,
     private pontoMedicaoService: PontoMedicaoService,
     private energiaAcumuladaService: EnergiaAcumuladaService
@@ -109,21 +111,27 @@ export class EnergiaAcumuladaComponent extends EnergiaAcumuladaConfigSettings im
   }
 
   async onDeleteConfirm() {
-    this.loading = true;
-    await this.energiaAcumuladaService
-      .delete(this.energiaAcumulada.id)
-      .then((response: IResponseInterface<IEnergiaAcumulada>) => {        
-        if (response.success) {
-          this.alertService.showSuccess(response.message, 20000)
-          this.getEnergiasAcumuladas();
-        } else {
-          this.alertService.showError(response.message, 20000)
+      this.dialogService
+      .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir a energia acumulada?'} })
+      .onClose.subscribe(async (excluir) => {
+        if (excluir){
+          this.loading = true;
+          await this.energiaAcumuladaService
+          .delete(this.energiaAcumulada.id)
+          .then(async (response: IResponseInterface<IEnergiaAcumulada>) => {        
+            if (response.success) {
+              this.alertService.showSuccess(response.message, 20000)
+              await this.getEnergiasAcumuladas();
+            } else {
+              this.alertService.showError(response.message, 20000)
+            }
+          })
+          .finally(() => {
+            this.limparFormulario();
+            this.loading = false;
+          });
         }
-      })
-      .finally(() => {
-        this.limparFormulario();
-        this.loading = false;
-      });
+      });     
   }
 
   async onSubmit() {
@@ -132,22 +140,24 @@ export class EnergiaAcumuladaComponent extends EnergiaAcumuladaConfigSettings im
   
     const operacao = dados.id ? this.energiaAcumuladaService.put(dados) : this.energiaAcumuladaService.post(dados);  
     await operacao
-      .then((response: IResponseInterface<IEnergiaAcumulada>) => {
+      .then(async (response: IResponseInterface<IEnergiaAcumulada>) => {
         if (response.success) {
           this.alertService.showSuccess(response.message, 20000);
-          this.getEnergiasAcumuladas();
+          this.energiaAcumulada = response.data;
+          this.energiaAcumulada.pontoMedicaoDesc = this.pontosMedicao.find(x => x.id === response.data.pontoMedicaoId).descricao;
+          await this.getEnergiasAcumuladas();
         } else {
           this.alertService.showError(response.message, 20000);
         }
       })
       .finally(() => {
-        this.limparFormulario();
+        this.selected = true;
+        this.loadHistorico(this.energiaAcumulada.pontoMedicaoId);
         this.loading = false;
       });
   }
 
   async onItemSelected(event: IDropDown) {
-    console.log(event);
     this.loading = true;
     await this.loadHistorico(event.id);
     this.energiaAcumulada = { pontoMedicaoId: event.id, pontoMedicaoDesc: event.descricao };
@@ -189,5 +199,9 @@ export class EnergiaAcumuladaComponent extends EnergiaAcumuladaConfigSettings im
     this.edit = false;
     this.selected = false;
     this.energiaAcumulada = null;
+  }
+
+  carregarHistorico() {
+    return this.sourceHistorico.count() > 0;
   }
 }

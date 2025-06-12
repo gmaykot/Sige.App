@@ -47,7 +47,7 @@
                   </nb-card-footer>
                 </nb-card>
                 </nb-tab>
-                <nb-tab *ngIf="energiaAcumulada != null" tabTitle="Histórico de Energia Acumulada">
+                <nb-tab *ngIf="energiaAcumulada != null && carregarHistorico()" tabTitle="Histórico de Energia Acumulada">
                 <nb-card style="border: 0rem;">
                   <nb-card-body>
                     <label *ngIf="energiaAcumulada != null" class="label">Ponto de Medição*</label>
