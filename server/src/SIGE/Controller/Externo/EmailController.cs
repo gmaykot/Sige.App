@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Ocsp;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Email;
 using SIGE.Services.Interfaces.Externo;
@@ -24,14 +25,14 @@ namespace SIGE.Controller.Externo
 
         [HttpGet("open/{id}")]
         [AllowAnonymous]
-        [SwaggerOperation(Description = "Envia E-mail")]
+        [SwaggerOperation(Description = "Marca email como aberto")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> OpenEmail([FromRoute] Guid id)
         {
-            _= await _service.OpenEmail(id);
+            _ = await _service.OpenEmail(id);
             var pixel = new byte[]
                 {
                         71, 73, 70, 56, 57, 97, 1, 0,
@@ -42,6 +43,16 @@ namespace SIGE.Controller.Externo
                         1, 0, 59
                 };
             return File(pixel, "image/gif");
-        }            
+        }
+
+        [HttpGet()]
+        [AllowAnonymous]
+        [SwaggerOperation(Description = "Obtem Histórico")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ObterHistorico() =>
+            Ok(await _service.ObterHistorico());
     }
 }

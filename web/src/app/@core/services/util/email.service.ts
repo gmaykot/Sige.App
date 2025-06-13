@@ -12,4 +12,9 @@ export class EmailService {
     {
         return await this.http.post<any>("/email", emailData);
     }
+
+    public async getHistorico(): Promise<any>
+    {
+        return await this.http.get<any>("/email");
+    }
 }
