@@ -3,6 +3,7 @@ using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
@@ -12,6 +13,8 @@ using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Email;
 using SIGE.Core.Models.Dto.Geral.Medicao;
+using SIGE.Core.Models.Requests;
+using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.Core.Options;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Externo;
@@ -20,12 +23,13 @@ using System.Text;
 
 namespace SIGE.Services.Services.Externo
 {
-    public class EmailService(IOptions<EmailSettingsOption> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService, IHttpContextAccessor httpContextAccessor) : IEmailService
+    public class EmailService(IOptions<EmailSettingsOption> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService, IHttpContextAccessor httpContextAccessor, RequestContext requestContext) : IEmailService
     {
         private readonly EmailSettingsOption _opt = mailSettingsOptions.Value;
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMedicaoService _medicaoService = medicaoService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly RequestContext _requestContext = requestContext;
 
         public async Task<Response> SendEmail(EmailDataDto req)
         {
@@ -91,10 +95,32 @@ namespace SIGE.Services.Services.Externo
 
                     mensagem.Body = builder.ToMessageBody();
 
-                    using var mailClient = new SmtpClient();
-                    await mailClient.ConnectAsync(_opt.Server, _opt.Port, SecureSocketOptions.Auto);
-                    await mailClient.AuthenticateAsync(_opt.UserName, _opt.Password);
-                    await mailClient.SendAsync(mensagem);
+                    var logEmail = await _appDbContext.LogsEnvioEmails.FirstOrDefaultAsync(l => l.RelatorioMedicaoId == req.RelatorioMedicaoId) ?? new LogEnvioEmail
+                    {
+                        Email = req.Contato.EmailContato,
+                        CcoEmail = req.ContatosCCO.Count != 0 ? string.Join(",", req.ContatosCCO.Select(c => c.EmailContato)) : null,
+                        RelatorioMedicaoId = req.RelatorioMedicaoId,
+                        UsuarioEnvioId = _requestContext.UsuarioId
+                    };
+
+                    try
+                    {
+                        using var mailClient = new SmtpClient();
+                        await mailClient.ConnectAsync(_opt.Server, _opt.Port, SecureSocketOptions.Auto);
+                        await mailClient.AuthenticateAsync(_opt.UserName, _opt.Password);
+                        logEmail.Response = await mailClient.SendAsync(mensagem);
+                    }
+                    catch (Exception e)
+                    {
+                        logEmail.InnerException = e.InnerException?.Message ?? e.Message;
+                    }
+
+                    if (logEmail?.Id != null)
+                        _= _appDbContext.LogsEnvioEmails.Update(logEmail);
+                    else
+                        _= await _appDbContext.LogsEnvioEmails.AddAsync(logEmail);
+                    
+                    _ = await _appDbContext.SaveChangesAsync();
 
                     if (!_opt.Imap.IsNullOrEmpty())
                     {
@@ -122,7 +148,7 @@ namespace SIGE.Services.Services.Externo
                 {
                     relatorio.Fase = EFaseMedicao.ENVIO_EMAIL;
                     _appDbContext.RelatoriosMedicao.Update(relatorio);
-                    _ = await _appDbContext.SaveChangesAsync();
+                    _= await _appDbContext.SaveChangesAsync();
                 }
 
                 return ret.SetOk();
@@ -174,6 +200,14 @@ namespace SIGE.Services.Services.Externo
         public async Task<Response> OpenEmail(Guid req)
         {
             var ret = new Response();
+
+            var logEmail = await _appDbContext.LogsEnvioEmails.FirstOrDefaultAsync(l => l.RelatorioMedicaoId == req);
+            if (logEmail != null)
+            {
+                logEmail.Aberto = true;
+                _= _appDbContext.LogsEnvioEmails.Update(logEmail);
+                _ = await _appDbContext.SaveChangesAsync();
+            }
 
             return ret.SetOk();
         }

@@ -14,6 +14,6 @@ namespace SIGE.Core.Models.Sistema.Administrativo
         public bool Aberto { get; set; } = false;
 
         public UsuarioModel? UsuarioEnvio { get; set; }
-        public RelatorioMedicaoModel? RelatorioMedicaoModel { get; set; }
+        public RelatorioMedicaoModel? RelatorioMedicao { get; set; }
     }
 }
