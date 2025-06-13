@@ -12,6 +12,7 @@ namespace SIGE.Core.Models.Sistema.Administrativo
         public Guid? UsuarioEnvioId { get; set; }
         public Guid? RelatorioMedicaoId { get; set; }
         public bool Aberto { get; set; } = false;
+        public DateTime? DataAbertura { get; set; }
 
         public UsuarioModel? UsuarioEnvio { get; set; }
         public RelatorioMedicaoModel? RelatorioMedicao { get; set; }

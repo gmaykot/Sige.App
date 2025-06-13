@@ -19,7 +19,9 @@ using SIGE.Core.Options;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Externo;
 using SIGE.Services.Interfaces.Geral;
+using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace SIGE.Services.Services.Externo
 {
@@ -205,11 +207,48 @@ namespace SIGE.Services.Services.Externo
             if (logEmail != null)
             {
                 logEmail.Aberto = true;
+                logEmail.DataAbertura = DataSige.Hoje();
                 _= _appDbContext.LogsEnvioEmails.Update(logEmail);
                 _ = await _appDbContext.SaveChangesAsync();
             }
 
             return ret.SetOk();
+        }
+
+        public async Task<Response> ObterHistorico()
+        {
+            var ret = new Response();
+            var res = await _appDbContext.LogsEnvioEmails.Include(l => l.UsuarioEnvio).Include(l => l.RelatorioMedicao).ThenInclude(r => r.Contrato).OrderByDescending(l => l.RelatorioMedicao.MesReferencia).ToListAsync();
+            if (res != null)
+            {
+                var resultado = res
+                    .GroupBy(a => a.RelatorioMedicao.MesReferencia)
+                    .Select(g => new
+                    {
+                        data = new
+                        {
+                            mesReferencia = g.Key.ToString("MM/yyyy"),
+                            tipo = "group",
+                            qtdItens = g.Count()
+                        },
+                        children = g.Select(a => new
+                        {
+                            data = new
+                            {
+                                grupoEmpresa = a.RelatorioMedicao.Contrato.DscGrupo,
+                                usuario = a.UsuarioEnvio.Apelido,
+                                dataEnvio = a.DataRegistro.ToString("dd/MM/yyyy HH:mm"),
+                                dataAbertura = a.DataAbertura?.ToString("dd/MM/yyyy HH:mm"),
+                                aberto = a.Aberto ? "SIM" : "NÃO",
+                                observacao = a.Response ?? a.InnerException,
+                            }
+                        }).ToList()
+                    })
+                    .ToList();
+                return ret.SetOk().SetData(resultado);
+            }
+
+            return ret.SetNotFound();
         }
     }
 }
