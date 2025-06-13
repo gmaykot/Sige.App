@@ -66,5 +66,6 @@ namespace SIGE.DataAccess.Context
         public DbSet<LancamentoAdicionalModel> LancamentosAdicionais { get; set; }
         public DbSet<TokenModel> Tokens { get; set; }
         public DbSet<EnergiaAcumuladaModel> EnergiasAcumuladas { get; set; }
+        public DbSet<LogEnvioEmail> LogsEnvioEmails { get; set; }
     }
 }
