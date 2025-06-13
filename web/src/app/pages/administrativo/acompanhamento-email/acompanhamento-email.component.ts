@@ -50,7 +50,7 @@ export class AcompanhamentoEmailComponent implements OnInit {
   };
 
   customColumn = 'mesReferencia';
-  defaultColumns = [ 'grupoEmpresa', 'dataEnvio', 'dataAbertura', 'usuario', 'aberto', 'qtdItens'];
+  defaultColumns = [ 'grupoEmpresa', 'dataEnvio', 'dataAbertura', 'usuario', 'qtdItens'];
   allColumns = [this.customColumn, ...this.defaultColumns];
 
   dataSource: NbTreeGridDataSource<FSEntry>;
