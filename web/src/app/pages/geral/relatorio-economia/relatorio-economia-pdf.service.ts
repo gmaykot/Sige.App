@@ -185,6 +185,28 @@ export class RelatorioEconomiaPdfService {
       ...desenharBordasPersonalizadas,
     };
 
+    const resetEstilosTabela = {
+      headStyles: {
+        fontSize: 6,
+        // fillColor: "#f5f9fc",
+        textColor: "#4285F4",
+        fontStyle: "bold" as const,
+        halign: "center" as const,
+        valign: "middle" as const,
+        cellPadding: 3,
+        lineColor: "#FFFFFF",
+      },
+      bodyStyles: {
+        fontSize: 6,
+        textColor: "#333333",
+        fontStyle: "normal" as const,
+        halign: "center" as const,
+        valign: "middle" as const,
+        cellPadding: 3,
+        lineColor: "#FFFFFF",
+      },
+    };
+
     /* SEÇÃO DADOS EMPRESA ---------------------------------------------------------------------------- */
     const secaoEmpresaMarginTop = criarTituloSecao(
       "DADOS EMPRESA",
@@ -218,7 +240,7 @@ export class RelatorioEconomiaPdfService {
         lineColor: "#DDDDDD",
         lineWidth: 0.5,
       },
-      ...estilosTabela,
+      ...resetEstilosTabela,
     };
 
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela1);
@@ -262,13 +284,13 @@ export class RelatorioEconomiaPdfService {
           },
         ],
       ],
-      inicioMarginTop: margintTopTabelaDinamico + margins.headerMarginTop,
+      inicioMarginTop: margintTopTabelaDinamico,
       theme: "plain",
       styles: {
         lineColor: "#DDDDDD",
         lineWidth: 0.5,
       },
-      ...estilosTabela,
+      ...resetEstilosTabela,
     };
 
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela2);
