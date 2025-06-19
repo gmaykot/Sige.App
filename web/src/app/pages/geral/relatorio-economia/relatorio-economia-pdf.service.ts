@@ -212,7 +212,7 @@ export class RelatorioEconomiaPdfService {
           { content: cabecalho.concessao, styles: { halign: "left" as const } },
         ],
       ],
-      inicioMarginTop: secaoEmpresaMarginTop,
+      inicioMarginTop: secaoEmpresaMarginTop - margins.marginXsTop,
       theme: "plain",
       styles: {
         lineColor: "#DDDDDD",
@@ -274,7 +274,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela2);
     margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
 
-    /* SEÇÃO MERCADO CATIVO E LIVE ----------------------------------------------------------------------------- */
+    /* SEÇÃO MERCADO CATIVO E LIVRE ----------------------------------------------------------------------------- */
     const criarLinhaLancamento = (lancamento: ILancamentoRelatorioFinal) => {
       const temDescricaoSignificativa =
         lancamento.descricao && lancamento.descricao.trim() !== "";
@@ -459,7 +459,7 @@ export class RelatorioEconomiaPdfService {
             ],
           ],
           linhas: linhas,
-          inicioMarginTop: secaoGrupoMarginTop,
+          inicioMarginTop: secaoGrupoMarginTop - margins.marginXsTop,
           theme: "plain",
           styles: {
             lineColor: "#DDDDDD",
