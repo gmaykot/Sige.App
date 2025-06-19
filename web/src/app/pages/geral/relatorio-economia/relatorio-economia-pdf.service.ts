@@ -72,33 +72,41 @@ export class RelatorioEconomiaPdfService {
     };
 
     const criarTituloSecao = (texto: string, marginTop: number) => {
-      return this.pdfConfig.adicionarTextoMultilinha(doc, [texto], {
-        fontSize: 7,
-        fontStyle: "bold",
-        textColor: "#000",
-        inicioMarginTop: marginTop,
-        inicioMarginLeft: margins.marginLeft,
+      return this.pdfConfig.adicionarTextoHorizontal(doc, {
+        textoEsquerda: texto,
+        marginTop: marginTop,
+        tema: "rotulo",
+        propriedadesPersonalizadas: {
+          fontSize: 6,
+        },
       });
     };
 
-    /* LOGO ---------------------------------------------------------------- */
-    const logoImage = new Image();
-    logoImage.src = "assets/images/logo.png";
-
-    let logoWidth = 140; // Largura padrão
-    let logoHeight = 57; // Altura padrão
-
-    const logoMarginTop = margins.marginTop;
-
+    /* LOGO & TITULO CABEÇALHO ---------------------------------------------------------------- */
     this.pdfConfig.addImagem(doc, {
       src: "assets/images/logo.png",
       marginLeft: margins.marginLeft,
-      marginTop: logoMarginTop,
-      width: logoWidth,
-      height: logoHeight,
+      marginTop: margins.marginTop,
+      width: 130,
+      height: 57,
     });
 
-    const imageBottomY = logoMarginTop + logoHeight + 10;
+    const dataHoje = new Date();
+    const dataOptions = { month: "numeric" as const, year: "numeric" as const };
+    const dataFormatada = dataHoje.toLocaleDateString("pt-BR", dataOptions);
+
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: `Relatório de Economia ${cabecalho.mesReferencia}`,
+      x: margins.marginLeft + 130 + 20,
+      y: margins.marginTop + 57 / 2,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 9
+      },
+    });
+
+    const imageBottomY = margins.marginTop + 57 + 10;
 
     const desenharBordasPersonalizadas = {
       willDrawCell: function (data) {
