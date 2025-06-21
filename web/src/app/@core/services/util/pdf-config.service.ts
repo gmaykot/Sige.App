@@ -39,7 +39,7 @@ export interface CustomUserOptions extends Omit<UserOptions, "head" | "body"> {
 
 // Múltiplos de 4
 export const margins = {
-  marginXsTop: 5,
+  marginXsTop: 6,
   marginTop: 16,
   marginLgTop: 60,
   marginLeft: 36,
@@ -61,13 +61,13 @@ export class PdfConfigService {
     padrao: {
       fontSize: 9,
       fontStyle: "normal" as const,
-      textColor: "#000000",
+      textColor: "#2E2E2E",
       lineSpacing: 12,
     },
     cabecalho: {
-      fontSize: 12,
+      fontSize: 11,
       fontStyle: "bold" as const,
-      textColor: "#333333",
+      textColor: "#2e2e2e",
       lineSpacing: 16,
     },
     subtitulo: {
@@ -79,7 +79,7 @@ export class PdfConfigService {
     rotulo: {
       fontSize: 9,
       fontStyle: "bold" as const,
-      textColor: "#000000",
+      textColor: "#2E2E2E",
       lineSpacing: 12,
     },
     valor: {
@@ -90,7 +90,6 @@ export class PdfConfigService {
     },
   };
 
-  // Método para obter um tema com possibilidade de sobrescrever propriedades
   public obterEstiloTextoTema(
     nomeTema: string = "padrao",
     propriedadesPersonalizadas: Partial<EstiloTextoPdf> = {}
@@ -112,7 +111,7 @@ export class PdfConfigService {
         lineWidth: 1.5,
         lineColor: "#F5F5F5",
         fillColor: "#E9E9E9",
-        textColor: "#000000",
+        textColor: "#2e2e2e",
         fontStyle: "bold",
         halign: "center",
         ...options.headStyles,
@@ -122,7 +121,7 @@ export class PdfConfigService {
         lineWidth: 1.5,
         lineColor: "#F5F5F5",
         fillColor: "#FFFFFF",
-        textColor: "#000000",
+        textColor: "#464646",
         fontStyle: "normal",
         halign: "center",
         ...options.bodyStyles,
@@ -288,7 +287,7 @@ export class PdfConfigService {
       temaValor = "valor",
       propriedadesPersonalizadasRotulo = {},
       propriedadesPersonalizadasValor = {},
-      lineColor = "#000000",
+      lineColor = "#464646",
       spacing = 5,
     } = opcoes;
 
@@ -419,7 +418,7 @@ export class PdfConfigService {
       fontStyle = "normal",
       align = "left",
       lineSpacing = 12,
-      textColor = "#000000",
+      textColor = "#464646",
       inicioMarginTop = margins.marginTop,
       inicioMarginLeft,
     } = options;
