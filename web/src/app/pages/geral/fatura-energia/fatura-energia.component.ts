@@ -185,6 +185,7 @@ export class FaturaEnergiaComponent implements OnInit {
   }
 
   async emitirFatura() {
+    this.loading = true;
     await this.faturaEnergiaService.post(this.populateModel(this.control.value)).then(async (response: IResponseInterface<IFaturaEnergia>) => {
       if (response.success) {
         this.alertService.showSuccess("Fatura emitida com sucesso.", 20000);
@@ -195,6 +196,8 @@ export class FaturaEnergiaComponent implements OnInit {
       await this.ngOnInit();
     }).catch((error) => {
       this.alertService.showError(error.message, 20000);
+    }).finally(async () => {
+      this.loading = false;
     });
   }
 
@@ -264,7 +267,7 @@ export class FaturaEnergiaComponent implements OnInit {
         this.control.patchValue({
           validado: valid
         });
-  
+        await this.ngOnInit();
       } else {
         this.alertService.showError(response.message, 20000);
       }

@@ -11,7 +11,9 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
         public double? PIS { get; set; }
         public double? Cofins { get; set; }
         public double? Proinfa { get; set; }
-        
+
+        public double? BandeiraAdicional { get; set; }
+
         public double? KWPonta { get; set; }
         public double? KWForaPonta { get; set; }
         public double? KWhPontaTUSD { get; set; }
@@ -19,6 +21,12 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
         public double? KWhPontaTE { get; set; }
         public double? KWhForaPontaTE { get; set; }
         public double? ReatKWhPFTE { get; set; }
+
+
+        public double? BandeiraAdicionalComImposto
+        {
+            get => CalculoBaseComImposto(BandeiraAdicional);
+        }
 
         public double? KWPontaComImposto
         {

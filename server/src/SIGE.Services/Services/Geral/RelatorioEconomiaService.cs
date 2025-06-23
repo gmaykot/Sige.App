@@ -10,6 +10,7 @@ using SIGE.Core.Models.Dto.Gerencial;
 using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
 using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
+using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
@@ -71,11 +72,13 @@ namespace SIGE.Services.Services.Geral
                             var imposto = _mapper.Map<ImpostoConcessionariaDto>(await _appDbContext.ImpostosConcessionarias.FirstOrDefaultAsync(i => i.ConcessionariaId == fatura.ConcessionariaId && i.MesReferencia == fatura.MesReferencia));
                             var salarioMinimo = await _appDbContext.SalariosMinimos.OrderByDescending(s => s.VigenciaInicial).FirstOrDefaultAsync();
                             var energiaAcumulada = await _appDbContext.EnergiasAcumuladas.OrderByDescending(e => e.MesReferencia).FirstOrDefaultAsync(e => e.PontoMedicaoId == pontoMedicaoId);
-
+                            var bandeiraVigente = await _appDbContext.BandeiraTarifariaVigente.Include(b => b.BandeiraTarifaria).OrderByDescending(b => b.MesReferencia).FirstOrDefaultAsync(b => DateOnly.FromDateTime(b.MesReferencia) == fatura.MesReferencia);
+                            
                             tarifaCalculada.ICMS = consumo.Icms;
                             tarifaCalculada.Cofins = imposto.ValorCofins;
                             tarifaCalculada.Proinfa = consumo.Proinfa;
                             tarifaCalculada.PIS = imposto.ValorPis;
+                            tarifaCalculada.BandeiraAdicional = bandeiraVigente.ValorBandeira();
 
                             res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste.ToString("d", new CultureInfo("pt-BR"))}";
                             var relatorio = new RelatorioFinalDto
@@ -151,10 +154,10 @@ namespace SIGE.Services.Services.Geral
                 totalDevido = totalDevido * (faturamento?.Porcentagem / 100);
 
             if (faturamento?.ValorFixo != null && faturamento.ValorFixo > 0)
-                totalDevido = totalDevido - faturamento?.ValorFixo;
+                totalDevido = totalDevido + faturamento?.ValorFixo;
 
             if (faturamento?.QtdeSalarios != null && faturamento.QtdeSalarios > 0)
-                totalDevido = totalDevido - (faturamento?.QtdeSalarios + valorSalarioMinimo);
+                totalDevido = totalDevido + (faturamento?.QtdeSalarios + valorSalarioMinimo);
 
             return new LancamentoComparativoDto
             {
@@ -271,31 +274,29 @@ namespace SIGE.Services.Services.Geral
                                         TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
-                                        Descricao = "Adicional Bandeira Verde Ponta",
-                                        Montante = fatura.ValorAdicionalBandeiraPonta,
-                                        TipoMontante = ETipoMontante.KW,
-                                        Tarifa = 0.31480680,
-                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                        Descricao = "Adicional Bandeira Ponta",
+                                        Tarifa = tarifaCalculada.BandeiraAdicional,
+                                        TipoTarifa = ETipoTarifa.RS_KWH,
+                                        Total = fatura.ValorConsumoTEPonta*tarifaCalculada.BandeiraAdicionalComImposto
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Adicional Bandeira Fora de Ponta",
-                                        Montante = fatura.ValorAdicionalBandeiraForaPonta,
-                                        TipoMontante = ETipoMontante.KW,
-                                        Tarifa = 0.31480680,
-                                        TipoTarifa = ETipoTarifa.RS_KWH
+                                        Tarifa = tarifaCalculada.BandeiraAdicional,
+                                        TipoTarifa = ETipoTarifa.RS_KWH,
+                                        Total = fatura.ValorConsumoTEForaPonta*tarifaCalculada.BandeiraAdicionalComImposto
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Consumo Medido Reativo - Ponta",
                                         Montante = fatura.ValorConsumoMedidoReativoPonta,
                                         TipoMontante = ETipoMontante.KW,
-                                        Tarifa = 0.31480680,
+                                        Tarifa = 0.36562273,
                                         TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Consumo Medido Reativo - Fora de Ponta",
                                         Montante = fatura.ValorConsumoMedidoReativoForaPonta,
                                         TipoMontante = ETipoMontante.KW,
-                                        Tarifa =  0.36492267,
+                                        Tarifa =  0.36559105,
                                         TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                 ],
@@ -310,7 +311,7 @@ namespace SIGE.Services.Services.Geral
 
             foreach (var sg in grupo.SubGrupos)
             {
-                foreach (var lc in sg.Lancamentos)
+                foreach (var lc in sg.Lancamentos.Where(v => v.Total == 0))
                 {
                     lc.Total = (lc.Montante ?? 0) * (lc.Tarifa ?? 0);
                 }
