@@ -1,7 +1,7 @@
 export class DefaultServiceUtil<T> {
 
     private datePatternMesANo = /^[0-9]{2}\/[0-9]{4}$/; // Validação do formato MM/yyyy
-    private datePatternFullUs = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?$/; // Validação do formato dd/MM/yyyy
+    private datePatternFullUs = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d+)?)?$/; // Validação do formato dd/MM/yyyy
     private datePatternFullBr = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/; // Validação do formato yyyy-MM-ddTHH:mm:ss
     private datePatternFullBrShort = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/; // Validação do formato dd/MM/yyyy
 
