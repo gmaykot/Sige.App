@@ -49,6 +49,7 @@ export class FaturaEnergiaComponent implements OnInit {
     descricao: [null, Validators.required],
     valor: [null, Validators.required],
     tipo: [null, Validators.required],
+    naturezaMercado: [null, Validators.required],
     contabilizaFatura: [true, Validators.required],
     tipoCCEE: [false, Validators.required],
   });
@@ -95,10 +96,9 @@ export class FaturaEnergiaComponent implements OnInit {
       valorConsumoMedidoReativoPonta: [0, [Validators.required, Validators.min(0)]],
       valorConsumoMedidoReativoForaPonta: [0, [Validators.required, Validators.min(0)]],
     
-      // Adicional Bandeira, Subvenção e Desconto TUSD
+      // Adicional Bandeira e Desconto TUSD
       valorAdicionalBandeiraPonta: [0, [Validators.required, Validators.min(0)]],
       valorAdicionalBandeiraForaPonta: [0, [Validators.required, Validators.min(0)]],
-      valorSubvencaoTarifaria: [0, [Validators.required, Validators.min(0)]],
       valorDescontoTUSD: [0, [Validators.required, Validators.min(0)]],
     
       lancamentosAdicionais: [null]

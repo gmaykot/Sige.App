@@ -45,7 +45,6 @@ namespace SIGE.Core.Models.Sistema.Geral.FaturaEnergia
         public double? ValorAdicionalBandeiraPonta { get; set; }
         public required double ValorAdicionalBandeiraForaPonta { get; set; }
 
-        public required double ValorSubvencaoTarifaria { get; set; }
         public required double ValorDescontoTUSD { get; set; }
         #endregion
 

@@ -60,6 +60,8 @@ import { MoedaParentesesPipe } from '../@core/pipe/moeda-parenteses.pipe';
 import { EnergiaAcumuladaComponent } from './gerencial/energia-acumulada/energia-acumulada.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { AcompanhamentoEmailComponent } from './administrativo/acompanhamento-email/acompanhamento-email.component';
+import { IntegracaoCceeComponent } from './administrativo/integracao-ccee/integracao-ccee.component';
+import { SharedModule } from '../@shared/shared.module';
 
 @NgModule({
   imports: [
@@ -95,6 +97,7 @@ import { AcompanhamentoEmailComponent } from './administrativo/acompanhamento-em
     ReactiveFormsModule,
     ThemeModule,
     PagesRoutingModule,
+    SharedModule,
     // Módulos com .forRoot()
     NbDatepickerModule.forRoot(),
     NbDialogModule.forRoot(),
@@ -149,7 +152,8 @@ import { AcompanhamentoEmailComponent } from './administrativo/acompanhamento-em
     ValorAnualComponent,
     ValorConcessionariaComponent,
     ValorMensalComponent,
-    AcompanhamentoEmailComponent
+    AcompanhamentoEmailComponent,
+    IntegracaoCceeComponent
   ],
   providers: [
     AlertService,

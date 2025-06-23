@@ -27,6 +27,7 @@ import { GhostComponent } from './administrativo/ghost/ghost.component';
 import { UnauthorizedComponent } from '../@core/pages/unauthorized/unauthorized.component';
 import { EnergiaAcumuladaComponent } from './gerencial/energia-acumulada/energia-acumulada.component';
 import { AcompanhamentoEmailComponent } from './administrativo/acompanhamento-email/acompanhamento-email.component';
+import { IntegracaoCceeComponent } from './administrativo/integracao-ccee/integracao-ccee.component';
 
 const routes: Routes = [{
   path: '',
@@ -119,6 +120,11 @@ const routes: Routes = [{
     {
       path: 'acompanhamento-email',
       component: AcompanhamentoEmailComponent,
+      canActivate: [ SAGuard ],
+    },
+    {
+      path: 'integracao-ccee',
+      component: IntegracaoCceeComponent,
       canActivate: [ SAGuard ],
     },
     {

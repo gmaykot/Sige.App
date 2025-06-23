@@ -2,6 +2,13 @@ import { Injectable } from "@angular/core";
 import jsPDF, { TextOptionsLight } from "jspdf";
 import autoTable, { Styles, UserOptions } from "jspdf-autotable";
 
+export interface EstiloTextoPdf {
+  fontSize: number;
+  fontStyle: "normal" | "bold" | "italic" | "bolditalic";
+  textColor: string;
+  lineSpacing: number;
+}
+
 export interface PdfTextoType {
   text: string;
   isBold?: boolean;
@@ -32,13 +39,14 @@ export interface CustomUserOptions extends Omit<UserOptions, "head" | "body"> {
 
 // Múltiplos de 4
 export const margins = {
+  marginXsTop: 6,
   marginTop: 16,
   marginLgTop: 60,
   marginLeft: 36,
   headerMarginTop: 8,
   itemSpacing: 20,
   sectionXsMarginTop: 16,
-  sectionMarginTop: 36,
+  sectionMarginTop: 20,
   sectionMdMarginTop: 40,
   tableMarginTop: 16,
   right: 595 - 36,
@@ -48,6 +56,47 @@ export const margins = {
 @Injectable({ providedIn: "root" })
 export class PdfConfigService {
   constructor() {}
+
+  private estiloTextoTemas = {
+    padrao: {
+      fontSize: 9,
+      fontStyle: "normal" as const,
+      textColor: "#2E2E2E",
+      lineSpacing: 12,
+    },
+    cabecalho: {
+      fontSize: 11,
+      fontStyle: "bold" as const,
+      textColor: "#2e2e2e",
+      lineSpacing: 16,
+    },
+    subtitulo: {
+      fontSize: 10,
+      fontStyle: "italic" as const,
+      textColor: "#555555",
+      lineSpacing: 14,
+    },
+    rotulo: {
+      fontSize: 9,
+      fontStyle: "bold" as const,
+      textColor: "#2E2E2E",
+      lineSpacing: 12,
+    },
+    valor: {
+      fontSize: 9,
+      fontStyle: "normal" as const,
+      textColor: "#333333",
+      lineSpacing: 12,
+    },
+  };
+
+  public obterEstiloTextoTema(
+    nomeTema: string = "padrao",
+    propriedadesPersonalizadas: Partial<EstiloTextoPdf> = {}
+  ): EstiloTextoPdf {
+    const temaBase = this.estiloTextoTemas[nomeTema] || this.estiloTextoTemas.padrao;
+    return { ...temaBase, ...propriedadesPersonalizadas };
+  }
 
   public criarTabela(doc: jsPDF, options: CustomUserOptions): void {
     autoTable(doc, {
@@ -62,7 +111,7 @@ export class PdfConfigService {
         lineWidth: 1.5,
         lineColor: "#F5F5F5",
         fillColor: "#E9E9E9",
-        textColor: "#000000",
+        textColor: "#2e2e2e",
         fontStyle: "bold",
         halign: "center",
         ...options.headStyles,
@@ -72,7 +121,7 @@ export class PdfConfigService {
         lineWidth: 1.5,
         lineColor: "#F5F5F5",
         fillColor: "#FFFFFF",
-        textColor: "#000000",
+        textColor: "#464646",
         fontStyle: "normal",
         halign: "center",
         ...options.bodyStyles,
@@ -84,6 +133,271 @@ export class PdfConfigService {
       },
       ...options,
     });
+  }
+
+  /**
+   * Adiciona textos alinhados horizontalmente (esquerda, centro, direita) em uma mesma linha
+   * @param doc Instância do PDF
+   * @param opcoes Configurações do texto
+   * @returns Posição vertical final após adicionar os textos
+   */
+  public adicionarTextoHorizontal(
+    doc: jsPDF,
+    opcoes: {
+      textoEsquerda?: string;
+      textoCentro?: string;
+      textoDireita?: string;
+      marginTop?: number;
+      tema?: string;
+      propriedadesPersonalizadas?: Partial<EstiloTextoPdf>;
+    } = {}
+  ): number {
+    const {
+      textoEsquerda,
+      textoCentro,
+      textoDireita,
+      marginTop = margins.marginTop,
+      tema = "padrao",
+      propriedadesPersonalizadas = {},
+    } = opcoes;
+
+    const estilo = this.obterEstiloTextoTema(tema, propriedadesPersonalizadas);
+    const { fontSize, fontStyle, textColor, lineSpacing } = estilo;
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const [font, style] = this.obterFonteEEstilo(fontStyle);
+
+    doc.setFont(font, style);
+    doc.setFontSize(fontSize);
+    doc.setTextColor(textColor);
+
+    if (textoEsquerda) {
+      doc.text(textoEsquerda, margins.marginLeft, marginTop, { align: "left" });
+    }
+
+    if (textoCentro) {
+      doc.text(textoCentro, pageWidth / 2, marginTop, { align: "center" });
+    }
+
+    if (textoDireita) {
+      doc.text(textoDireita, pageWidth - margins.marginLeft, marginTop, {
+        align: "right",
+      });
+    }
+
+    return marginTop + lineSpacing;
+  }
+
+  /**
+   * Adiciona texto em posição específica com controle preciso de coordenadas
+   * @param doc Instância do PDF
+   * @param opcoes Configurações do texto
+   * @returns Objeto com posições finais e dimensões do texto
+   */
+  public adicionarTextoEmPosicao(
+    doc: jsPDF,
+    opcoes: {
+      texto: string;
+      x: number;
+      y: number;
+      tema?: string;
+      propriedadesPersonalizadas?: Partial<EstiloTextoPdf>;
+      align?: "left" | "center" | "right";
+    }
+  ): {
+    finalX: number;
+    finalY: number;
+    width: number;
+    height: number;
+  } {
+    const {
+      texto,
+      x,
+      y,
+      tema = "padrao",
+      propriedadesPersonalizadas = {},
+      align = "left",
+    } = opcoes;
+
+    const estilo = this.obterEstiloTextoTema(tema, propriedadesPersonalizadas);
+    const { fontSize, fontStyle, textColor, lineSpacing } = estilo;
+
+    const [font, style] = this.obterFonteEEstilo(fontStyle);
+
+    doc.setFont(font, style);
+    doc.setFontSize(fontSize);
+    doc.setTextColor(textColor);
+    doc.text(texto, x, y, { align });
+
+    // Calcular dimensões do texto
+    const textDimensions = doc.getTextDimensions(texto);
+
+    // Calcular posição final com base no alinhamento
+    let finalX = x;
+    if (align === "center") {
+      finalX = x + textDimensions.w / 2;
+    } else if (align === "right") {
+      finalX = x - textDimensions.w;
+    } else {
+      finalX = x + textDimensions.w;
+    }
+
+    // Calcular posição vertical final
+    const finalY = y + lineSpacing;
+
+    return {
+      finalX,
+      finalY,
+      width: textDimensions.w,
+      height: textDimensions.h,
+    };
+  }
+
+  /**
+   * Adiciona textos com espaçamento entre eles (estilo formulário)
+   * @param doc Instância do PDF
+   * @param options Opções de configuração
+   * @returns Posição vertical final após a adição dos textos
+   */
+  public adicionarCampoFormulario(
+    doc: jsPDF,
+    opcoes: {
+      rotulo: string;
+      valor: string;
+      y: number;
+      x?: number;
+      width?: number;
+      desenharLinha?: boolean;
+      temaRotulo?: string;
+      temaValor?: string;
+      propriedadesPersonalizadasRotulo?: Partial<EstiloTextoPdf>;
+      propriedadesPersonalizadasValor?: Partial<EstiloTextoPdf>;
+      lineColor?: string;
+      spacing?: number;
+    }
+  ): number {
+    const {
+      rotulo,
+      valor,
+      y,
+      x = margins.marginLeft,
+      width = doc.internal.pageSize.getWidth() - 2 * margins.marginLeft,
+      desenharLinha = false,
+      temaRotulo = "rotulo",
+      temaValor = "valor",
+      propriedadesPersonalizadasRotulo = {},
+      propriedadesPersonalizadasValor = {},
+      lineColor = "#464646",
+      spacing = 5,
+    } = opcoes;
+
+    // Adicionar o rótulo à esquerda usando o tema de rótulo
+    const posRotulo = this.adicionarTextoEmPosicao(doc, {
+      texto: rotulo,
+      x,
+      y,
+      tema: temaRotulo,
+      propriedadesPersonalizadas: propriedadesPersonalizadasRotulo,
+    });
+
+    // Adicionar o valor após o rótulo usando o tema de valor
+    const posValor = this.adicionarTextoEmPosicao(doc, {
+      texto: valor,
+      x: posRotulo.finalX + spacing,
+      y,
+      tema: temaValor,
+      propriedadesPersonalizadas: propriedadesPersonalizadasValor,
+    });
+
+    // Desenhar linha entre o rótulo e o valor, se solicitado
+    if (desenharLinha) {
+      const inicioLinha = posRotulo.finalX + 5;
+      const fimLinha = x + width - posValor.width - 10;
+
+      doc.setDrawColor(lineColor);
+      doc.setLineDashPattern([1, 1], 0);
+      doc.line(inicioLinha, y, fimLinha, y);
+      doc.setLineDashPattern([], 0); // Resetar o padrão da linha
+    }
+
+    return posRotulo.finalY;
+  }
+
+  /**
+   * Adiciona texto horizontal com dois campos (rótulo/valor) - um à esquerda e outro à direita
+   * @param doc Instância do PDF
+   * @param opcoes Configurações do cabeçalho
+   * @returns Posição vertical final após adicionar o cabeçalho
+   */
+  public adicionarTextoHorizontalComDoisCampos(
+    doc: jsPDF,
+    opcoes: {
+      rotuloEsquerda: string;
+      valorEsquerda: string;
+      rotuloDireita: string;
+      valorDireita: string;
+      y?: number;
+      tema?: string;
+      propriedadesPersonalizadas?: Partial<EstiloTextoPdf>;
+      spacing?: number;
+    }
+  ): number {
+    const {
+      rotuloEsquerda,
+      valorEsquerda,
+      rotuloDireita,
+      valorDireita,
+      y = margins.marginTop,
+      tema = "cabecalho",
+      propriedadesPersonalizadas = {},
+      spacing = 5,
+    } = opcoes;
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    // Campo esquerdo
+    const posRotuloEsq = this.adicionarTextoEmPosicao(doc, {
+      texto: rotuloEsquerda,
+      x: margins.marginLeft,
+      y,
+      tema,
+      propriedadesPersonalizadas,
+    });
+
+    this.adicionarTextoEmPosicao(doc, {
+      texto: valorEsquerda,
+      x: posRotuloEsq.finalX + spacing,
+      y,
+      tema,
+      propriedadesPersonalizadas: {
+        ...propriedadesPersonalizadas,
+        fontStyle: "normal",
+      },
+    });
+
+    // Campo direito
+    const posRotuloDir = this.adicionarTextoEmPosicao(doc, {
+      texto: rotuloDireita,
+      x: pageWidth - margins.marginLeft - 150,
+      y,
+      tema,
+      propriedadesPersonalizadas,
+    });
+
+    this.adicionarTextoEmPosicao(doc, {
+      texto: valorDireita,
+      x: posRotuloDir.finalX + spacing,
+      y,
+      tema,
+      propriedadesPersonalizadas: {
+        ...propriedadesPersonalizadas,
+        fontStyle: "normal",
+      },
+    });
+
+    // Espaçamento após o cabeçalho
+    const estilo = this.obterEstiloTextoTema(tema, propriedadesPersonalizadas);
+    return y + estilo.lineSpacing + 3;
   }
 
   public adicionarTextoMultilinha(
@@ -104,7 +418,7 @@ export class PdfConfigService {
       fontStyle = "normal",
       align = "left",
       lineSpacing = 12,
-      textColor = "#000000",
+      textColor = "#464646",
       inicioMarginTop = margins.marginTop,
       inicioMarginLeft,
     } = options;

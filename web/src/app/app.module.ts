@@ -18,12 +18,18 @@ import {
   NbMenuModule,
   NbSidebarModule,
   NbButtonModule,
+  NbActionsModule,
+  NbCardModule,
+  NbSpinnerModule,
 } from '@nebular/theme';
 import { registerLocaleData } from '@angular/common';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { SharedModule } from './@shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    SharedModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,
@@ -34,9 +40,13 @@ import { registerLocaleData } from '@angular/common';
     NbMenuModule.forRoot(),
     NbDatepickerModule.forRoot(), 
     NbDialogModule.forRoot(),
+    NbActionsModule,      
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
     NbButtonModule,
+    NbCardModule,
+    NbSpinnerModule,
+    Ng2SmartTableModule,
     NgxMaskModule.forRoot()
   ],
   providers: [

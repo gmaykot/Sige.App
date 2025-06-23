@@ -1,0 +1,12 @@
+<div class="row">
+    <!-- Título -->
+    <div class="table-header">
+      {{ title }}
+    </div>
+  
+    <!-- Coluna de ações -->
+    <div class="col-auto d-flex align-items-center gap-1">
+      <nb-action icon="plus-outline" (click)="edit()" *ngIf="showTableActions()"></nb-action>
+      <nb-action icon="question-mark-circle-outline" (click)="help()" class="warning" *ngIf="showHelp"></nb-action>
+    </div>
+</div>

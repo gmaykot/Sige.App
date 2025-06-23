@@ -469,12 +469,7 @@ namespace SIGE.Services.Services.Geral
                         TipoMontante = ETipoMontante.KW,
                         Tarifa =  0.36492267,
                         TipoTarifa = ETipoTarifa.RS_KW
-                    },
-                    new LancamentoRelatorioFinalDto {
-                        Descricao = "Subvenção Tarifária",
-                        Total=  fatura.ValorSubvencaoTarifaria,
-                        SubTotalizador = true
-                    },
+                    }
             ];
 
             return parte2;

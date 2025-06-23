@@ -180,19 +180,41 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
       "Iniciando a geração e download do relatório de economia em PDF.",
       120
     );
-    const chartDiv = this.chartInstance.getDom();
-    html2canvas(chartDiv).then(async (canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      if (this.relatorioFinal) {
-        this.relatorioEconomiaPdfService.downloadPDF(this.relatorioFinal, imgData);
-      } else {
-        await this.relatorioService.getFinalPdf(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia).then((r) => {
-          r.data.cabecalho = this.relatorioEconomia.cabecalho;
-          r.data.grupos.sort((a, b) => a.ordem - b.ordem);
-          this.relatorioEconomiaPdfService.downloadPDF(r.data, imgData);
-        });
+
+    try {
+      let graficoImagem = null;
+
+      if (this.chartInstance && this.chartInstance.getDom()) {
+        const chartDiv = this.chartInstance.getDom();
+
+        try {
+          const canvas = await html2canvas(chartDiv);
+          graficoImagem = canvas.toDataURL('image/png');
+        } catch (error) {
+          console.error('Erro ao gerar imagem do gráfico:', error); 
+        }
       }
-  });
+
+      if (this.relatorioFinal) {
+      this.relatorioEconomiaPdfService.downloadPDF(this.relatorioFinal, graficoImagem);
+    } else {
+      const response = await this.relatorioService.getFinalPdf(
+        this.relatorioEconomia.pontoMedicaoId, 
+        this.mesReferencia
+      );
+
+      if (response && response.data) {
+        response.data.cabecalho = this.relatorioEconomia.cabecalho;
+        response.data.grupos.sort((a, b) => a.ordem - b.ordem);
+        this.relatorioEconomiaPdfService.downloadPDF(response.data, graficoImagem);
+      } else {
+        this.alertService.showError("Não foi possível gerar os dados do relatório.");
+      }
+    }
+  } catch (error) {
+    console.error('Erro ao gerar PDF:', error);
+    this.alertService.showError("Ocorreu um erro ao gerar o PDF. Tente novamente.");
+  }
   }
 
   clear() {
