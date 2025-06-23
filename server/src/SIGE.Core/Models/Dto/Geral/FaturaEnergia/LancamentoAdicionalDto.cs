@@ -10,6 +10,7 @@ namespace SIGE.Core.Models.Dto.Geral.FaturaEnergia
         public required string Descricao { get; set; }
         public required double Valor { get; set; }
         public required ETipoLancamento Tipo { get; set; }
+        public required ETipoNaturezaMercado NaturezaMercado { get; set; }
         public required bool ContabilizaFatura { get; set; } = false;
         public required bool TipoCCEE { get; set; } = false;
     }

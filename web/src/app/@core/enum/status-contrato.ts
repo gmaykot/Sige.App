@@ -26,3 +26,10 @@ export const SEGMENTO =
     { id: 0, desc: 'VERDE'},
     { id: 1, desc: 'AZUL'}
 ]
+
+export const NATUREZA_MERCADO = 
+[
+    { id: 0, desc: 'CATIVO'},
+    { id: 1, desc: 'LIVRE'},
+    { id: 2, desc: 'CATIVO/LIVRE'}
+]

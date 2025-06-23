@@ -1,5 +1,5 @@
 import { DatePipe } from "@angular/common";
-import { TIPO_LANCAMENTO } from "../../@core/enum/status-contrato";
+import { NATUREZA_MERCADO, TIPO_LANCAMENTO } from "../../@core/enum/status-contrato";
 
 export const settingsFatura = {
   delete: {
@@ -76,6 +76,11 @@ export const settingsLancamentos = {
       type: "string",
       valuePrepareFunction: (value) => { return TIPO_LANCAMENTO.find(f => f.id == value)?.desc},
     },
+    naturezaMercado: {
+      title: "Natureza",
+      type: "string",
+      valuePrepareFunction: (value) => { return NATUREZA_MERCADO.find(f => f.id == value)?.desc},
+    },
     contabilizaFatura: {
       title: "Contabiliza",
       type: "string",
@@ -116,6 +121,11 @@ export const settingsLancamentosSemDelete = {
       title: "Tipo",
       type: "string",
       valuePrepareFunction: (value) => { return TIPO_LANCAMENTO.find(f => f.id == value)?.desc},
+    },
+    naturezaMercado: {
+      title: "Natureza",
+      type: "string",
+      valuePrepareFunction: (value) => { return NATUREZA_MERCADO.find(f => f.id == value)?.desc},
     },
     contabilizaFatura: {
       title: "Contabiliza",
