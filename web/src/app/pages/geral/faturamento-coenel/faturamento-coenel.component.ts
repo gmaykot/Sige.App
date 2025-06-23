@@ -96,6 +96,10 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
     super.onEdit();
   }
 
+  onHelp() {
+    
+  }
+
   onItemSelected(selectedItem: IDropDown) {
     this.control.get('pontoMedicaoId').setValue(null);
     if (selectedItem) {

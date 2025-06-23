@@ -91,23 +91,13 @@
     </div>
 </form>
 
-<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
-    <nb-card-header>
-      <div class="row">
-        <div class="table-header">
-            Faturamentos Cadastrados
-        </div>
-        <div *ngIf="!edit && habilitaOperacoes">
-          <div class="form-group">
-            <nb-actions size="small">
-              <nb-action icon="plus-outline" (click)="onEdit()"></nb-action>
-            </nb-actions>
-          </div>
-        </div>
-      </div>   </nb-card-header>
-  
-    <nb-card-body>
-      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelectCustom($event)">
-      </ng2-smart-table>
-    </nb-card-body>
-  </nb-card>
+<ngx-custom-registration 
+  title="Faturamentos Cadastrados" 
+  [showActions]="!edit" 
+  [showHelp]="true"
+  [settings]="settings" 
+  [source]="source"
+  (onEdit)="onEdit()" 
+  (onHelp)="onHelp()" 
+  (deleteConfirm)="onSelectCustom($event)">
+</ngx-custom-registration>
