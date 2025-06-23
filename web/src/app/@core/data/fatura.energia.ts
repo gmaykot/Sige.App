@@ -37,9 +37,9 @@ export interface IFaturaEnergia {
   valorConsumoMedidoReativoPonta: number | null;
   valorConsumoMedidoReativoForaPonta: number;
 
-  // Adicional Bandeira e Desconto TUSD
-  valorAdicionalBandeiraPonta: number | null;
-  valorAdicionalBandeiraForaPonta: number;
+  // Tarifa e Desconto TUSD
+  tarifaMedidaReativaPonta: number | null;
+  tarifaMedidaReativaForaPonta: number;
 
   valorDescontoTUSD: number;
 

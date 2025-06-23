@@ -11,6 +11,8 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
         public double? PIS { get; set; }
         public double? Cofins { get; set; }
         public double? Proinfa { get; set; }
+        public double? PercentualTUSD { get; set; }
+        public double? TotalPercentualTUSD { get; set; }
 
         public double? BandeiraAdicional { get; set; }
 
@@ -51,6 +53,16 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
         public double? KWhPontaTUSDComImposto
         {
             get => CalculoBaseComImposto(KWhPontaTUSD);
+        }
+        
+        public double? KWhForaPontaTUSDCalculadoComImposto
+        {
+            get
+            {
+                var fatorTusd = TotalPercentualTUSD - PercentualTUSD*100;
+                var total = (KWForaPontaComImposto * 1) * (fatorTusd + TotalPercentualTUSD);
+                return total/100; 
+            }
         }
 
         public double? KWhForaPontaTUSDComImposto
