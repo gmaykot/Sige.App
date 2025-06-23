@@ -10,6 +10,7 @@
         public decimal? TakeMaximo { get; set; }
         public bool DentroTake { get; set; }
         public decimal? ValorPerdas { get; set; }
+        public decimal? ValorPerdasReais { get; set; } = 3;
         public decimal? ValorConsumoTotal { get; set; }
         public FaturamentoMedicaoDto ResultadoFaturamento { get; set; }
     }

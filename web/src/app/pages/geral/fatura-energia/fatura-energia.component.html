@@ -94,43 +94,43 @@
                                     <div class="row" style="margin-bottom: 0.7rem;">
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName"  class="label">Contratada - Ponta*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaContratadaPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaContratadaPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Contratada - Fora de Ponta*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaContratadaForaPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaContratadaForaPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div> 
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName"  class="label">Faturada - Ponta (Consumida)*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaPontaConsumida" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaPontaConsumida" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>                                      
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Faturada - Fora de Ponta (Consumida)*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaForaPontaConsumida" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaForaPontaConsumida" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>                                      
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName"  class="label">Faturada - Ponta (Não Utilizada)*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaPontaNaoConsumida" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaPontaNaoConsumida" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>                                      
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Faturada - Fora de Ponta (Não Utilizada)*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaForaPontaNaoConsumida" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaFaturadaForaPontaNaoConsumida" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>                                      
                                         <div class="col-sm-4" *ngIf="showInput()">
                                             <label for="inputLastName"  class="label">Ultrapassagem - Ponta*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaUltrapassagemPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaUltrapassagemPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>  
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Ultrapassagem - Fora de Ponta*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaUltrapassagemForaPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaUltrapassagemForaPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>  
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Reativa - Ponta*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaReativaPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaReativaPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div> 
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Reativa - Fora de Ponta*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaReativaForaPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDemandaReativaForaPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>                                         
                                     </div>                      
                                 </form>
@@ -147,27 +147,27 @@
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Medido - Ponta - TUSD*</label>
-                                            <input type="text" (ngModelChange)="onValueChange($event, 'valorConsumoTEPonta')" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" (ngModelChange)="onValueChange($event, 'valorConsumoTEPonta')" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Medido - Fora de Ponta - TUSD*</label>
-                                            <input type="text" (ngModelChange)="onValueChange($event, 'valorConsumoTEForaPonta')" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDForaPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" (ngModelChange)="onValueChange($event, 'valorConsumoTEForaPonta')" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTUSDForaPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Medido Reativo - Ponta*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoMedidoReativoPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoMedidoReativoPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>                    
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Medido - Ponta - TE*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTEPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTEPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Medido - Fora de Ponta - TE*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTEForaPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoTEForaPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>          
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Medido Reativo - Fora de Ponta*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoMedidoReativoForaPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorConsumoMedidoReativoForaPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>                    
                                     </div>
                                 </form>     
@@ -178,21 +178,21 @@
                 <div class="card-row">                                     
                     <div class="card-col">  
                         <nb-card>
-                            <nb-card-header>Adicional Bandeira Vigente e Desconto TUSD</nb-card-header>
+                            <nb-card-header>Tarifas e Desconto TUSD</nb-card-header>
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row">
                                         <div class="col-sm-4">
-                                            <label for="inputLastName"  class="label">Adicional Bandeira Ponta*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorAdicionalBandeiraPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <label for="inputLastName"  class="label">Tarifa Medida Reativo Ponta*</label>
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="tarifaMedidaReativaPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>          
                                         <div class="col-sm-4">
-                                            <label for="inputLastName"  class="label">Adicional Bandeira Fora de Ponta*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorAdicionalBandeiraForaPonta" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <label for="inputLastName"  class="label">Tarifa Medida Reativo Fora de Ponta*</label>
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="tarifaMedidaReativaForaPonta" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>               
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Desconto TUSD*</label>
-                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDescontoTUSD" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDescontoTUSD" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>          
                                     </div>
                                 </form>                
@@ -221,7 +221,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="label">Valor*</label>
-                                        <input type="text" nbInput fullWidth formControlName="valor" mask="separator.4" thousandSeparator="." decimalMarker=",">
+                                        <input type="text" nbInput fullWidth formControlName="valor" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                     </div>
                                 </div>
                                 <div class="col-md-3">

@@ -79,6 +79,8 @@ namespace SIGE.Services.Services.Geral
                             tarifaCalculada.Proinfa = consumo.Proinfa;
                             tarifaCalculada.PIS = imposto.ValorPis;
                             tarifaCalculada.BandeiraAdicional = bandeiraVigente.ValorBandeira();
+                            tarifaCalculada.TotalPercentualTUSD = 50;
+                            tarifaCalculada.PercentualTUSD = fatura.ValorDescontoTUSD;
 
                             res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste.ToString("d", new CultureInfo("pt-BR"))}";
                             var relatorio = new RelatorioFinalDto
@@ -275,13 +277,13 @@ namespace SIGE.Services.Services.Geral
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Adicional Bandeira Ponta",
-                                        Tarifa = tarifaCalculada.BandeiraAdicional,
+                                        Tarifa = tarifaCalculada.BandeiraAdicionalComImposto,
                                         TipoTarifa = ETipoTarifa.RS_KWH,
                                         Total = fatura.ValorConsumoTEPonta*tarifaCalculada.BandeiraAdicionalComImposto
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Adicional Bandeira Fora de Ponta",
-                                        Tarifa = tarifaCalculada.BandeiraAdicional,
+                                        Tarifa = tarifaCalculada.BandeiraAdicionalComImposto,
                                         TipoTarifa = ETipoTarifa.RS_KWH,
                                         Total = fatura.ValorConsumoTEForaPonta*tarifaCalculada.BandeiraAdicionalComImposto
                                     },
@@ -289,14 +291,14 @@ namespace SIGE.Services.Services.Geral
                                         Descricao = "Consumo Medido Reativo - Ponta",
                                         Montante = fatura.ValorConsumoMedidoReativoPonta,
                                         TipoMontante = ETipoMontante.KW,
-                                        Tarifa = 0.36562273,
+                                        Tarifa = fatura.TarifaMedidaReativaPonta,
                                         TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Consumo Medido Reativo - Fora de Ponta",
                                         Montante = fatura.ValorConsumoMedidoReativoForaPonta,
                                         TipoMontante = ETipoMontante.KW,
-                                        Tarifa =  0.36559105,
+                                        Tarifa =  fatura.TarifaMedidaReativaForaPonta,
                                         TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                 ],
@@ -400,7 +402,7 @@ namespace SIGE.Services.Services.Geral
                 [
                     new LancamentoRelatorioFinalDto {
                         Descricao = "Perdas Reais",
-                        Montante = 3,
+                        Montante = (double)valores.ValorPerdasReais,
                         TipoMontante = ETipoMontante.Percentual
                     },
                     new LancamentoRelatorioFinalDto {
@@ -444,31 +446,52 @@ namespace SIGE.Services.Services.Geral
             List<LancamentoRelatorioFinalDto> parte2 =
                 [
                     new LancamentoRelatorioFinalDto {
+                        Descricao = "TUSD - Ponta",
+                        Montante = fatura.ValorDemandaFaturadaPontaConsumida,
+                        TipoMontante = ETipoMontante.KW,
+                        Tarifa = tarifaCalculada.KWPontaComImposto,
+                        TipoTarifa = ETipoTarifa.RS_KW
+                    },
+                    new LancamentoRelatorioFinalDto {
                         Descricao = "TUSD - Fora de Ponta",
                         Montante = fatura.ValorDemandaFaturadaForaPontaConsumida,
                         TipoMontante = ETipoMontante.KW,
-                        Tarifa = 16.30780023,
+                        Tarifa = tarifaCalculada.KWhForaPontaTUSDCalculadoComImposto,
+                        TipoTarifa = ETipoTarifa.RS_KW
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "TUSD - Ultrapassagem Fora de Ponta",
+                        Montante = fatura.ValorDemandaUltrapassagemForaPonta,
+                        TipoMontante = ETipoMontante.KW,
+                        Tarifa = tarifaCalculada.KWForaPontaComImposto*2,
                         TipoTarifa = ETipoTarifa.RS_KW
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "TUSD encargos - Ponta",
                         Montante = fatura.ValorConsumoTUSDPonta,
                         TipoMontante = ETipoMontante.KW,
-                        Tarifa =  0.99297600,
+                        Tarifa =   tarifaCalculada.KWhPontaTUSDComImposto,
                         TipoTarifa = ETipoTarifa.RS_KW
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "TUSD encargos - Fora de Ponta",
                         Montante = fatura.ValorConsumoTUSDForaPonta,
                         TipoMontante = ETipoMontante.KW,
-                        Tarifa =  0.13692468,
+                        Tarifa =  tarifaCalculada.KWhForaPontaTUSDComImposto,
+                        TipoTarifa = ETipoTarifa.RS_KW
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Consumo Reativo - Ponta",
+                        Montante = fatura.ValorConsumoMedidoReativoPonta,
+                        TipoMontante = ETipoMontante.KW,
+                        Tarifa =  fatura.TarifaMedidaReativaPonta,
                         TipoTarifa = ETipoTarifa.RS_KW
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "Consumo Reativo - Fora de Ponta",
                         Montante = fatura.ValorConsumoMedidoReativoForaPonta,
                         TipoMontante = ETipoMontante.KW,
-                        Tarifa =  0.36492267,
+                        Tarifa =  fatura.TarifaMedidaReativaForaPonta,
                         TipoTarifa = ETipoTarifa.RS_KW
                     }
             ];

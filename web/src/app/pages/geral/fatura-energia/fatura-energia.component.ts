@@ -97,8 +97,8 @@ export class FaturaEnergiaComponent implements OnInit {
       valorConsumoMedidoReativoForaPonta: [0, [Validators.required, Validators.min(0)]],
     
       // Adicional Bandeira e Desconto TUSD
-      valorAdicionalBandeiraPonta: [0, [Validators.required, Validators.min(0)]],
-      valorAdicionalBandeiraForaPonta: [0, [Validators.required, Validators.min(0)]],
+      tarifaMedidaReativaPonta: [0, [Validators.required, Validators.min(0)]],
+      tarifaMedidaReativaForaPonta: [0, [Validators.required, Validators.min(0)]],
       valorDescontoTUSD: [0, [Validators.required, Validators.min(0)]],
     
       lancamentosAdicionais: [null]
