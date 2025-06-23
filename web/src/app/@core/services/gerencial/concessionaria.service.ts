@@ -13,6 +13,8 @@ export class ConcessionariaService extends DefaultService<IConcessionaria> {
 
     public async getPorPontoMedicao(idPontoMedicao: string): Promise<IResponseInterface<IDropDown[]>> 
     {
-        return await this.http.get<IResponseInterface<IDropDown[]>>(`/concessionaria/pontoMedicao/${idPontoMedicao}`);
+        const ret = await this.http.get<IResponseInterface<IDropDown[]>>(`/concessionaria/pontoMedicao/${idPontoMedicao}`);
+        const formattedReq = this.formatPosGet(ret?.data);
+        return { ...ret, data: formattedReq };
     }
 }
