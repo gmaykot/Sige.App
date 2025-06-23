@@ -414,16 +414,16 @@
                 <div class="card-row">                                     
                     <div class="card-col">  
                         <nb-card>
-                            <nb-card-header>Adicional Bandeira Vigente e Desconto TUSD</nb-card-header>
+                            <nb-card-header>Tarifa Reativa e Desconto TUSD</nb-card-header>
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row">
                                         <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Adicional Bandeira Ponta*</label>
+                                            <label for="inputLastName" class="label-emissao">Tarifa Reativa Ponta*</label>
                                             <div>{{getControlValues('valorAdicionalBandeiraPonta') | number:'1.2-3' ?? '-'}}</div>                                        
                                         </div>          
                                         <div class="col-sm-4">
-                                            <label for="inputLastName" class="label-emissao">Adicional Bandeira Fora de Ponta*</label>
+                                            <label for="inputLastName" class="label-emissao">Tarifa Reativa Fora de Ponta*</label>
                                             <div>{{getControlValues('valorAdicionalBandeiraForaPonta') | number:'1.2-3' ?? '-'}}</div>                                        
                                         </div>      
                                         <div class="col-sm-4">
@@ -451,8 +451,8 @@
                                     <ng-container *ngFor="let lanc of filtrarLancamentos(false, false)">
                                       <tr>
                                         <td style="text-align: left;">{{ lanc.descricao }}</td>
-                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo === '0' ? 'red' : '' }">
-                                          {{ lanc.tipo === '0' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-3') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-3') }}
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '1' ? 'red' : '' }">
+                                          {{ lanc.tipo == '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
                                         </td>
                                       </tr>
                                     </ng-container>
@@ -467,8 +467,8 @@
                                     <ng-container *ngFor="let lanc of filtrarLancamentos(true, false)">
                                       <tr>
                                         <td style="text-align: left;">{{ lanc.descricao }}</td>
-                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo === '0' ? 'red' : '' }">
-                                          {{ lanc.tipo === '0' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-3') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-3') }}
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '1' ? 'red' : '' }">
+                                          {{ lanc.tipo == '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
                                         </td>
                                       </tr>
                                     </ng-container>
@@ -483,8 +483,8 @@
                                     <ng-container *ngFor="let lanc of filtrarLancamentos(true, true)">
                                       <tr>
                                         <td style="text-align: left;">{{ lanc.descricao }}</td>
-                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo === '0' ? 'red' : '' }">
-                                          {{ lanc.tipo === '0' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-3') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-3') }}
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '1' ? 'red' : '' }">
+                                          {{ lanc.tipo == '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
                                         </td>
                                       </tr>
                                     </ng-container>
