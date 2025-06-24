@@ -1,9 +1,9 @@
 <form [formGroup]="control">
-  <div class="card-row" *ngIf="edit" [nbSpinner]="loading">
+  <div class="card-row" [hidden]="!edit" [nbSpinner]="loading">
     <div class="card-col">
       <nb-card>
         <nb-card-body>
-          <nb-tabset>
+          <nb-tabset #tabset>
             <nb-tab tabTitle="Cadastro de Empresa">
               <nb-card class="no-border">
               <input hidden id="id" type="text" formControlName="id">
@@ -139,7 +139,7 @@
               </nb-card-footer>
             </nb-card>              
             </nb-tab>
-            <nb-tab tabTitle="Grupo de Contatos" *ngIf="selected">
+            <nb-tab tabTitle="Grupo de Contatos" [hidden]="!selected">
               <nb-card class="no-border">
                 <nb-card-body>
                   <ng2-smart-table [settings]="settingsContato" [source]="sourceContato" (deleteConfirm)="onSelect($event)">
@@ -152,7 +152,7 @@
                 </nb-card-footer>                 
               </nb-card>              
             </nb-tab>
-            <nb-tab tabTitle="Agentes de Medição" *ngIf="selected">
+            <nb-tab tabTitle="Agentes de Medição" [hidden]="!selected">
               <nb-card class="no-border">
                 <nb-card-body>
                   <div class="form-group">
@@ -167,7 +167,7 @@
                 </nb-card-footer>                   
               </nb-card>                  
             </nb-tab>
-            <nb-tab tabTitle="Pontos de Medição" *ngIf="selected && sourceAgenteMedicao.count() > 0">
+            <nb-tab tabTitle="Pontos de Medição" [hidden]="!selected || sourceAgenteMedicao.count() === 0">
               <nb-card class="no-border">                
                 <nb-card-body>
                     <div class="form-group">

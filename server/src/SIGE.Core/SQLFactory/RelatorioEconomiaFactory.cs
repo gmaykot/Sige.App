@@ -13,7 +13,7 @@ namespace SIGE.Core.SQLFactory
             builder.Append("INNER JOIN Empresas empresa ON empresa.Id = contratoEmpresa.EmpresaId ");
             builder.Append("INNER JOIN AgentesMedicao agente ON agente.EmpresaId = empresa.Id ");
             builder.Append("INNER JOIN PontosMedicao ponto ON ponto.AgenteMedicaoId = agente.Id ");
-            builder.Append("INNER JOIN Concessionarias concessionaria ON concessionaria.Id = contrato.ConcessionariaId ");
+            builder.Append("INNER JOIN Concessionarias concessionaria ON concessionaria.Id = ponto.ConcessionariaId ");
             builder.Append("INNER JOIN FaturasEnergia fatura ON fatura.PontoMedicaoId = ponto.Id ");
             builder.Append("INNER JOIN ConsumosMensais consumo ON consumo.PontoMedicaoId = ponto.Id ");
             builder.Append("WHERE contrato.Ativo = true ");
@@ -27,13 +27,13 @@ namespace SIGE.Core.SQLFactory
         public static string RelatorioFinal(Guid PontoMedicaoId, DateOnly mesReferencia)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append("SELECT contratoEmpresa.ContratoId AS 'ContratoId', null AS 'Id', ponto.Nome AS 'Unidade', ponto.Segmento AS 'Segmento','Sul' AS 'SubMercado', '-' AS 'Conexao', concessionaria.Nome AS 'Concessao', empresa.CNPJ AS 'CNPJ', empresa.InscricaoEstadual AS 'InscricaoEstadual', empresa.Logradouro AS 'Endereco', empresa.Bairro AS 'Municipio', empresa.Estado AS 'UF' ");
+            builder.Append("SELECT contratoEmpresa.ContratoId AS 'ContratoId', null AS 'Id', ponto.Nome AS 'Unidade', ponto.Segmento AS 'Segmento','Sul' AS 'SubMercado', ponto.conexao AS 'Conexao', concessionaria.Nome AS 'Concessao', empresa.CNPJ AS 'CNPJ', empresa.InscricaoEstadual AS 'InscricaoEstadual', empresa.Logradouro AS 'Endereco', empresa.Bairro AS 'Municipio', empresa.Estado AS 'UF' ");
             builder.Append("FROM Contratos contrato ");
             builder.Append("INNER JOIN ContratoEmpresas contratoEmpresa ON contratoEmpresa.ContratoId = contrato.Id ");
             builder.Append("INNER JOIN Empresas empresa ON empresa.Id = contratoEmpresa.EmpresaId ");
             builder.Append("INNER JOIN AgentesMedicao agente ON agente.EmpresaId = empresa.Id ");
             builder.Append("INNER JOIN PontosMedicao ponto ON ponto.AgenteMedicaoId = agente.Id ");
-            builder.Append("INNER JOIN Concessionarias concessionaria ON concessionaria.Id = contrato.ConcessionariaId ");
+            builder.Append("INNER JOIN Concessionarias concessionaria ON concessionaria.Id = ponto.ConcessionariaId ");
             builder.Append($"WHERE contrato.Ativo = true AND ponto.Id = '{PontoMedicaoId}'");
 
             return builder.ToString();

@@ -1,10 +1,16 @@
-﻿namespace SIGE.Core.Enumerators
+﻿using System.ComponentModel;
+
+namespace SIGE.Core.Enumerators
 {
     public enum ETipoEnergia
     {
-        I0_LP = 0,
-        I1_LP = 1,
-        I5_LP = 2,
-        CONVENCIONAL_LP = 3,
+        [Description("I0 (LP)")]
+        I0_LP,
+        [Description("I1 (LP)")]
+        I1_LP,
+        [Description("I5 (LP)")]
+        I5_LP,
+        [Description("Convencional (LP)")]
+        CONVENCIONAL_LP,
     }
 }

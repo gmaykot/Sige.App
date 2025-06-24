@@ -14,10 +14,8 @@ export interface IContrato {
     energiaContratada?: number;
     status?: string,
     ativo?: boolean,
-    concessionariaId?: string,
     fornecedorId?: string,
     descFornecedor?: string,
-    descConcessionaria?: string,
     contratoEmpresas?: IContratoEmpresas[],
     valoresAnuaisContrato?: IValorAnual[]
 }

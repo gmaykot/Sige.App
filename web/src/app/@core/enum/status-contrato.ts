@@ -33,3 +33,12 @@ export const NATUREZA_MERCADO =
     { id: 1, desc: 'LIVRE'},
     { id: 2, desc: 'CATIVO/LIVRE'}
 ]
+
+export const TIPO_CONEXAO = [
+    { id: 0, desc: "A1 (≥ 230 kV)" },
+    { id: 1, desc: "A2 (88 - 138 kV)" },
+    { id: 2, desc: "A3 (69 kV)" },
+    { id: 3, desc: "A3a (30 - 44 kV)" },
+    { id: 4, desc: "A4 (2.3 - 25 kV)" },
+    { id: 5, desc: "AS (Subterrâneo)" },
+];

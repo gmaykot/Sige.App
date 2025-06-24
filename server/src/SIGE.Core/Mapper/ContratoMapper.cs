@@ -19,8 +19,7 @@ namespace SIGE.Core.Mapper
                 .ForMember(dst => dst.Descricao, map => map.MapFrom(src => src.Numero));
 
             CreateMap<ContratoModel, ContratoDto>()
-                .ForMember(dst => dst.DescFornecedor, map => map.MapFrom(src => src.Fornecedor == null ? string.Empty : src.Fornecedor.Nome))
-                .ForMember(dst => dst.DescConcessionaria, map => map.MapFrom(src => src.Concessionaria == null ? string.Empty : src.Concessionaria.Nome));
+                .ForMember(dst => dst.DescFornecedor, map => map.MapFrom(src => src.Fornecedor == null ? string.Empty : src.Fornecedor.Nome));
 
             CreateMap<ContratoEmpresaModel, ContratoEmpresaDto>()
                 .ForMember(dst => dst.DscEmpresa, map => map.MapFrom(src => src.Empresa == null ? string.Empty : src.Empresa.NomeFantasia))

@@ -7,9 +7,16 @@ namespace SIGE.Core.Models.Dto.Gerencial.Empresa
         public Guid Id { get; set; }
         public required string Nome { get; set; }
         public required string Codigo { get; set; }
-        public required ETipoSegmento Segmento { get; set; }
         public required bool AcumulacaoLiquida { get; set; } = false;
-        public Guid AgenteMedicaoId { get; set; }
         public bool Ativo { get; set; }
+
+        public required ETipoSegmento Segmento { get; set; }
+        public required ETipoConexao Conexao { get; set; }
+
+        public Guid? ConcessionariaId { get; set; }
+        public string? DescConcessionaria { get; set; }
+
+        public Guid AgenteMedicaoId { get; set; }
+        public string? DescAgenteMedicao { get; set; }
     }
 }

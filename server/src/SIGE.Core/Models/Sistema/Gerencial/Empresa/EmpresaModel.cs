@@ -1,10 +1,9 @@
 ﻿using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Sistema.Administrativo;
-using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.Models.Sistema.Gerencial.Contrato;
 
-namespace SIGE.Core.Models.Sistema.Gerencial
+namespace SIGE.Core.Models.Sistema.Gerencial.Empresa
 {
     public class EmpresaModel : BaseModel
     {
@@ -23,10 +22,13 @@ namespace SIGE.Core.Models.Sistema.Gerencial
         public string? Conexao { get; set; }
         public required bool UnirPontosMedicao { get; set; } = false;
         public ETipoEstado Estado { get; set; }
+
         public Guid GestorId { get; set; }
         public virtual GestorModel? Gestor { get; set; }
+
         public Guid? EmpresaMatrizId { get; set; }
         public EmpresaModel? EmpresaMatriz { get; set; }
+
         public virtual IEnumerable<ContratoEmpresaModel>? ContratosEmpresa { get; set; }
         public virtual IEnumerable<AgenteMedicaoModel>? AgentesMedicao { get; set; }
         public virtual IEnumerable<ContatoModel>? Contatos { get; set; }

@@ -5,6 +5,7 @@ using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
 using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
+using SIGE.Core.Models.Sistema.Gerencial.Empresa;
 
 namespace SIGE.Core.Mapper
 {

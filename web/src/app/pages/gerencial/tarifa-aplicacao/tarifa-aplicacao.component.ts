@@ -12,7 +12,7 @@ import { AlertService } from '../../../@core/services/util/alert.service';
 import { Classes } from '../../../@core/enum/classes.const';
 import { DateService } from '../../../@core/services/util/date.service';
 import { SUB_GRUPOS } from '../../../@core/enum/const-dropbox';
-import { SEGMENTO } from '../../../@core/enum/status-contrato';
+import { SEGMENTO, TIPO_CONEXAO } from '../../../@core/enum/status-contrato';
 
 @Component({
   selector: 'ngx-tarifa-aplicacao',
@@ -23,7 +23,7 @@ export default class TarifaAplicacaoComponent extends DefaultComponent<ITarifaAp
   settings = settingsTarifaAplicacao;
   public concessionarias?: IDropDown[];  
   segmentos = SEGMENTO;
-  subgrupos = SUB_GRUPOS;
+  conexoes = TIPO_CONEXAO;
 
   constructor(
     private concessionariaService: ConcessionariaService,

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SIGE.Core.Mapper;
 using SIGE.Services.HttpConfiguration.Ccee;
@@ -24,15 +25,16 @@ namespace SIGE.Services
 
         public static IServiceCollection AddMyAutoMapper(this IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(ConcessionariaMapper));              
-            services.AddAutoMapper(typeof(EmpresaMapper));              
-            services.AddAutoMapper(typeof(FornecedorMapper));
-            services.AddAutoMapper(typeof(UsuarioMapper));
-            services.AddAutoMapper(typeof(GerencialMapper));
-            services.AddAutoMapper(typeof(ContratoMapper));
-            services.AddAutoMapper(typeof(GeralMapper));
-            services.AddAutoMapper(typeof(FaturaEnergiaMapper));
-            services.AddAutoMapper(typeof(EconomiaMapper));
+            var coreAssembly = Assembly.GetAssembly(typeof(UsuarioMapper)) ?? Assembly.GetExecutingAssembly();
+
+            services.Scan(scan => scan
+                .FromAssemblies(coreAssembly)
+                .AddClasses(c => c.Where(x => x.Name.EndsWith("Mapper", StringComparison.OrdinalIgnoreCase)))
+                .As<Profile>()
+                .WithSingletonLifetime());
+
+            services.AddAutoMapper(coreAssembly);
+
 
             return services;
         }

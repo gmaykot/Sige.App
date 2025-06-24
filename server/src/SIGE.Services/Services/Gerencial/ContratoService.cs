@@ -91,7 +91,6 @@ namespace SIGE.Services.Services.Gerencial
             var ret = new Response();
             var res = await _appDbContext.Contratos.AsNoTracking()
                 .Include(c => c.Fornecedor)
-                .Include(c => c.Concessionaria)
                 .Include(c => c.ContratoEmpresas).ThenInclude(c => c.Empresa)
                 .Include(c => c.ValoresAnuaisContrato)
                 .ThenInclude(c => c.ValoresMensaisContrato)
@@ -110,7 +109,7 @@ namespace SIGE.Services.Services.Gerencial
                 return ret.SetOk().SetData(_mapper.Map<IEnumerable<DropDownDto>>(res).OrderBy(d => d.Descricao));
 
             return ret.SetNotFound()
-                .AddError(ETipoErro.INFORMATIVO, "Não existe fornecedor ativa.");
+                .AddError(ETipoErro.INFORMATIVO, "Não existe contrato ativo.");
         }
     }
 }

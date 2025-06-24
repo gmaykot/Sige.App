@@ -82,17 +82,6 @@
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label for="inputLastName" class="label">Concessionária*</label>
-                        <nb-select fullWidth placeholder="Selecione" formControlName="concessionariaId">
-                          <nb-option *ngFor="let con of concessionarias"
-                            value="{{con.id}}">{{con.descricao}}</nb-option>
-                        </nb-select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="form-group">
                         <label for="inputFirstName" class="label">Descrição Grupo de Empresas*</label>
                         <input type="text" nbInput fullWidth id="inputFirstName" placeholder=""
                           formControlName="dscGrupo">

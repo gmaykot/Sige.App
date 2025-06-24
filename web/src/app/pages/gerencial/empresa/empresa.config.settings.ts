@@ -1,7 +1,7 @@
 import { IAgenteMedicao } from "../../../@core/data/agente-medicao";
 import { IContato } from "../../../@core/data/contato";
 import { IPontoMedicao } from "../../../@core/data/ponto-medicao";
-import { SEGMENTO } from "../../../@core/enum/status-contrato";
+import { SEGMENTO, TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
 import { CheckboxComponent } from "../../../@shared/custom-component/checkbox-component";
 import { settingsEmpresa } from "../../../@shared/table-config/empresa.config";
 
@@ -10,6 +10,7 @@ export class EmpresaConfigSettings {
     agentesChecked: Array<IAgenteMedicao> = [];
     pontosChecked: Array<IPontoMedicao> = []; 
     settings = settingsEmpresa;
+
     settingsAgentes = {
     delete: {
       deleteButtonContent: '<i class="nb-compose"></i>',
@@ -57,6 +58,7 @@ export class EmpresaConfigSettings {
     hideSubHeader: true,
     noDataMessage: 'Nenhum registro encontrado.'
   };
+
   settingsPontos = {
     delete: {
       deleteButtonContent: '<i class="nb-compose"></i>',
@@ -93,10 +95,19 @@ export class EmpresaConfigSettings {
         title: "Agente Medição",
         type: "string",
       },
+      descConcessionaria: {
+        title: "Concessionária",
+        type: "string",
+      },
       segmento: {
         title: "Segmento",
         type: "string",
         valuePrepareFunction: (value) => { return SEGMENTO.filter(a => a.id == value)[0].desc },
+      },
+      conexao: {
+        title: "Conexão",
+        type: "string",
+        valuePrepareFunction: (value) => { return TIPO_CONEXAO.filter(a => a.id == value)[0].desc },
       },
       ativo: {
         title: "Ativo",
