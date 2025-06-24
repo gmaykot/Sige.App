@@ -79,7 +79,7 @@ namespace SIGE.Services.Services.Geral
                             tarifaCalculada.Proinfa = consumo.Proinfa;
                             tarifaCalculada.PIS = imposto.ValorPis;
                             tarifaCalculada.BandeiraAdicional = bandeiraVigente.ValorBandeira();
-                            tarifaCalculada.TotalPercentualTUSD = 0;
+                            tarifaCalculada.TotalPercentualTUSD = relMedicoes.TipoEnergia.GetValorTipoEnergia();
                             tarifaCalculada.PercentualTUSD = fatura.ValorDescontoTUSD;
 
                             res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste.ToString("d", new CultureInfo("pt-BR"))}";
@@ -421,6 +421,7 @@ namespace SIGE.Services.Services.Geral
                         Montante = (double)valorAnalitico.Quantidade,
                         TipoMontante = ETipoMontante.MWH,
                         Tarifa = (double)valorAnalitico.ValorUnitario,
+                        Total = (double)valorAnalitico.ValorNota,
                         TipoTarifa = ETipoTarifa.RS_MWH
                     },
                     new LancamentoRelatorioFinalDto {

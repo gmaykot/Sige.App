@@ -32,18 +32,18 @@ export const settingsContrato = {
         title: "Número",
         type: "string",
       },
-      tipoEnergia: {
-        title: "Tipo Energia",
-        type: "string",
-        valuePrepareFunction: (value) => { return TIPO_ENERGIA.find(f => f.id == value).desc},
-        filter: {
-          type: 'list',
-          config: {
-            selectText: 'Selecione...',
-            list: tipoEnergiaToList,
-          },
-        },        
-      },
+      // tipoEnergia: {
+      //   title: "Tipo Energia",
+      //   type: "string",
+      //   valuePrepareFunction: (value) => { return TIPO_ENERGIA.find(f => f.id == value).desc},
+      //   filter: {
+      //     type: 'list',
+      //     config: {
+      //       selectText: 'Selecione...',
+      //       list: tipoEnergiaToList,
+      //     },
+      //   },        
+      // },
       dscGrupo: {
         title: "Grupo de Empresas",
         type: "string",

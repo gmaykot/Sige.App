@@ -12,6 +12,7 @@ namespace SIGE.Core.Models.Dto.Gerencial.Empresa
 
         public required ETipoSegmento Segmento { get; set; }
         public required ETipoConexao Conexao { get; set; }
+        public required ETipoEnergia TipoEnergia { get; set; }
 
         public Guid? ConcessionariaId { get; set; }
         public string? DescConcessionaria { get; set; }

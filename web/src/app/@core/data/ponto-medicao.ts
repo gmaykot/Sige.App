@@ -5,6 +5,7 @@ export interface IPontoMedicao {
     agenteMedicao: string,
     agenteMedicaoId?: string,
     segmento?: string,
+    tipoEnergia?: string,
     conexao?: string,
     concessionariaId?: string,
     descConcessionaria?: string,

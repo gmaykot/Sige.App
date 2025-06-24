@@ -1,5 +1,7 @@
 ﻿using SIGE.Core.Attributes;
+using SIGE.Core.Enumerators;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace SIGE.Core.Extensions
 {
@@ -81,6 +83,19 @@ namespace SIGE.Core.Extensions
                 throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range for the enum.");
 
             return (T)values.GetValue(index)!;
+        }
+
+        public static int GetValorTipoEnergia(this ETipoEnergia tipoEnergia)
+        {
+
+            return tipoEnergia switch
+            {
+                ETipoEnergia.I0_LP => 0,
+                ETipoEnergia.I1_LP => 100,
+                ETipoEnergia.I5_LP => 50,
+                ETipoEnergia.CONVENCIONAL_LP => 0,
+                _ => 0,
+            };
         }
     }
 }
