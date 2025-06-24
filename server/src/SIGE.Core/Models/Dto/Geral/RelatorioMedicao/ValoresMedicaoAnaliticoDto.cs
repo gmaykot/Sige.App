@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
+﻿namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
 {
     public class ValoresMedicaoAnaliticoDto
     {
@@ -19,5 +13,7 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
         public decimal? ValorNota { get; set; }
         public decimal? ComprarCurtoPrazo { get; set; }
         public decimal? VenderCurtoPrazo { get; set; }
+
+        public RelatorioMedicaoDto? RelatorioMedicao { get; set; }
     }
 }

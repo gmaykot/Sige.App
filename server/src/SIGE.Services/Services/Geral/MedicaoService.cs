@@ -96,7 +96,7 @@ namespace SIGE.Services.Services.Geral
                     MesReferencia = req.Periodo,
                     DataMedicao = DataSige.HojeDO(),
                     PontoMedicaoId = med.PontoMedicaoId.ToGuid(),
-                    Icms = 17,
+                    Icms = consumoRecente?.Icms ?? 17,
                 };
 
                 var res = await _integracaoCceeService.ListarMedicoesPorPonto(ccee);

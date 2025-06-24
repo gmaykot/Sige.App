@@ -50,7 +50,12 @@
                             <div class="subtitle sub-med">Conexão</div>
                             <div class="h7">{{getConexao(relatorioEconomia.cabecalho.conexao)}}</div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
+                            <div class="subtitle sub-med">Segmento</div>
+                            <div class="h7 blue" *ngIf="relatorioEconomia.cabecalho.segmento">AZUL</div>
+                            <div class="h7 green" *ngIf="!relatorioEconomia.cabecalho.segmento">VERDE</div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="subtitle sub-med">Concessão</div>
                             <div class="h7">{{relatorioEconomia.cabecalho.concessao}}</div>
                         </div>
