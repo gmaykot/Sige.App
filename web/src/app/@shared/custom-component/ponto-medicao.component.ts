@@ -3,7 +3,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { IPontoMedicao } from '../../@core/data/ponto-medicao';
 import { IAgenteMedicao } from '../../@core/data/agente-medicao';
 import { FormBuilder, Validators } from '@angular/forms';
-import { SEGMENTO, TIPO_CONEXAO } from '../../@core/enum/status-contrato';
+import { SEGMENTO, TIPO_CONEXAO, TIPO_ENERGIA } from '../../@core/enum/status-contrato';
 import { IDropDown } from '../../@core/data/drop-down';
 
 
@@ -35,12 +35,20 @@ import { IDropDown } from '../../@core/data/drop-down';
     </div>          
     </div>
     <div class="row">       
-        <div class="col-sm-12">
+      <div class="col-sm-6">
         <div class="form-group">
             <label for="inputFirstName" class="label">Código Ponto*</label>
             <input type="text" nbInput fullWidth id="inputFirstName" formControlName="codigo">
         </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="inputLastName" class="label">Tipo de Energia*</label>
+          <nb-select fullWidth placeholder="Selecione" formControlName="tipoEnergia">
+            <nb-option *ngFor="let ene of tipoEnergia" value="{{ene.id}}">{{ene.desc}}</nb-option>
+          </nb-select>
         </div>
+      </div>                    
     </div>
     <div class="row">       
       <div class="col-sm-6">
@@ -100,6 +108,7 @@ export class PontoMedicaoComponent implements OnInit {
   @Input() concessionarias: any[];
   segmento = SEGMENTO
   conexao = TIPO_CONEXAO
+  tipoEnergia = TIPO_ENERGIA;
   public control = this.formBuilder.group({
     id: '',
     nome: ["", Validators.required],
@@ -108,6 +117,7 @@ export class PontoMedicaoComponent implements OnInit {
     agenteMedicao: '',
     segmento: ["", Validators.required],
     conexao: ["", Validators.required],
+    tipoEnergia: ["", Validators.required],
     acumulacaoLiquida: false,
     ativo: true,
     concessionariaId: ["", Validators.required],    
@@ -132,6 +142,7 @@ export class PontoMedicaoComponent implements OnInit {
       segmento: this.ponto.segmento.toString(),
       agenteMedicao: '',
       conexao: this.ponto.conexao.toString(),
+      tipoEnergia: this.ponto.tipoEnergia.toString(),
       concessionariaId: this.ponto.concessionariaId
     });
   }
