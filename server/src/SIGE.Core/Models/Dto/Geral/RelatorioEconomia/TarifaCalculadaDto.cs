@@ -54,11 +54,24 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
         {
             get => CalculoBaseComImposto(KWhPontaTUSD);
         }
-        
+
+        public double? KWhPontaTUSDCalculadoComImposto
+        {
+            get
+            {
+                var fatorTusd = (100 - PercentualTUSD*100) /100;
+                var total = ((KWhPontaTUSDComImposto - KWhForaPontaTUSDComImposto) * fatorTusd) + KWhForaPontaTUSDComImposto;
+                return total;
+            }
+        }
+
         public double? KWhForaPontaTUSDCalculadoComImposto
         {
             get
             {
+                if (TotalPercentualTUSD == 0)
+                    return KWForaPontaComImposto;
+
                 var fatorTusd = TotalPercentualTUSD - PercentualTUSD*100;
                 var total = (KWForaPontaComImposto * 1) * (fatorTusd + TotalPercentualTUSD);
                 return total/100; 
