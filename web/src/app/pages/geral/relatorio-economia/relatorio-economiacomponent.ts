@@ -13,9 +13,9 @@ import { DateService } from "../../../@core/services/util/date.service";
 import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/relatorio-final";
 import { settingsRelatorioEconomia } from "../../../@shared/table-config/relatorio-economia.config";
 import { EChartsOption } from 'echarts';
-import jsPDF from "jspdf";
 import * as echarts from 'echarts';
 import html2canvas from 'html2canvas';
+import { TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
 
 @Component({
   selector: "ngx-relatorio-economia",
@@ -92,6 +92,10 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
 
   habilitaPdf() {
     return true;
+  }
+
+  public getConexao(value: number) {
+    return TIPO_CONEXAO.find(f => f.id == value)?.desc;
   }
 
   public settings = settingsRelatorioEconomia;

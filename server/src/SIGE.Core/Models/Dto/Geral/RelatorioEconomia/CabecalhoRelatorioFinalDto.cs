@@ -15,7 +15,7 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
         public ETipoSegmento? Segmento { get; set; }
         public required string Unidade { get; set; }
         public required string SubMercado { get; set; }
-        public required string Conexao { get; set; }
+        public required ETipoConexao Conexao { get; set; }
         public required string Concessao { get; set; }
         public string? CNPJ { get; set; }
         public string? InscricaoEstadual { get; set; }

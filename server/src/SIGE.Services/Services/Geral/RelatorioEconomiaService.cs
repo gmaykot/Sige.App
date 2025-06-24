@@ -10,7 +10,6 @@ using SIGE.Core.Models.Dto.Gerencial;
 using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
 using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
-using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
@@ -86,7 +85,7 @@ namespace SIGE.Services.Services.Geral
                             var relatorio = new RelatorioFinalDto
                             {                                
                                 Cabecalho = res,
-                                Grupos = [GrupoCativoMapper(0, fatura, consumo, tarifaCalculada), GrupoLivreMapper(1, fatura, consumo, tarifaCalculada, relMedicoes, valores)],
+                                Grupos = [GrupoCativoMapper(0, fatura, consumo, tarifaCalculada), GrupoLivreMapper(1, fatura, consumo, tarifaCalculada, relMedicoes, valores, res.Conexao)],
                             };
                             relatorio.Comparativo = CompartivoFinal(relatorio, faturamento, salarioMinimo?.Valor, energiaAcumulada?.ValorTotalAcumulado);                            
                             return ret.SetOk().SetData(relatorio);
@@ -324,7 +323,7 @@ namespace SIGE.Services.Services.Geral
             return grupo;
         }
 
-        private GrupoRelatorioFinalDto GrupoLivreMapper(int ordem, FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores)
+        private GrupoRelatorioFinalDto GrupoLivreMapper(int ordem, FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ETipoConexao conexao)
         {
             var listaFinal = new List<LancamentoRelatorioFinalDto>();
             var parte1 = LancMercadoLivreParte1(fatura, consumo, tarifaCalculada, relMedicoes, valores);
@@ -373,7 +372,7 @@ namespace SIGE.Services.Services.Geral
             var grupo = new GrupoRelatorioFinalDto
             {
                 Ordem = ordem,
-                Titulo = "MERCADO LIVRE - A4",
+                Titulo = $"MERCADO LIVRE - {conexao.GetSigla()}",
                 ColunaQuantidade = "Montante",
                 ColunaValor = "Tarifa",
                 ColunaTotal = "Total",

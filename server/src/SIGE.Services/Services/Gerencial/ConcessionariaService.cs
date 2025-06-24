@@ -36,9 +36,9 @@ namespace SIGE.Services.Services.Gerencial
 
         public async Task<Response> Excluir(Guid Id)
         {
-            var ret = await _appDbContext.Concessionarias.Include(c => c.ValoresConcessionaria).Include(c => c.Contratos).FirstOrDefaultAsync(c => c.Id.Equals(Id));
-            if (!ret.ValoresConcessionaria.IsNullOrEmpty() || !ret.Contratos.IsNullOrEmpty())
-                return new Response().SetServiceUnavailable().AddError("Entity", "Existem valores ou contratos vinculados que impossibilitam a exclusão.");
+            var ret = await _appDbContext.Concessionarias.Include(c => c.ValoresConcessionaria).Include(c => c.PontosMedicao).FirstOrDefaultAsync(c => c.Id.Equals(Id));
+            if (!ret.ValoresConcessionaria.IsNullOrEmpty() || !ret.PontosMedicao.IsNullOrEmpty())
+                return new Response().SetServiceUnavailable().AddError("Entity", "Existem valores ou pontos de medição vinculados que impossibilitam a exclusão.");
 
             _appDbContext.Concessionarias.Remove(ret);
             _ = await _appDbContext.SaveChangesAsync();

@@ -1,4 +1,5 @@
 ﻿using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Sistema.Gerencial.Empresa;
 
 namespace SIGE.Core.Models.Sistema.Gerencial.Contrato
 {

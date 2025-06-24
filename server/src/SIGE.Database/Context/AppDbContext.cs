@@ -11,6 +11,7 @@ using SIGE.Core.Models.Sistema.Gerencial;
 using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 using SIGE.Core.Models.Sistema.Gerencial.Contrato;
+using SIGE.Core.Models.Sistema.Gerencial.Empresa;
 
 namespace SIGE.DataAccess.Context
 {

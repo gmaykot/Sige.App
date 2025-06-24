@@ -8,7 +8,6 @@ import { ContratoService } from '../../../@core/services/gerencial/contrato.serv
 import { IContrato } from '../../../@core/data/contrato';
 import { EmpresaService } from '../../../@core/services/gerencial/empresa.service';
 import { FornecedorService } from '../../../@core/services/gerencial/fornecedor.service';
-import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
 import { ValorAnualContratoService } from '../../../@core/services/gerencial/valor-anual-contrato';
 import { ValorMensalContratoService } from '../../../@core/services/gerencial/valor-mensal-contrato';
 import { SEGMENTO, STATUS_CONTRATO, TIPO_ENERGIA } from '../../../@core/enum/status-contrato';
@@ -33,8 +32,7 @@ import { SessionStorageService } from '../../../@core/services/util/session-stor
 })
 export class ContratoComponent extends ContratoConfigSettings implements OnInit {
   valoresAnuais = [];
-  valoresMensais = [];
-  concessionarias = [];
+  valoresMensais = [];  
   fornecedores = [];
   empresas = [];
   grupoEmpresas = [];
@@ -59,7 +57,6 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
     takeMinimo: [0, Validators.required],
     takeMaximo: [0, Validators.required],
     status: ["", Validators.required],
-    concessionariaId: ["", Validators.required],
     fornecedorId: ["", Validators.required],
     ativo: true
   });
@@ -72,8 +69,7 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
     private empresaService: EmpresaService,
     private datePipe: DatePipe,
     private dateService: DateService,
-    private fornecedorService: FornecedorService,
-    private concessionariaService: ConcessionariaService,
+    private fornecedorService: FornecedorService,    
     private valorAnualContratoService: ValorAnualContratoService,
     private valorMensalContratoService: ValorMensalContratoService,
     private dialogService: NbDialogService,
@@ -82,8 +78,7 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
   ) { super();}
 
   async ngOnInit() {
-    await this.getContratos();
-    await this.getConcessionarias();
+    await this.getContratos();    
     await this.getFornecedores();
     await this.getEmpresaDropdown();
     await this.getEmpresas();
@@ -99,18 +94,6 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
         if (response.success) {
           this.fornecedores = response.data;
         }
-        this.loading = false;
-      });
-  }
-
-  async getConcessionarias() {
-    this.loading = true;
-    await this.concessionariaService
-      .getDropDown()
-      .then((response: IResponseInterface<IDropDown[]>) => {
-        if (response.success) {
-          this.concessionarias = response.data;
-        }                
         this.loading = false;
       });
   }
@@ -182,7 +165,6 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
       takeMaximo: cont.takeMaximo,
       status: cont.status.toString(),
       fornecedorId: cont.fornecedorId,
-      concessionariaId: cont.concessionariaId,
       ativo: cont.ativo
     });
     this.edit = true;

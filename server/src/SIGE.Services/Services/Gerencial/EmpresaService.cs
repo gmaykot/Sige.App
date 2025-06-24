@@ -6,7 +6,7 @@ using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Gerencial.Empresa;
 using SIGE.Core.Models.Requests;
-using SIGE.Core.Models.Sistema.Gerencial;
+using SIGE.Core.Models.Sistema.Gerencial.Empresa;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 

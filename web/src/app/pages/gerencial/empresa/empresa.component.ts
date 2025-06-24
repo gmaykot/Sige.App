@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { LocalDataSource } from "ng2-smart-table";
 import { FormBuilder, Validators } from "@angular/forms";
 import { UF } from "../../../@core/data/estados";
 import { EmpresaService } from "../../../@core/services/gerencial/empresa.service";
 import { IEmpresa } from "../../../@core/data/empresa";
 import { IResponseInterface } from "../../../@core/data/response.interface";
-import { NbDialogService, NbIconConfig, NbLayoutScrollService } from "@nebular/theme";
+import { NbDialogService, NbIconConfig, NbLayoutScrollService, NbTabsetComponent } from "@nebular/theme";
 import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
 import { IAgenteMedicao } from "../../../@core/data/agente-medicao";
 import { IPontoMedicao } from "../../../@core/data/ponto-medicao";
@@ -23,6 +23,7 @@ import { ICep } from "../../../@core/data/cep";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import { IDropDown } from "../../../@core/data/drop-down";
 import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
+import { ConcessionariaService } from "../../../@core/services/gerencial/concessionaria.service";
 
 @Component({
   selector: "ngx-empresa",
@@ -30,11 +31,14 @@ import { SessionStorageService } from "../../../@core/services/util/session-stor
   styleUrls: ["./empresa.component.scss"],
 })
 export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
+  @ViewChild('tabset') tabset: NbTabsetComponent;
+
   disabledIconConfig: NbIconConfig = { icon: 'trash-2-outline', pack: 'eva' };
   cceeIconConfig: NbIconConfig = { icon: 'globe-2-outline', pack: 'eva' };
   agentes: Array<IAgenteMedicao> = [];
   pontos: Array<IPontoMedicao> = [];
   contatos = [];
+  concessionarias = [];
   empresasMatriz: IDropDown[] = [];
   
   public loading = true;
@@ -76,6 +80,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     private dialogService: NbDialogService,
     private contatoService: ContatoService,
     private medicaoService: MedicaoService,
+    private concessionariaService: ConcessionariaService,
     private agenteMedicaoService: AgenteMedicaoService,
     private pontoMedicaoService: PontoMedicaoService,
     private alertService: AlertService,
@@ -83,15 +88,27 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
   ) {
     super();
     this.estados = UF;
-    this.getEmpresas();
-
   }
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
+    await this.getConcessionarias();
+    await this.getEmpresas();
   }
  
   public isFilial(){
     return this.control.value.tipoFilial;
+  }
+
+  async getConcessionarias() {
+    this.loading = true;
+    await this.concessionariaService
+      .getDropDown()
+      .then((response: IResponseInterface<IDropDown[]>) => {
+        if (response.success) {
+          this.concessionarias = response.data;
+        }                
+        this.loading = false;
+      });
   }
 
   async getAgentesMedicao(empresaId){
@@ -140,7 +157,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     return empresa;
   }
 
-  onSelect(event): void {
+  onSelect(event): void {    
     this.limparFormulario();
     const emp = event.data as IEmpresa;
     this.cepSelected = emp.cep;
@@ -166,11 +183,11 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
       responsavelGestor: emp.responsavelGestor
     });
     this.getAgentesMedicao(emp.id);
-    this.edit = true;
-    this.selected = true;
     this.contatos = emp.contatos ? emp.contatos : [];
     this.sourceContato.load(this.contatos);
     this.scroolService.scrollTo(0,0);
+    this.edit = true;
+    this.selected = true;
   }
 
   async onCepSelect(): Promise<void> {
@@ -295,7 +312,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
 
   async onPontoConfirm() {
     this.dialogService
-    .open(PontoMedicaoComponent, { context: { ponto: {} as IPontoMedicao, agentes: await this.sourceAgenteMedicao.getAll() } })
+    .open(PontoMedicaoComponent, { context: { ponto: {} as IPontoMedicao, agentes: await this.sourceAgenteMedicao.getAll(), concessionarias: this.concessionarias } })
     .onClose.subscribe(async (ponto) => {
         if (ponto) {
           this.pontoMedicaoService.post(ponto).then(async (res: IResponseInterface<IPontoMedicao>) =>
@@ -336,7 +353,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     console.log(this.pontosChecked[0]);
     if (this.pontosChecked.length > 0){
       this.dialogService
-      .open(PontoMedicaoComponent, { context: { ponto: this.pontosChecked[0], agentes: await this.sourceAgenteMedicao.getAll()}, })
+      .open(PontoMedicaoComponent, { context: { ponto: this.pontosChecked[0], agentes: await this.sourceAgenteMedicao.getAll(), concessionarias: this.concessionarias }, })
       .onClose.subscribe(async (ponto) => {
         if (ponto) {   
           this.pontoMedicaoService.put(ponto).then()

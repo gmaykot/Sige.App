@@ -17,8 +17,7 @@ namespace SIGE.Core.Models.Dto.Gerencial.Contrato
         public required ETipoSegmento Segmento { get; set; }
         public Guid? FornecedorId { get; set; }
         public string? DescFornecedor { get; set; }
-        public Guid? ConcessionariaId { get; set; }
-        public string? DescConcessionaria { get; set; }
+
         public IEnumerable<ContratoEmpresaDto>? ContratoEmpresas { get; set; }
         public IEnumerable<ValorAnualContratoDto>? ValoresAnuaisContrato { get; set; }
     }

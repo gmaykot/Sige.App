@@ -1,7 +1,6 @@
 ﻿using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Sistema.Gerencial;
 
-namespace SIGE.Core.Models.Sistema.Geral.Medicao
+namespace SIGE.Core.Models.Sistema.Gerencial.Empresa
 {
     public class AgenteMedicaoModel : BaseModel
     {

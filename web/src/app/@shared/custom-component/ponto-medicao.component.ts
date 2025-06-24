@@ -2,8 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { IPontoMedicao } from '../../@core/data/ponto-medicao';
 import { IAgenteMedicao } from '../../@core/data/agente-medicao';
-import { FormBuilder } from '@angular/forms';
-import { SEGMENTO } from '../../@core/enum/status-contrato';
+import { FormBuilder, Validators } from '@angular/forms';
+import { SEGMENTO, TIPO_CONEXAO } from '../../@core/enum/status-contrato';
+import { IDropDown } from '../../@core/data/drop-down';
 
 
 @Component({
@@ -42,24 +43,41 @@ import { SEGMENTO } from '../../@core/enum/status-contrato';
         </div>
     </div>
     <div class="row">       
-        <div class="col-sm-12">
+      <div class="col-sm-6">
         <div class="form-group">
             <label for="inputLastName" class="label">Segmento*</label>
             <nb-select fullWidth placeholder="Selecione" formControlName="segmento">
               <nb-option *ngFor="let sg of segmento" value="{{sg.id}}">{{sg.desc}}</nb-option>
             </nb-select>
         </div>
-        </div>
-    </div>
-    <div class="row">       
-      <div class="col-sm-12">
+      </div>
+      <div class="col-sm-6">
         <div class="form-group">
-            <nb-toggle labelPosition="end" formControlName="acumulacaoLiquida">Acumulação Líquida*</nb-toggle>
+            <label for="inputLastName" class="label">Conexão*</label>
+            <nb-select fullWidth placeholder="Selecione" formControlName="conexao">
+              <nb-option *ngFor="let sg of conexao" value="{{sg.id}}">{{sg.desc}}</nb-option>
+            </nb-select>
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col-sm-12">
+        <div class="form-group">
+          <label for="inputLastName" class="label">Concessionária*</label>
+          <nb-select fullWidth placeholder="Selecione" formControlName="concessionariaId">
+            <nb-option *ngFor="let con of concessionarias"
+              value="{{con.id}}">{{con.descricao}}</nb-option>
+          </nb-select>
+        </div>
+      </div>      
+    </div>  
+    <div class="row">  
+      <div class="col-sm-6">
+        <div class="form-group">
+            <nb-toggle labelPosition="end" formControlName="acumulacaoLiquida">Acumulação Líquida*</nb-toggle>
+        </div>
+      </div>
+      <div class="col-sm-6">
         <div class="form-group">
             <nb-toggle labelPosition="end" formControlName="ativo">Ativo*</nb-toggle>
         </div>
@@ -68,7 +86,7 @@ import { SEGMENTO } from '../../@core/enum/status-contrato';
   </nb-card-body>
   <nb-card-footer>
   <div class="text-center">
-    <button nbButton status="warning" (click)="submit()">Confirmar</button>
+    <button nbButton status="warning" (click)="submit()" [disabled]="!control.valid">Confirmar</button>
     <button nbButton status="basic" style="margin-left: 2.5rem;" (click)="cancel()">Cancelar</button>
   </div>
   </nb-card-footer>  
@@ -79,16 +97,20 @@ import { SEGMENTO } from '../../@core/enum/status-contrato';
 export class PontoMedicaoComponent implements OnInit {
   @Input() ponto: IPontoMedicao;
   @Input() agentes: IAgenteMedicao[];
+  @Input() concessionarias: any[];
   segmento = SEGMENTO
+  conexao = TIPO_CONEXAO
   public control = this.formBuilder.group({
     id: '',
-    nome: '',
-    codigo: '',
-    agenteMedicaoId: '',
+    nome: ["", Validators.required],
+    codigo: ["", Validators.required],
+    agenteMedicaoId: ["", Validators.required],
     agenteMedicao: '',
-    segmento: '',
+    segmento: ["", Validators.required],
+    conexao: ["", Validators.required],
     acumulacaoLiquida: false,
-    ativo: true
+    ativo: true,
+    concessionariaId: ["", Validators.required],    
   });
   
   constructor(protected dialogRef: NbDialogRef<PontoMedicaoComponent>, private formBuilder: FormBuilder) {    
@@ -108,7 +130,9 @@ export class PontoMedicaoComponent implements OnInit {
       acumulacaoLiquida: this.ponto.acumulacaoLiquida,
       ativo: this.ponto.ativo,
       segmento: this.ponto.segmento.toString(),
-      agenteMedicao: ''
+      agenteMedicao: '',
+      conexao: this.ponto.conexao.toString(),
+      concessionariaId: this.ponto.concessionariaId
     });
   }
 

@@ -1,5 +1,5 @@
 import { SUB_GRUPOS } from '../../@core/enum/const-dropbox';
-import { SEGMENTO } from '../../@core/enum/status-contrato';
+import { SEGMENTO, TIPO_CONEXAO } from '../../@core/enum/status-contrato';
 
 export const settingsTarifaAplicacao = {
     add: {
@@ -23,9 +23,9 @@ export const settingsTarifaAplicacao = {
         type: 'string',
       },
       subGrupo: {
-        title: 'Sub-Grupo',
+        title: 'Conexão',
         type: 'string',
-        valuePrepareFunction: (value:number) => { return SUB_GRUPOS.find(f => f.id == value).desc},
+        valuePrepareFunction: (value:number) => { return TIPO_CONEXAO.find(f => f.id == value).desc},
       },
       segmento: {
         title: 'Segmento',

@@ -1,7 +1,7 @@
 ﻿using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
+using SIGE.Core.Models.Sistema.Gerencial.Empresa;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SIGE.Core.Models.Sistema.Geral.FaturaEnergia

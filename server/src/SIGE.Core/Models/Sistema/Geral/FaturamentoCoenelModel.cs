@@ -1,5 +1,5 @@
 ﻿using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Sistema.Geral.Medicao;
+using SIGE.Core.Models.Sistema.Gerencial.Empresa;
 using System.Text;
 
 namespace SIGE.Core.Models.Sistema.Geral
