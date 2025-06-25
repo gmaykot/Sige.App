@@ -11,7 +11,7 @@ export class AjudaOperacaoComponent implements AfterViewInit{
   @ViewChild('ajudaOperacao') ajudaOperacaoTemplate!: TemplateRef<any>;
   @ViewChild('ajudaFaturamento') ajudaFaturamentoTemplate!: TemplateRef<any>;
   @ViewChild('ajudaRelatorio') ajudaRelatorioTemplate!: TemplateRef<any>;
-  @Input() tipoAjuda: string = 'ajuda-operacao';
+  @Input() tipoAjuda: string = '';
 
   templateAjuda!: TemplateRef<any>;
 
@@ -20,7 +20,6 @@ export class AjudaOperacaoComponent implements AfterViewInit{
   }
 
   setTemplateAjuda() {
-    console.log(this.tipoAjuda);
     switch (this.tipoAjuda) {
       case 'ajuda-operacao':
         this.templateAjuda = this.ajudaOperacaoTemplate;
@@ -32,7 +31,7 @@ export class AjudaOperacaoComponent implements AfterViewInit{
         this.templateAjuda = this.ajudaRelatorioTemplate;
         break;
       default:
-        this.templateAjuda = null;
+        this.templateAjuda = this.ajudaOperacaoTemplate;
     }
   }
   

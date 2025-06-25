@@ -56,6 +56,10 @@ export const settingsLancamentos = {
     position: "right",
     columnTitle: "",
   },
+  pager: {
+    display: true,
+    perPage: 20
+  },
   columns: {
     descricao: {
       title: "Lançamento",
@@ -101,6 +105,10 @@ export const settingsLancamentosSemDelete = {
     add: false,
     edit: false,
     delete: false,
+  },
+  pager: {
+    display: true,
+    perPage: 20
   },
   columns: {
     descricao: {
