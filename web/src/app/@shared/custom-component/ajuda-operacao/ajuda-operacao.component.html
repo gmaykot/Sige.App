@@ -2,17 +2,81 @@
     <ng-container [ngTemplateOutlet]="templateAjuda"></ng-container>
   </ng-container>
   
-<ng-template #ajudaOperacao>
+  <ng-template #ajudaRelatorioEconomia>
     <nb-card size="small">
       <nb-card-header><h6>Ajuda Operação</h6></nb-card-header>
       <nb-card-body>
-        <p>A funcionalidade de <strong>Ajuda Operação</strong> será utilizada para descrever para o usuário como funciona a operação.</p>
+        <div class="faturamento-info">
+          <p>
+            A funcionalidade de <strong>Relatório de Economia</strong> apresenta um quadro comparativo entre os custos de energia no
+            <strong>Mercado Livre</strong> e os custos projetados caso a empresa ainda estivesse no <strong>Mercado Cativo</strong>.
+            Este relatório é direcionado a empresas que migraram para o mercado livre de energia, permitindo uma análise clara da economia obtida.
+          </p>
+        
+          <p>
+            A análise é baseada no consumo real registrado no mercado livre, e a partir disso, o sistema realiza uma simulação de quanto seria
+            o custo equivalente no mercado cativo. Como resultado, o relatório exibe:
+          </p>
+          <ul>
+            <li><strong>Percentual de Economia</strong> – diferença percentual entre os dois modelos de contratação de energia.</li>
+            <li><strong>Percentual de Economia considerando o Faturamento Coenel</strong> – resultado final após aplicação da política de cobrança definida na funcionalidade de Faturamento Coenel.</li>
+          </ul>
+        
+          <p>
+            Este relatório é gerado em formato <strong>PDF</strong>, apresentando todos os dados comparativos de forma clara e organizada, pronto para ser enviado ao cliente ou utilizado internamente.
+          </p>
+        
+          <p>Pré-requisitos:</p>
+          <ol>
+            <li>
+              <strong>PIS/COFINS</strong><br>
+              Os valores de PIS/COFINS devem estar configurados no cadastro da
+              <strong class="strong" (click)="abrirNovaAba('/pages/concessionarias')">Concessionária</strong>.
+            </li>
+            <li>
+              <strong>Salário Mínimo</strong><br>
+              Informado na tela de <strong class="strong" (click)="abrirNovaAba('/pages/salario-minimo')">Salário Mínimo</strong>.
+            </li>
+            <li>
+              <strong>Tarifas de Aplicação</strong><br>
+              Devem estar registradas na tela de <strong class="strong" (click)="abrirNovaAba('/pages/tarifas-aplicacao')">Tarifas de Aplicação</strong>.
+            </li>
+            <li>
+              <strong>Energia Acumulada</strong><br>
+              Essencial para a simulação no mercado cativo. Pode ser configurada na tela de
+              <strong class="strong" (click)="abrirNovaAba('/pages/energia-acumulada')">Energia Acumulada</strong>.
+            </li>
+            <li>
+              <strong>Bandeira Tarifária</strong><br>
+              Define a bandeira vigente usada na projeção. Configurada em
+              <strong class="strong" (click)="abrirNovaAba('/pages/bandeira-tarifaria')">Bandeiras Tarifárias</strong>.
+            </li>
+            <li>
+              <strong>Faturamento Coenel</strong><br>
+              Necessário para o cálculo do percentual de economia com faturamento. Deve ser definido na tela
+              <strong class="strong" (click)="abrirNovaAba('/pages/faturamento-coenel')">Faturamento Coenel</strong>.
+            </li>
+          </ol>
+        </div>
+        
       </nb-card-body>
       <nb-card-footer class="footer-direita">
         <button nbButton status="basic" (click)="onClose()">Fechar Ajuda</button>
       </nb-card-footer>
     </nb-card>
-  </ng-template>
+</ng-template>
+
+<ng-template #ajudaOperacao>
+  <nb-card size="small">
+    <nb-card-header><h6>Ajuda Operação</h6></nb-card-header>
+    <nb-card-body>
+      <p>A funcionalidade de <strong>Ajuda Operação</strong> será utilizada para descrever para o usuário como funciona a operação.</p>
+    </nb-card-body>
+    <nb-card-footer class="footer-direita">
+      <button nbButton status="basic" (click)="onClose()">Fechar Ajuda</button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
   
   <ng-template #ajudaFaturamento>
     <nb-card size="small">

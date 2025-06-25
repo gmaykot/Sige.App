@@ -11,6 +11,7 @@ export class AjudaOperacaoComponent implements AfterViewInit{
   @ViewChild('ajudaOperacao') ajudaOperacaoTemplate!: TemplateRef<any>;
   @ViewChild('ajudaFaturamento') ajudaFaturamentoTemplate!: TemplateRef<any>;
   @ViewChild('ajudaRelatorio') ajudaRelatorioTemplate!: TemplateRef<any>;
+  @ViewChild('ajudaRelatorioEconomia') ajudaRelatorioEconomiaTemplate!: TemplateRef<any>;
   @Input() tipoAjuda: string = '';
 
   templateAjuda!: TemplateRef<any>;
@@ -26,9 +27,12 @@ export class AjudaOperacaoComponent implements AfterViewInit{
         break;
       case 'faturamento-coenel':
         this.templateAjuda = this.ajudaFaturamentoTemplate;
-        break;
+        break;  
       case 'relatorio-medicao':
         this.templateAjuda = this.ajudaRelatorioTemplate;
+        break;
+      case 'relatorio-economia':
+        this.templateAjuda = this.ajudaRelatorioEconomiaTemplate;
         break;
       default:
         this.templateAjuda = this.ajudaOperacaoTemplate;
