@@ -31,8 +31,7 @@ export default class TarifaAplicacaoComponent extends DefaultComponent<ITarifaAp
     protected formBuilderService: FormBuilderService,
     protected alertService: AlertService,
     protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService,
-    private dateService: DateService
+    protected dialogService: NbDialogService
   ) 
   {
     super(Classes.TARIFA_APLICACAO, formBuilderService, service, alertService, scroolService, dialogService);

@@ -156,7 +156,7 @@
               <nb-card class="no-border">
                 <nb-card-body>
                   <div class="form-group">
-                    <ng2-smart-table [settings]="settingsAgentes" [source]="sourceAgenteMedicao" (deleteConfirm)="onSelect($event)">
+                    <ng2-smart-table [settings]="settingsAgentes" [source]="sourceAgenteMedicao" (deleteConfirm)="onSelectAgente($event)">
                     </ng2-smart-table>  
                   </div>
                 </nb-card-body>
@@ -171,7 +171,7 @@
               <nb-card class="no-border">                
                 <nb-card-body>
                     <div class="form-group">
-                      <ng2-smart-table [settings]="settingsPontos" [source]="sourcePontoMedicao" (deleteConfirm)="onSelect($event)">
+                      <ng2-smart-table [settings]="settingsPontos" [source]="sourcePontoMedicao" (deleteConfirm)="onSelectPonto($event)">
                       </ng2-smart-table>  
                     </div>
                 </nb-card-body>

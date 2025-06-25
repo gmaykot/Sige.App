@@ -39,6 +39,11 @@ export const settingsTarifaAplicacao = {
       numeroResolucao: {
         title: 'Nº Resolução',
         type: 'string',
+      },
+      ativo: {
+        title: 'Ativa',
+        type: 'string',
+        valuePrepareFunction: (value:boolean) => { return value ? 'SIM' : 'NÃO'},
       }
     },
     actions: {

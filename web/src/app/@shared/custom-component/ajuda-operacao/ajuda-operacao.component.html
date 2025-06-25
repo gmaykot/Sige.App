@@ -1,0 +1,81 @@
+<!-- Ajuda Operação -->
+<nb-card size="small" *ngIf="tipoAjuda === 'ajuda-operacao'">
+    <nb-card-header>
+        <h6>Ajuda Operação</h6>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="ajuda-operacao-info">
+            <p>
+              A funcionalidade de <strong>Ajuda Operação</strong> será utilizada para descrever para o usuário como funciona a operação.
+            </p>
+        </div>
+    </nb-card-body>
+    <nb-card-footer class="footer-direita">
+        <button nbButton status="basic" (click)="onClose()" size="medium">Fechar Ajuda</button>
+      </nb-card-footer>  
+</nb-card>
+
+<!-- Faturamento Coenel -->
+<nb-card size="small" *ngIf="tipoAjuda === 'faturamento-coenel'">
+    <nb-card-header>
+        <h6>Faturamento Coenel</h6>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="faturamento-info">
+            <p>
+              A funcionalidade de <strong>Faturamento Coenel</strong> define como será calculado o valor a ser cobrado ao cliente. Essas informações são utilizadas diretamente na geração do <strong>Relatório de Economia</strong>, impactando o resultado final apresentado ao cliente.
+            </p>
+          
+            <p>Existem três formas de faturamento disponíveis:</p>
+            <ol>
+              <li>
+                <strong>Valor Fixo:</strong><br>
+                Um valor determinado é descontado diretamente, conforme o valor cadastrado no sistema.
+              </li>
+              <li>
+                <strong>Quantidade de Salários:</strong><br>
+                O sistema multiplica a quantidade de salários definida pelo valor do salário vigente cadastrado, resultando no total a ser faturado.
+              </li>
+              <li>
+                <strong>Porcentagem sobre Economia:</strong><br>
+                Uma porcentagem é aplicada sobre o valor da economia calculada no relatório, definindo assim o valor de faturamento.
+              </li>
+            </ol>
+          
+            <p>Essa flexibilidade permite adaptar a cobrança conforme o modelo comercial acordado com cada cliente.</p>
+
+            <p>Pré-requisitos:</p>
+            <ol>
+              <li>
+                <strong>Empresa Cadastrada</strong><br>
+                O cadastro da empresa pode ser feito na funcionalidade de <strong class="strong" (click)="abrirNovaAba('/pages/empresas')">Empresas</strong>.
+              </li>
+              <li>
+                <strong>Ponto de Medição Cadastrado</strong><br>
+                O ponto de medição deve estar cadastrado no sistema. O cadastro do ponto de medição pode ser feito dentro do cadastro de <strong class="strong" (click)="abrirNovaAba('/pages/empresas')">Empresas</strong> na aba <strong>Pontos de Medição</strong>.
+              </li>
+            </ol>
+          </div>
+                  
+    </nb-card-body>
+    <nb-card-footer class="footer-direita">
+        <button nbButton status="basic" (click)="onClose()" size="medium">Fechar Ajuda</button>
+      </nb-card-footer>  
+</nb-card>
+
+<!-- Relatório de Medição -->
+<nb-card size="small" *ngIf="tipoAjuda === 'relatorio-medicao'">
+    <nb-card-header>
+        <h6>Relatório de Medição</h6>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="ajuda-operacao-info">
+            <p>
+              A funcionalidade de <strong>Relatório de Medição</strong> será utilizada para apresentar os valores medidos.
+            </p>
+        </div>
+    </nb-card-body>
+    <nb-card-footer class="footer-direita">
+        <button nbButton status="basic" (click)="onClose()" size="medium">Fechar Ajuda</button>
+      </nb-card-footer>  
+</nb-card>

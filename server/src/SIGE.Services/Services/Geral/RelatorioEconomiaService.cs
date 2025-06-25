@@ -62,19 +62,46 @@ namespace SIGE.Services.Services.Geral
                 var fatura = _mapper.Map<FaturaEnergiaDto>(await _appDbContext.FaturasEnergia.Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.PontoMedicaoId == pontoMedicaoId && f.MesReferencia == mesReferencia));
                 if (fatura != null)
                 {
-                    var tarifa = _mapper.Map<TarifaAplicacaoDto>(await _appDbContext.TarifasAplicacao.Where(t => t.ConcessionariaId == fatura.ConcessionariaId && t.Segmento == res.Segmento && t.SubGrupo == res.Conexao).OrderByDescending(t => t.DataUltimoReajuste).FirstOrDefaultAsync());
+                    var tarifa = _mapper.Map<TarifaAplicacaoDto>(await _appDbContext.TarifasAplicacao.Where(t => t.ConcessionariaId == fatura.ConcessionariaId && t.Segmento == res.Segmento && t.SubGrupo == res.Conexao && t.Ativo).OrderByDescending(t => t.DataUltimoReajuste).FirstOrDefaultAsync());
                     if (tarifa != null)
                     {
                         var tarifaCalculada = _mapper.Map<TarifaCalculadaDto>(tarifa);
                         var consumo = await _appDbContext.ConsumosMensais.FirstOrDefaultAsync(c => c.PontoMedicaoId == pontoMedicaoId && c.MesReferencia == mesReferencia);
                         if (consumo != null)
                         {
-                            var faturamento = await _appDbContext.FaturamentosCoenel.OrderByDescending(f => f.VigenciaInicial).FirstOrDefaultAsync(f => f.PontoMedicaoId == pontoMedicaoId);
+                            var faturamento = await _appDbContext.FaturamentosCoenel
+                                .Where(f =>
+                                    f.PontoMedicaoId == pontoMedicaoId &&
+                                    DateOnly.FromDateTime(f.VigenciaInicial) <= fatura.MesReferencia &&
+                                    (
+                                        f.VigenciaFinal == null ||
+                                        DateOnly.FromDateTime(f.VigenciaFinal.Value) >= fatura.MesReferencia
+                                    )
+                                )
+                                .OrderByDescending(f => f.VigenciaInicial)
+                                .FirstOrDefaultAsync();
                             var imposto = _mapper.Map<ImpostoConcessionariaDto>(await _appDbContext.ImpostosConcessionarias.FirstOrDefaultAsync(i => i.ConcessionariaId == fatura.ConcessionariaId && i.MesReferencia == fatura.MesReferencia));
-                            var salarioMinimo = await _appDbContext.SalariosMinimos.OrderByDescending(s => s.VigenciaInicial).FirstOrDefaultAsync();
+                            var salarioMinimo = await _appDbContext.SalariosMinimos
+                                .Where(s =>
+                                    DateOnly.FromDateTime(s.VigenciaInicial) <= fatura.MesReferencia &&
+                                    (s.VigenciaFinal == null || DateOnly.FromDateTime(s.VigenciaFinal.Value) >= fatura.MesReferencia)
+                                )
+                                .OrderByDescending(s => s.VigenciaInicial)
+                                .FirstOrDefaultAsync();
                             var energiaAcumulada = await _appDbContext.EnergiasAcumuladas.OrderByDescending(e => e.MesReferencia).FirstOrDefaultAsync(e => e.PontoMedicaoId == pontoMedicaoId);
-                            var bandeiraVigente = await _appDbContext.BandeiraTarifariaVigente.Include(b => b.BandeiraTarifaria).OrderByDescending(b => b.MesReferencia).FirstOrDefaultAsync(b => DateOnly.FromDateTime(b.MesReferencia) == fatura.MesReferencia);
-                            
+                            var bandeiraVigente = await _appDbContext.BandeiraTarifariaVigente
+                                .Include(b => b.BandeiraTarifaria)
+                                .Where(b =>
+                                    DateOnly.FromDateTime(b.MesReferencia) == fatura.MesReferencia &&
+                                    DateOnly.FromDateTime(b.BandeiraTarifaria.VigenciaInicial) <= fatura.MesReferencia &&
+                                    (
+                                        b.BandeiraTarifaria.VigenciaFinal == null ||
+                                        DateOnly.FromDateTime(b.BandeiraTarifaria.VigenciaFinal.Value) >= fatura.MesReferencia
+                                    )
+                                )
+                                .OrderByDescending(b => b.MesReferencia)
+                                .FirstOrDefaultAsync();
+
                             tarifaCalculada.ICMS = consumo.Icms;
                             tarifaCalculada.Cofins = imposto.ValorCofins;
                             tarifaCalculada.Proinfa = consumo.Proinfa;

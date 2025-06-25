@@ -22,6 +22,7 @@ import { ValidacaoMedicaoComponent } from '../../../@shared/custom-component/val
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
+import { AjudaOperacaoComponent } from '../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component';
 
 @Component({
   selector: 'ngx-relatorio-medicao',
@@ -335,5 +336,9 @@ export class RelatorioMedicaoComponent implements OnInit {
       reader.onloadend = () => resolve(reader.result);
       reader.readAsDataURL(blob);
     });
+  }
+
+  onHelp() {
+    this.dialogService.open(AjudaOperacaoComponent, { context: { tipoAjuda: 'relatorio-medicao' } });
   }
 }

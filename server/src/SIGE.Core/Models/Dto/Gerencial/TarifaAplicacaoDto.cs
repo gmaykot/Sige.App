@@ -18,5 +18,6 @@ namespace SIGE.Core.Models.Dto.Gerencial
         public required decimal KWhPontaTE { get; set; }
         public required decimal KWhForaPontaTE { get; set; }
         public required decimal ReatKWhPFTE { get; set; }
+        public bool Ativo { get; set; }
     }
 }
