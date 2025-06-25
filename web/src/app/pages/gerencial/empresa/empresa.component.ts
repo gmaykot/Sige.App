@@ -157,6 +157,16 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     return empresa;
   }
 
+  onSelectAgente(event): void {    
+    this.agentesChecked[0] = event.data;
+    this.onAgenteEdit();
+  }
+
+  onSelectPonto(event): void {    
+    this.pontosChecked[0] = event.data;
+    this.onPontoEdit();
+  }
+
   onSelect(event): void {    
     this.limparFormulario();
     const emp = event.data as IEmpresa;
@@ -331,11 +341,15 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     if(this.agentesChecked.length > 0){
       this.dialogService
       .open(AgenteMedicaoComponent, { context: { agente: this.agentesChecked[0]} })
-      .onClose.subscribe(async (agente) => {
-        if (agente) {   
-          this.agenteMedicaoService.put(agente).then()
-          this.agentes = this.agentes.filter(a => a.id != agente.id);
-          this.agentes.push(agente);
+      .onClose.subscribe(async (agenteEditado) => {
+        if (agenteEditado) {   
+          this.agenteMedicaoService.put(agenteEditado).then()
+          const index = this.agentes.findIndex(p => p.id === agenteEditado.id);
+          if (index !== -1) {
+            this.agentes[index] = agenteEditado;
+          } else {
+            this.agentes.push(agenteEditado);
+          }   
           this.sourceAgenteMedicao.load(this.agentes);          
           this.alertService.showSuccess("Agente alterado com sucesso.");
         }
@@ -350,15 +364,18 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
   }
 
   async onPontoEdit() {
-    console.log(this.pontosChecked[0]);
     if (this.pontosChecked.length > 0){
       this.dialogService
       .open(PontoMedicaoComponent, { context: { ponto: this.pontosChecked[0], agentes: await this.sourceAgenteMedicao.getAll(), concessionarias: this.concessionarias }, })
-      .onClose.subscribe(async (ponto) => {
-        if (ponto) {   
-          this.pontoMedicaoService.put(ponto).then()
-          this.pontos = this.pontos.filter(a => a.id != ponto.id);
-          this.pontos.push(ponto);
+      .onClose.subscribe(async (pontoEditado) => {
+        if (pontoEditado) {   
+          await this.pontoMedicaoService.put(pontoEditado);
+          const index = this.pontos.findIndex(p => p.id === pontoEditado.id);
+          if (index !== -1) {
+            this.pontos[index] = pontoEditado;
+          } else {
+            this.pontos.push(pontoEditado);
+          }          
           this.sourcePontoMedicao.load(this.pontos);          
           this.alertService.showSuccess("Ponto alterado com sucesso.");
         }

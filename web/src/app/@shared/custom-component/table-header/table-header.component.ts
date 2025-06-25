@@ -9,10 +9,8 @@ import { SessionStorageService } from '../../../@core/services/util/session-stor
 export class TableHeaderComponent implements OnInit{
   
   ngOnInit(): void {
-    console.log('showActions', this.showActions);
-    console.log('showHelp', this.showHelp);
-    console.log('title', this.title);
   }
+
   @Input() showActions: boolean = false;
   @Input() showHelp: boolean = false;
   @Input() title: string = '';

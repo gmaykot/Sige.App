@@ -40,7 +40,6 @@ export class NgxLoginComponent {
     await this.oauth2Service.login(this.user)
       .then((response: any) => {
         if (response.success === true) {
-          console.log(response);
           setTimeout(async () => {
             sessionStorage.setItem(SessionSige.AUTH_TOKEN, response.data.auth.token);
             sessionStorage.setItem(SessionSige.AUTH_REFRESH_TOKEN, response.data.auth.refresToken);

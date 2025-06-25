@@ -13,7 +13,7 @@ export class EmpresaConfigSettings {
 
     settingsAgentes = {
     delete: {
-      deleteButtonContent: '<i class="nb-compose"></i>',
+      deleteButtonContent: '<i class="nb-edit"></i>',
       confirmDelete: true,
     },
     columns: {
@@ -52,8 +52,9 @@ export class EmpresaConfigSettings {
     actions: {
       add: false,
       edit: false,
-      delete: false,
+      delete: true,
       position: "right",
+      columnTitle: "",
     },
     hideSubHeader: true,
     noDataMessage: 'Nenhum registro encontrado.'
@@ -61,7 +62,7 @@ export class EmpresaConfigSettings {
 
   settingsPontos = {
     delete: {
-      deleteButtonContent: '<i class="nb-compose"></i>',
+      deleteButtonContent: '<i class="nb-edit"></i>',
       confirmDelete: true,
     },
     columns: {
@@ -118,8 +119,9 @@ export class EmpresaConfigSettings {
     actions: {
       add: false,
       edit: false,
-      delete: false,
+      delete: true,
       position: "right",
+      columnTitle: "",
     },
     hideSubHeader: true,
     noDataMessage: 'Nenhum registro encontrado.'

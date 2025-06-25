@@ -12,5 +12,6 @@ export interface ITarifaAplicacao {
     kWhForaPontaTUSD: number,
     kWhPontaTE: number,
     kWhForaPontaTE: number,
-    reatKWhPFTE: number
+    reatKWhPFTE: number,
+    ativo: boolean
 }

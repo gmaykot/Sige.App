@@ -62,7 +62,8 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     kWhForaPontaTUSD: [0, [Validators.required]],
     kWhPontaTE: [0, [Validators.required]],
     kWhForaPontaTE: [0, [Validators.required]],
-    reatKWhPFTE: [0, [Validators.required]]
+    reatKWhPFTE: [0, [Validators.required]],
+    ativo: [true, [Validators.required]]
   },
   Usuario: {
     id: ['', null],

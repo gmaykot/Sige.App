@@ -13,6 +13,7 @@ import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-med
 import { LocalDataSource } from "ng2-smart-table";
 import { IFaturamentoCoenel } from "../../../@core/data/geral/faturamento-coenel";
 import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
+import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component";
 
 @Component({
   selector: 'ngx-faturamento-coenel',
@@ -97,7 +98,7 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
   }
 
   onHelp() {
-    
+    this.dialogService.open(AjudaOperacaoComponent, { context: { tipoAjuda: 'faturamento-coenel' } });
   }
 
   onItemSelected(selectedItem: IDropDown) {

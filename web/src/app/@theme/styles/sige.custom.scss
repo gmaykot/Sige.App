@@ -139,3 +139,13 @@ select {
     width: 180px !important;
   }  
 }
+
+::ng-deep nb-action nb-icon {
+  font-size: 1.5rem !important; 
+  margin-right: 0.75rem;
+}
+
+::ng-deep nb-action.warning nb-icon {
+  color: #FFA600 !important;
+  cursor: pointer;
+}

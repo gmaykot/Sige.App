@@ -120,7 +120,8 @@ export class PontoMedicaoComponent implements OnInit {
     tipoEnergia: ["", Validators.required],
     acumulacaoLiquida: false,
     ativo: true,
-    concessionariaId: ["", Validators.required],    
+    concessionariaId: ["", Validators.required],
+    descConcessionaria: ""
   });
   
   constructor(protected dialogRef: NbDialogRef<PontoMedicaoComponent>, private formBuilder: FormBuilder) {    
@@ -143,7 +144,8 @@ export class PontoMedicaoComponent implements OnInit {
       agenteMedicao: '',
       conexao: this.ponto.conexao.toString(),
       tipoEnergia: this.ponto.tipoEnergia.toString(),
-      concessionariaId: this.ponto.concessionariaId
+      concessionariaId: this.ponto.concessionariaId,
+      descConcessionaria: this.ponto.descConcessionaria
     });
   }
 
@@ -153,6 +155,7 @@ export class PontoMedicaoComponent implements OnInit {
 
   submit() {
     this.control.value.agenteMedicao = this.agentes.find(a => a.id == this.control.value.agenteMedicaoId)?.nome;
+    this.control.value.descConcessionaria = this.concessionarias.find(a => a.id == this.control.value.concessionariaId)?.descricao;
     this.dialogRef.close(this.control.value);
   }
 }
