@@ -9,6 +9,7 @@ import {
 } from "../../../@core/services/util/pdf-config.service";
 import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/relatorio-final";
 import { ILancamentoRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/lancamento-relatorio-final";
+import { TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
 
 @Injectable({ providedIn: "root" })
 export class RelatorioEconomiaPdfService {
@@ -201,7 +202,7 @@ export class RelatorioEconomiaPdfService {
     /* LOGO & TITULO CABEÇALHO ---------------------------------------------------------------- */
     this.pdfConfig.addImagem(doc, {
       src: "assets/images/logo.png",
-      marginLeft: margins.marginLeft,
+      marginLeft: margins.marginLeft-10,
       marginTop: margins.marginTop,
       width: 130,
       height: 57,
@@ -212,15 +213,26 @@ export class RelatorioEconomiaPdfService {
     const dataFormatada = dataHoje.toLocaleDateString("pt-BR", dataOptions);
 
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
-      texto: `Relatório de Economia ${cabecalho.mesReferencia}`,
-      x: margins.marginLeft + 130 + 20,
-      y: margins.marginTop + 57 / 2,
+      texto: `Quadro Comparativo Mensal Mercado Cativo x Livre`,
+      x: margins.marginLeft + 130 + 10,
+      y: margins.marginTop + 55 / 2,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
-        fontSize: 12,
+        fontSize: 14,
       },
     });
+
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: `Mês Referência: ${cabecalho.mesReferencia}`,
+      x: margins.marginLeft + 130 + 10,
+      y: margins.marginTop + 55 / 2 + 15,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 11,
+      },
+    });    
 
     const imageBottomY = margins.marginTop + 57 + 10;
 
@@ -247,7 +259,7 @@ export class RelatorioEconomiaPdfService {
             content: cabecalho.subMercado,
             styles: { halign: "left" as const },
           },
-          { content: cabecalho.conexao, styles: { halign: "left" as const } },
+          { content: TIPO_CONEXAO[cabecalho.conexao].desc, styles: { halign: "left" as const } },
           { content: cabecalho.concessao, styles: { halign: "left" as const } },
         ],
       ],
@@ -365,7 +377,7 @@ export class RelatorioEconomiaPdfService {
               content: lancamento.descricao,
               styles: {
                 halign: "left" as const,
-                fontStyle: (lancamento.total
+                fontStyle: (lancamento.total || lancamento.subTotal
                   ? "bold"
                   : "italic") as EstiloTextoPdf["fontStyle"],
               },
@@ -377,16 +389,18 @@ export class RelatorioEconomiaPdfService {
                   : "",
               styles: {
                 halign: "center" as const,
-                fontStyle: (lancamento.total
+                fontStyle: (lancamento.total || lancamento.subTotal
                   ? "bold"
                   : "italic") as EstiloTextoPdf["fontStyle"],
               },
             },
             {
-              content: formatadorMoeda.format(lancamento.valor),
+              content: lancamento.valor !== undefined
+              ? `${formatadorMoeda.format(lancamento.valor)}`
+              : "-",
               styles: {
                 halign: "center" as const,
-                fontStyle: (lancamento.total
+                fontStyle: (lancamento.total || lancamento.subTotal
                   ? "bold"
                   : "italic") as EstiloTextoPdf["fontStyle"],
               },
@@ -435,20 +449,20 @@ export class RelatorioEconomiaPdfService {
     if (graficoImagem && relatorio?.grafico?.titulo) {
       const graficoMarginTop = criarTituloSecao(
         relatorio?.grafico?.titulo,
-        margintTopTabelaDinamico + margins.sectionMarginTop,
+        margintTopTabelaDinamico + margins.sectionMarginTop*0.7,
         "textoCentro"
       );
 
       this.pdfConfig.addImagem(doc, {
         src: graficoImagem,
         marginLeft: 20,
-        marginTop: graficoMarginTop,
+        marginTop: graficoMarginTop-10,
         width: pdfWidth - 40, // Reduzindo para 40 para dar mais margem
         height: graficoPdfHeight,
       });
 
       // Atualizar a posição vertical para elementos subsequentes
-      margintTopTabelaDinamico = graficoMarginTop + graficoPdfHeight + 10; // Adicionando espaço extra
+      margintTopTabelaDinamico = graficoMarginTop + graficoPdfHeight; // Adicionando espaço extra
     }
 
     /* SEÇÃO OBSERVAÇÃO ------------------------------------------------------------------------------- */
