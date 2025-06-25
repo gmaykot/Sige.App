@@ -77,29 +77,29 @@ export class FaturaEnergiaComponent implements OnInit {
       validado: [false],
     
       // Demanda
-      valorDemandaContratadaPonta: [0, [Validators.required, Validators.min(0)]],
-      valorDemandaContratadaForaPonta: [0, [Validators.required, Validators.min(0)]],
-      valorDemandaFaturadaPontaConsumida: [0, [Validators.required, Validators.min(0)]],
-      valorDemandaFaturadaForaPontaConsumida: [0, [Validators.required, Validators.min(0)]],
-      valorDemandaFaturadaPontaNaoConsumida: [0, [Validators.required, Validators.min(0)]],
-      valorDemandaFaturadaForaPontaNaoConsumida: [0, [Validators.required, Validators.min(0)]],
-      valorDemandaUltrapassagemPonta: [0, [Validators.required, Validators.min(0)]],
-      valorDemandaUltrapassagemForaPonta: [0, [Validators.required, Validators.min(0)]],
-      valorDemandaReativaPonta: [0, [Validators.required, Validators.min(0)]],
-      valorDemandaReativaForaPonta: [0, [Validators.required, Validators.min(0)]],
+      valorDemandaContratadaPonta: [null, [Validators.required, Validators.min(0)]],
+      valorDemandaContratadaForaPonta: [null, [Validators.required, Validators.min(0)]],
+      valorDemandaFaturadaPontaConsumida: [null, [Validators.required, Validators.min(0)]],
+      valorDemandaFaturadaForaPontaConsumida: [null, [Validators.required, Validators.min(0)]],
+      valorDemandaFaturadaPontaNaoConsumida: [null, [Validators.required, Validators.min(0)]],
+      valorDemandaFaturadaForaPontaNaoConsumida: [null, [Validators.required, Validators.min(0)]],
+      valorDemandaUltrapassagemPonta: [null, [Validators.required, Validators.min(0)]],
+      valorDemandaUltrapassagemForaPonta: [null, [Validators.required, Validators.min(0)]],
+      valorDemandaReativaPonta: [null, [Validators.required, Validators.min(0)]],
+      valorDemandaReativaForaPonta: [null, [Validators.required, Validators.min(0)]],
     
       // Consumo
-      valorConsumoTUSDPonta: [0, [Validators.required, Validators.min(0)]],
-      valorConsumoTUSDForaPonta: [0, [Validators.required, Validators.min(0)]],
-      valorConsumoTEPonta: [0, [Validators.required, Validators.min(0)]],
-      valorConsumoTEForaPonta: [0, [Validators.required, Validators.min(0)]],
-      valorConsumoMedidoReativoPonta: [0, [Validators.required, Validators.min(0)]],
-      valorConsumoMedidoReativoForaPonta: [0, [Validators.required, Validators.min(0)]],
+      valorConsumoTUSDPonta: [null, [Validators.required, Validators.min(0)]],
+      valorConsumoTUSDForaPonta: [null, [Validators.required, Validators.min(0)]],
+      valorConsumoTEPonta: [null, [Validators.required, Validators.min(0)]],
+      valorConsumoTEForaPonta: [null, [Validators.required, Validators.min(0)]],
+      valorConsumoMedidoReativoPonta: [null, [Validators.required, Validators.min(0)]],
+      valorConsumoMedidoReativoForaPonta: [null, [Validators.required, Validators.min(0)]],
     
       // Adicional Bandeira e Desconto TUSD
-      tarifaMedidaReativaPonta: [0, [Validators.required, Validators.min(0)]],
-      tarifaMedidaReativaForaPonta: [0, [Validators.required, Validators.min(0)]],
-      valorDescontoTUSD: [0, [Validators.required, Validators.min(0)]],
+      tarifaMedidaReativaPonta: [null, [Validators.required, Validators.min(0)]],
+      tarifaMedidaReativaForaPonta: [null, [Validators.required, Validators.min(0)]],
+      valorDescontoTUSD: [null, [Validators.required, Validators.min(0)]],
     
       lancamentosAdicionais: [null]
     });

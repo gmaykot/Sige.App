@@ -521,7 +521,7 @@ namespace SIGE.Services.Services.Geral
         {
             List<LancamentoRelatorioFinalDto> ret = [];
 
-            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == false))
+            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == false))
             {
                 ret.Add(new LancamentoRelatorioFinalDto
                 {
@@ -537,7 +537,7 @@ namespace SIGE.Services.Services.Geral
         {
             List<LancamentoRelatorioFinalDto> ret = [];
 
-            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == false && !l.Descricao.StartsWith("Subvenção Tarif")))
+            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == false && l.TipoCCEE == false && !l.Descricao.StartsWith("Subvenção Tarif")))
             {
                 ret.Add(new LancamentoRelatorioFinalDto
                 {
