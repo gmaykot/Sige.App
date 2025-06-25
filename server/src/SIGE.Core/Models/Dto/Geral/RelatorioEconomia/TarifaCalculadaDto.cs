@@ -72,9 +72,22 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
                 if (TotalPercentualTUSD == 0)
                     return KWForaPontaComImposto;
 
-                var fatorTusd = TotalPercentualTUSD - PercentualTUSD*100;
+                var fatorTusd = TotalPercentualTUSD - PercentualTUSD * 100;
                 var total = (KWForaPontaComImposto * 1) * (fatorTusd + TotalPercentualTUSD);
-                return total/100; 
+                return total / 100;
+            }
+        }
+
+        public double? KWhForaPontaTUSDNaoConsumidaCalculadoComImposto
+        {
+            get
+            {
+                if (TotalPercentualTUSD == 0)
+                    return KWForaPontaComImposto;
+
+                var fatorTusd = TotalPercentualTUSD - PercentualTUSD * 100;
+                var total = (KWForaPontaSemICMS* 1) * (fatorTusd + TotalPercentualTUSD);
+                return total / 100;
             }
         }
 

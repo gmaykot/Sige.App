@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Ocsp;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
@@ -464,7 +465,7 @@ namespace SIGE.Services.Services.Geral
                         Descricao = "TUSD - Fora de Ponta (Não Utilizada)",
                         Montante = fatura.ValorDemandaFaturadaForaPontaNaoConsumida,
                         TipoMontante = ETipoMontante.KW,
-                        Tarifa = tarifaCalculada.KWhForaPontaTUSDCalculadoComImposto,
+                        Tarifa = tarifaCalculada.KWhForaPontaTUSDNaoConsumidaCalculadoComImposto,
                         TipoTarifa = ETipoTarifa.RS_KW
                     },
                     new LancamentoRelatorioFinalDto {
@@ -504,6 +505,15 @@ namespace SIGE.Services.Services.Geral
                     }
             ];
 
+            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == false && l.Descricao.StartsWith("Subvenção Tarif")))
+            {
+                parte2.Add(new LancamentoRelatorioFinalDto
+                {
+                    Descricao = lanc.Descricao,
+                    Total = lanc.Tipo.Equals(ETipoLancamento.DEBITO) ? lanc.Valor : lanc.Valor * -1
+                });
+            }
+
             return parte2;
         }
 
@@ -527,7 +537,7 @@ namespace SIGE.Services.Services.Geral
         {
             List<LancamentoRelatorioFinalDto> ret = [];
 
-            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == false))
+            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == false && !l.Descricao.StartsWith("Subvenção Tarif")))
             {
                 ret.Add(new LancamentoRelatorioFinalDto
                 {
