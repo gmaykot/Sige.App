@@ -446,6 +446,21 @@
                                       <th></th>
                                       <th style="text-align: center;">Valor</th>
                                     </tr>
+                                    <!-- 1. Subvenção -->
+                                    <ng-container *ngFor="let lanc of filtrarLancamentos(true, false, true)">
+                                        <tr>
+                                            <td style="text-align: left;">{{ lanc.descricao }}</td>
+                                            <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '1' ? 'red' : '' }">
+                                            {{ lanc.tipo == '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
+                                            </td>
+                                        </tr>
+                                        </ng-container>
+                                        <tr class="total-linha">
+                                        <td style="text-align: left;">Subvenção Tarifária</td>
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': totalizador(true, false, true) < 0 ? 'red' : '' }">
+                                            {{ totalizador(true, false, true) | moedaParenteses }}
+                                        </td>
+                                        </tr>
                                   
                                     <!-- 1. Não contabiliza fatura e não é CCEE -->
                                     <ng-container *ngFor="let lanc of filtrarLancamentos(false, false)">
@@ -457,7 +472,7 @@
                                       </tr>
                                     </ng-container>
                                     <tr class="total-linha">
-                                      <td style="text-align: left;">Total distribuidora</td>
+                                      <td style="text-align: left;">Não contabiliza fatura e não é CCEE</td>
                                       <td [ngStyle]="{ 'text-align': 'center', 'color': totalizador(false, false) < 0 ? 'red' : '' }">
                                         {{ totalizador(false, false) | moedaParenteses }}
                                       </td>
@@ -473,7 +488,7 @@
                                       </tr>
                                     </ng-container>
                                     <tr class="total-linha">
-                                      <td style="text-align: left;">Sub-total distribuidora</td>
+                                      <td style="text-align: left;">Contabiliza fatura e não é CCEE</td>
                                       <td [ngStyle]="{ 'text-align': 'center', 'color': totalizador(true, false) < 0 ? 'red' : '' }">
                                         {{ totalizador(true, false) | moedaParenteses }}
                                       </td>
@@ -489,7 +504,7 @@
                                       </tr>
                                     </ng-container>
                                     <tr class="total-linha">
-                                      <td style="text-align: left;">Sub-total dos outros custos Mercado Livre</td>
+                                      <td style="text-align: left;">Contabiliza fatura e é CCEE</td>
                                       <td [ngStyle]="{ 'text-align': 'center', 'color': totalizador(true, true) < 0 ? 'red' : '' }">
                                         {{ totalizador(true, true) | moedaParenteses }}
                                       </td>

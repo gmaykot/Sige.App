@@ -412,16 +412,17 @@ export class FaturaEnergiaComponent implements OnInit {
     }
   }
 
-  public totalizador(contabilizaFatura: boolean, tipoCCEE: boolean): number {
+  public totalizador(contabilizaFatura: boolean, tipoCCEE: boolean, subvencaoTarif: boolean = false): number {
     return this.lancamentos
-      .filter(lanc => lanc.contabilizaFatura == contabilizaFatura && lanc.tipoCCEE == tipoCCEE)
-      .reduce((soma, lanc) => soma + (lanc.valor || 0)*(lanc.tipo == 0 ? -1 : 1), 0);
+      .filter(lanc => lanc.contabilizaFatura == contabilizaFatura && lanc.tipoCCEE == tipoCCEE && (subvencaoTarif ? lanc.descricao.startsWith("Subvenção Tarif") : !lanc.descricao.startsWith("Subvenção Tarif")))
+      .reduce((soma, lanc) => soma + (lanc.valor || 0)*(lanc.tipo == 0 ? 1 : -1), 0);
   }
 
-  filtrarLancamentos(contabilizaFatura: boolean, tipoCCEE: boolean) {
+  filtrarLancamentos(contabilizaFatura: boolean, tipoCCEE: boolean, subvencaoTarif: boolean = false) {
     return this.lancamentos.filter(lanc =>
       lanc.contabilizaFatura === contabilizaFatura &&
-      lanc.tipoCCEE === tipoCCEE
+      lanc.tipoCCEE === tipoCCEE &&
+      (subvencaoTarif ? lanc.descricao.startsWith("Subvenção Tarif") : !lanc.descricao.startsWith("Subvenção Tarif"))
     );
   }
   
