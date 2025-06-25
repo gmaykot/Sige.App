@@ -1,7 +1,18 @@
 <div class="row"  *ngIf="!selected">
   <div class="col-md-12">
       <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
-          <nb-card-header>Relatório de Economia</nb-card-header>
+          <nb-card-header>
+            <div class="row">
+                <div class="table-header">
+                    Relatório de Economia
+                </div>
+                <div>
+                    <nb-actions size="small">
+                      <nb-action icon="question-mark-circle-outline" (click)="onHelp()" class="warning" ></nb-action>
+                    </nb-actions>
+                </div> 
+            </div>
+          </nb-card-header>
           <nb-card-body>
               <div class="row">
                   <div class="col-sm-2">

@@ -16,6 +16,7 @@ import { EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
 import html2canvas from 'html2canvas';
 import { TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
+import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component";
 
 @Component({
   selector: "ngx-relatorio-economia",
@@ -267,4 +268,8 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
       await this.getRelatorios();
       this.loading = false;
     }
+
+      onHelp() {
+        this.dialogService.open(AjudaOperacaoComponent, { context: { tipoAjuda: 'relatorio-economia' } });
+      }
 }
