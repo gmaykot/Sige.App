@@ -1,26 +1,23 @@
-<!-- Ajuda Operação -->
-<nb-card size="small" *ngIf="tipoAjuda === 'ajuda-operacao'">
-    <nb-card-header>
-        <h6>Ajuda Operação</h6>
-    </nb-card-header>
-    <nb-card-body>
-        <div class="ajuda-operacao-info">
-            <p>
-              A funcionalidade de <strong>Ajuda Operação</strong> será utilizada para descrever para o usuário como funciona a operação.
-            </p>
-        </div>
-    </nb-card-body>
-    <nb-card-footer class="footer-direita">
-        <button nbButton status="basic" (click)="onClose()" size="medium">Fechar Ajuda</button>
-      </nb-card-footer>  
-</nb-card>
-
-<!-- Faturamento Coenel -->
-<nb-card size="small" *ngIf="tipoAjuda === 'faturamento-coenel'">
-    <nb-card-header>
-        <h6>Faturamento Coenel</h6>
-    </nb-card-header>
-    <nb-card-body>
+<ng-container *ngIf="templateAjuda">
+    <ng-container [ngTemplateOutlet]="templateAjuda"></ng-container>
+  </ng-container>
+  
+<ng-template #ajudaOperacao>
+    <nb-card size="small">
+      <nb-card-header><h6>Ajuda Operação</h6></nb-card-header>
+      <nb-card-body>
+        <p>A funcionalidade de <strong>Ajuda Operação</strong> será utilizada para descrever para o usuário como funciona a operação.</p>
+      </nb-card-body>
+      <nb-card-footer class="footer-direita">
+        <button nbButton status="basic" (click)="onClose()">Fechar Ajuda</button>
+      </nb-card-footer>
+    </nb-card>
+  </ng-template>
+  
+  <ng-template #ajudaFaturamento>
+    <nb-card size="small">
+      <nb-card-header><h6>Faturamento Coenel</h6></nb-card-header>
+      <nb-card-body>
         <div class="faturamento-info">
             <p>
               A funcionalidade de <strong>Faturamento Coenel</strong> define como será calculado o valor a ser cobrado ao cliente. Essas informações são utilizadas diretamente na geração do <strong>Relatório de Economia</strong>, impactando o resultado final apresentado ao cliente.
@@ -55,27 +52,21 @@
                 O ponto de medição precisa estar previamente cadastrado no sistema. Esse cadastro pode ser realizado diretamente na aba "Pontos de Medição", dentro do cadastro da <strong class="strong" (click)="abrirNovaAba('/pages/empresas')">Empresas</strong>.
               </li>
             </ol>
-          </div>
-                  
-    </nb-card-body>
-    <nb-card-footer class="footer-direita">
-        <button nbButton status="basic" (click)="onClose()" size="medium">Fechar Ajuda</button>
-      </nb-card-footer>  
-</nb-card>
-
-<!-- Relatório de Medição -->
-<nb-card size="small" *ngIf="tipoAjuda === 'relatorio-medicao'">
-    <nb-card-header>
-        <h6>Relatório de Medição</h6>
-    </nb-card-header>
-    <nb-card-body>
-        <div class="ajuda-operacao-info">
-            <p>
-              A funcionalidade de <strong>Relatório de Medição</strong> será utilizada para apresentar os valores medidos.
-            </p>
-        </div>
-    </nb-card-body>
-    <nb-card-footer class="footer-direita">
-        <button nbButton status="basic" (click)="onClose()" size="medium">Fechar Ajuda</button>
-      </nb-card-footer>  
-</nb-card>
+          </div>      </nb-card-body>
+      <nb-card-footer class="footer-direita">
+        <button nbButton status="basic" (click)="onClose()">Fechar Ajuda</button>
+      </nb-card-footer>
+    </nb-card>
+  </ng-template>
+  
+  <ng-template #ajudaRelatorio>
+    <nb-card size="small">
+      <nb-card-header><h6>Relatório de Medição</h6></nb-card-header>
+      <nb-card-body>
+        <p>A funcionalidade de <strong>Relatório de Medição</strong> será utilizada para apresentar os valores medidos.</p>
+      </nb-card-body>
+      <nb-card-footer class="footer-direita">
+        <button nbButton status="basic" (click)="onClose()">Fechar Ajuda</button>
+      </nb-card-footer>
+    </nb-card>
+  </ng-template>
