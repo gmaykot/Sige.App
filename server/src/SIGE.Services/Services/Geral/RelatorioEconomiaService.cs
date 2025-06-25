@@ -50,6 +50,7 @@ namespace SIGE.Services.Services.Geral
             var res = await _appDbContext.Database.SqlQueryRaw<CabecalhoRelatorioFinalDto>(RelatorioEconomiaFactory.RelatorioFinal(pontoMedicaoId, mesReferencia)).FirstOrDefaultAsync();
             if (res != null)
             {
+                res.MesReferencia = mesReferencia.ToString("MM/yyyy");
                 var relMedicao = await _relatorioMedicaoService.Obter(res.ContratoId.Value, mesReferencia.GetPrimeiraHoraMes());
                 if (relMedicao == null)
                     return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de medição deve ser emitido.");
