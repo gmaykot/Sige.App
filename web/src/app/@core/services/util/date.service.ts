@@ -44,4 +44,10 @@ export class DateService {
 
     return meses;
   }
+
+  getMesAnoAnterior(): string {
+    var dataInicial = new Date();
+    dataInicial.setUTCMonth(dataInicial.getUTCMonth() - 1);
+    return this.datePipe.transform(dataInicial, "MM/yyyy");
+  }
 }
