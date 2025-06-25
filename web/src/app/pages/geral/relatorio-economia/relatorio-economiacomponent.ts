@@ -139,18 +139,13 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
       .then((response: IResponseInterface<IRelatorioEconomiaList[]>) => {
         if (response.success) {
           this.source.load(response.data);
+          response.errors.map((x) => this.alertService.showError(x.value));
         } else {
           this.source.load([]);
         }
       })
       .catch((httpMessage: any) => {
-        this.alertService.showError("Não foi possível conectar ao servidor.");
-        console.error('Erro ao gerar relatório', {
-          metodo: 'getRelatorios',
-          pontoMedicaoId: this.relatorioEconomia.pontoMedicaoId,
-          mesReferencia: this.mesReferencia,
-          httpMessage: httpMessage
-        });
+        this.alertService.showError(httpMessage);
       });
   }
 
@@ -165,17 +160,11 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
           this.selected = true;
           this.initChart();
         } else {
-          
+          response.errors.map((x) => this.alertService.showError(x.value));
         }
       })
       .catch((httpMessage: any) => {
-        this.alertService.showError("Não foi possível conectar ao servidor.");
-        console.error('Erro ao gerar relatório', {
-          metodo: 'getRelatorio',
-          pontoMedicaoId: this.relatorioEconomia.pontoMedicaoId,
-          mesReferencia: this.mesReferencia,
-          httpMessage: httpMessage
-        });
+        this.alertService.showError(httpMessage);
       });
   }
 
