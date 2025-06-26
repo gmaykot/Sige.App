@@ -54,7 +54,7 @@ namespace SIGE.Core.SQLFactory
 
         public static string ObterBandeiraMesReferencia()
         {
-            StringBuilder sql = new ();
+            StringBuilder sql = new();
 
             sql.AppendLine("SELECT");
             sql.AppendLine("    bandeiraVigente.Id,");
@@ -67,6 +67,28 @@ namespace SIGE.Core.SQLFactory
             sql.AppendLine("WHERE");
             sql.AppendLine("    bandeira.VigenciaInicial <= @VigenciaInicialFiltro");
             sql.AppendLine("    AND (bandeira.VigenciaFinal IS NULL OR bandeira.VigenciaFinal >= @VigenciaFinalFiltro);");
+
+            return sql.ToString();
+        }
+
+        public static string ListaDescontoTusd()
+        {
+            StringBuilder sql = new();
+
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    NULL AS 'Id',");
+            sql.AppendLine("    NULL AS 'MesReferencia',");
+            sql.AppendLine("    agente.Id AS 'AgenteMedicaoId',");
+            sql.AppendLine("    agente.Nome AS 'DescAgenteMedicao',");
+            sql.AppendLine("    agente.CodigoPerfilAgente AS 'CodPerfil',");
+            sql.AppendLine("    NULL AS 'DescontoTUSD',");
+            sql.AppendLine("    COUNT(agente.EmpresaId) AS 'EmpresasVinculadas'");
+            sql.AppendLine("FROM");
+            sql.AppendLine("    AgentesMedicao agente");
+            sql.AppendLine("GROUP BY");
+            sql.AppendLine("    agente.CodigoPerfilAgente");
+            sql.AppendLine("ORDER BY");
+            sql.AppendLine("    agente.Nome;");
 
             return sql.ToString();
         }

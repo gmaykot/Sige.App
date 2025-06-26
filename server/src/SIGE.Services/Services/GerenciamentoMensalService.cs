@@ -28,7 +28,8 @@ namespace SIGE.Services.Services
                 MesReferencia = mesReferencia,
                 BandeiraVigente = await ObterBandeiraVigente(mesReferencia),
                 PisCofins = await ObterPisCofins(mesReferencia),
-                ProinfaIcms = await ObterProinfaIcms(mesReferencia)
+                ProinfaIcms = await ObterProinfaIcms(mesReferencia),
+                DescontoTUSD = await ObterDescontoTusd(mesReferencia)
             };
 
             return ret.SetOk().SetData(gerenciamento);
@@ -42,7 +43,12 @@ namespace SIGE.Services.Services
         public async Task<List<PisCofinsMensalDto>> ObterPisCofins(DateTime mesReferencia) =>
             await _appDbContext.Database
                 .SqlQueryRaw<PisCofinsMensalDto>(GerenciamentoMensalFactory.ListaPisCofins(), mesReferencia)
-                .ToListAsync();        
+                .ToListAsync();
+
+        public async Task<List<DescontoTUSDDto>> ObterDescontoTusd(DateTime mesReferencia) =>
+            await _appDbContext.Database
+                .SqlQueryRaw<DescontoTUSDDto>(GerenciamentoMensalFactory.ListaDescontoTusd())
+                .ToListAsync();
 
         public async Task<BandeiraTarifariaVigenteDto?> ObterBandeiraVigente(DateTime mesReferencia)
         {

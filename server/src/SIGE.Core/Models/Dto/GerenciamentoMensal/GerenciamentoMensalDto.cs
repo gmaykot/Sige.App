@@ -8,5 +8,6 @@ namespace SIGE.Core.Models.Dto.GerenciamentoMensal
         public BandeiraTarifariaVigenteDto? BandeiraVigente { get; set; }
         public List<ProinfaIcmsMensalDto>? ProinfaIcms { get; set; }
         public List<PisCofinsMensalDto>? PisCofins { get; set; }
+        public List<DescontoTUSDDto>? DescontoTUSD { get; set; }
     }
 }
