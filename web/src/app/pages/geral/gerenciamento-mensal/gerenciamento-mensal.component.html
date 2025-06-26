@@ -124,6 +124,42 @@
                                 </div>
                             </div>                      
                         </nb-tab>
+                        <nb-tab tabTitle="Desconto TUSD">
+                            <div class="card-row">
+                                <div class="card-col">
+                                    <nb-card>
+                                    <nb-card-body>
+                                            <div class="row" [hidden]="!descontoTusdSelected">
+                                                <div class="col-sm-5">
+                                                    <div class="form-group">
+                                                        <label for="inputEmail" class="label">Agente de Medição</label><br />
+                                                        <input type="text" nbInput fullWidth formControlName="descPontoMedicao" readonly class="no-background">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label for="inputEmail" class="label">Agente de Medição</label><br />
+                                                        <input type="text" nbInput fullWidth formControlName="descPontoMedicao" readonly class="no-background">
+                                                    </div>
+                                                </div>                                                
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label for="inputLastName" class="label">Desconto TUSD</label>
+                                                        <input type="number" nbInput fullWidth formControlName="proinfa">
+                                                    </div>
+                                                </div>           
+                                                <div class="col-sm-3">
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitProinfaIcms()">{{control.get('impostoId').value == undefined ? 'Cadastrar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseProinfaIcms()">Limpar</button>
+                                                </div>
+                                            </div>
+                                            <ng2-smart-table [settings]="descontoTusdSettings" [source]="sourceDescontoTusd" (deleteConfirm)="onSelectDescontoTusd($event)">
+                                            </ng2-smart-table>
+                                        </nb-card-body>
+                                    </nb-card>
+                                </div>
+                            </div>                      
+                        </nb-tab>                        
                     </nb-tabset>
                 </nb-card-body>
             </nb-card>

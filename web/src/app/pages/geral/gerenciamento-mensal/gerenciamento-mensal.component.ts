@@ -19,8 +19,10 @@ public selected: any = false;
 public loading: any = false;
 public pisCofinsSelected: any = false;
 public proinfaIcmsSelected: any = false;
+public descontoTusdSelected: any = false;
 public sourcePisCofins: LocalDataSource = new LocalDataSource();
 public sourceProinfaIcms: LocalDataSource = new LocalDataSource();
+public sourceDescontoTusd: LocalDataSource = new LocalDataSource();
 public bandeiraVigente: any;
 public control =  this.formBuilder.group({
     bandeiraId: [null],
@@ -34,6 +36,10 @@ public control =  this.formBuilder.group({
     descConcessionaria: [null],
     concessionariaId: [null],
     descPontoMedicao: [null],
+    descAgenteMedicao: [null],
+    codigoPerfil: [null],
+    agenteMedicaoId: [null],
+    descontoTusd: [null],
     mesReferencia: [null]
   });
 
@@ -61,6 +67,7 @@ public mesReferencia: string = '';
       if (response.success) {
         this.sourcePisCofins.load(response.data.pisCofins ?? []);
         this.sourceProinfaIcms.load(response.data.proinfaIcms ?? []);
+        this.sourceDescontoTusd.load(response.data.descontoTUSD ?? []);
         this.bandeiraVigente = response.data.bandeiraVigente.bandeira;
         this.control.patchValue({
           bandeiraVigente: response.data.bandeiraVigente.bandeira,
@@ -92,6 +99,15 @@ public mesReferencia: string = '';
 
     this.mesReferencia = $event;
     await this.loadDadosMensais()
+  }
+
+  onSelectDescontoTusd(event: any) {
+    this.descontoTusdSelected = true; 
+    this.control.patchValue({
+      descPontoMedicao: event.data.descPontoMedicao,
+      proinfa: event.data.proinfa,
+      icms: event.data.icms
+    });
   }
 
   onSelectPisCofins(event: any) {
