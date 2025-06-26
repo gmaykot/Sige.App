@@ -1,5 +1,6 @@
 ﻿using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 
@@ -22,5 +23,6 @@ namespace SIGE.Core.Models.Sistema.Gerencial.Empresa
         public AgenteMedicaoModel? AgenteMedicao { get; set; }
 
         public IEnumerable<ConsumoMensalModel>? ConsumosMensal { get; set; }
+        public IEnumerable<ValorMensalPontoMedicaoModel>? ValoresMensaisPontoMedicao { get; set; }
     }
 }

@@ -17,12 +17,15 @@ namespace SIGE.Core.Mapper
 
             CreateMap<RelatorioMedicaoModel, RelatorioMedicaoDto> ().ReverseMap();
 
-            CreateMap<dynamic, FaturamentoCoenelDto>();
-
+            CreateMap<FaturamentoCoenelDto, FaturamentoCoenelModel>();            
             CreateMap<FaturamentoCoenelModel, FaturamentoCoenelDto>()
                 .ForMember(dst => dst.DescPontoMedicao, map => map.MapFrom(src => GetPontoMedicaoDescricao(src.PontoMedicao)))
                 .ForMember(dst => dst.DescEmpresa, map => map.MapFrom(src => GetEmpresaDescricao(src.PontoMedicao)))
                 .ForMember(dst => dst.EmpresaId, map => map.MapFrom(src => GetEmpresaId(src.PontoMedicao))).ReverseMap();
+
+            CreateMap<ValorMensalPontoMedicaoDto, ValorMensalPontoMedicaoModel>();
+            CreateMap<ValorMensalPontoMedicaoModel, ValorMensalPontoMedicaoDto>()
+                .ForMember(dst => dst.DescPontoMedicao, map => map.MapFrom(src => GetPontoMedicaoDescricao(src.PontoMedicao)));
         }
 
         private string GetPontoMedicaoDescricao(PontoMedicaoModel? pontoMedicao)
