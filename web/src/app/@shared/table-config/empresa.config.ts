@@ -69,7 +69,7 @@ export const settingsEmpresa = {
   },
   actions: {
     add: false,
-    edit: false,
+    edit: false,  
     delete: true,
     position: "right",
     columnTitle: "",

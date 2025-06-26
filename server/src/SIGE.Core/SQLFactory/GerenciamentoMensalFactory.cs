@@ -51,5 +51,24 @@ namespace SIGE.Core.SQLFactory
 
             return sql.ToString();
         }
+
+        public static string ObterBandeiraMesReferencia()
+        {
+            StringBuilder sql = new ();
+
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    bandeiraVigente.Id,");
+            sql.AppendLine("    bandeiraVigente.MesReferencia,");
+            sql.AppendLine("    bandeiraVigente.Bandeira,");
+            sql.AppendLine("    bandeira.Id AS 'BandeiraTarifariaId'");
+            sql.AppendLine("FROM");
+            sql.AppendLine("    BandeirasTarifarias bandeira");
+            sql.AppendLine("LEFT JOIN BandeiraTarifariaVigente bandeiraVigente ON bandeiraVigente.BandeiraTarifariaId = bandeira.Id AND bandeiraVigente.MesReferencia = @MesReferenciaBV");
+            sql.AppendLine("WHERE");
+            sql.AppendLine("    bandeira.VigenciaInicial <= @VigenciaInicialFiltro");
+            sql.AppendLine("    AND (bandeira.VigenciaFinal IS NULL OR bandeira.VigenciaFinal >= @VigenciaFinalFiltro);");
+
+            return sql.ToString();
+        }
     }
 }

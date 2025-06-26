@@ -22,11 +22,13 @@ export const impostosSettings = {
       pis: {
         title: "PIS",
         type: "string",
+        filter: false,
         valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
       },
       cofins: {
         title: "COFINS",
         type: "string",
+        filter: false,
         valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
       }
     },
@@ -37,7 +39,6 @@ export const impostosSettings = {
       position: "right",
       columnTitle: "",
     },
-    hideSubHeader: true,
     noDataMessage: "Nenhum registro encontrado.",
   };
 
@@ -69,12 +70,14 @@ export const impostosSettings = {
       valorProinfa: {
         title: "Proinfa",
         type: "string",
-        valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) },
+        filter: false,
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
       },
       valorIcms: {
         title: "ICMS",
         type: "string",
-        valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) },
+        filter: false,
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
       }
     },
     actions: {
@@ -84,6 +87,5 @@ export const impostosSettings = {
       position: "right",
       columnTitle: "",
     },
-    hideSubHeader: true,
     noDataMessage: "Nenhum registro encontrado.",
   };

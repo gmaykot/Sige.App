@@ -1,5 +1,5 @@
-<form [formGroup]="control" [nbSpinner]="loading" nbSpinnerStatus="info">
-    <div class="card-row">
+<form [formGroup]="control">
+    <div class="card-row" [nbSpinner]="loading" nbSpinnerStatus="info">
         <div class="card-col">
             <nb-card>
                 <nb-card-header>Gerenciamento Mensal</nb-card-header>
@@ -20,7 +20,7 @@
             </nb-card>
         </div>
     </div>
-    <div class="card-row" [hidden]="!selected">
+    <div class="card-row" [hidden]="!selected" [nbSpinner]="loading" nbSpinnerStatus="info">
         <div class="card-col">
             <nb-card>
                 <nb-card-body>   
