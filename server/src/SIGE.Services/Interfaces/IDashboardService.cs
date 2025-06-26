@@ -1,6 +1,6 @@
 ﻿using SIGE.Core.Models.Defaults;
 
-namespace SIGE.Services.Interfaces.Administrativo
+namespace SIGE.Services.Interfaces
 {
     public interface IDashboardService
     {

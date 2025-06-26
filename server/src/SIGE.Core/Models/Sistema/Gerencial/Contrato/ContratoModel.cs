@@ -1,6 +1,5 @@
 ﻿using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 
 namespace SIGE.Core.Models.Sistema.Gerencial.Contrato
 {

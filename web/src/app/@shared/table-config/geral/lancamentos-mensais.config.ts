@@ -19,15 +19,15 @@ export const impostosSettings = {
         title: "Concessionária",
         type: "string",
       },
-      valorPis: {
+      pis: {
         title: "PIS",
         type: "string",
-        valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) },
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
       },
-      valorCofins: {
+      cofins: {
         title: "COFINS",
         type: "string",
-        valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) },
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
       }
     },
     actions: {

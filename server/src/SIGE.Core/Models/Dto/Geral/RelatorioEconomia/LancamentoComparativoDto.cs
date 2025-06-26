@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
+﻿namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
 {
     public class LancamentoComparativoDto
     {

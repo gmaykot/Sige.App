@@ -5,6 +5,7 @@
         AMARELA,
         VERDE,
         VERMELHA_1,
-        VERMELHA_2
+        VERMELHA_2,
+        ND,
     }
 }
