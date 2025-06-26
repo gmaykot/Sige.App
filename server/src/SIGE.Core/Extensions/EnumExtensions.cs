@@ -1,7 +1,6 @@
 ﻿using SIGE.Core.Attributes;
 using SIGE.Core.Enumerators;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace SIGE.Core.Extensions
 {

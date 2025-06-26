@@ -1,5 +1,4 @@
 ﻿using SIGE.Core.Attributes;
-using System.ComponentModel;
 
 namespace SIGE.Core.Enumerators
 {

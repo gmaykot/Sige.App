@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
-using Org.BouncyCastle.Asn1.Ocsp;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
@@ -19,9 +18,7 @@ using SIGE.Core.Options;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Externo;
 using SIGE.Services.Interfaces.Geral;
-using System.Collections.Generic;
 using System.Text;
-using System.Text.Json;
 
 namespace SIGE.Services.Services.Externo
 {

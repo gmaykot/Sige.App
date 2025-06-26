@@ -8,7 +8,8 @@ namespace SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria
         public DateTime MesReferencia { get; set; }
         public ETipoBandeira Bandeira { get; set; }
         public Guid BandeiraTarifariaId { get; set; }
-        public BandeiraTarifariaModel? BandeiraTarifaria { get; set; }
+
+        public virtual BandeiraTarifariaModel? BandeiraTarifaria { get; set; }
 
         public double ValorBandeira() => Bandeira switch
         {

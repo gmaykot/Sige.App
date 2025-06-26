@@ -8,9 +8,9 @@ using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Options;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
-using SIGE.Services.Interfaces.Administrativo;
+using SIGE.Services.Interfaces;
 
-namespace SIGE.Services.Services.Administrativo
+namespace SIGE.Services.Services
 {
     public class DashboardService(AppDbContext appDbContext, ICacheManager cacheManager, IOptions<CacheOption> option) : IDashboardService
     {
@@ -19,7 +19,7 @@ namespace SIGE.Services.Services.Administrativo
         private readonly CacheDashboardOption _option = option.Value.Dashboard;
 
         public async Task<Response> ObterChecklist(DateTime mesReferencia)
-        {            
+        {
             var ret = new Response();
             var checklist = new List<ChecklistDashboardDto>();
             var cacheKey = string.Format(_option.Checklist.Key, mesReferencia.GetCacheKey());
@@ -103,7 +103,7 @@ namespace SIGE.Services.Services.Administrativo
             {
                 await _cacheManager.Set(cacheKey, res, _option.StatusMedicoes.Expiration);
                 return ret.SetOk().SetData(res);
-            };            
+            };
             return ret.SetNotFound();
         }
     }

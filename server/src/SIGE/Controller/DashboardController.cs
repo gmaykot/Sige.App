@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
-using SIGE.Services.Interfaces.Administrativo;
+using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace SIGE.Controller.Administrativo
+namespace SIGE.Controller
 {
     [ApiController]
     [Route("dashboard")]
