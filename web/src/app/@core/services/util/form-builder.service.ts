@@ -113,5 +113,9 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     bandeiraTarifariaId: ['', [Validators.required]],
     mesReferencia: ['', [Validators.required]],
     bandeira: [0, [Validators.required]],
+  },
+  LancamentosMensais: {
+    id: ['', null],
+    pontoMedicaoId: ['', [Validators.required]],
   }
 };

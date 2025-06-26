@@ -28,6 +28,7 @@ import { UnauthorizedComponent } from '../@core/pages/unauthorized/unauthorized.
 import { EnergiaAcumuladaComponent } from './gerencial/energia-acumulada/energia-acumulada.component';
 import { AcompanhamentoEmailComponent } from './administrativo/acompanhamento-email/acompanhamento-email.component';
 import { IntegracaoCceeComponent } from './administrativo/integracao-ccee/integracao-ccee.component';
+import { GerenciamentoMensalComponent } from './geral/gerenciamento-mensal/gerenciamento-mensal.component';
 
 const routes: Routes = [{
   path: '',
@@ -126,6 +127,11 @@ const routes: Routes = [{
       path: 'integracao-ccee',
       component: IntegracaoCceeComponent,
       canActivate: [ SAGuard ],
+    },
+    {
+      path: 'gerenciamento-mensal',
+      component: GerenciamentoMensalComponent,
+      canActivate: [ SAGuard ],      
     },
     {
       path: 'unauthorized',

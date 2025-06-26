@@ -62,6 +62,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { AcompanhamentoEmailComponent } from './administrativo/acompanhamento-email/acompanhamento-email.component';
 import { IntegracaoCceeComponent } from './administrativo/integracao-ccee/integracao-ccee.component';
 import { SharedModule } from '../@shared/shared.module';
+import { GerenciamentoMensalComponent } from './geral/gerenciamento-mensal/gerenciamento-mensal.component';
 
 @NgModule({
   imports: [
@@ -153,7 +154,8 @@ import { SharedModule } from '../@shared/shared.module';
     ValorConcessionariaComponent,
     ValorMensalComponent,
     AcompanhamentoEmailComponent,
-    IntegracaoCceeComponent
+    IntegracaoCceeComponent,
+    GerenciamentoMensalComponent
   ],
   providers: [
     AlertService,
