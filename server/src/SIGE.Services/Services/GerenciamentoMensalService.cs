@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MySqlConnector;
+using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Dto.GerenciamentoMensal;
@@ -41,34 +44,21 @@ namespace SIGE.Services.Services
                 .SqlQueryRaw<PisCofinsMensalDto>(GerenciamentoMensalFactory.ListaPisCofins(), mesReferencia)
                 .ToListAsync();        
 
-        public async Task<BandeiraTarifariaVigenteDto> ObterBandeiraVigente(DateTime mesReferencia)
+        public async Task<BandeiraTarifariaVigenteDto?> ObterBandeiraVigente(DateTime mesReferencia)
         {
-            var bandeira = await _appDbContext.BandeirasTarifarias
-                .Where(b => b.VigenciaInicial <= mesReferencia &&
-                            (b.VigenciaFinal == null || b.VigenciaFinal.Value >= mesReferencia))
-                .OrderByDescending(b => b.VigenciaInicial)
-                .Include(b => b.BandeirasTarifariasVigente
-                                .Where(bv => bv.MesReferencia == mesReferencia)
-                                .Take(1))
-                .FirstOrDefaultAsync();
+            var parameters = new MySqlParameter[]
+{
+            new("@MesReferenciaBV", MySqlDbType.Date) { Value = mesReferencia },
+            new("@VigenciaInicialFiltro", MySqlDbType.Date) { Value = mesReferencia.GetPrimeiraHoraMes() },
+            new("@VigenciaFinalFiltro", MySqlDbType.Date) { Value = mesReferencia.GetUltimaHoraMes() }
+};
+            var a = await _appDbContext.Database
+                        .SqlQueryRaw<BandeiraTarifariaVigenteDto>(GerenciamentoMensalFactory.ObterBandeiraMesReferencia(), parameters)
+                        .ToListAsync();
 
-            if (bandeira != null)
-            {
-                var bandeiraVigente = await _appDbContext.BandeiraTarifariaVigente
-                    .Where(bv => bv.BandeiraTarifariaId == bandeira.Id && bv.MesReferencia == mesReferencia)
-                    .FirstOrDefaultAsync();
-
-                var bandeiraDto = new BandeiraTarifariaVigenteDto { MesReferencia = mesReferencia, Bandeira = Core.Enumerators.ETipoBandeira.ND, BandeiraTarifariaId = bandeira.Id };
-                if (bandeiraVigente != null)
-                {
-                    bandeiraVigente.BandeiraTarifaria = null;
-                    bandeiraDto = _mapper.Map<BandeiraTarifariaVigenteDto>(bandeiraVigente);
-                }
-
-                return bandeiraDto;
-            }
-            return new BandeiraTarifariaVigenteDto { MesReferencia = mesReferencia };
+            return a.FirstOrDefault();
         }
+
 
         public async Task<Response> IncluirBandeiraVigente(BandeiraTarifariaVigenteDto req)
         {
@@ -78,10 +68,10 @@ namespace SIGE.Services.Services
             bandeira ??= new BandeiraTarifariaVigenteModel
                 {
                     BandeiraTarifariaId = req.BandeiraTarifariaId,
-                    MesReferencia = req.MesReferencia
+                    MesReferencia = req.MesReferencia.Value
                 };
 
-            bandeira.Bandeira = req.Bandeira;
+            bandeira.Bandeira = req.Bandeira.Value;
             _ = _appDbContext.Update(bandeira);
             _ = await _appDbContext.SaveChangesAsync();
 
