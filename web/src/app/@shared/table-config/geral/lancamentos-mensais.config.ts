@@ -58,7 +58,11 @@ export const impostosSettings = {
       confirmDelete: true,
     },
     columns: {
-        descPontoMedicao: {
+      descEmpresa: {
+        title: "Empresa",
+        type: "string",
+      },
+      descPontoMedicao: {
         title: "Ponto de Medição",
         type: "string",
       },

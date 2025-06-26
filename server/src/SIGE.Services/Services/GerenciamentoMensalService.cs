@@ -5,6 +5,7 @@ using SIGE.Core.Models.Dto.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Dto.GerenciamentoMensal;
 using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
+using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 
@@ -23,37 +24,22 @@ namespace SIGE.Services.Services
             {
                 MesReferencia = mesReferencia,
                 BandeiraVigente = await ObterBandeiraVigente(mesReferencia),
-                PisCofins = await ObterPisCofins(mesReferencia)
+                PisCofins = await ObterPisCofins(mesReferencia),
+                ProinfaIcms = await ObterProinfaIcms(mesReferencia)
             };
 
             return ret.SetOk().SetData(gerenciamento);
         }
 
-        public async Task<List<PisCofinsMensalDto>> ObterPisCofins(DateTime mesReferencia)
-        {
-            List<PisCofinsMensalDto> retorno = [];
+        public async Task<List<ProinfaIcmsMensalDto>> ObterProinfaIcms(DateTime mesReferencia) =>
+            await _appDbContext.Database
+                .SqlQueryRaw<ProinfaIcmsMensalDto>(GerenciamentoMensalFactory.ListaValoresMensaisPontosMedicao(), mesReferencia)
+                .ToListAsync();
 
-            var concessionarias = await _appDbContext.Concessionarias.OrderBy(c => c.Nome).Where(c => c.Ativo == true).ToListAsync();
-
-            var impostosDoMes = await _appDbContext.ImpostosConcessionarias.Where(i => i.MesReferencia == DateOnly.FromDateTime(mesReferencia)).ToDictionaryAsync(i => i.ConcessionariaId);
-
-            foreach (var concessionaria in concessionarias)
-            {
-                impostosDoMes.TryGetValue(concessionaria.Id, out var imposto);
-
-                retorno.Add(new PisCofinsMensalDto
-                {
-                    Id = imposto?.Id,
-                    MesReferencia = DateOnly.FromDateTime(mesReferencia),
-                    ConcessionariaId = concessionaria.Id,
-                    DescConcessionaria = concessionaria.Nome,
-                    Pis = imposto?.ValorPis ?? null,
-                    Cofins = imposto?.ValorCofins ?? null,
-                });
-            }
-
-            return retorno;
-        }
+        public async Task<List<PisCofinsMensalDto>> ObterPisCofins(DateTime mesReferencia) =>
+            await _appDbContext.Database
+                .SqlQueryRaw<PisCofinsMensalDto>(GerenciamentoMensalFactory.ListaPisCofins(), mesReferencia)
+                .ToListAsync();        
 
         public async Task<BandeiraTarifariaVigenteDto> ObterBandeiraVigente(DateTime mesReferencia)
         {
@@ -110,7 +96,7 @@ namespace SIGE.Services.Services
             bandeira ??= new ImpostoConcessionariaModel
             {
                 ConcessionariaId = req.ConcessionariaId,
-                MesReferencia = req.MesReferencia,
+                MesReferencia = req.MesReferencia.Value,
                 ValorPis = req.Pis ?? 0,
                 ValorCofins = req.Cofins ?? 0
             };

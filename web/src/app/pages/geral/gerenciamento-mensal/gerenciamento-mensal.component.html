@@ -94,14 +94,10 @@
                                     <nb-card>
                                     <nb-card-body>
                                             <div class="row" [hidden]="!proinfaIcmsSelected">
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-5">
                                                     <div class="form-group">
                                                         <label for="inputEmail" class="label">Ponto de Medição</label><br />
-                                                        <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
-                                                            <nb-option>Selecione</nb-option>
-                                                            <nb-option *ngFor="let mes of getMeses()"
-                                                                value="{{mes.id}}">{{mes.descricao}}</nb-option>
-                                                        </nb-select>
+                                                        <input type="text" nbInput fullWidth formControlName="descPontoMedicao" readonly class="no-background">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
@@ -116,8 +112,9 @@
                                                         <input type="number" nbInput fullWidth formControlName="icms">
                                                     </div>
                                                 </div>           
-                                                <div class="col-sm-2">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning">Alterar</button>
+                                                <div class="col-sm-3">
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitProinfaIcms()">{{control.get('impostoId').value == undefined ? 'Cadastrar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseProinfaIcms()">Limpar</button>
                                                 </div>
                                             </div>
                                             <ng2-smart-table [settings]="proinfaSettings" [source]="sourceProinfaIcms" (deleteConfirm)="onSelectProinfaIcms($event)">

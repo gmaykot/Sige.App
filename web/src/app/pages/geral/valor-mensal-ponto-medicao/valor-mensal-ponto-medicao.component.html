@@ -1,0 +1,64 @@
+<form [formGroup]="control" *ngIf="edit">
+    <div class="card-row">
+        <div class="card-col">
+            <nb-card>
+                <nb-card-body>   
+                    <nb-tabset>
+                        <nb-tab tabTitle="Cadastro de Valores Mensais">   
+                            <nb-card style="border: 0rem;">
+                            <nb-card-body>
+                            <input hidden id="id" type="text" formControlName="id">
+                            <div class="row">
+                                <div class="col-md-6">
+                                  <ngx-auto-complete
+                                    [label]="'Ponto de Medição'"
+                                    [items]="pontosMedicao"
+                                    [editLabel]="editLabel"
+                                    (itemSelected)="onItemSelected($event)"
+                                  ></ngx-auto-complete>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label class="label">Mês Referência*</label>
+                                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____"
+                                            [dropSpecialCharacters]="false" formControlName="vigenciaInicial">
+                                      </div>
+                                </div>                              
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">PROINFA</label>
+                                        <input type="number" nbInput fullWidth formControlName="proinfa">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label for="inputLastName" class="label">ICMS</label>
+                                        <input type="number" nbInput fullWidth formControlName="icms">
+                                    </div>
+                                </div>                              
+                            </div>     
+                            </nb-card-body>
+                            <nb-card-footer>
+                                <button type="submit" nbButton status="info"  (click)="onSubmitCustom()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+                                <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDelete()">Excluir</button>
+                                <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="clearForm()">Voltar</button> 
+                              </nb-card-footer>                         
+                            </nb-card>        
+                        </nb-tab>
+                    </nb-tabset>           
+                  </nb-card-body>              
+            </nb-card>    
+        </div>
+    </div>
+</form>
+
+<ngx-custom-registration 
+  title="Valores Mensais de Ponto de Medição" 
+  [showActions]="!edit" 
+  [showHelp]="true"
+  [settings]="settings" 
+  [source]="source"
+  (onEdit)="onEdit()" 
+  (onHelp)="onHelp()" 
+  (deleteConfirm)="onSelectCustom($event)">
+</ngx-custom-registration>
