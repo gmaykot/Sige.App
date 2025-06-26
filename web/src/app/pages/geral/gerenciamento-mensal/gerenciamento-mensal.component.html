@@ -1,0 +1,138 @@
+<form [formGroup]="controlPisCofins">
+    <div class="card-row">
+        <div class="card-col">
+            <nb-card>
+                <nb-card-header>Gerenciamento Mensal</nb-card-header>
+                <nb-card-body>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="inputEmail" class="label">Mês Referência</label><br />
+                                <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+                                    <nb-option>Selecione</nb-option>
+                                    <nb-option *ngFor="let mes of getMeses()"
+                                        value="{{mes.id}}">{{mes.descricao}}</nb-option>
+                                </nb-select>
+                            </div>
+                          </div>                   
+                    </div>
+                </nb-card-body>
+            </nb-card>
+        </div>
+    </div>
+    <div class="card-row">
+        <div class="card-col">
+            <nb-card>
+                <nb-card-body>   
+                    <nb-tabset>
+                        <nb-tab tabTitle="PIS / COFINS">
+                            <div class="card-row">
+                                <div class="card-col">
+                                    <nb-card>
+                                        <nb-card-body>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="inputEmail" class="label">Concessionária</label><br />
+                                                        <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+                                                            <nb-option>Selecione</nb-option>
+                                                            <nb-option *ngFor="let mes of getMeses()"
+                                                                value="{{mes.id}}">{{mes.descricao}}</nb-option>
+                                                        </nb-select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label for="inputLastName" class="label">PIS</label>
+                                                        <input type="number" nbInput fullWidth formControlName="qtdeSalarios">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label for="inputLastName" class="label">COFINS</label>
+                                                        <input type="number" nbInput fullWidth formControlName="qtdeSalarios">
+                                                    </div>
+                                                </div>           
+                                                <div class="col-sm-2">
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning">Alterar</button>
+                                                </div>
+                                            </div>                                            
+                                            <ng2-smart-table [settings]="impostosSettings" [source]="sourcePisCofins" (deleteConfirm)="onSelect($event)">
+                                            </ng2-smart-table>
+                                        </nb-card-body>
+                                    </nb-card>
+                                </div>
+                            </div>                    
+                        </nb-tab>
+                        <nb-tab tabTitle="Bandeira Tarifária">                           
+                            <div class="card-row">
+                                <div class="card-col">
+                                    <nb-card>
+                                        <nb-card-body>
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label for="inputEmail" class="label">Bandeira Vigente</label><br />
+                                                        <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+                                                            <nb-option>Selecione</nb-option>
+                                                            <nb-option value="amarela">Amarela</nb-option>
+                                                            <nb-option value="verde">Verde</nb-option>
+                                                            <nb-option value="vermelhaI">Vermelha I</nb-option>
+                                                            <nb-option value="vermelhaII">Vermelha II</nb-option>
+                                                        </nb-select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning">Alterar</button>
+                                                </div>
+                                        </div>
+                                    </nb-card-body>
+                                </nb-card>
+                                </div>
+                            </div>                      
+                        </nb-tab>                        
+                        <nb-tab tabTitle="PROINFA / ICMS">
+                            <div class="card-row">
+                                <div class="card-col">
+                                    <nb-card>
+                                    <nb-card-body>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="inputEmail" class="label">Ponto de Medição</label><br />
+                                                        <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+                                                            <nb-option>Selecione</nb-option>
+                                                            <nb-option *ngFor="let mes of getMeses()"
+                                                                value="{{mes.id}}">{{mes.descricao}}</nb-option>
+                                                        </nb-select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label for="inputLastName" class="label">PROINFA</label>
+                                                        <input type="number" nbInput fullWidth formControlName="qtdeSalarios">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label for="inputLastName" class="label">ICMS</label>
+                                                        <input type="number" nbInput fullWidth formControlName="qtdeSalarios">
+                                                    </div>
+                                                </div>           
+                                                <div class="col-sm-2">
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning">Alterar</button>
+                                                </div>
+                                            </div>
+                                            <ng2-smart-table [settings]="proinfaSettings" [source]="sourceProinfaIcms" (deleteConfirm)="onSelect($event)">
+                                            </ng2-smart-table>
+                                        </nb-card-body>
+                                    </nb-card>
+                                </div>
+                            </div>                      
+                        </nb-tab>
+                    </nb-tabset>
+                </nb-card-body>
+            </nb-card>
+        </div>
+    </div>
+</form>
