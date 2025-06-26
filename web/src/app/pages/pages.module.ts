@@ -63,6 +63,7 @@ import { AcompanhamentoEmailComponent } from './administrativo/acompanhamento-em
 import { IntegracaoCceeComponent } from './administrativo/integracao-ccee/integracao-ccee.component';
 import { SharedModule } from '../@shared/shared.module';
 import { GerenciamentoMensalComponent } from './geral/gerenciamento-mensal/gerenciamento-mensal.component';
+import { ValorMensalPontoMedicaoComponent } from './geral/valor-mensal-ponto-medicao/valor-mensal-ponto-medicao.component';
 
 @NgModule({
   imports: [
@@ -155,7 +156,8 @@ import { GerenciamentoMensalComponent } from './geral/gerenciamento-mensal/geren
     ValorMensalComponent,
     AcompanhamentoEmailComponent,
     IntegracaoCceeComponent,
-    GerenciamentoMensalComponent
+    GerenciamentoMensalComponent,
+    ValorMensalPontoMedicaoComponent
   ],
   providers: [
     AlertService,
