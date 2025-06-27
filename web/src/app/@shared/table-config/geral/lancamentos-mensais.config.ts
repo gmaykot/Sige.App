@@ -23,13 +23,13 @@ export const impostosSettings = {
         title: "PIS",
         type: "string",
         filter: false,
-        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
       },
       cofins: {
         title: "COFINS",
         type: "string",
         filter: false,
-        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
       }
     },
     actions: {
@@ -71,13 +71,13 @@ export const impostosSettings = {
         title: "Proinfa",
         type: "string",
         filter: false,
-        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
       },
       icms: {
         title: "ICMS",
         type: "string",
         filter: false,
-        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
       }
     },
     actions: {
@@ -124,7 +124,7 @@ export const impostosSettings = {
         title: "Desconto TUSD",
         type: "string",
         filter: false,
-        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
       },
     },
     actions: {
