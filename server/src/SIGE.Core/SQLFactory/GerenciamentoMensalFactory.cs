@@ -76,15 +76,16 @@ namespace SIGE.Core.SQLFactory
             StringBuilder sql = new();
 
             sql.AppendLine("SELECT");
-            sql.AppendLine("    NULL AS 'Id',");
-            sql.AppendLine("    NULL AS 'MesReferencia',");
+            sql.AppendLine("    desconto.Id AS 'Id',");
+            sql.AppendLine("    desconto.MesReferencia AS 'MesReferencia',");
             sql.AppendLine("    agente.Id AS 'AgenteMedicaoId',");
             sql.AppendLine("    agente.Nome AS 'DescAgenteMedicao',");
             sql.AppendLine("    agente.CodigoPerfilAgente AS 'CodPerfil',");
-            sql.AppendLine("    NULL AS 'DescontoTUSD',");
+            sql.AppendLine("    desconto.ValorDesconto AS 'DescontoTUSD',");
             sql.AppendLine("    COUNT(agente.EmpresaId) AS 'EmpresasVinculadas'");
             sql.AppendLine("FROM");
             sql.AppendLine("    AgentesMedicao agente");
+            sql.AppendLine("LEFT JOIN DescontosTusd desconto ON desconto.AgenteMedicaoId = agente.Id AND desconto.MesReferencia = {0}");
             sql.AppendLine("GROUP BY");
             sql.AppendLine("    agente.CodigoPerfilAgente");
             sql.AppendLine("ORDER BY");

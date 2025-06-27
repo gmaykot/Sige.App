@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AjudaOperacaoComponent } from '../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component';
 import { NbLayoutScrollService, NbDialogService } from '@nebular/theme';
-import { GerenciamentoMensalService } from '../../../@core/services/geral/gerenciamento-mensal.service';
+import { GerenciamentoMensalService } from './gerenciamento-mensal.service';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { DateService } from '../../../@core/services/util/date.service';
 import { LocalDataSource } from 'ng2-smart-table';
@@ -28,6 +28,7 @@ public control =  this.formBuilder.group({
     bandeiraId: [null],
     bandeiraTarifariaId: [null],
     impostoId: [null],
+    proinfaIcmsId: [null],
     pis: [null],
     cofins: [null],
     proinfa: [null],
@@ -39,8 +40,10 @@ public control =  this.formBuilder.group({
     descAgenteMedicao: [null],
     codigoPerfil: [null],
     agenteMedicaoId: [null],
+    pontoMedicaoId: [null],
     descontoTusd: [null],
-    mesReferencia: [null]
+    mesReferencia: [null],
+    descontoTusdId: [null]
   });
 
 public mesReferencia: string = '';
@@ -58,7 +61,11 @@ public mesReferencia: string = '';
   }
 
   async ngOnInit() {
-    
+    this.mesReferencia = this.dateService.getMesesReferencia(6)[1].id;
+    this.control.patchValue({
+      mesReferencia: this.mesReferencia
+    });
+    await this.loadDadosMensais();
   }
 
   async loadDadosMensais() {
@@ -72,8 +79,7 @@ public mesReferencia: string = '';
         this.control.patchValue({
           bandeiraVigente: response.data.bandeiraVigente.bandeira,
           bandeiraId: response.data.bandeiraVigente.id,
-          bandeiraTarifariaId: response.data.bandeiraVigente.bandeiraTarifariaId,
-          mesReferencia: response.data.mesReferencia
+          bandeiraTarifariaId: response.data.bandeiraVigente.bandeiraTarifariaId
         });
         this.selected = true;
       }
@@ -104,9 +110,11 @@ public mesReferencia: string = '';
   onSelectDescontoTusd(event: any) {
     this.descontoTusdSelected = true; 
     this.control.patchValue({
-      descPontoMedicao: event.data.descPontoMedicao,
-      proinfa: event.data.proinfa,
-      icms: event.data.icms
+      descAgenteMedicao: event.data.descAgenteMedicao,
+      agenteMedicaoId: event.data.agenteMedicaoId,
+      codigoPerfil: event.data.codPerfil,
+      descontoTusd: event.data.descontoTUSD,
+      descontoTusdId: event.data.id
     });
   }
 
@@ -124,7 +132,9 @@ public mesReferencia: string = '';
   onSelectProinfaIcms(event: any) {   
     this.proinfaIcmsSelected = true; 
     this.control.patchValue({
+      proinfaIcmsId: event.data.id,
       descPontoMedicao: event.data.descPontoMedicao,
+      pontoMedicaoId: event.data.pontoMedicaoId,
       proinfa: event.data.proinfa,
       icms: event.data.icms
     });
@@ -145,6 +155,17 @@ public mesReferencia: string = '';
       descPontoMedicao: null,
       proinfa: null,
       icms: null
+    });
+  }
+
+  resetFormDescontoTusd() {
+    this.descontoTusdSelected = false;
+    this.control.patchValue({
+      descAgenteMedicao: null,
+      agenteMedicaoId: null,
+      codigoPerfil: null,
+      descontoTusd: null,
+      descontoTusdId: null
     });
   }
 
@@ -178,8 +199,9 @@ public mesReferencia: string = '';
   async onSubmitProinfaIcms() {
     this.loading = true;
     var proinfaIcms = {
-      id: this.control.value.impostoId,
+      id: this.control.value.proinfaIcmsId,
       descPontoMedicao: this.control.value.descPontoMedicao,
+      pontoMedicaoId: this.control.value.pontoMedicaoId,
       proinfa: this.control.value.proinfa,
       icms: this.control.value.icms,
       mesReferencia: this.mesReferencia
@@ -195,6 +217,34 @@ public mesReferencia: string = '';
     });
     this.proinfaIcmsSelected = false;
     this.resetFormProinfaIcms();
+  }
+
+  async onSubmitDescontoTusd() {
+    this.loading = true;  
+    var descontoTusd = {
+      id: this.control.value.descontoTusdId,
+      descAgenteMedicao: this.control.value.descAgenteMedicao,
+      agenteMedicaoId: this.control.value.agenteMedicaoId,
+      codigoPerfil: this.control.value.codigoPerfil,
+      descontoTusd: this.control.value.descontoTusd,
+      mesReferencia: this.mesReferencia
+    }
+    
+    await this.service.postDescontoTusd(descontoTusd).then((response: IResponseInterface<any>) => {
+      if (response.success) {
+        this.alertService.showSuccess('Desconto TUSD cadastrada com sucesso!');
+        this.loadDadosMensais();
+      }
+    }).finally(() => {
+      this.loading = false;
+    });
+    this.descontoTusdSelected = false;
+    this.resetFormDescontoTusd();
+  }
+
+  onCloseDescontoTusd() {
+    this.descontoTusdSelected = false;
+    this.resetFormDescontoTusd();
   }
 
   onCloseProinfaIcms() {

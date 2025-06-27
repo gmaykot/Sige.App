@@ -48,5 +48,14 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> IncluirProinfaIcms([FromBody] ProinfaIcmsMensalDto req) =>
             Ok(await _service.IncluirProinfaIcms(req));
+
+        [HttpPost("desconto-tusd")]
+        [SwaggerOperation(Description = "Inclui no sistema.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> IncluirDescontoTusd([FromBody] DescontoTUSDDto req) =>
+            Ok(await _service.IncluirDescontoTusd(req));
     }
 }

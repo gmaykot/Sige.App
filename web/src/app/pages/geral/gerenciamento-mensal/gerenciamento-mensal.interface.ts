@@ -21,3 +21,12 @@ export interface IBandeiraTarifariaVigente {
     mesReferencia: string,
     bandeira: string
 }
+
+export interface IDescontoTusdMensal {
+    id: string,
+    mesReferencia: string,
+    descAgenteMedicao: string,
+    agenteMedicaoId: string,
+    codigoPerfil: string,
+    descontoTUSD: number
+}

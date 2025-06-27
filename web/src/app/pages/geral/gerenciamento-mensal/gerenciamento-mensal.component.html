@@ -8,7 +8,7 @@
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label for="inputEmail" class="label">Mês Referência</label><br />
-                                <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+                                <nb-select fullWidth placeholder="Selecione" formControlName="mesReferencia" (selectedChange)="onSearch($event)">
                                     <nb-option>Selecione</nb-option>
                                     <nb-option *ngFor="let mes of getMeses()"
                                         value="{{mes.id}}">{{mes.descricao}}</nb-option>
@@ -50,8 +50,8 @@
                                                     </div>
                                                 </div>           
                                                 <div class="col-sm-3">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitPisCofins()">{{control.get('impostoId').value == undefined ? 'Cadastrar' : 'Alterar'}}</button>
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onClosePisCofins()">Limpar</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitPisCofins()">{{control.get('impostoId').value == undefined ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onClosePisCofins()">Sair</button>
                                                 </div>
                                             </div>                                            
                                             <ng2-smart-table [settings]="impostosSettings" [source]="sourcePisCofins" (deleteConfirm)="onSelectPisCofins($event)">
@@ -80,7 +80,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitBandeiraVigente()">{{control.get('bandeiraVigente').value == 4 ? 'Cadastrar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitBandeiraVigente()">{{control.get('bandeiraVigente').value == 4 ? 'Alterar' : 'Alterar'}}</button>
                                                 </div>
                                         </div>
                                     </nb-card-body>
@@ -113,8 +113,8 @@
                                                     </div>
                                                 </div>           
                                                 <div class="col-sm-3">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitProinfaIcms()">{{control.get('impostoId').value == undefined ? 'Cadastrar' : 'Alterar'}}</button>
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseProinfaIcms()">Limpar</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitProinfaIcms()">{{control.get('impostoId').value == undefined ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseProinfaIcms()">Sair</button>
                                                 </div>
                                             </div>
                                             <ng2-smart-table [settings]="proinfaSettings" [source]="sourceProinfaIcms" (deleteConfirm)="onSelectProinfaIcms($event)">
@@ -133,24 +133,24 @@
                                                 <div class="col-sm-5">
                                                     <div class="form-group">
                                                         <label for="inputEmail" class="label">Agente de Medição</label><br />
-                                                        <input type="text" nbInput fullWidth formControlName="descPontoMedicao" readonly class="no-background">
+                                                        <input type="text" nbInput fullWidth formControlName="descAgenteMedicao" readonly class="no-background">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
-                                                        <label for="inputEmail" class="label">Agente de Medição</label><br />
-                                                        <input type="text" nbInput fullWidth formControlName="descPontoMedicao" readonly class="no-background">
+                                                        <label for="inputEmail" class="label">Código Perfil</label><br />
+                                                        <input type="text" nbInput fullWidth formControlName="codigoPerfil" readonly class="no-background">
                                                     </div>
                                                 </div>                                                
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
                                                         <label for="inputLastName" class="label">Desconto TUSD</label>
-                                                        <input type="number" nbInput fullWidth formControlName="proinfa">
+                                                        <input type="number" nbInput fullWidth formControlName="descontoTusd">
                                                     </div>
                                                 </div>           
                                                 <div class="col-sm-3">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitProinfaIcms()">{{control.get('impostoId').value == undefined ? 'Cadastrar' : 'Alterar'}}</button>
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseProinfaIcms()">Limpar</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitDescontoTusd()">{{control.get('impostoId').value == undefined ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseDescontoTusd()">Sair</button>
                                                 </div>
                                             </div>
                                             <ng2-smart-table [settings]="descontoTusdSettings" [source]="sourceDescontoTusd" (deleteConfirm)="onSelectDescontoTusd($event)">

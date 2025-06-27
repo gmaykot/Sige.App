@@ -9,6 +9,7 @@ namespace SIGE.Services.Interfaces
         Task<Response> IncluirBandeiraVigente(BandeiraTarifariaVigenteDto req);
         Task<Response> IncluirPisCofins(PisCofinsMensalDto req);
         Task<Response> IncluirProinfaIcms(ProinfaIcmsMensalDto req);
+        Task<Response> IncluirDescontoTusd(DescontoTUSDDto req);
         Task<Response> ObterDadodsMensais(DateTime mesReferencia);
     }
 }
