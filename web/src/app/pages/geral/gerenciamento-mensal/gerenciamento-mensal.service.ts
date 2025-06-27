@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { HttpService } from "../util/http.service";
-import { IResponseInterface } from "../../data/response.interface";
-import { DefaultServiceUtil } from "../util/default-service-util";
-import { IBandeiraTarifariaVigente } from "../../data/bandeira-tarifaria-vigente";
-import { IPisCofinsMensal, IProinfaIcmsMensal } from "../../data/gerenciamento-mensal";
+import { HttpService } from "../../../@core/services/util/http.service";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { DefaultServiceUtil } from "../../../@core/services/util/default-service-util";
+import { IBandeiraTarifariaVigente } from "../../../@core/data/bandeira-tarifaria-vigente";
+import { IPisCofinsMensal, IProinfaIcmsMensal } from "./gerenciamento-mensal.interface";
 
 @Injectable({ providedIn: "root" })
 export class GerenciamentoMensalService extends DefaultServiceUtil<any> {

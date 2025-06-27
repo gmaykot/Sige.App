@@ -8,7 +8,7 @@ import { PagesRoutingModule } from './pages-routing.module';
 import { UsuarioComponent } from './administrativo/usuario/usuario.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AlterarSenhaComponent } from './administrativo/alterar-senha/alterar-senha.component';
 import { CustomDeleteConfirmationComponent } from '../@shared/custom-component/custom-delete-confirmation.component';
 import { MenuSistemaComponent } from './administrativo/menu-sistema/menu-sistema.component';
@@ -67,6 +67,7 @@ import { ValorMensalPontoMedicaoComponent } from './geral/valor-mensal-ponto-med
 
 @NgModule({
   imports: [
+    FormsModule,
     ChartModule,
     CommonModule,
     DashboardModule,

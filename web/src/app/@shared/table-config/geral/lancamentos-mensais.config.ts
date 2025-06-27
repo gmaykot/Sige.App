@@ -67,13 +67,13 @@ export const impostosSettings = {
         title: "Ponto de Medição",
         type: "string",
       },
-      valorProinfa: {
+      proinfa: {
         title: "Proinfa",
         type: "string",
         filter: false,
         valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value) : '-' },
       },
-      valorIcms: {
+      icms: {
         title: "ICMS",
         type: "string",
         filter: false,

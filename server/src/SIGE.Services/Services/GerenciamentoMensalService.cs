@@ -6,6 +6,7 @@ using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Dto.GerenciamentoMensal;
+using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 using SIGE.Core.SQLFactory;
@@ -106,9 +107,26 @@ namespace SIGE.Services.Services
             return ret.SetOk();
         }
 
-        public Task<Response> IncluirProinfaIcms(ProinfaIcmsMensalDto req)
+        public async Task<Response> IncluirProinfaIcms(ProinfaIcmsMensalDto req)
         {
-            throw new NotImplementedException();
+            var ret = new Response();
+
+            var valor = await _appDbContext.ValoresMensaisPontoMedicao.FirstOrDefaultAsync(b => b.Id == req.Id);
+            valor ??= new ValorMensalPontoMedicaoModel
+            {
+                Proinfa = req.Proinfa ?? 0,
+                Icms = req.Icms ?? 0,
+                PontoMedicaoId = req.PontoMedicaoId,
+                MesReferencia = req.MesReferencia
+            };
+
+            valor.Proinfa = req.Proinfa ?? 0;
+            valor.Icms = req.Icms ?? 0;
+
+            _ = _appDbContext.Update(valor);
+            _ = await _appDbContext.SaveChangesAsync();
+
+            return ret.SetOk();
         }
     }
 }

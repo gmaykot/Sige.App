@@ -8,7 +8,7 @@
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label for="inputEmail" class="label">Mês Referência</label><br />
-                                <nb-select fullWidth placeholder="Selecione" (selectedChange)="onSearch($event)">
+                                <nb-select fullWidth placeholder="Selecione" formControlName="mesReferencia" (selectedChange)="onSearch($event)">
                                     <nb-option>Selecione</nb-option>
                                     <nb-option *ngFor="let mes of getMeses()"
                                         value="{{mes.id}}">{{mes.descricao}}</nb-option>

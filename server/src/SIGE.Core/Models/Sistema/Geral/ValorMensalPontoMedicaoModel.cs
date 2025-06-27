@@ -5,7 +5,7 @@ namespace SIGE.Core.Models.Sistema.Geral
 {
     public class ValorMensalPontoMedicaoModel : BaseModel
     {
-        public DateTime? MesReferencia { get; set; }
+        public DateOnly? MesReferencia { get; set; }
         public required double Proinfa { get; set; }
         public required double Icms { get; set; }
 
