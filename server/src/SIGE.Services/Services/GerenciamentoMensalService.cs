@@ -48,7 +48,7 @@ namespace SIGE.Services.Services
 
         public async Task<List<DescontoTUSDDto>> ObterDescontoTusd(DateTime mesReferencia) =>
             await _appDbContext.Database
-                .SqlQueryRaw<DescontoTUSDDto>(GerenciamentoMensalFactory.ListaDescontoTusd())
+                .SqlQueryRaw<DescontoTUSDDto>(GerenciamentoMensalFactory.ListaDescontoTusd(), mesReferencia)
                 .ToListAsync();
 
         public async Task<BandeiraTarifariaVigenteDto?> ObterBandeiraVigente(DateTime mesReferencia)
@@ -124,6 +124,27 @@ namespace SIGE.Services.Services
             valor.Icms = req.Icms ?? 0;
 
             _ = _appDbContext.Update(valor);
+            _ = await _appDbContext.SaveChangesAsync();
+
+            return ret.SetOk();
+        }
+
+        public async Task<Response> IncluirDescontoTusd(DescontoTUSDDto req)
+        {
+            var ret = new Response();
+
+            var desconto = await _appDbContext.DescontosTusd.FirstOrDefaultAsync(b => b.Id == req.Id);
+            desconto ??= new DescontoTusdModel
+            {
+                MesReferencia = req.MesReferencia,
+                AgenteMedicaoId = req.AgenteMedicaoId,
+                ValorDesconto = req.DescontoTUSD ?? 0
+
+            };
+
+            desconto.ValorDesconto = req.DescontoTUSD ?? 0;
+
+            _ = _appDbContext.Update(desconto);
             _ = await _appDbContext.SaveChangesAsync();
 
             return ret.SetOk();
