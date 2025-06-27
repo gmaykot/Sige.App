@@ -9,5 +9,6 @@
         public decimal TotalMedido { get; set; }
         public decimal? Proinfa { get; set; }
         public decimal? Icms { get; set; }
+        public decimal? ValorIcms { get; set; }
     }
 }

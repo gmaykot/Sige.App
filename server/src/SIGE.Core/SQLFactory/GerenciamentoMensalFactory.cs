@@ -24,7 +24,10 @@ namespace SIGE.Core.SQLFactory
             sql.AppendLine("    PontosMedicao ponto");
             sql.AppendLine("INNER JOIN AgentesMedicao agente ON agente.Id = ponto.AgenteMedicaoId");
             sql.AppendLine("INNER JOIN Empresas empresa ON empresa.Id = agente.EmpresaId");
-            sql.AppendLine("LEFT JOIN ValoresMensaisPontoMedicao valor ON valor.PontoMedicaoId = ponto.Id AND valor.MesReferencia = {0}");
+            sql.AppendLine("LEFT JOIN ValoresMensaisPontoMedicao valor ON valor.PontoMedicaoId = ponto.Id AND valor.MesReferencia = @MesReferencia AND valor.Ativo IS true");
+            sql.AppendLine("WHERE");
+            sql.AppendLine("    ponto.Ativo IS true");
+            sql.AppendLine("    AND (@EmpresaId IS NULL OR empresa.Id = @EmpresaId)");
             sql.AppendLine("ORDER BY");
             sql.AppendLine("    ponto.nome,");
             sql.AppendLine("    empresa.nome;");
@@ -45,7 +48,9 @@ namespace SIGE.Core.SQLFactory
             sql.AppendLine("    concessionaria.Nome AS 'DescConcessionaria'");
             sql.AppendLine("FROM");
             sql.AppendLine("    Concessionarias concessionaria");
-            sql.AppendLine("LEFT JOIN ImpostosConcessionarias imposto ON imposto.ConcessionariaId = concessionaria.Id AND imposto.MesReferencia = {0}");
+            sql.AppendLine("LEFT JOIN ImpostosConcessionarias imposto ON imposto.ConcessionariaId = concessionaria.Id AND imposto.MesReferencia = {0} AND imposto.Ativo IS true");
+            sql.AppendLine("WHERE");
+            sql.AppendLine("    concessionaria.Ativo IS true");
             sql.AppendLine("ORDER BY");
             sql.AppendLine("    concessionaria.Nome;");
 
@@ -63,10 +68,11 @@ namespace SIGE.Core.SQLFactory
             sql.AppendLine("    bandeira.Id AS 'BandeiraTarifariaId'");
             sql.AppendLine("FROM");
             sql.AppendLine("    BandeirasTarifarias bandeira");
-            sql.AppendLine("LEFT JOIN BandeiraTarifariaVigente bandeiraVigente ON bandeiraVigente.BandeiraTarifariaId = bandeira.Id AND bandeiraVigente.MesReferencia = @MesReferenciaBV");
+            sql.AppendLine("LEFT JOIN BandeiraTarifariaVigente bandeiraVigente ON bandeiraVigente.BandeiraTarifariaId = bandeira.Id AND bandeiraVigente.MesReferencia = @MesReferencia and bandeiraVigente.Ativo IS true");
             sql.AppendLine("WHERE");
             sql.AppendLine("    bandeira.VigenciaInicial <= @VigenciaInicialFiltro");
-            sql.AppendLine("    AND (bandeira.VigenciaFinal IS NULL OR bandeira.VigenciaFinal >= @VigenciaFinalFiltro);");
+            sql.AppendLine("    AND (bandeira.VigenciaFinal IS NULL OR bandeira.VigenciaFinal >= @VigenciaFinalFiltro)");
+            sql.AppendLine("    AND bandeira.Ativo IS true;");
 
             return sql.ToString();
         }
@@ -86,6 +92,8 @@ namespace SIGE.Core.SQLFactory
             sql.AppendLine("FROM");
             sql.AppendLine("    AgentesMedicao agente");
             sql.AppendLine("LEFT JOIN DescontosTusd desconto ON desconto.AgenteMedicaoId = agente.Id AND desconto.MesReferencia = {0}");
+            sql.AppendLine("WHERE");
+            sql.AppendLine("    agente.Ativo IS true");
             sql.AppendLine("GROUP BY");
             sql.AppendLine("    agente.CodigoPerfilAgente");
             sql.AppendLine("ORDER BY");

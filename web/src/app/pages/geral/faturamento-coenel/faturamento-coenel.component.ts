@@ -125,7 +125,6 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
       .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir os históricos selecionados?'} })
       .onClose.subscribe(async (excluir) => {
         if (excluir){
-          var erroExcluir = false;
           this.historicosChecked.forEach(historico => {
             this.service.delete(historico.id).then(async (res: IResponseInterface<any>) => {
               if (res.success){
@@ -134,7 +133,6 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
                 this.alertService.showSuccess("Histórico excluído com sucesso.");
               } else 
               {
-                erroExcluir = true;
                 res.errors.map((x) => this.alertService.showError(`Histórico ${historico.id} - ${x.value}`));
               }
             });            

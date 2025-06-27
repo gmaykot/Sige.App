@@ -20,7 +20,7 @@ namespace SIGE.Services.Services
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Response> ObterDadodsMensais(DateTime mesReferencia)
+        public async Task<Response> ObterDadodsMensais(DateTime mesReferencia, Guid? empresaId = null)
         {
             var ret = new Response();
 
@@ -29,22 +29,37 @@ namespace SIGE.Services.Services
                 MesReferencia = mesReferencia,
                 BandeiraVigente = await ObterBandeiraVigente(mesReferencia),
                 PisCofins = await ObterPisCofins(mesReferencia),
-                ProinfaIcms = await ObterProinfaIcms(mesReferencia),
+                ProinfaIcms = await ObterProinfaIcms(mesReferencia, empresaId),
                 DescontoTUSD = await ObterDescontoTusd(mesReferencia)
             };
 
             return ret.SetOk().SetData(gerenciamento);
         }
 
-        public async Task<List<ProinfaIcmsMensalDto>> ObterProinfaIcms(DateTime mesReferencia) =>
-            await _appDbContext.Database
-                .SqlQueryRaw<ProinfaIcmsMensalDto>(GerenciamentoMensalFactory.ListaValoresMensaisPontosMedicao(), mesReferencia)
+        public async Task<List<ProinfaIcmsMensalDto>> ObterProinfaIcms(DateTime mesReferencia, Guid? empresaId)
+        {
+            var parameters = new MySqlParameter[]
+            {
+                new("@MesReferencia", MySqlDbType.Date) { Value = mesReferencia },
+                new("@EmpresaId", MySqlDbType.Guid) { Value = empresaId },
+            };
+
+            var retorno = await _appDbContext.Database
+                .SqlQueryRaw<ProinfaIcmsMensalDto>(GerenciamentoMensalFactory.ListaValoresMensaisPontosMedicao(), parameters)
                 .ToListAsync();
 
-        public async Task<List<PisCofinsMensalDto>> ObterPisCofins(DateTime mesReferencia) =>
-            await _appDbContext.Database
+            if (!empresaId.HasValue)
+                return await IncluirIcmsLote(retorno, mesReferencia);
+
+            return retorno;
+        }
+
+        public async Task<List<PisCofinsMensalDto>> ObterPisCofins(DateTime mesReferencia)
+        {
+            return await _appDbContext.Database
                 .SqlQueryRaw<PisCofinsMensalDto>(GerenciamentoMensalFactory.ListaPisCofins(), mesReferencia)
                 .ToListAsync();
+        }
 
         public async Task<List<DescontoTUSDDto>> ObterDescontoTusd(DateTime mesReferencia) =>
             await _appDbContext.Database
@@ -54,11 +69,11 @@ namespace SIGE.Services.Services
         public async Task<BandeiraTarifariaVigenteDto?> ObterBandeiraVigente(DateTime mesReferencia)
         {
             var parameters = new MySqlParameter[]
-{
-            new("@MesReferenciaBV", MySqlDbType.Date) { Value = mesReferencia },
-            new("@VigenciaInicialFiltro", MySqlDbType.Date) { Value = mesReferencia.GetPrimeiraHoraMes() },
-            new("@VigenciaFinalFiltro", MySqlDbType.Date) { Value = mesReferencia.GetUltimaHoraMes() }
-};
+            {
+                new("@MesReferencia", MySqlDbType.Date) { Value = mesReferencia },
+                new("@VigenciaInicialFiltro", MySqlDbType.Date) { Value = mesReferencia.GetPrimeiraHoraMes() },
+                new("@VigenciaFinalFiltro", MySqlDbType.Date) { Value = mesReferencia.GetUltimaHoraMes() }
+            };
             var a = await _appDbContext.Database
                         .SqlQueryRaw<BandeiraTarifariaVigenteDto>(GerenciamentoMensalFactory.ObterBandeiraMesReferencia(), parameters)
                         .ToListAsync();
@@ -105,6 +120,28 @@ namespace SIGE.Services.Services
             _ = await _appDbContext.SaveChangesAsync();
 
             return ret.SetOk();
+        }
+
+        private async Task<List<ProinfaIcmsMensalDto>> IncluirIcmsLote(List<ProinfaIcmsMensalDto> req, DateTime mesReferencia, double icmsBase = 17)
+        {
+            foreach (var r in req)
+            {
+                if (r.Id == null)
+                {
+                    r.Icms = icmsBase;
+                    var valor = new ValorMensalPontoMedicaoModel
+                    {
+                        Proinfa = r.Proinfa ?? 0,
+                        Icms = r.Icms ?? 0,
+                        PontoMedicaoId = r.PontoMedicaoId,
+                        MesReferencia = DateOnly.FromDateTime(mesReferencia)
+                    };
+                    await _appDbContext.AddAsync(valor);
+                }
+            }
+            await _appDbContext.SaveChangesAsync();
+
+            return req;
         }
 
         public async Task<Response> IncluirProinfaIcms(ProinfaIcmsMensalDto req)

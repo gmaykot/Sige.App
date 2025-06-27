@@ -13,14 +13,14 @@ namespace SIGE.Controller
     {
         public readonly IGerenciamentoMensalService _service = service;
         
-        [HttpGet("{mesReferencia}")]
+        [HttpGet("{mesReferencia}/{empresaId?}")]
         [SwaggerOperation(Description = "Obter os dados de checklist")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ObterChecklist(DateTime mesReferencia) =>
-            Ok(await _service.ObterDadodsMensais(mesReferencia));
+        public async Task<IActionResult> ObterChecklist(DateTime mesReferencia, Guid? empresaId = null) =>
+            Ok(await _service.ObterDadodsMensais(mesReferencia, empresaId));
 
         [HttpPost("pis-cofins")]
         [SwaggerOperation(Description = "Inclui no sistema.")]
