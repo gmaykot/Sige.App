@@ -24,27 +24,40 @@ public sourcePisCofins: LocalDataSource = new LocalDataSource();
 public sourceProinfaIcms: LocalDataSource = new LocalDataSource();
 public sourceDescontoTusd: LocalDataSource = new LocalDataSource();
 public bandeiraVigente: any;
-public control =  this.formBuilder.group({
-    bandeiraId: [null],
-    bandeiraTarifariaId: [null],
-    impostoId: [null],
-    proinfaIcmsId: [null],
+public control = this.formBuilder.group({
+  // Campos no nível raiz (Informações Gerais)
+  mesReferencia: [null],
+    // PIS/COFINS
+  pisCofins: this.formBuilder.group({
+    id: [null],
+    concessionariaId: [null],
+    descConcessionaria: [null],
     pis: [null],
     cofins: [null],
+  }), 
+  // Bandeira
+  bandeira: this.formBuilder.group({
+    id: [null],
+    bandeiraTarifariaId: [null],
+    bandeira: [null],
+  }),
+  // Proinfa/ICMS
+  proinfaIcms: this.formBuilder.group({
+    id: [null],
+    pontoMedicaoId: [null],
+    descPontoMedicao: [null],
     proinfa: [null],
     icms: [null],
-    bandeiraVigente: [null],
-    descConcessionaria: [null],
-    concessionariaId: [null],
-    descPontoMedicao: [null],
-    descAgenteMedicao: [null],
-    codigoPerfil: [null],
+  }),
+  // Descontos TUSD
+  descontosTusd: this.formBuilder.group({
+    id: [null],
     agenteMedicaoId: [null],
-    pontoMedicaoId: [null],
-    descontoTusd: [null],
-    mesReferencia: [null],
-    descontoTusdId: [null]
-  });
+    descAgenteMedicao: [null],
+    codPerfil: [null],
+    descontoTUSD: [null],
+  })
+});
 
 public mesReferencia: string = '';
 
@@ -77,9 +90,7 @@ public mesReferencia: string = '';
         this.sourceDescontoTusd.load(response.data.descontoTUSD ?? []);
         this.bandeiraVigente = response.data.bandeiraVigente.bandeira;
         this.control.patchValue({
-          bandeiraVigente: response.data.bandeiraVigente.bandeira,
-          bandeiraId: response.data.bandeiraVigente.id,
-          bandeiraTarifariaId: response.data.bandeiraVigente.bandeiraTarifariaId
+          bandeira: response.data.bandeiraVigente,
         });
         this.selected = true;
       }
@@ -110,72 +121,52 @@ public mesReferencia: string = '';
   onSelectDescontoTusd(event: any) {
     this.descontoTusdSelected = true; 
     this.control.patchValue({
-      descAgenteMedicao: event.data.descAgenteMedicao,
-      agenteMedicaoId: event.data.agenteMedicaoId,
-      codigoPerfil: event.data.codPerfil,
-      descontoTusd: event.data.descontoTUSD,
-      descontoTusdId: event.data.id
+      descontosTusd: event.data
     });
   }
 
   onSelectPisCofins(event: any) {
     this.pisCofinsSelected = true; 
     this.control.patchValue({
-      impostoId: event.data.id,
-      descConcessionaria: event.data.descConcessionaria,
-      concessionariaId: event.data.concessionariaId,
-      pis: event.data.pis,
-      cofins: event.data.cofins
+      pisCofins: event.data
     });
   }
 
   onSelectProinfaIcms(event: any) {   
     this.proinfaIcmsSelected = true; 
     this.control.patchValue({
-      proinfaIcmsId: event.data.id,
-      descPontoMedicao: event.data.descPontoMedicao,
-      pontoMedicaoId: event.data.pontoMedicaoId,
-      proinfa: event.data.proinfa,
-      icms: event.data.icms
+      proinfaIcms: event.data
     });
   }
 
   resetFormPisCofins() {
     this.pisCofinsSelected = false;
     this.control.patchValue({
-      descConcessionaria: null,
-      pis: null,
-      cofins: null
+      pisCofins: null
     });
   }
 
   resetFormProinfaIcms() {
     this.proinfaIcmsSelected = false;
     this.control.patchValue({
-      descPontoMedicao: null,
-      proinfa: null,
-      icms: null
+      proinfaIcms: null
     });
   }
 
   resetFormDescontoTusd() {
     this.descontoTusdSelected = false;
     this.control.patchValue({
-      descAgenteMedicao: null,
-      agenteMedicaoId: null,
-      codigoPerfil: null,
-      descontoTusd: null,
-      descontoTusdId: null
+      descontosTusd: null
     });
   }
 
   async onSubmitPisCofins() {
     this.loading = true;
     var pisCofins = {
-      id: this.control.value.impostoId,
-      concessionariaId: this.control.value.concessionariaId,
-      pis: this.control.value.pis,
-      cofins: this.control.value.cofins,
+      id: this.control.value.pisCofins?.id,
+      concessionariaId: this.control.value.pisCofins?.concessionariaId,
+      pis: this.control.value.pisCofins?.pis,
+      cofins: this.control.value.pisCofins?.cofins,
       mesReferencia: this.mesReferencia
     } 
     
@@ -199,11 +190,11 @@ public mesReferencia: string = '';
   async onSubmitProinfaIcms() {
     this.loading = true;
     var proinfaIcms = {
-      id: this.control.value.proinfaIcmsId,
-      descPontoMedicao: this.control.value.descPontoMedicao,
-      pontoMedicaoId: this.control.value.pontoMedicaoId,
-      proinfa: this.control.value.proinfa,
-      icms: this.control.value.icms,
+      id: this.control.value.proinfaIcms?.id,
+      descPontoMedicao: this.control.value.proinfaIcms?.descPontoMedicao,
+      pontoMedicaoId: this.control.value.proinfaIcms?.pontoMedicaoId,
+      proinfa: this.control.value.proinfaIcms?.proinfa,
+      icms: this.control.value.proinfaIcms?.icms,
       mesReferencia: this.mesReferencia
     }
     
@@ -211,22 +202,28 @@ public mesReferencia: string = '';
       if (response.success) {
         this.alertService.showSuccess('Proinfa / ICMS cadastrada com sucesso!');
         this.loadDadosMensais();
+      } else {
+        response.errors.map((x) => this.alertService.showError(x.value));
       }
-    }).finally(() => {
+    })
+    .catch((error) => {
+      this.alertService.showError(error.message);
+    })
+    .finally(() => {
       this.loading = false;
+      this.proinfaIcmsSelected = false;
+      this.resetFormProinfaIcms();
     });
-    this.proinfaIcmsSelected = false;
-    this.resetFormProinfaIcms();
   }
 
   async onSubmitDescontoTusd() {
     this.loading = true;  
     var descontoTusd = {
-      id: this.control.value.descontoTusdId,
-      descAgenteMedicao: this.control.value.descAgenteMedicao,
-      agenteMedicaoId: this.control.value.agenteMedicaoId,
-      codigoPerfil: this.control.value.codigoPerfil,
-      descontoTusd: this.control.value.descontoTusd,
+      id: this.control.value.descontosTusd?.id,
+      descAgenteMedicao: this.control.value.descontosTusd?.descAgenteMedicao,
+      agenteMedicaoId: this.control.value.descontosTusd?.agenteMedicaoId,
+      codPerfil: this.control.value.descontosTusd?.codPerfil,
+      descontoTUSD: this.control.value.descontosTusd?.descontoTUSD,
       mesReferencia: this.mesReferencia
     }
     
@@ -234,12 +231,16 @@ public mesReferencia: string = '';
       if (response.success) {
         this.alertService.showSuccess('Desconto TUSD cadastrada com sucesso!');
         this.loadDadosMensais();
+      } else {
+        response.errors.map((x) => this.alertService.showError(x.value));
       }
+    }).catch((error) => {
+      this.alertService.showError(error.message);
     }).finally(() => {
       this.loading = false;
+      this.descontoTusdSelected = false;
+      this.resetFormDescontoTusd();
     });
-    this.descontoTusdSelected = false;
-    this.resetFormDescontoTusd();
   }
 
   onCloseDescontoTusd() {
@@ -255,9 +256,9 @@ public mesReferencia: string = '';
   async onSubmitBandeiraVigente() {
     this.loading = true;
     var bandeira = {
-      id: this.control.value.bandeiraId,
-      bandeira: this.control.value.bandeiraVigente,
-      bandeiraTarifariaId: this.control.value.bandeiraTarifariaId,
+      id: this.control.value.bandeira?.id,
+      bandeira: this.control.value.bandeira?.bandeira,
+      bandeiraTarifariaId: this.control.value.bandeira?.bandeiraTarifariaId,
       mesReferencia: this.mesReferencia     
     }
 
@@ -265,9 +266,13 @@ public mesReferencia: string = '';
       if (response.success) {
         this.alertService.showSuccess('Bandeira vigente cadastrada com sucesso!');
         this.loadDadosMensais();
+      } else {
+        response.errors.map((x) => this.alertService.showError(x.value));
       }
+    }).catch((error) => {
+      this.alertService.showError(error.message);
     }).finally(() => {
-      this.loading = false;
+      this.loading = false;      
     });
   }
 }

@@ -40,6 +40,9 @@ export const impostosSettings = {
       columnTitle: "",
     },
     noDataMessage: "Nenhum registro encontrado.",
+    pager: {
+      perPage: 20
+    }
   };
 
   export const proinfaSettings = {
@@ -88,6 +91,9 @@ export const impostosSettings = {
       columnTitle: "",
     },
     noDataMessage: "Nenhum registro encontrado.",
+    pager: {
+      perPage: 20
+    }
   };
 
   export const descontoTusd = {
@@ -135,4 +141,7 @@ export const impostosSettings = {
       columnTitle: "",
     },
     noDataMessage: "Nenhum registro encontrado.",
+    pager: {
+      perPage: 20
+    }
   };

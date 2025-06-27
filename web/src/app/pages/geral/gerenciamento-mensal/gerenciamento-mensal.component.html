@@ -26,7 +26,7 @@
                 <nb-card-body>   
                     <nb-tabset>
                         <nb-tab tabTitle="PIS / COFINS">
-                            <div class="card-row">
+                            <div class="card-row" formGroupName="pisCofins">
                                 <div class="card-col">
                                     <nb-card>
                                         <nb-card-body>
@@ -50,7 +50,7 @@
                                                     </div>
                                                 </div>           
                                                 <div class="col-sm-3">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitPisCofins()">{{control.get('impostoId').value == undefined ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitPisCofins()">{{control.get('pisCofinsId')?.value == undefined ? 'Alterar' : 'Alterar'}}</button>
                                                     <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onClosePisCofins()">Sair</button>
                                                 </div>
                                             </div>                                            
@@ -62,7 +62,7 @@
                             </div>                    
                         </nb-tab>
                         <nb-tab tabTitle="Bandeira Tarifária">                           
-                            <div class="card-row">
+                            <div class="card-row" formGroupName="bandeira">
                                 <div class="card-col">
                                     <nb-card>
                                         <nb-card-body>
@@ -70,7 +70,7 @@
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
                                                         <label for="inputEmail" class="label">Bandeira Vigente</label><br />
-                                                        <nb-select fullWidth placeholder="Selecione" formControlName="bandeiraVigente">
+                                                        <nb-select fullWidth placeholder="Selecione" formControlName="bandeira">
                                                             <nb-option>Selecione</nb-option>
                                                             <nb-option [value]="0">Amarela</nb-option>
                                                             <nb-option [value]="1">Verde</nb-option>
@@ -80,7 +80,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitBandeiraVigente()">{{control.get('bandeiraVigente').value == 4 ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitBandeiraVigente()">{{control.get('bandeira')?.value == 4 ? 'Alterar' : 'Alterar'}}</button>
                                                 </div>
                                         </div>
                                     </nb-card-body>
@@ -93,7 +93,7 @@
                                 <div class="card-col">
                                     <nb-card>
                                     <nb-card-body>
-                                            <div class="row" [hidden]="!proinfaIcmsSelected">
+                                            <div class="row" [hidden]="!proinfaIcmsSelected" formGroupName="proinfaIcms">
                                                 <div class="col-sm-5">
                                                     <div class="form-group">
                                                         <label for="inputEmail" class="label">Ponto de Medição</label><br />
@@ -113,7 +113,7 @@
                                                     </div>
                                                 </div>           
                                                 <div class="col-sm-3">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitProinfaIcms()">{{control.get('impostoId').value == undefined ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitProinfaIcms()">{{control.get('proinfaIcms')?.value == undefined ? 'Alterar' : 'Alterar'}}</button>
                                                     <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseProinfaIcms()">Sair</button>
                                                 </div>
                                             </div>
@@ -129,7 +129,7 @@
                                 <div class="card-col">
                                     <nb-card>
                                     <nb-card-body>
-                                            <div class="row" [hidden]="!descontoTusdSelected">
+                                            <div class="row" [hidden]="!descontoTusdSelected" formGroupName="descontosTusd">
                                                 <div class="col-sm-5">
                                                     <div class="form-group">
                                                         <label for="inputEmail" class="label">Agente de Medição</label><br />
@@ -139,17 +139,17 @@
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
                                                         <label for="inputEmail" class="label">Código Perfil</label><br />
-                                                        <input type="text" nbInput fullWidth formControlName="codigoPerfil" readonly class="no-background">
+                                                        <input type="text" nbInput fullWidth formControlName="codPerfil" readonly class="no-background">
                                                     </div>
                                                 </div>                                                
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
                                                         <label for="inputLastName" class="label">Desconto TUSD</label>
-                                                        <input type="number" nbInput fullWidth formControlName="descontoTusd">
+                                                        <input type="number" nbInput fullWidth formControlName="descontoTUSD">
                                                     </div>
                                                 </div>           
                                                 <div class="col-sm-3">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitDescontoTusd()">{{control.get('impostoId').value == undefined ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitDescontoTusd()">{{control.get('descontosTusd')?.value == undefined ? 'Alterar' : 'Alterar'}}</button>
                                                     <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseDescontoTusd()">Sair</button>
                                                 </div>
                                             </div>
