@@ -179,14 +179,11 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
       let graficoImagem = null;
 
       if (this.chartInstance && this.chartInstance.getDom()) {
-        const chartDiv = this.chartInstance.getDom();
-
-        try {
-          const canvas = await html2canvas(chartDiv);
-          graficoImagem = canvas.toDataURL('image/png');
-        } catch (error) {
-          console.error('Erro ao gerar imagem do gráfico:', error); 
-        }
+        graficoImagem = this.chartInstance.getDataURL({
+          type: 'png',
+          pixelRatio: 2,
+          backgroundColor: '#fff'
+        });
       }
 
       if (this.relatorioFinal) {
