@@ -77,14 +77,24 @@ export class RelatorioEconomiaPdfService {
     const criarTituloSecao = (
       texto: string,
       marginTop: number,
-      posicaoTexto?: "textoCentro"
+      posicaoTexto?: string
     ) => {
-      const textoPosicao =
-        posicaoTexto !== "textoCentro"
-          ? {
-              textoEsquerda: texto,
-            }
-          : { textoCentro: texto };
+      let textoPosicao;
+
+      switch (posicaoTexto) {
+        case 'textoCentro':
+          textoPosicao = { textoCentro: texto };
+          break;
+        case 'textoEsquerda':
+          textoPosicao = { textoEsquerda: texto };
+          break;
+        case 'textoDireita':
+          textoPosicao = { textoDireita: texto };
+          break;
+        default:
+          textoPosicao = { textoEsquerda: texto };
+          break;
+      }
 
       return this.pdfConfig.adicionarTextoHorizontal(doc, {
         ...textoPosicao,
@@ -311,9 +321,9 @@ export class RelatorioEconomiaPdfService {
             content: relatorio.cabecalho.uf ?? "-",
             styles: { halign: "left" as const },
           },
-        ],
+        ],  
       ],
-      inicioMarginTop: margintTopTabelaDinamico + 5,
+      inicioMarginTop: margintTopTabelaDinamico + 2,
       theme: "plain",
       styles: {
         lineColor: "#DDDDDD",
@@ -365,6 +375,7 @@ export class RelatorioEconomiaPdfService {
         lineColor: "#DDDDDD",
         lineWidth: 0.5,
       },
+      tableWidth: 280,
       ...estilosTabela,
     };
 
@@ -447,49 +458,39 @@ export class RelatorioEconomiaPdfService {
 
     /* COMPARATIVO GRÁFICO */
     if (graficoImagem && relatorio?.grafico?.titulo) {
-      const graficoMarginTop = criarTituloSecao(
-        relatorio?.grafico?.titulo,
-        margintTopTabelaDinamico + margins.sectionMarginTop*0.7,
-        "textoCentro"
-      );
+      const graficoMarginTop = this.pdfConfig.adicionarTextoEmPosicao(doc, {
+        texto: relatorio?.grafico?.titulo,
+        x: 354,
+        y: 150,
+        tema: "rotulo",
+        propriedadesPersonalizadas: {
+          fontSize: 6.5,
+        },
+      });      
 
       this.pdfConfig.addImagem(doc, {
         src: graficoImagem,
-        marginLeft: 20,
-        marginTop: graficoMarginTop-10,
-        width: pdfWidth - 40, // Reduzindo para 40 para dar mais margem
-        height: graficoPdfHeight,
+        marginLeft: 318,
+        marginTop: 163,
+        width: 262,
+        height: 55,
       });
 
       // Atualizar a posição vertical para elementos subsequentes
-      margintTopTabelaDinamico = graficoMarginTop + graficoPdfHeight; // Adicionando espaço extra
+      margintTopTabelaDinamico = graficoMarginTop.finalY + graficoPdfHeight; // Adicionando espaço extra
     }
 
     /* SEÇÃO OBSERVAÇÃO ------------------------------------------------------------------------------- */
-    this.pdfConfig.criarTabela(doc, {
-      colunas: [
-        [
-          {
-            content: relatorio?.comparativo?.observacao,
-            styles: { fontStyle: "bold", halign: "center" },
-            colSpan: 2,
-          },
-        ],
-      ],
-      linhas: [],
-      inicioMarginTop: !hasComparativoData
-        ? secaoComparativoMarginTop - 4
-        : margintTopTabelaDinamico + 4,
-      theme: "plain",
-      ...estilosTabela,
-      styles: {
-        lineColor: "#DDDDDD",
-        lineWidth: 0.5,
-        fillColor: "#F5F5F5",
+    this.pdfConfig.adicionarTextoHorizontal(doc, {
+      textoCentro: relatorio?.comparativo?.observacao,
+      marginTop: margintTopTabelaDinamico + 10,
+      tema: "rotulo",
+      propriedadesPersonalizadas: {
+        fontSize: 6.5,
       },
-    });
+    }); 
 
-    margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
+    margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY + 12;
 
     /* SEÇÃO MERCADO CATIVO E LIVRE ----------------------------------------------------------------------------- */
     const criarLinhaLancamento = (lancamento: ILancamentoRelatorioFinal) => {

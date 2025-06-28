@@ -37,6 +37,7 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
   
   initChart() {
     this.chartOption = {
+      backgroundColor: 'transparent', 
       tooltip: {
         trigger: 'axis',
         axisPointer: {
