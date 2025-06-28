@@ -222,57 +222,245 @@ export class RelatorioEconomiaPdfService {
     const dataOptions = { month: "numeric" as const, year: "numeric" as const };
     const dataFormatada = dataHoje.toLocaleDateString("pt-BR", dataOptions);
 
+    const ajusteMargim = 20;
+    let margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
+        /* COMPARATIVO GRÁFICO */
+        if (graficoImagem && relatorio?.grafico?.titulo) {
+          const graficoMarginTop = this.pdfConfig.adicionarTextoEmPosicao(doc, {
+            texto: relatorio?.grafico?.titulo,
+            x: 354,
+            y: 120,
+            tema: "rotulo",
+            propriedadesPersonalizadas: {
+              fontSize: 6.5,
+            },
+          });      
+    
+          this.pdfConfig.addImagem(doc, {
+            src: graficoImagem,
+            marginLeft: 310,
+            marginTop: 127,
+            width: 280,
+            height: 70,
+          });
+    
+          // Atualizar a posição vertical para elementos subsequentes
+          margintTopTabelaDinamico = graficoMarginTop.finalY + graficoPdfHeight; // Adicionando espaço extra
+        }
+
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
-      texto: `Quadro Comparativo Mensal Mercado Cativo x Livre`,
+      texto: 'Unidade',
       x: margins.marginLeft + 130 + 10,
-      y: margins.marginTop + 55 / 2,
+      y: margins.marginTop + 55 / 2 + 12 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: cabecalho.unidade,
+      x: margins.marginLeft + 130 + 10,
+      y: margins.marginTop + 55 / 2 + 22 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
-        fontSize: 14,
+        fontSize: 8,
+      },
+    });  
+    
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'CNPJ',
+      x: margins.marginLeft + 300,
+      y: margins.marginTop + 55 / 2 + 12 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: cabecalho.cnpj,
+      x: margins.marginLeft + 300,
+      y: margins.marginTop + 55 / 2 + 22 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
+      },
+    });
+        
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'Inscrição Estadual',
+      x: margins.marginLeft + 390,
+      y: margins.marginTop + 55 / 2 + 12 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: cabecalho.inscricaoEstadual ?? '-',
+      x: margins.marginLeft + 390,
+      y: margins.marginTop + 55 / 2 + 22 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
       },
     });
 
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
-      texto: `Mês Referência: ${cabecalho.mesReferencia}`,
-      x: margins.marginLeft + 130 + 10,
-      y: margins.marginTop + 55 / 2 + 15,
+      texto: 'Conexão',
+      x: margins.marginLeft + 470,
+      y: margins.marginTop + 55 / 2 + 12 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: TIPO_CONEXAO[cabecalho.conexao]?.desc ?? '-',
+      x: margins.marginLeft + 470,
+      y: margins.marginTop + 55 / 2 + 22 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
-        fontSize: 11,
+        fontSize: 8,
       },
-    });    
+    });  
+    
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'Concessão',
+      x: margins.marginLeft + 130 + 10,
+      y: margins.marginTop + 55 / 2 + 37 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: cabecalho.concessao ?? '-',
+      x: margins.marginLeft + 130 + 10,
+      y: margins.marginTop + 55 / 2 + 47 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
+      },
+    });
+        
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'Submercado',
+      x: margins.marginLeft + 195,
+      y: margins.marginTop + 55 / 2 + 37 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: cabecalho.subMercado ?? '-',
+      x: margins.marginLeft + 195,
+      y: margins.marginTop + 55 / 2 + 47 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
+      },
+    });
+
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'Endereço',
+      x: margins.marginLeft + 255,
+      y: margins.marginTop + 55 / 2 + 37 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: cabecalho.endereco ?? '-',
+      x: margins.marginLeft + 255,
+      y: margins.marginTop + 55 / 2 + 47 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
+      },
+    });
+
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'Município',
+      x: margins.marginLeft + 450,
+      y: margins.marginTop + 55 / 2 + 37 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: cabecalho.municipio ?? '-',
+      x: margins.marginLeft + 450,
+      y: margins.marginTop + 55 / 2 + 47 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
+      },
+    });
+
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'UF',
+      x: margins.marginLeft + 500,
+      y: margins.marginTop + 55 / 2 + 37 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: cabecalho.uf ?? '-',
+      x: margins.marginLeft + 500,
+      y: margins.marginTop + 55 / 2 + 47 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
+      },
+    });
+
+    this.pdfConfig.adicionarTextoHorizontal(doc, {
+      textoCentro: `Quadro Comparativo Mensal Mercado Cativo x Livre ${cabecalho.mesReferencia ?? ''}`,
+      marginTop: margins.marginTop + 85,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 12,
+      },
+    });
 
     const imageBottomY = margins.marginTop + 57 + 10;
 
     /* SEÇÃO DADOS EMPRESA ---------------------------------------------------------------------------- */
     const secaoEmpresaMarginTop = criarTituloSecao(
-      "DADOS EMPRESA",
+      "",
       Math.max(imageBottomY, margins.sectionMarginTop)
     );
 
     /* EMPRESA TABELA 1 */
     const dadosEmpresaTabela1: CustomUserOptions = {
-      colunas: [
-        [
-          { content: "Unidade", styles: { halign: "left" as const } },
-          { content: "Submercado", styles: { halign: "left" as const } },
-          { content: "Conexão", styles: { halign: "left" as const } },
-          { content: "Concessão", styles: { halign: "left" as const } },
-        ],
-      ],
-      linhas: [
-        [
-          { content: cabecalho.unidade, styles: { halign: "left" as const } },
-          {
-            content: cabecalho.subMercado,
-            styles: { halign: "left" as const },
-          },
-          { content: TIPO_CONEXAO[cabecalho.conexao].desc, styles: { halign: "left" as const } },
-          { content: cabecalho.concessao, styles: { halign: "left" as const } },
-        ],
-      ],
+      colunas: [],
+      linhas: [],
       inicioMarginTop: secaoEmpresaMarginTop - margins.marginXsTop,
       theme: "plain",
       styles: {
@@ -283,46 +471,12 @@ export class RelatorioEconomiaPdfService {
     };
 
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela1);
-    let margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
+    margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
 
     /* EMPRESA TABELA 2 */
     const dadosEmpresaTabela2: CustomUserOptions = {
-      colunas: [
-        [
-          { content: "CNPJ", styles: { halign: "left" as const } },
-          {
-            content: "Inscrição Estadual",
-            styles: { halign: "left" as const },
-          },
-          { content: "Endereço", styles: { halign: "left" as const } },
-          { content: "Município", styles: { halign: "left" as const } },
-          { content: "UF", styles: { halign: "left" as const } },
-        ],
-      ],
-      linhas: [
-        [
-          {
-            content: relatorio.cabecalho.cnpj ?? "-",
-            styles: { halign: "left" as const },
-          },
-          {
-            content: relatorio.cabecalho.inscricaoEstadual ?? "-",
-            styles: { halign: "left" as const },
-          },
-          {
-            content: relatorio.cabecalho.endereco ?? "-",
-            styles: { halign: "left" as const },
-          },
-          {
-            content: relatorio.cabecalho.municipio ?? "-",
-            styles: { halign: "left" as const },
-          },
-          {
-            content: relatorio.cabecalho.uf ?? "-",
-            styles: { halign: "left" as const },
-          },
-        ],  
-      ],
+      colunas: [],
+      linhas: [],
       inicioMarginTop: margintTopTabelaDinamico + 2,
       theme: "plain",
       styles: {
@@ -333,7 +487,7 @@ export class RelatorioEconomiaPdfService {
     };
 
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela2);
-    margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
+    margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY + 15;
 
     /* SEÇÃO COMPARATIVO CATIVO X LIVRE --------------------------------------------------------------- */
     const hasComparativoData = comparativo?.lancamentos?.length > 0;
@@ -454,30 +608,6 @@ export class RelatorioEconomiaPdfService {
 
       this.pdfConfig.criarTabela(doc, dadosComparativoTabela);
       margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
-    }
-
-    /* COMPARATIVO GRÁFICO */
-    if (graficoImagem && relatorio?.grafico?.titulo) {
-      const graficoMarginTop = this.pdfConfig.adicionarTextoEmPosicao(doc, {
-        texto: relatorio?.grafico?.titulo,
-        x: 354,
-        y: 150,
-        tema: "rotulo",
-        propriedadesPersonalizadas: {
-          fontSize: 6.5,
-        },
-      });      
-
-      this.pdfConfig.addImagem(doc, {
-        src: graficoImagem,
-        marginLeft: 318,
-        marginTop: 163,
-        width: 262,
-        height: 55,
-      });
-
-      // Atualizar a posição vertical para elementos subsequentes
-      margintTopTabelaDinamico = graficoMarginTop.finalY + graficoPdfHeight; // Adicionando espaço extra
     }
 
     /* SEÇÃO OBSERVAÇÃO ------------------------------------------------------------------------------- */
