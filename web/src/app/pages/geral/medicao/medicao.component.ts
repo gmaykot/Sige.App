@@ -141,6 +141,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
           if (this.medicaoSelected) {
             this.medicaoSelected.statusMedicao = response.data.medicao.statusMedicao;
           }
+          await this.selecionarColeta({data: this.medicaoSelected});
         } else {
           if (medicao)
             response.errors.map((x) => this.alertService.showError(`${x.key} - ${x.value}`));
@@ -262,7 +263,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
 
     async coletarNovamente()
     {
-      await this.onColect(this.medicaoSelected, this.medicaoSelected.periodo);
+      await this.onColect(this.medicaoSelected, this.medicaoSelected.periodo);      
     }
 
     async limparFormulario() {
