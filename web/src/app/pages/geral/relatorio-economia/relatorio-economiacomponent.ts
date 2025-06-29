@@ -17,6 +17,7 @@ import * as echarts from 'echarts';
 import html2canvas from 'html2canvas';
 import { TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
 import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component";
+import { LocalizacaoService } from "../../../@core/services/localizacao.service";
 
 @Component({
   selector: "ngx-relatorio-economia",
@@ -36,58 +37,95 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
   }
   
   initChart() {
-    this.chartOption = {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-        type: 'shadow'
-      },
-      formatter: (params: any) => {
-        const val = params[0].value;
-        return `${params[0].name}: R$ ${val.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-      }
-    },
-    grid: {
-      left: '5%',
-      right: '10%',
-      bottom: '5%',
-      top: '10%',
-      containLabel: true
-    },
-    xAxis: {
-      type: 'value',
-      axisLabel: {
-        formatter: (val: number) => `R$ ${val.toLocaleString('pt-BR')}`
-      }
-    },
-    yAxis: {
-      type: 'category',
-      data: this.relatorioFinal?.grafico?.linhas?.map((g: any) => g.label)
-    },
-    series: [
-      {
+    // Dados brutos
+    const dadosBrutos = [
+      { nome: 'Mercado Cativo', valor: 196399.13, cor: '#3b8de3' },
+      { nome: 'Mercado Livre', valor: 170067.44, cor: '#a4cd39' },
+      { nome: 'Economia', valor: 26331.70, cor: '#d9534f' }
+    ];
+  
+    // Ordenar do maior para o menor
+    const dadosOrdenados = [...dadosBrutos].sort((a, b) => a.valor - b.valor);
+  
+    // Construir os dados do gráfico
+    const categoriasY = dadosOrdenados.map((_, idx) => `cat${idx}`);
+    const legendas = dadosOrdenados.map(d => d.nome);
+  
+    const series = dadosOrdenados.map((dado, index) => {
+      const dataArray = new Array(dadosOrdenados.length).fill(0);
+      dataArray[index] = dado.valor;
+    
+      return {
+        name: dado.nome,
         type: 'bar',
-        data: this.relatorioFinal?.grafico?.linhas?.map((g: any) =>
-          Math.round(g.valor * 100) / 100
-        ),
+        data: dataArray,
+        barWidth: 20,
+        barGap: '25%',
+        barCategoryGap: '50%',
         itemStyle: {
-          color: (params: any) => {
-            const colors = ['#d9534f', '#a4cd39', '#3b8de3'];
-            return colors[params.dataIndex];
-          },
+          color: dado.cor,
           barBorderRadius: [0, 5, 5, 0]
         },
         label: {
           show: true,
           position: 'right',
+          color: dado.cor,
+          fontSize: 18,
           formatter: (params: any) =>
-            `R$ ${params.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+            params.value > 0
+              ? `R$ ${params.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+              : ''
+        }
+      };
+    })
+  
+    // Configuração final
+    this.chartOption = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
         },
-        barWidth: 20
-      }
-    ]
-  };
-}
+        formatter: (params: any) => {
+          const val = params[0].value;
+          return `${params[0].seriesName}: R$ ${val.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2
+          })}`;
+        }
+      },
+      legend: {
+        orient: 'horizontal',
+        bottom: 0,
+        data: legendas,
+        textStyle: {
+          fontWeight: 'bold'
+        }
+      },
+      grid: {
+        left: '5%',
+        right: '10%',
+        bottom: 60,
+        top: '10%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: (val: number) => `R$ ${val.toLocaleString('pt-BR')}`
+        }
+      },
+      yAxis: {
+        type: 'category',
+        data: categoriasY,
+        axisLabel: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false }
+      },
+      series
+    };
+  }
+  
 
   salvar() {}
 
@@ -115,7 +153,8 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
     private relatorioService: RelatorioEconomiaService,
     private formBuilder: FormBuilder,
     private dialogService: NbDialogService,
-    private dateService: DateService
+    private dateService: DateService,
+    private localizacaoService: LocalizacaoService
   ) {}
 
   public control = this.formBuilder.group({
@@ -132,6 +171,11 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
     this.mesReferencia = new Date().toISOString().split("T")[0];
     await this.getRelatorios();
     this.loading = false;
+    try {
+      console.log(await this.localizacaoService.obterLocalizacaoFormatada());
+    } catch (erro) {
+      console.log('Não foi possível obter a localização.');
+    }
   }
 
   private async getRelatorios() {

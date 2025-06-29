@@ -40,7 +40,7 @@ export interface CustomUserOptions extends Omit<UserOptions, "head" | "body"> {
 // Múltiplos de 4
 export const margins = {
   marginXsTop: 6,
-  marginTop: 16,
+  marginTop: 10,
   marginLgTop: 60,
   marginLeft: 36,
   headerMarginTop: 8,
