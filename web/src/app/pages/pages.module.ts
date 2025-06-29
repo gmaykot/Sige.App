@@ -37,7 +37,6 @@ import { ListaContatoComponent } from '../@shared/custom-component/contato/conta
 import { AlertComponent } from '../@shared/custom-component/alert-component/alert-component';
 import { ChartjsBarComponent } from '../@shared/charts/chartjs-bar.component';
 import { CapitalizePipe } from '../@theme/pipes';
-import { RelatorioMedicaoPdfService } from './geral/relatorio-medicao/relatorio-medicao-pdf.service';
 import { RelatorioMedicaoComponent } from './geral/relatorio-medicao/relatorio-medicao.component';
 import { AlertService } from '../@core/services/util/alert.service';
 import { ValidacaoMedicaoComponent } from '../@shared/custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
@@ -64,6 +63,7 @@ import { IntegracaoCceeComponent } from './administrativo/integracao-ccee/integr
 import { SharedModule } from '../@shared/shared.module';
 import { GerenciamentoMensalComponent } from './geral/gerenciamento-mensal/gerenciamento-mensal.component';
 import { ValorMensalPontoMedicaoComponent } from './geral/valor-mensal-ponto-medicao/valor-mensal-ponto-medicao.component';
+import { RelatorioMedicaoPdfService } from './geral/relatorio-medicao/relatorio-medicao-pdf.service';
 
 @NgModule({
   imports: [

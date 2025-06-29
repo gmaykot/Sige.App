@@ -10,6 +10,7 @@ import {
 import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/relatorio-final";
 import { ILancamentoRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/lancamento-relatorio-final";
 import { TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
+import { HelperPdfService } from "../../../@core/services/util/help-pdf.service";
 
 @Injectable({ providedIn: "root" })
 export class RelatorioEconomiaPdfService {
@@ -248,6 +249,17 @@ export class RelatorioEconomiaPdfService {
           margintTopTabelaDinamico = graficoMarginTop.finalY + graficoPdfHeight; // Adicionando espaço extra
         }
 
+      this.pdfConfig.adicionarTextoEmPosicao(doc, {
+        texto: HelperPdfService.getLocalRodape(),
+        x: doc.internal.pageSize.getWidth() - 200,
+        y: 820,
+        tema: "cabecalho",
+        propriedadesPersonalizadas: {
+          fontStyle: "normal",
+          fontSize: 8,
+        },
+      });
+      
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Unidade',
       x: margins.marginLeft + 130 + 10,
