@@ -15,7 +15,6 @@ import { FASES_MEDICAO } from '../../../@core/enum/filtro-medicao';
 import { IContatoEmail, IEmailData } from '../../../@core/data/email-data';
 import { EnvioEmailComponent } from '../../../@shared/custom-component/envio-email/envio-email.component';
 import { IContato } from '../../../@core/data/contato';
-import { RelatorioMedicaoPdfService } from './relatorio-medicao-pdf.service';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { IRelatorioMedicao, IRelatorioMedicaoList, IRelatorioMedicaoRequest, IValoresMedicao, IValoresMedicaoAnalitico } from '../../../@core/data/relatorio-medicao';
 import { ValidacaoMedicaoComponent } from '../../../@shared/custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
@@ -23,6 +22,7 @@ import { SessionStorageService } from '../../../@core/services/util/session-stor
 import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 import { AjudaOperacaoComponent } from '../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component';
+import { RelatorioMedicaoPdfService } from './relatorio-medicao-pdf.service';
 
 @Component({
   selector: 'ngx-relatorio-medicao',

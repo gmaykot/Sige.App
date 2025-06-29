@@ -97,40 +97,36 @@ export class RelatorioMedicaoPdfService {
 
       const cabecalhoInfoMarginTop = this.pdfConfig.addTextoUnico(
         doc,
-        margins?.right,
+        margins?.marginLeft+350,
         [
           {
             text: cabecalhoInfo,
-            marginTop: margins?.marginLgTop,
-            align: "right",
+            marginTop: margins?.marginTop+815,
+            align: "left",
+            fontSize: 10,
           },
         ]
       )[0]?.marginTop;
 
-      const cabecalhoInfoHeight = this.pdfConfig.getTextoHeight(doc, cabecalhoInfo);
-
       const tituloCabecalho =
-        `Relatório de Medição ${globalValues.mesReferencia}`.toUpperCase();
+        `Relatório de Medição ${globalValues.mesReferencia}`;
 
       const tituloCabecalhoMarginTop = this.pdfConfig.addTextoUnico(
         doc,
-        margins?.center,
+        margins?.marginLeft+170,
         [
           {
             text: tituloCabecalho,
             isBold: true,
-            marginTop:
-              cabecalhoInfoHeight +
-              cabecalhoInfoMarginTop +
-              margins?.marginLgTop,
-            fontSize: 14,
-            align: "center",
+            marginTop: margins?.marginLgTop - 15,
+            fontSize: 17,
+            align: "left",
           },
         ]
       )[0]?.marginTop;
 
       const tituloCabecalhoHeight =
-        this.pdfConfig.getTextoHeight(doc, tituloCabecalho);
+        this.pdfConfig.getTextoHeight(doc, tituloCabecalho)+20;
 
       /*
           Relatório
@@ -358,6 +354,20 @@ export class RelatorioMedicaoPdfService {
             isBold: true,
           },
         ],
+        dentroTake: [
+          {
+            text: "Dentro do TAKE:",
+            isBold: true,
+            lineWidth: 455,
+            textSpacing: 5,
+          },
+          {
+            text: this.capitalizePipe.transform(
+              valores.dentroTake ? "SIM" : "NÃO"
+            ),
+            isBold: true,
+          },
+        ],        
       };
 
       this.pdfConfig.addMarginTop(
@@ -391,6 +401,13 @@ export class RelatorioMedicaoPdfService {
         margins.itemSpacing
       );
 
+      this.pdfConfig.addMarginTop(
+        consumoPdfData,
+        "dentroTake",
+        "totalCurtoPrazo",
+        margins.itemSpacing
+      );
+
       const consumoData = this.pdfConfig.formatarPdfData(consumoPdfData);
       this.pdfConfig.addMultiplosTextos(doc, consumoData);
 
@@ -407,7 +424,7 @@ export class RelatorioMedicaoPdfService {
             isBold: true,
             marginTop:
               consumoPdfData.totalCurtoPrazo[0]?.marginTop +
-              margins?.sectionMdMarginTop,
+              margins?.sectionMdMarginTop + 20,
             fontSize: 14,
           },
         ]
@@ -416,9 +433,111 @@ export class RelatorioMedicaoPdfService {
       const tituloPrevContratualHeight =
         this.pdfConfig.getTextoHeight(doc, tituloPrevContratual);
 
+        const desenharBordasPersonalizadas = {
+          willDrawCell: function (data) {
+            if (data.cell.styles) {
+              data.cell.styles.lineWidth = 0;
+            }
+            return true;
+          },
+    
+          didDrawCell: function (data) {
+            const doc = data.doc;
+            const cell = data.cell;
+            const cursor = data.cursor;
+    
+            doc.setDrawColor("#DDDDDD");
+            doc.setLineWidth(0.5);
+    
+            doc.line(
+              cursor.x,
+              cursor.y + cell.height,
+              cursor.x + cell.width,
+              cursor.y + cell.height
+            );
+    
+            const isFirstRow = data.row.index === 0;
+            const isFirstRowOnPage = data.cell.raw?.y === data.table.startPageY;
+            if (isFirstRow || isFirstRowOnPage) {
+              doc.line(cursor.x, cursor.y, cursor.x + cell.width, cursor.y);
+            }
+    
+            const isFirstCol = data.column.index === 0;
+    
+            const isLastVisualCol =
+              data.column.index + (cell.colSpan ?? 1) === data.table.columns.length;
+    
+            if (isFirstCol) {
+              doc.line(cursor.x, cursor.y, cursor.x, cursor.y + cell.height);
+            }
+    
+            if (isLastVisualCol) {
+              const rightX = cursor.x + cell.width;
+              doc.line(rightX, cursor.y, rightX, cursor.y + cell.height);
+            }
+    
+            if (
+              data.section === "head" &&
+              cell.colSpan &&
+              cell.colSpan === data.table.columns.length
+            ) {
+              const rightX = cursor.x + cell.width;
+              doc.line(rightX, cursor.y, rightX, cursor.y + cell.height);
+            }
+          },
+        };
+    
+        const estilosTabela = {
+          headStyles: {
+            fontSize: 9,
+            textColor: "#2e2e2e",
+            fontStyle: "bold" as const,
+            halign: "center" as const,
+            valign: "middle" as const,
+            cellPadding: 3,
+          },
+          bodyStyles: {
+            fontSize: 6,
+            textColor: "#464646",
+            fontStyle: "normal" as const,
+            halign: "center" as const,
+            valign: "middle" as const,
+            cellPadding: 3,
+          },
+          alternateRowStyles: {
+            fillColor: "#F5F5F5",
+          },
+          footStyles: {
+            fillColor: "#E9E9E9",
+            textColor: "#464646",
+            fontStyle: "bold" as const,
+          },
+          // Aplicar as funções de desenho personalizado
+          ...desenharBordasPersonalizadas,
+        };
+    
+        const resetEstilosTabela = {
+          headStyles: {
+            fontSize: 9,
+            fontStyle: "bold" as const,
+            halign: "center" as const,
+            valign: "middle" as const,
+            cellPadding: 1,
+            lineColor: "#FFFFFF",
+          },
+          bodyStyles: {
+            fontSize: 6,
+            fontStyle: "normal" as const,
+            halign: "center" as const,
+            valign: "middle" as const,
+            cellPadding: 1,
+            lineColor: "#FFFFFF",
+          },
+        };
+
       autoTable(doc, {
         head: [
-          ["Mês", "hs mês", "Energia cont. (MWh)", `Flex -${relatorioMedicao.takeMinimo}%`, `Flex -${relatorioMedicao.takeMinimo}%`],
+          ["Mês", "hs mês", "Energia cont. (MWh)", `Flex -${relatorioMedicao.takeMinimo}%`, `Flex +${relatorioMedicao.takeMinimo}%`],
         ],
         body: [
           [
@@ -428,7 +547,7 @@ export class RelatorioMedicaoPdfService {
                   : mesReferencia,
               styles: {
                 halign: "center",
-                fontSize: 9,
+                fontSize: 10,
               },
             },
             {
@@ -439,7 +558,7 @@ export class RelatorioMedicaoPdfService {
               ),
               styles: {
                 halign: "center",
-                fontSize: 9,
+                fontSize: 10,
               },
             },
             {
@@ -450,7 +569,7 @@ export class RelatorioMedicaoPdfService {
               ),
               styles: {
                 halign: "center",
-                fontSize: 9,
+                fontSize: 10,
               },
             },
             {
@@ -461,7 +580,7 @@ export class RelatorioMedicaoPdfService {
               ),
               styles: {
                 halign: "center",
-                fontSize: 9,
+                fontSize: 10,
               },
             },
             {
@@ -472,7 +591,7 @@ export class RelatorioMedicaoPdfService {
               ),
               styles: {
                 halign: "center",
-                fontSize: 9,
+                fontSize: 10,
               },
             },
           ],
@@ -480,23 +599,7 @@ export class RelatorioMedicaoPdfService {
         startY: tituloPrevContratualHeight + tituloPrevContratualMarginTop,
         theme: "plain",
         margin: { left: margins?.marginLeft },
-        headStyles: {
-          fontSize: 9,
-          lineWidth: 1,
-          lineColor: "#000000",
-          fillColor: "#8eaadb",
-          textColor: "#000000",
-          fontStyle: "bold",
-          halign: "center",
-        },
-        bodyStyles: {
-          fontSize: 9,
-          lineWidth: 1,
-          lineColor: "#000000",
-          fillColor: "#FFFFFF",
-          textColor: "#000000",
-          fontStyle: "normal",
-        },
+        ...estilosTabela        
       });
 
       const prevContratualTableHeight = (doc as any)?.lastAutoTable?.finalY;
@@ -523,26 +626,30 @@ export class RelatorioMedicaoPdfService {
         ],
       };
 
-      const prevContratualData = this.pdfConfig.formatarPdfData(
-        prevContratualPdfData
+      const faturamentoPdfData: { [key: string]: PdfTextoType[] } = {
+        take: [
+          {
+            text: "Faturamento (MWh)",
+            isBold: true,
+            marginTop:
+              prevContratualTableHeight +
+              margins?.tableMarginTop +
+              margins?.marginTop +5,
+            fontSize: 14,
+          },
+        ],
+      };
+
+      const faturamentoData = this.pdfConfig.formatarPdfData(
+        faturamentoPdfData
       );
-      this.pdfConfig.addMultiplosTextos(doc, prevContratualData);
+      this.pdfConfig.addMultiplosTextos(doc, faturamentoData);
 
       const { totalFaturamentoLongoPrazo, venderOuComprar } =
         this.faturamentoHelper(resultadoAnalitico);
 
       autoTable(doc, {
         head: [
-          [
-            {
-              content: "Faturamento (MWh)",
-              colSpan: 6,
-              styles: {
-                halign: "center",
-                fontSize: 9,
-              },
-            },
-          ],
           [
             {
               content: "Unidade",
@@ -589,7 +696,7 @@ export class RelatorioMedicaoPdfService {
               styles: {
                 halign: "center",
                 valign: "middle",
-                fontSize: 9,
+                fontSize: 10,
               },
             },
           ],
@@ -599,22 +706,7 @@ export class RelatorioMedicaoPdfService {
           prevContratualPdfData?.take[0]?.marginTop + margins?.itemSpacing,
         theme: "plain",
         margin: { left: margins?.marginLeft },
-        headStyles: {
-          fontSize: 9,
-          lineWidth: 1,
-          lineColor: "#000000",
-          fillColor: "#8eaadb",
-          textColor: "#000000",
-          fontStyle: "bold",
-          halign: "center",
-        },
-        bodyStyles: {
-          lineWidth: 1,
-          lineColor: "#000000",
-          fillColor: "#FFFFFF",
-          textColor: "#000000",
-          fontStyle: "normal",
-        },
+        ...estilosTabela,
         showHead: "firstPage",
         styles: { overflow: "linebreak" },
         columnStyles: {
