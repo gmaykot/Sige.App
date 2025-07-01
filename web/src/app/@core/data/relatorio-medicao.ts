@@ -31,6 +31,8 @@ export interface IRelatorioMedicao {
     totalMedido: number;
     tipoEnergia: ETipoEnergia;
     proinfa: number;
+    valorCompraCurtoPrazo: number;
+    valorVendaCurtoPrazo: number;
     icms: number;
     observacao?: string;
     observacaoValidacao?: string;

@@ -185,14 +185,16 @@ export class RelatorioMedicaoComponent implements OnInit {
   
   atualizaValoresEconomia(){
     this.valores = this.calculoEconomiaService.calcular(this.relatorioMedicao);
+    const valorUnitario = this.relatorioMedicao.valorCompraCurtoPrazo > 0 ? this.relatorioMedicao.valorCompraCurtoPrazo : this.relatorioMedicao.valorVendaCurtoPrazo;
+    const quantidade = this.valores.comprarCurtoPrazo ?? this.valores.venderCurtoPrazo;
     const venda: IFaturamentoMedicao = this.valores.dentroTake ? null :{
       faturamento: `Curto Prazo (${this.valores.comprarCurtoPrazo > 0 ? 'Compra' : 'Venda'})`,
-      quantidade: this.valores.comprarCurtoPrazo ?? this.valores.venderCurtoPrazo,
+      quantidade: quantidade,
       unidade: "MWh",
-      valorUnitario: 0,
-      valorICMS: 0,
-      valorProduto: 0,
-      valorNota: 0
+      valorUnitario: valorUnitario,
+      valorICMS: valorUnitario*quantidade * 0.17,
+      valorProduto: valorUnitario*quantidade,
+      valorNota: valorUnitario*quantidade+(valorUnitario * 0.17)
     };
     const data = venda != null ? [this.valores.resultadoFaturamento, venda].map(row => ({
       ...row,
@@ -357,7 +359,7 @@ export class RelatorioMedicaoComponent implements OnInit {
   onHelp() {
     this.dialogService.open(AjudaOperacaoComponent, { context: { tipoAjuda: 'relatorio-medicao' } });
   }
-  
+
   async onDeleteConfirm($event) {
     this.dialogService
       .open(MedicaoCurtoPrazoComponent, { context: { medicao: $event.data } })
@@ -371,6 +373,26 @@ export class RelatorioMedicaoComponent implements OnInit {
             ...medicao
           };
         }
+
+        if (medicao?.faturamento?.includes('Compra')) {
+          this.relatorioMedicao.valorCompraCurtoPrazo = medicao.valorUnitario;
+        } else {
+          this.relatorioMedicao.valorVendaCurtoPrazo = medicao.valorUnitario;
+        }
+
+        this.relatorioMedicaoService.put(this.relatorioMedicao)
+          .then((data: any) => {
+            if (data?.success) {
+              this.alertService.showSuccess('Medição atualizada com sucesso.');
+            } else {
+              this.alertService.showError(data?.message || 'Erro ao atualizar medição.');
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            this.alertService.showError('Erro inesperado ao atualizar medição.');
+          });
+
         this.sourceResultado.load(data);
       });
   }

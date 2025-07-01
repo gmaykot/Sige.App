@@ -11,6 +11,8 @@ namespace SIGE.Core.Models.Sistema.Geral.Medicao
         public required DateTime DataEmissao { get; set; }
         public EFaseMedicao Fase { get; set; }
         public required decimal TotalMedido { get; set; }
+        public decimal? ValorCompraCurtoPrazo { get; set; }
+        public decimal? ValorVendaCurtoPrazo { get; set; }
         public string? Observacao { get; set; }
         public bool? Validado { get; set; } = false;
         public string? ObservacaoValidacao { get; set; }

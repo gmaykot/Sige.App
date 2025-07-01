@@ -455,14 +455,14 @@ namespace SIGE.Services.Services.Geral
                         Montante = (double)valorAnalitico.ComprarCurtoPrazo,
                         Descricao = "Compra de energia - Curto Prazo",
                         TipoMontante = ETipoMontante.KW,
-                        Tarifa = 1,
+                        Tarifa = (double)relMedicoes.ValorCompraCurtoPrazo,
                         TipoTarifa = ETipoTarifa.RS_KW
                     },
                     new LancamentoRelatorioFinalDto {
                         Montante = (double)valorAnalitico.VenderCurtoPrazo,
                         Descricao = "Venda de energia - Curto Prazo",
                         TipoMontante = ETipoMontante.KW,
-                        Tarifa = 1,
+                        Tarifa = (double)relMedicoes.ValorVendaCurtoPrazo,
                         TipoTarifa = ETipoTarifa.RS_KW
                     },
                     new LancamentoRelatorioFinalDto {

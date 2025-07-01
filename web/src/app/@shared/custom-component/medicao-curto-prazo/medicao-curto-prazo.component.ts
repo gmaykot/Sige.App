@@ -28,7 +28,6 @@ export class MedicaoCurtoPrazoComponent  implements OnInit {
     // Preenche os valores iniciais
     if (this.medicao) {
       this.control.patchValue(this.medicao, { emitEvent: false });
-      this.control.patchValue({ valorUnitario: null }, { emitEvent: false });
     }
 
     // Observa mudanças e recalcula

@@ -43,6 +43,8 @@ namespace SIGE.Core.SQLFactory
             builder.AppendLine("    relatorio.Id AS 'Id',");
             builder.AppendLine("    relatorio.MesReferencia AS 'MesReferencia',");
             builder.AppendLine("    contrato.Numero AS 'NumContrato',");
+            builder.AppendLine("    IFNULL(relatorio.ValorVendaCurtoPrazo, 0) AS 'ValorVendaCurtoPrazo',");
+            builder.AppendLine("    IFNULL(relatorio.ValorCompraCurtoPrazo, 0) AS 'ValorCompraCurtoPrazo',");
             builder.AppendLine("    IFNULL(valorAnual.ValorUnitarioKwh, 0) AS 'ValorUnitarioKwh',");
             builder.AppendLine("    IFNULL(valorMensal.EnergiaContratada,0) AS 'EnergiaContratada',");
             builder.AppendLine("    IFNULL(valorMensal.HorasMes,0) AS 'HorasMes',");
@@ -53,7 +55,6 @@ namespace SIGE.Core.SQLFactory
             builder.AppendLine("    relatorio.Validado,");
             builder.AppendLine("    contrato.DataVigenciaInicial,");
             builder.AppendLine("    contrato.DataVigenciaFinal");
-
             builder.AppendLine("FROM Contratos contrato");
             builder.AppendLine("INNER JOIN ContratoEmpresas contratoEmpresa ON contratoEmpresa.ContratoId = contrato.Id");
             builder.AppendLine("INNER JOIN Empresas empresa ON empresa.Id = contratoEmpresa.EmpresaId");
@@ -65,13 +66,13 @@ namespace SIGE.Core.SQLFactory
             builder.AppendLine("    AND DATE_FORMAT(valorMensal.MesReferencia, '%Y-%m-01') = @MesReferencia");
             builder.AppendLine("INNER JOIN (");
             builder.AppendLine("    SELECT");
-            builder.AppendLine("        ponto.TipoEnergia AS 'TipoEnergia',");
             builder.AppendLine("        contratoEmpresa.ContratoId AS 'ContratoId',");
+            builder.AppendLine("        DATE_FORMAT(medicao.Periodo, '%Y-%m-01') AS 'MesReferencia',");
+            builder.AppendLine("        ponto.TipoEnergia AS 'TipoEnergia',");
             builder.AppendLine("        SUM(medicao.ConsumoAtivo) AS 'ConsumoAtivo',");
             builder.AppendLine("        SUM(DISTINCT consumo.Proinfa) AS 'Proinfa',");
             builder.AppendLine("        consumo.ICMS AS 'Icms',");
-            builder.AppendLine("        valor.Icms AS 'ValorIcms',");
-            builder.AppendLine("        DATE_FORMAT(medicao.Periodo, '%Y-%m-01') AS 'MesReferencia'");
+            builder.AppendLine("        valor.Icms AS 'ValorIcms'");
             builder.AppendLine("    FROM Medicoes medicao");
             builder.AppendLine("    INNER JOIN ConsumosMensais consumo ON consumo.Id = medicao.ConsumoMensalId");
             builder.AppendLine("    INNER JOIN PontosMedicao ponto ON ponto.Id = consumo.PontoMedicaoId");
@@ -81,26 +82,24 @@ namespace SIGE.Core.SQLFactory
             builder.AppendLine("    LEFT JOIN ValoresMensaisPontoMedicao valor ON valor.PontoMedicaoId = ponto.Id AND valor.MesReferencia = @MesReferencia AND valor.Ativo IS true");
             builder.AppendLine("    WHERE medicao.SubTipo LIKE 'L'");
             builder.AppendLine("      AND DATE_FORMAT(medicao.Periodo, '%Y-%m-01') = @MesReferencia");
-
             if (empresaId != null)
                 builder.AppendLine("      AND empresa.Id = @EmpresaId");
-
-            builder.AppendLine("    GROUP BY contratoEmpresa.ContratoId");
+            builder.AppendLine("    GROUP BY contratoEmpresa.ContratoId, DATE_FORMAT(medicao.Periodo, '%Y-%m-01'), ponto.TipoEnergia, consumo.ICMS, valor.Icms");
             builder.AppendLine(") AS total ON total.ContratoId = contrato.Id AND DATE_FORMAT(total.MesReferencia, '%Y-%m-01') = @MesReferencia");
-            builder.AppendLine("LEFT JOIN RelatoriosMedicao relatorio ON relatorio.ContratoId = contrato.Id");
-
+            builder.AppendLine("LEFT JOIN (");
+            builder.AppendLine("    SELECT * FROM RelatoriosMedicao");
+            builder.AppendLine("    WHERE DATE_FORMAT(MesReferencia, '%Y-%m-01') = @MesReferencia");
+            builder.AppendLine(") relatorio ON relatorio.ContratoId = contrato.Id");
             builder.AppendLine("WHERE empresa.Ativo = true AND contrato.Ativo = true AND contrato.Status = 0");
             builder.AppendLine("  AND contrato.Id = @ContratoId");
-
             if (empresaId != null)
                 builder.AppendLine("  AND empresa.Id = @EmpresaId");
-
             builder.AppendLine("ORDER BY empresa.NomeFantasia");
 
-            return builder.ToString().Replace("@MesReferencia", $"'{mesReferencia:yyyy-MM-dd}'")
-                                      .Replace("@ContratoId", $"'{contratoId}'")
-                                      .Replace("@EmpresaId", empresaId.HasValue ? $"'{empresaId.Value}'" : "NULL");
-
+            return builder.ToString()
+                          .Replace("@MesReferencia", $"'{mesReferencia:yyyy-MM-dd}'")
+                          .Replace("@ContratoId", $"'{contratoId}'")
+                          .Replace("@EmpresaId", empresaId.HasValue ? $"'{empresaId.Value}'" : "NULL");
         }
     }
 }
