@@ -16,6 +16,7 @@ import { IFaturaEnergia } from "../../../@core/data/fatura.energia";
 import { DatePipe } from "@angular/common";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import * as uuid from 'uuid';
+import { IDescontoTusdMensal } from "../gerenciamento-mensal/gerenciamento-mensal.interface";
 
 
 @Component({
@@ -99,7 +100,8 @@ export class FaturaEnergiaComponent implements OnInit {
       // Adicional Bandeira e Desconto TUSD
       tarifaMedidaReativaPonta: [null, [Validators.required, Validators.min(0)]],
       tarifaMedidaReativaForaPonta: [null, [Validators.required, Validators.min(0)]],
-      valorDescontoTUSD: [null, [Validators.required, Validators.min(0)]],
+      valorDescontoTUSD: [null],
+      valorDescontoRETUSD: [null],
     
       lancamentosAdicionais: [null]
     });
@@ -314,6 +316,33 @@ export class FaturaEnergiaComponent implements OnInit {
     this.loading = true;
     this.mesReferencia = $event;
     await this.loadFaturas();
+    this.loading = false;
+  }
+
+  async loadLancamentos(): Promise<void> {
+    this.loading = true;
+    console.log('getControlValues', this.getControlValues("id"));
+    if (this.getControlValues("id") == null) {
+      const [month, year] = this.getControlValues("mesReferencia").split('/');
+      const mesReferencia = `${year}-${month}-01`;
+      await this.faturaEnergiaService
+      .obterFaturaDescontos(mesReferencia, this.getControlValues("pontoMedicaoId"))
+      .then((response: IResponseInterface<IDescontoTusdMensal>) => {
+        if (response.success) {
+          this.control.patchValue({
+            valorDescontoTUSD: response.data.valorDescontoTUSD,
+            valorDescontoRETUSD: response.data.valorDescontoRETUSD
+          });
+        } else {
+          this.control.patchValue({
+            valorDescontoTUSD: null,
+            valorDescontoRETUSD: null
+          });
+        }
+      }).catch((error) => {
+        this.alertService.showError(error.message, 20000);
+      });
+    }
     this.loading = false;
   }
 

@@ -55,7 +55,8 @@ public control = this.formBuilder.group({
     agenteMedicaoId: [null],
     descAgenteMedicao: [null],
     codPerfil: [null],
-    descontoTUSD: [null],
+    valorDescontoTUSD: [null],
+    valorDescontoRETUSD: [null]
   })
 });
 
@@ -217,13 +218,14 @@ public mesReferencia: string = '';
   }
 
   async onSubmitDescontoTusd() {
-    this.loading = true;  
+    this.loading = true;    
     var descontoTusd = {
       id: this.control.value.descontosTusd?.id,
       descAgenteMedicao: this.control.value.descontosTusd?.descAgenteMedicao,
       agenteMedicaoId: this.control.value.descontosTusd?.agenteMedicaoId,
       codPerfil: this.control.value.descontosTusd?.codPerfil,
-      descontoTUSD: this.control.value.descontosTusd?.descontoTUSD,
+      valorDescontoTUSD: this.control.value.descontosTusd?.valorDescontoTUSD,
+      valorDescontoRETUSD: this.control.value.descontosTusd?.valorDescontoRETUSD,
       mesReferencia: this.mesReferencia
     }
     

@@ -89,53 +89,45 @@ export const settingsRelatorioMedicao =  {
 
 export const settingsResultadoEconomia =  { 
   rowClassFunction: rowClassFunction,
-  edit: {
-    editButtonContent: '<i class="nb-edit"></i>',
-    saveButtonContent: '<i class="nb-checkmark-circle"></i>',
-    cancelButtonContent: '<i class="nb-close-circled"></i>',
-    confirmSave: true,
+  delete: {
+    deleteButtonContent: '<i class="nb-edit"></i>',
+    confirmDelete: true,
   },
   columns: {
     faturamento: {
       title: "Faturamento",
-      type: "string",
-      editable: false,
+      type: "string"
     },
     quantidade: {
       title: "Qtde (MWh)",
       type: "number",
       valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 3, minimumFractionDigits: 3 }).format(value)},
-      editable: false,
     },
     valorUnitario: {
       title: "Valor UN",
       type: "number",
       valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)},
-      editable: true,
     },
     valorICMS: {
       title: "Valor ICMS",
       type: "number",
-      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)},
-      editable: false,
+      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}
     },
     valorProduto: {
       title: "Total Produto",
       type: "number",
       valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}   ,
-      editable: false,
     },
     valorNota: {
       title: "Total Nota",
       type: "number",
       valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)},
-      editable: false,
     },
   },
   actions: {
     add: false,
-    edit: true,
-    delete: false,
+    edit: false,
+    delete: true,
     position: "right",
     columnTitle: "",
   },

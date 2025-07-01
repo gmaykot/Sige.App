@@ -41,11 +41,12 @@ namespace SIGE.Core.Models.Sistema.Geral.FaturaEnergia
         public required double ValorConsumoMedidoReativoForaPonta { get; set; }
         #endregion
 
-        #region Tarifa e Desconto TUSD
+        #region Tarifa, TUSD e RETUSD
         public double? TarifaMedidaReativaPonta { get; set; }
         public required double TarifaMedidaReativaForaPonta { get; set; }
 
         public required double ValorDescontoTUSD { get; set; }
+        public required double ValorDescontoRETUSD { get; set; }
         #endregion
 
         [ForeignKey("PontoMedicao")]

@@ -245,10 +245,10 @@ export class RelatorioEconomiaPdfService {
     
           this.pdfConfig.addImagem(doc, {
             src: graficoImagem,
-            marginLeft: 320,
-            marginTop: 131,
-            width: 245,
-            height: 110,
+            marginLeft: 312,
+            marginTop: 136,
+            width: 255,
+            height: 95,
           });
     
           // Atualizar a posição vertical para elementos subsequentes

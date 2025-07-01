@@ -7,7 +7,8 @@
         public Guid AgenteMedicaoId { get; set; }
         public string? DescAgenteMedicao { get; set; }
         public string? CodPerfil { get; set; }
-        public double? DescontoTUSD { get; set; }
+        public double? ValorDescontoTUSD { get; set; }
+        public double? ValorDescontoRETUSD { get; set; }
         public int? EmpresasVinculadas { get; set; }
     }
 }

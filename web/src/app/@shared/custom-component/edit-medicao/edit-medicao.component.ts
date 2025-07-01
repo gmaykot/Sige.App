@@ -21,7 +21,7 @@ export class EditMedicaoComponent implements OnInit {
   });
 
   constructor(
-    protected dialogRef: NbDialogRef<ValidacaoMedicaoComponent>,
+    protected dialogRef: NbDialogRef<EditMedicaoComponent>,
     private formBuilder: FormBuilder
   ) {}
 

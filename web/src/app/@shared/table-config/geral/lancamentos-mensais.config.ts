@@ -126,8 +126,14 @@ export const impostosSettings = {
         type: "string",
         filter: false,
       },
-      descontoTUSD: {
-        title: "Desconto TUSD",
+      valorDescontoTUSD: {
+        title: "Desconto TUSD (%)",
+        type: "string",
+        filter: false,
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
+      },
+      valorDescontoRETUSD: {
+        title: "Desconto RETUSD (R$)",
         type: "string",
         filter: false,
         valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },

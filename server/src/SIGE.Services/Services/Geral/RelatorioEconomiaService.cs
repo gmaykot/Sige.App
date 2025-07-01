@@ -459,8 +459,15 @@ namespace SIGE.Services.Services.Geral
                         TipoTarifa = ETipoTarifa.RS_KW
                     },
                     new LancamentoRelatorioFinalDto {
+                        Montante = (double)valorAnalitico.VenderCurtoPrazo,
+                        Descricao = "Venda de energia - Curto Prazo",
+                        TipoMontante = ETipoMontante.KW,
+                        Tarifa = 1,
+                        TipoTarifa = ETipoTarifa.RS_KW
+                    },
+                    new LancamentoRelatorioFinalDto {
                         Descricao = "Desconto - TUSD (RETUSD)",
-                        Total = fatura.ValorDescontoTUSD
+                        Total = fatura.ValorDescontoRETUSD
                     }
             ];
 

@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MySqlConnector;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Geral.FaturaEnergia;
+using SIGE.Core.Models.Dto.GerenciamentoMensal;
 using SIGE.Core.Models.Requests;
 using SIGE.Core.Models.Sistema.Geral.FaturaEnergia;
+using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
 
@@ -88,8 +91,6 @@ namespace SIGE.Services.Services.Geral
 
             var ret = new Response();
             var res = await _appDbContext.FaturasEnergia.Include(f => f.Concessionaria).Include(f => f.PontoMedicao).Include(f => f.LancamentosAdicionais).Where(f => f.MesReferencia == mesReferencia.Value.GetPrimeiroDiaMes()).ToListAsync();
-            if (res == null || res.Count == 0)
-                res = await _appDbContext.FaturasEnergia.Include(f => f.Concessionaria).Include(f => f.PontoMedicao).Include(f => f.LancamentosAdicionais).Where(f => f.MesReferencia == mesReferencia.Value.GetPrimeiroDiaMes().AddMonths(-1)).ToListAsync();
 
             if (pontoMedicaoId != null)
                 res = res.Where(f => f.PontoMedicaoId == pontoMedicaoId).ToList();
@@ -108,6 +109,22 @@ namespace SIGE.Services.Services.Geral
                 return ret.SetOk().SetData(_mapper.Map<IEnumerable<DropDownDto>>(res).OrderBy(d => d.Descricao));
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe fartura ativa.");
+        }
+
+        public async Task<Response> ObterDescontosTusdRetusd(DateTime mesReferencia, Guid pontoMedicaoId)
+        {
+            var ret = new Response();
+            var parameters = new MySqlParameter[]
+            {
+                new("@MesReferencia", MySqlDbType.Date) { Value = mesReferencia },
+                new("@PontoMedicaoId", MySqlDbType.Guid) { Value = pontoMedicaoId },
+            };
+
+            var res  = await _appDbContext.Database.SqlQueryRaw<DescontoTUSDDto>(GerenciamentoMensalFactory.ObterDescontoTusd(), parameters).ToListAsync();
+            if (res.Count > 0)
+                return ret.SetOk().SetData(res.FirstOrDefault());
+
+            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existem descontos ativos.");
         }
     }
 }

@@ -87,7 +87,8 @@ namespace SIGE.Core.SQLFactory
             sql.AppendLine("    agente.Id AS 'AgenteMedicaoId',");
             sql.AppendLine("    agente.Nome AS 'DescAgenteMedicao',");
             sql.AppendLine("    agente.CodigoPerfilAgente AS 'CodPerfil',");
-            sql.AppendLine("    desconto.ValorDesconto AS 'DescontoTUSD',");
+            sql.AppendLine("    desconto.ValorDescontoTUSD AS 'ValorDescontoTUSD',");
+            sql.AppendLine("    desconto.ValorDescontoRETUSD AS 'ValorDescontoRETUSD',");
             sql.AppendLine("    COUNT(agente.EmpresaId) AS 'EmpresasVinculadas'");
             sql.AppendLine("FROM");
             sql.AppendLine("    AgentesMedicao agente");
@@ -100,6 +101,29 @@ namespace SIGE.Core.SQLFactory
             sql.AppendLine("    agente.Nome;");
 
             return sql.ToString();
+        }
+
+        public static string ObterDescontoTusd()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("SELECT ");
+            sb.AppendLine("    desconto.Id AS 'Id',");
+            sb.AppendLine("    desconto.MesReferencia AS 'MesReferencia',");
+            sb.AppendLine("    agente.Id AS 'AgenteMedicaoId',");
+            sb.AppendLine("    agente.Nome AS 'DescAgenteMedicao',");
+            sb.AppendLine("    agente.CodigoPerfilAgente AS 'CodPerfil',");
+            sb.AppendLine("    desconto.ValorDescontoTUSD AS 'ValorDescontoTUSD',");
+            sb.AppendLine("    desconto.ValorDescontoRETUSD AS 'ValorDescontoRETUSD',");
+            sb.AppendLine("    COUNT(agente.EmpresaId) AS 'EmpresasVinculadas'");
+            sb.AppendLine("FROM DescontosTusd AS desconto");
+            sb.AppendLine("INNER JOIN AgentesMedicao AS agente ");
+            sb.AppendLine("    ON agente.Id = desconto.AgenteMedicaoId");
+            sb.AppendLine("INNER JOIN PontosMedicao AS ponto ");
+            sb.AppendLine("    ON ponto.AgenteMedicaoId = desconto.AgenteMedicaoId");
+            sb.AppendLine("WHERE ponto.Id = @PontoMedicaoId and desconto.MesReferencia = @MesReferencia");
+            sb.AppendLine("GROUP BY desconto.MesReferencia, ponto.Id;");
+
+            return sb.ToString();
         }
     }
 }

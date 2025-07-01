@@ -23,6 +23,7 @@ import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 import { AjudaOperacaoComponent } from '../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component';
 import { RelatorioMedicaoPdfService } from './relatorio-medicao-pdf.service';
+import { MedicaoCurtoPrazoComponent } from '../../../@shared/custom-component/medicao-curto-prazo/medicao-curto-prazo.component';
 
 @Component({
   selector: 'ngx-relatorio-medicao',
@@ -181,43 +182,12 @@ export class RelatorioMedicaoComponent implements OnInit {
     }
     this.loading = false;
   }
-
-  private recalcularLinha(row: any): any {
-    if (row.faturamento === 'Curto Prazo (Compra)') {
-      const quantidade = row.quantidade ?? 0;
-      const valorUnitario = row.valorUnitario ?? 0;
-      const valorProduto = quantidade * valorUnitario;
-      const valorICMS = (this.relatorioMedicao.icms/100)*valorProduto;
-      const valorNota = valorProduto + valorICMS;
-  
-      return {
-        ...row,
-        valorProduto,
-        valorICMS,
-        valorNota
-      };
-    }
-    return row;
-  }
-
-  onEditConfirm(event) {
-    const novaLinha = this.recalcularLinha(event.newData);
-    console.log(novaLinha);
-
-    // Atualiza a linha diretamente no source
-    this.sourceResultado.update(event.data, novaLinha);
-  
-    this.alertService.showSuccess("Valores de Economia alterados com sucesso.");
-  
-    // Finaliza a edição com os dados atualizados
-    event.confirm.resolve(novaLinha);
-  }
   
   atualizaValoresEconomia(){
     this.valores = this.calculoEconomiaService.calcular(this.relatorioMedicao);
     const venda: IFaturamentoMedicao = this.valores.dentroTake ? null :{
-      faturamento: "Curto Prazo (Compra)",
-      quantidade: this.valores.comprarCurtoPrazo,
+      faturamento: `Curto Prazo (${this.valores.comprarCurtoPrazo > 0 ? 'Compra' : 'Venda'})`,
+      quantidade: this.valores.comprarCurtoPrazo ?? this.valores.venderCurtoPrazo,
       unidade: "MWh",
       valorUnitario: 0,
       valorICMS: 0,
@@ -229,7 +199,7 @@ export class RelatorioMedicaoComponent implements OnInit {
       hideCol7: row.faturamento === 'Longo Prazo'
     })) : [this.valores.resultadoFaturamento];
     
-    this.settingsResultado.actions.edit = data.length !== 1;
+    this.settingsResultado.actions.delete = data.length !== 1;
 
     this.sourceResultado.load(data);    
     this.resultadoAnalitico = this.calculoEconomiaService.calcularAnalitico(this.relatorioMedicao);
@@ -386,5 +356,22 @@ export class RelatorioMedicaoComponent implements OnInit {
 
   onHelp() {
     this.dialogService.open(AjudaOperacaoComponent, { context: { tipoAjuda: 'relatorio-medicao' } });
+  }
+  
+  async onDeleteConfirm($event) {
+    this.dialogService
+      .open(MedicaoCurtoPrazoComponent, { context: { medicao: $event.data } })
+      .onClose.subscribe(async (medicao) => {
+        const data = await this.sourceResultado.getAll();
+        const index = data.findIndex(item => item.faturamento === medicao.faturamento);
+      
+        if (index >= 0) {
+          data[index] = {
+            ...data[index],
+            ...medicao
+          };
+        }
+        this.sourceResultado.load(data);
+      });
   }
 }

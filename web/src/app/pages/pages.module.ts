@@ -65,6 +65,7 @@ import { GerenciamentoMensalComponent } from './geral/gerenciamento-mensal/geren
 import { ValorMensalPontoMedicaoComponent } from './geral/valor-mensal-ponto-medicao/valor-mensal-ponto-medicao.component';
 import { RelatorioMedicaoPdfService } from './geral/relatorio-medicao/relatorio-medicao-pdf.service';
 import { EditMedicaoComponent } from '../@shared/custom-component/edit-medicao/edit-medicao.component';
+import { MedicaoCurtoPrazoComponent } from '../@shared/custom-component/medicao-curto-prazo/medicao-curto-prazo.component';
 
 @NgModule({
   imports: [
@@ -160,7 +161,8 @@ import { EditMedicaoComponent } from '../@shared/custom-component/edit-medicao/e
     IntegracaoCceeComponent,
     GerenciamentoMensalComponent,
     ValorMensalPontoMedicaoComponent,
-    EditMedicaoComponent
+    EditMedicaoComponent,
+    MedicaoCurtoPrazoComponent
   ],
   providers: [
     AlertService,

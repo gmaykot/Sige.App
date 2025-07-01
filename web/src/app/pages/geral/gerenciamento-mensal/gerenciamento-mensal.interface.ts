@@ -28,5 +28,6 @@ export interface IDescontoTusdMensal {
     descAgenteMedicao: string,
     agenteMedicaoId: string,
     codigoPerfil: string,
-    descontoTUSD: number
+    valorDescontoTUSD: number,
+    valorDescontoRETUSD: number
 }

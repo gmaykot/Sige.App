@@ -78,7 +78,7 @@
                 </nb-card>
                 <button nbButton (click)="onCancel()">Cancelar</button>
                 <button *ngIf="getControlValues('id') != null && getControlValues('validado') == false" nbButton style="margin-left: 0.5rem;" status="danger" (click)="onDelete()">Excluir</button>
-                <button nbButton style="margin-left: 0.5rem;" nbStepperNext [disabled]="!habilitaFatura()">Próximo</button>
+                <button nbButton style="margin-left: 0.5rem;" nbStepperNext [disabled]="!habilitaFatura()" (click)="loadLancamentos()">Próximo</button>
             </nb-step>
 
             <!-- Lançamentos -->
@@ -178,7 +178,7 @@
                 <div class="card-row">                                     
                     <div class="card-col">  
                         <nb-card>
-                            <nb-card-header>Tarifas e Desconto TUSD</nb-card-header>
+                            <nb-card-header>Tarifas, TUSD E RETUSD</nb-card-header>
                             <nb-card-body>
                                 <form [formGroup]="control">
                                     <div class="row">
@@ -193,6 +193,10 @@
                                         <div class="col-sm-4">
                                             <label for="inputLastName"  class="label">Desconto TUSD*</label>
                                             <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDescontoTUSD" mask="separator.10" thousandSeparator="." decimalMarker=",">
+                                        </div>          
+                                        <div class="col-sm-4">
+                                            <label for="inputLastName"  class="label">Desconto RETUSD*</label>
+                                            <input type="text" nbInput fullWidth fieldSize="small" placeholder="" formControlName="valorDescontoRETUSD" mask="separator.10" thousandSeparator="." decimalMarker=",">
                                         </div>          
                                     </div>
                                 </form>                

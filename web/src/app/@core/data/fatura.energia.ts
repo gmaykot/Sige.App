@@ -42,6 +42,7 @@ export interface IFaturaEnergia {
   tarifaMedidaReativaForaPonta: number;
 
   valorDescontoTUSD: number;
+  valorDescontoRETUSD: number;
 
   lancamentosAdicionais?: ILancamentoAdicional[] | null;
 }

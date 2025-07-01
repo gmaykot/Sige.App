@@ -175,11 +175,12 @@ namespace SIGE.Services.Services
             {
                 MesReferencia = req.MesReferencia,
                 AgenteMedicaoId = req.AgenteMedicaoId,
-                ValorDesconto = req.DescontoTUSD ?? 0
-
+                ValorDescontoTUSD = req.ValorDescontoTUSD ?? 0,
+                ValorDescontoRETUSD = req.ValorDescontoRETUSD ?? 0,
             };
 
-            desconto.ValorDesconto = req.DescontoTUSD ?? 0;
+            desconto.ValorDescontoTUSD = req.ValorDescontoTUSD?? 0;
+            desconto.ValorDescontoRETUSD = req.ValorDescontoRETUSD ?? 0;
 
             _ = _appDbContext.Update(desconto);
             _ = await _appDbContext.SaveChangesAsync();

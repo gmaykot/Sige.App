@@ -124,13 +124,13 @@
                                 </div>
                             </div>                      
                         </nb-tab>
-                        <nb-tab tabTitle="Desconto TUSD">
+                        <nb-tab tabTitle="TUSD / RETUSD">
                             <div class="card-row">
                                 <div class="card-col">
                                     <nb-card>
                                     <nb-card-body>
                                             <div class="row" [hidden]="!descontoTusdSelected" formGroupName="descontosTusd">
-                                                <div class="col-sm-5">
+                                                <div class="col-sm-3">
                                                     <div class="form-group">
                                                         <label for="inputEmail" class="label">Agente de Medição</label><br />
                                                         <input type="text" nbInput fullWidth formControlName="descAgenteMedicao" readonly class="no-background">
@@ -144,8 +144,14 @@
                                                 </div>                                                
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
-                                                        <label for="inputLastName" class="label">Desconto TUSD</label>
-                                                        <input type="number" nbInput fullWidth formControlName="descontoTUSD">
+                                                        <label for="inputLastName" class="label">TUSD (%)</label>
+                                                        <input type="number" nbInput fullWidth formControlName="valorDescontoTUSD">
+                                                    </div>
+                                                </div>           
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label for="inputLastName" class="label">RETUSD (R$)</label>
+                                                        <input type="number" nbInput fullWidth formControlName="valorDescontoRETUSD">
                                                     </div>
                                                 </div>           
                                                 <div class="col-sm-3">
