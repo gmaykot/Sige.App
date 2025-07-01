@@ -32,16 +32,17 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
   }
 
   ngAfterViewInit(): void {
-    // garante que o gráfico foi renderizado
+    
   }
   
   initChart() {
     // Dados brutos
-    const dadosBrutos = [
-      { nome: 'Mercado Cativo', valor: 196399.13, cor: '#3b8de3' },
-      { nome: 'Mercado Livre', valor: 170067.44, cor: '#a4cd39' },
-      { nome: 'Economia', valor: 26331.70, cor: '#d9534f' }
-    ];
+    const cores = ['#d9534f', '#a4cd39', '#3b8de3'];
+    const dadosBrutos = this.relatorioFinal.grafico?.linhas?.map((grupo) => ({
+      nome: grupo.label,
+      valor: grupo.valor,
+      cor: cores.shift()
+    }));
   
     // Ordenar do maior para o menor
     const dadosOrdenados = [...dadosBrutos].sort((a, b) => a.valor - b.valor);
