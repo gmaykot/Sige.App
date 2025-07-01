@@ -426,7 +426,6 @@ namespace SIGE.Services.Services.Geral
 
         private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte1(FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico)
         {
-            var a = 1;
             List<LancamentoRelatorioFinalDto> parte1 = 
                 [
                     new LancamentoRelatorioFinalDto {
@@ -453,10 +452,15 @@ namespace SIGE.Services.Services.Geral
                         TipoTarifa = ETipoTarifa.RS_MWH
                     },
                     new LancamentoRelatorioFinalDto {
-                        Descricao = "Venda de energia - Curto Prazo",
+                        Montante = (double)valorAnalitico.ComprarCurtoPrazo,
+                        Descricao = "Compra de energia - Curto Prazo",
                         TipoMontante = ETipoMontante.KW,
-                        Tarifa = tarifaCalculada.KWPontaSemICMS,
+                        Tarifa = 1,
                         TipoTarifa = ETipoTarifa.RS_KW
+                    },
+                    new LancamentoRelatorioFinalDto {
+                        Descricao = "Desconto - TUSD (RETUSD)",
+                        Total = fatura.ValorDescontoTUSD
                     }
             ];
 

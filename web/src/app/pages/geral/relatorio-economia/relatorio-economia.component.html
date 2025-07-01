@@ -127,23 +127,22 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div *ngIf="chartOption && relatorioFinal?.comparativo?.lancamentos?.length > 0" class="row" style="margin-top: 1.7rem; text-align: center;">
-                                    <div class="col-md-12">
-                                        <div class="h7">{{relatorioFinal?.grafico?.titulo}}</div>
-                                          <div echarts 
-                                                (chartInit)="onChartInit($event)"
-                                                [options]="chartOption"
-                                                [style.height.px]="250"
-                                                class="chart"
-                                                style="width: 100%; text-align: center;">
-                                          </div>
-                                    </div>
-                                </div>
-                                <table class="fatura-tabela" style="margin-top: 1.7rem;">
-                                    <tr class="total-linha">
-                                        <th colspan="3"><strong>{{relatorioFinal?.comparativo?.observacao}}</strong></th>
-                                    </tr>                                      
-                                </table>
+                                <div *ngIf="chartOption && relatorioFinal?.comparativo?.lancamentos?.length > 0"
+                                    class="row justify-content-center" style="margin-top: 1.7rem; text-align: center;">
+                                 
+                                 <div class="col-12 d-flex flex-column align-items-center">
+                                   <div class="h7 mb-3">{{ relatorioFinal?.grafico?.titulo }}</div>
+                               
+                                   <div echarts 
+                                        (chartInit)="onChartInit($event)"
+                                        [options]="chartOption"
+                                        [style.height.px]="250"
+                                        style="width: 58%; max-width: 100%;">
+                                   </div>
+
+                                   <div class="h7 mb-3"><strong>{{relatorioFinal?.comparativo?.observacao}}</strong></div>
+                                 </div>
+                               </div>
                             </nb-card-body>
                         </nb-card>
                     </nb-tab>                      

@@ -230,7 +230,7 @@ export class RelatorioEconomiaPdfService {
           const graficoMarginTop = this.pdfConfig.adicionarTextoEmPosicao(doc, {
             texto: relatorio?.grafico?.titulo,
             x: 354,
-            y: 120,
+            y: 130,
             tema: "rotulo",
             propriedadesPersonalizadas: {
               fontSize: 6.5,
@@ -239,10 +239,10 @@ export class RelatorioEconomiaPdfService {
     
           this.pdfConfig.addImagem(doc, {
             src: graficoImagem,
-            marginLeft: 310,
-            marginTop: 127,
-            width: 280,
-            height: 70,
+            marginLeft: 320,
+            marginTop: 131,
+            width: 245,
+            height: 110,
           });
     
           // Atualizar a posição vertical para elementos subsequentes
@@ -251,8 +251,8 @@ export class RelatorioEconomiaPdfService {
 
       this.pdfConfig.adicionarTextoEmPosicao(doc, {
         texto: HelperPdfService.getLocalRodape(),
-        x: doc.internal.pageSize.getWidth() - 200,
-        y: 820,
+        x: doc.internal.pageSize.getWidth() - 172,
+        y: 830,
         tema: "cabecalho",
         propriedadesPersonalizadas: {
           fontStyle: "normal",
@@ -284,7 +284,7 @@ export class RelatorioEconomiaPdfService {
     
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'CNPJ',
-      x: margins.marginLeft + 300,
+      x: margins.marginLeft + 370,
       y: margins.marginTop + 55 / 2 + 12 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
@@ -294,7 +294,7 @@ export class RelatorioEconomiaPdfService {
     });  
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: cabecalho.cnpj,
-      x: margins.marginLeft + 300,
+      x: margins.marginLeft + 370,
       y: margins.marginTop + 55 / 2 + 22 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
@@ -305,7 +305,7 @@ export class RelatorioEconomiaPdfService {
         
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Inscrição Estadual',
-      x: margins.marginLeft + 390,
+      x: margins.marginLeft + 460,
       y: margins.marginTop + 55 / 2 + 12 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
@@ -315,83 +315,19 @@ export class RelatorioEconomiaPdfService {
     });  
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: cabecalho.inscricaoEstadual ?? '-',
-      x: margins.marginLeft + 390,
+      x: margins.marginLeft + 460,
       y: margins.marginTop + 55 / 2 + 22 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
         fontSize: 8,
       },
-    });
-
-    this.pdfConfig.adicionarTextoEmPosicao(doc, {
-      texto: 'Conexão',
-      x: margins.marginLeft + 470,
-      y: margins.marginTop + 55 / 2 + 12 - ajusteMargim,
-      tema: "cabecalho",
-      propriedadesPersonalizadas: {
-        fontSize: 6,
-        textColor: "gray",
-      },
-    });  
-
-    this.pdfConfig.adicionarTextoEmPosicao(doc, {
-      texto: TIPO_CONEXAO[cabecalho.conexao]?.desc ?? '-',
-      x: margins.marginLeft + 470,
-      y: margins.marginTop + 55 / 2 + 22 - ajusteMargim,
-      tema: "cabecalho",
-      propriedadesPersonalizadas: {
-        fontStyle: "bold",
-        fontSize: 8,
-      },
-    });  
+    });    
     
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
-      texto: 'Concessão',
-      x: margins.marginLeft + 130 + 10,
-      y: margins.marginTop + 55 / 2 + 37 - ajusteMargim,
-      tema: "cabecalho",
-      propriedadesPersonalizadas: {
-        fontSize: 6,
-        textColor: "gray",
-      },
-    });  
-    this.pdfConfig.adicionarTextoEmPosicao(doc, {
-      texto: cabecalho.concessao ?? '-',
-      x: margins.marginLeft + 130 + 10,
-      y: margins.marginTop + 55 / 2 + 47 - ajusteMargim,
-      tema: "cabecalho",
-      propriedadesPersonalizadas: {
-        fontStyle: "bold",
-        fontSize: 8,
-      },
-    });
-        
-    this.pdfConfig.adicionarTextoEmPosicao(doc, {
-      texto: 'Submercado',
-      x: margins.marginLeft + 195,
-      y: margins.marginTop + 55 / 2 + 37 - ajusteMargim,
-      tema: "cabecalho",
-      propriedadesPersonalizadas: {
-        fontSize: 6,
-        textColor: "gray",
-      },
-    });  
-    this.pdfConfig.adicionarTextoEmPosicao(doc, {
-      texto: cabecalho.subMercado ?? '-',
-      x: margins.marginLeft + 195,
-      y: margins.marginTop + 55 / 2 + 47 - ajusteMargim,
-      tema: "cabecalho",
-      propriedadesPersonalizadas: {
-        fontStyle: "bold",
-        fontSize: 8,
-      },
-    });
-
-    this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Endereço',
-      x: margins.marginLeft + 255,
-      y: margins.marginTop + 55 / 2 + 37 - ajusteMargim,
+      x: margins.marginLeft + 130 + 10,
+      y: margins.marginTop + 55 / 2 + 35 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontSize: 6,
@@ -400,8 +336,8 @@ export class RelatorioEconomiaPdfService {
     });  
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: cabecalho.endereco ?? '-',
-      x: margins.marginLeft + 255,
-      y: margins.marginTop + 55 / 2 + 47 - ajusteMargim,
+      x: margins.marginLeft + 130 + 10,
+      y: margins.marginTop + 55 / 2 + 45 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
@@ -411,8 +347,8 @@ export class RelatorioEconomiaPdfService {
 
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Município',
-      x: margins.marginLeft + 450,
-      y: margins.marginTop + 55 / 2 + 37 - ajusteMargim,
+      x: margins.marginLeft + 370,
+      y: margins.marginTop + 55 / 2 + 35 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontSize: 6,
@@ -421,8 +357,8 @@ export class RelatorioEconomiaPdfService {
     });  
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: cabecalho.municipio ?? '-',
-      x: margins.marginLeft + 450,
-      y: margins.marginTop + 55 / 2 + 47 - ajusteMargim,
+      x: margins.marginLeft + 370,
+      y: margins.marginTop + 55 / 2 + 45 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
@@ -451,9 +387,72 @@ export class RelatorioEconomiaPdfService {
       },
     });
 
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'Concessão',
+      x: margins.marginLeft + 130 + 10,
+      y: margins.marginTop + 55 / 2 + 57 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: cabecalho.concessao ?? '-',
+      x: margins.marginLeft + 130 + 10,
+      y: margins.marginTop + 55 / 2 + 67 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
+      },
+    });
+        
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'Submercado',
+      x: margins.marginLeft + 220,
+      y: margins.marginTop + 55 / 2 + 57 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: cabecalho.subMercado ?? '-',
+      x: margins.marginLeft + 220,
+      y: margins.marginTop + 55 / 2 + 67 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
+      },
+    });
+
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'Conexão',
+      x: margins.marginLeft + 300,
+      y: margins.marginTop + 55 / 2 + 57 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: TIPO_CONEXAO[cabecalho.conexao]?.desc ?? '-',
+      x: margins.marginLeft + 300,
+      y: margins.marginTop + 55 / 2 + 67 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
+      },
+    });
+
     this.pdfConfig.adicionarTextoHorizontal(doc, {
       textoCentro: `Quadro Comparativo Mensal Mercado Cativo x Livre ${cabecalho.mesReferencia ?? ''}`,
-      marginTop: margins.marginTop + 85,
+      marginTop: margins.marginTop + 100,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
@@ -461,7 +460,7 @@ export class RelatorioEconomiaPdfService {
       },
     });
 
-    const imageBottomY = margins.marginTop + 57 + 10;
+    const imageBottomY = margins.marginTop + 57 + 20;
 
     /* SEÇÃO DADOS EMPRESA ---------------------------------------------------------------------------- */
     const secaoEmpresaMarginTop = criarTituloSecao(

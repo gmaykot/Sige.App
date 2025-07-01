@@ -36,50 +36,23 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
   }
   
   initChart() {
-    // Dados brutos
     const cores = ['#d9534f', '#a4cd39', '#3b8de3'];
+  
+    // Preparar os dados
     const dadosBrutos = this.relatorioFinal.grafico?.linhas?.map((grupo) => ({
       nome: grupo.label,
       valor: grupo.valor,
       cor: cores.shift()
-    }));
+    })) || [];
   
     // Ordenar do maior para o menor
-    const dadosOrdenados = [...dadosBrutos].sort((a, b) => a.valor - b.valor);
+    const dadosOrdenados = [...dadosBrutos].sort((a, b) => b.valor - a.valor);
   
-    // Construir os dados do gráfico
-    const categoriasY = dadosOrdenados.map((_, idx) => `cat${idx}`);
-    const legendas = dadosOrdenados.map(d => d.nome);
+    const categoriasX = dadosOrdenados.map(d => d.nome);
+    const valores = dadosOrdenados.map(d => d.valor);
+    const coresSeries = dadosOrdenados.map(d => d.cor);
   
-    const series = dadosOrdenados.map((dado, index) => {
-      const dataArray = new Array(dadosOrdenados.length).fill(0);
-      dataArray[index] = dado.valor;
-    
-      return {
-        name: dado.nome,
-        type: 'bar',
-        data: dataArray,
-        barWidth: 20,
-        barGap: '25%',
-        barCategoryGap: '50%',
-        itemStyle: {
-          color: dado.cor,
-          barBorderRadius: [0, 5, 5, 0]
-        },
-        label: {
-          show: true,
-          position: 'right',
-          color: dado.cor,
-          fontSize: 18,
-          formatter: (params: any) =>
-            params.value > 0
-              ? `R$ ${params.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
-              : ''
-        }
-      };
-    })
-  
-    // Configuração final
+    // Configuração do gráfico
     this.chartOption = {
       backgroundColor: 'transparent',
       tooltip: {
@@ -95,36 +68,53 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
         }
       },
       legend: {
-        orient: 'horizontal',
-        bottom: 0,
-        data: legendas,
-        textStyle: {
-          fontWeight: 'bold'
-        }
+        show: false // legenda desnecessária, já está nos rótulos
       },
       grid: {
         left: '5%',
-        right: '10%',
+        right: '5%',
         bottom: 60,
         top: '10%',
         containLabel: true
       },
       xAxis: {
+        type: 'category',
+        data: categoriasX,
+        axisLabel: {
+          fontWeight: 'bold'
+        },
+        axisTick: { show: false }
+      },
+      yAxis: {
         type: 'value',
         axisLabel: {
           formatter: (val: number) => `R$ ${val.toLocaleString('pt-BR')}`
         }
       },
-      yAxis: {
-        type: 'category',
-        data: categoriasY,
-        axisLabel: { show: false },
-        axisLine: { show: false },
-        axisTick: { show: false }
-      },
-      series
+      series: [
+        {
+          name: 'Valor',
+          type: 'bar',
+          data: valores,
+          barWidth: 40,
+          itemStyle: {
+            color: (params: any) => coresSeries[params.dataIndex],
+            barBorderRadius: [5, 5, 0, 0]
+          },
+          label: {
+            show: true,
+            position: 'top',
+            fontSize: 12,
+            formatter: (params: any) =>
+              params.value > 0
+                ? `R$ ${params.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+                : ''
+          }
+        }
+      ]
     };
   }
+  
   
 
   salvar() {}
