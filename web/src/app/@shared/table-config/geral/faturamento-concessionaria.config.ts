@@ -40,7 +40,8 @@ export const faturamentoSettings = {
       },
       qtdeSalarios: {
         title: "Qtde. Salários",
-        type: "string"
+        type: "string",
+        valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 0 }).format(value) },
       },
       porcentagem: {
         title: "Porcentagem (%)",

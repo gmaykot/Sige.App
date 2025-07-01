@@ -64,6 +64,7 @@ import { SharedModule } from '../@shared/shared.module';
 import { GerenciamentoMensalComponent } from './geral/gerenciamento-mensal/gerenciamento-mensal.component';
 import { ValorMensalPontoMedicaoComponent } from './geral/valor-mensal-ponto-medicao/valor-mensal-ponto-medicao.component';
 import { RelatorioMedicaoPdfService } from './geral/relatorio-medicao/relatorio-medicao-pdf.service';
+import { EditMedicaoComponent } from '../@shared/custom-component/edit-medicao/edit-medicao.component';
 
 @NgModule({
   imports: [
@@ -158,7 +159,8 @@ import { RelatorioMedicaoPdfService } from './geral/relatorio-medicao/relatorio-
     AcompanhamentoEmailComponent,
     IntegracaoCceeComponent,
     GerenciamentoMensalComponent,
-    ValorMensalPontoMedicaoComponent
+    ValorMensalPontoMedicaoComponent,
+    EditMedicaoComponent
   ],
   providers: [
     AlertService,

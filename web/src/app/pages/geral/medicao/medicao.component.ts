@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
@@ -17,6 +17,7 @@ import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 import { HistoricoMedicaoComponent } from '../../../@shared/custom-component/historico-medicao.component';
 import { IMedicaoValores } from '../../../@core/data/resultado-medicao';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
+import { EditMedicaoComponent } from '../../../@shared/custom-component/edit-medicao/edit-medicao.component';
 
 @Component({
   selector: "ngx-medicao",
@@ -24,6 +25,9 @@ import { SessionStorageService } from '../../../@core/services/util/session-stor
   styleUrls: ["./medicao.component.scss"],
 })
 export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
+  @ViewChild('tabelaMedicao') tabelaMedicao: any;
+  @ViewChild('tabelaMedicaoIncompleta') tabelaMedicaoIncompleta: any;
+
   public medicoes: Array<IMedicao> = [];
   public settingsMedicao = settingsMedicao;
   public source: LocalDataSource = new LocalDataSource();
@@ -115,6 +119,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
     this.coletando = true;
     this.sourceMedicao.load([]);
     this.sourceMedicaoIcompletas.load([]);
+    this.tabelaMedicao?.grid.setFilter([]);
+    this.tabelaMedicaoIncompleta?.grid.setFilter([]);
     var tamanhoDoLote = 15; // Tamanho do lote
     var lotes: IMedicao[][] = []
     
@@ -228,6 +234,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   }
 
   async selecionarColeta(event) {
+    this.tabelaMedicao?.grid.setFilter([]);
+    this.tabelaMedicaoIncompleta?.grid.setFilter([]);
     this.medicaoSelected = event?.data as IMedicao;
     this.selected = false;
     if (this.medicaoSelected && this.medicaoSelected.periodo == null)
@@ -316,6 +324,23 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
           await this.selecionarColeta({data: medicao});
         }
       });          
+    }
+
+    async onDeleteConfirm($event) {
+      this.dialogService
+        .open(EditMedicaoComponent, { context: { medicao: $event.data } })
+        .onClose.subscribe(async (excluir) => {
+          // if (excluir) {
+          //   await this.valorConcessionariaService
+          //     .delete(this.getValor().id)
+          //     .then();
+          //   {
+          //     this.limparFormulario();
+          //     this.setSuccessMesage("Valor excluído com sucesso.");
+          //     await this.getValoresConcessionarias();
+          //   }
+          // }
+        });
     }
 }
 

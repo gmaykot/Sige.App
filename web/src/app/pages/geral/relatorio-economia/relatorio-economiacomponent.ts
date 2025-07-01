@@ -14,7 +14,6 @@ import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/re
 import { settingsRelatorioEconomia } from "../../../@shared/table-config/relatorio-economia.config";
 import { EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
-import html2canvas from 'html2canvas';
 import { TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
 import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component";
 import { LocalizacaoService } from "../../../@core/services/localizacao.service";

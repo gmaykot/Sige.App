@@ -178,16 +178,16 @@ namespace SIGE.Services.Services.Geral
             if (faturamento == null)
                 return new LancamentoComparativoDto();
 
-            double? totalDevido = totalEconomia ?? 0;
+            double? totalDevido = 0;
 
             if (faturamento?.Porcentagem != null && faturamento.Porcentagem > 0)
-                totalDevido = totalDevido * (faturamento?.Porcentagem / 100);
+                totalDevido += totalEconomia * (faturamento?.Porcentagem / 100);
 
             if (faturamento?.ValorFixo != null && faturamento.ValorFixo > 0)
-                totalDevido = totalDevido + faturamento?.ValorFixo;
+                totalDevido += faturamento?.ValorFixo;
 
             if (faturamento?.QtdeSalarios != null && faturamento.QtdeSalarios > 0)
-                totalDevido = totalDevido + (faturamento?.QtdeSalarios * valorSalarioMinimo);
+                totalDevido += faturamento?.QtdeSalarios * valorSalarioMinimo;
 
             return new LancamentoComparativoDto
             {

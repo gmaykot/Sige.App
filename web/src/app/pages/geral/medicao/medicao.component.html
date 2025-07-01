@@ -1,5 +1,5 @@
 <nb-progress-bar [value]="percentual" status="warning" [displayValue]="true" *ngIf="coletando" style="margin-bottom: 20px;" size="large"></nb-progress-bar>
-<form [formGroup]="control" *ngIf="!selected">
+<form [formGroup]="control" *ngIf="!selected && !coletando">
   <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
     <nb-card-header>Coletar Medições</nb-card-header>      
     <nb-card-body>
@@ -25,14 +25,14 @@
   </nb-card>
 </form>
 <form [formGroup]="controlEdit">
-<nb-card [nbSpinner]="loading" nbSpinnerStatus="info" *ngIf="!selected">
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info" *ngIf="!selected && !coletando">
   <nb-card-header>Coletas Efetuadas</nb-card-header>      
   <nb-card-body>    
     <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="selecionarColeta($event)">
     </ng2-smart-table>
   </nb-card-body>  
 </nb-card>
-<div class="row" #dataToExport [nbSpinner]="loading" *ngIf="selected">
+<div class="row" #dataToExport [nbSpinner]="loading" *ngIf="selected || coletando">
   <div class="col-md-3">
       <nb-card size="medium" accent="warning">
           <nb-card-header>Medições {{medicaoSelected.periodo | date: 'MM/yyyy'}}</nb-card-header>
@@ -105,19 +105,19 @@
   </div>     
 </div>
 </form>
-<div class="row" [nbSpinner]="loading" *ngIf="selected">
+<div class="row" [nbSpinner]="loading" *ngIf="selected || coletando">
   <div class="col-md-12">
       <nb-card accent="primary">
           <nb-card-body>
             <nb-tabset>
                 <nb-tab tabTitle="Resultado da Medição">
                     <div class="col-md-12">
-                        <ng2-smart-table [settings]="settingsMedicao" [source]="sourceMedicao"></ng2-smart-table>
+                        <ng2-smart-table #tabelaMedicao [settings]="settingsMedicao" [source]="sourceMedicao" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
                     </div>
                   </nb-tab>
-                <nb-tab tabTitle="Coletas Incompletas" *ngIf="medicaoSelected.statusMedicao === 18">
+                <nb-tab tabTitle="Coletas Incompletas" *ngIf="medicaoSelected.statusMedicao === 18 && sourceMedicaoIcompletas.count() > 0">
                     <div class="col-md-12">
-                        <ng2-smart-table [settings]="settingsMedicao" [source]="sourceMedicaoIcompletas"></ng2-smart-table>
+                        <ng2-smart-table #tabelaMedicaoIncompleta [settings]="settingsMedicao" [source]="sourceMedicaoIcompletas" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
                     </div>
                 </nb-tab>
             </nb-tabset>

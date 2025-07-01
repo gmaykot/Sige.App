@@ -5,6 +5,11 @@ import { DateFilterComponent } from "../custom-component/filters/date-filter.com
 const faseToList = Object.values(FASES_MEDICAO).map(value => {
   return { value: value.id, title: value.desc };
 });
+
+const rowClassFunction = (row: any) => {
+  return row.data.hideCol7 ? 'ocultar-coluna-7' : '';
+};
+
 export const settingsRelatorioMedicao =  {
   add: {
     addButtonContent: '<i class="nb-plus"></i>',
@@ -83,40 +88,53 @@ export const settingsRelatorioMedicao =  {
 };
 
 export const settingsResultadoEconomia =  { 
+  rowClassFunction: rowClassFunction,
+  edit: {
+    editButtonContent: '<i class="nb-edit"></i>',
+    saveButtonContent: '<i class="nb-checkmark-circle"></i>',
+    cancelButtonContent: '<i class="nb-close-circled"></i>',
+    confirmSave: true,
+  },
   columns: {
     faturamento: {
       title: "Faturamento",
       type: "string",
+      editable: false,
     },
     quantidade: {
       title: "Qtde (MWh)",
       type: "number",
-      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 3, minimumFractionDigits: 3 }).format(value)}
+      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 3, minimumFractionDigits: 3 }).format(value)},
+      editable: false,
     },
     valorUnitario: {
       title: "Valor UN",
       type: "number",
-      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}
+      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)},
+      editable: true,
     },
     valorICMS: {
       title: "Valor ICMS",
       type: "number",
-      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}
+      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)},
+      editable: false,
     },
     valorProduto: {
       title: "Total Produto",
       type: "number",
-      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}   
+      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}   ,
+      editable: false,
     },
     valorNota: {
       title: "Total Nota",
       type: "number",
-      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}
+      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)},
+      editable: false,
     },
   },
   actions: {
     add: false,
-    edit: false,
+    edit: true,
     delete: false,
     position: "right",
     columnTitle: "",

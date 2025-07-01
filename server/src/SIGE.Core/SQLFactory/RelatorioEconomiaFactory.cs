@@ -27,7 +27,7 @@ namespace SIGE.Core.SQLFactory
         public static string RelatorioFinal(Guid PontoMedicaoId, DateOnly mesReferencia)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append("SELECT contratoEmpresa.ContratoId AS 'ContratoId', null AS 'Id', ponto.Nome AS 'Unidade', ponto.Segmento AS 'Segmento','Sul' AS 'SubMercado', ponto.conexao AS 'Conexao', concessionaria.Nome AS 'Concessao', empresa.CNPJ AS 'CNPJ', empresa.InscricaoEstadual AS 'InscricaoEstadual', empresa.Logradouro AS 'Endereco', empresa.Bairro AS 'Municipio', empresa.Estado AS 'UF' ");
+            builder.Append("SELECT contratoEmpresa.ContratoId AS 'ContratoId', null AS 'Id', ponto.Nome AS 'Unidade', ponto.Segmento AS 'Segmento','Sul' AS 'SubMercado', ponto.conexao AS 'Conexao', concessionaria.Nome AS 'Concessao', empresa.CNPJ AS 'CNPJ', empresa.InscricaoEstadual AS 'InscricaoEstadual', empresa.Logradouro AS 'Endereco', empresa.Cidade AS 'Municipio', empresa.Estado AS 'UF' ");
             builder.Append("FROM Contratos contrato ");
             builder.Append("INNER JOIN ContratoEmpresas contratoEmpresa ON contratoEmpresa.ContratoId = contrato.Id ");
             builder.Append("INNER JOIN Empresas empresa ON empresa.Id = contratoEmpresa.EmpresaId ");

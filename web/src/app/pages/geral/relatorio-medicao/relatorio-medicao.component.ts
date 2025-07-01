@@ -16,7 +16,7 @@ import { IContatoEmail, IEmailData } from '../../../@core/data/email-data';
 import { EnvioEmailComponent } from '../../../@shared/custom-component/envio-email/envio-email.component';
 import { IContato } from '../../../@core/data/contato';
 import { AlertService } from '../../../@core/services/util/alert.service';
-import { IRelatorioMedicao, IRelatorioMedicaoList, IRelatorioMedicaoRequest, IValoresMedicao, IValoresMedicaoAnalitico } from '../../../@core/data/relatorio-medicao';
+import { IFaturamentoMedicao, IRelatorioMedicao, IRelatorioMedicaoList, IRelatorioMedicaoRequest, IValoresMedicao, IValoresMedicaoAnalitico } from '../../../@core/data/relatorio-medicao';
 import { ValidacaoMedicaoComponent } from '../../../@shared/custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { MedicaoService } from '../../../@core/services/geral/medicao.service';
@@ -182,10 +182,56 @@ export class RelatorioMedicaoComponent implements OnInit {
     this.loading = false;
   }
 
+  private recalcularLinha(row: any): any {
+    if (row.faturamento === 'Curto Prazo (Compra)') {
+      const quantidade = row.quantidade ?? 0;
+      const valorUnitario = row.valorUnitario ?? 0;
+      const valorProduto = quantidade * valorUnitario;
+      const valorICMS = (this.relatorioMedicao.icms/100)*valorProduto;
+      const valorNota = valorProduto + valorICMS;
+  
+      return {
+        ...row,
+        valorProduto,
+        valorICMS,
+        valorNota
+      };
+    }
+    return row;
+  }
+
+  onEditConfirm(event) {
+    const novaLinha = this.recalcularLinha(event.newData);
+    console.log(novaLinha);
+
+    // Atualiza a linha diretamente no source
+    this.sourceResultado.update(event.data, novaLinha);
+  
+    this.alertService.showSuccess("Valores de Economia alterados com sucesso.");
+  
+    // Finaliza a edição com os dados atualizados
+    event.confirm.resolve(novaLinha);
+  }
+  
   atualizaValoresEconomia(){
     this.valores = this.calculoEconomiaService.calcular(this.relatorioMedicao);
-    this.sourceResultado.load([this.valores.resultadoFaturamento]);
+    const venda: IFaturamentoMedicao = this.valores.dentroTake ? null :{
+      faturamento: "Curto Prazo (Compra)",
+      quantidade: this.valores.comprarCurtoPrazo,
+      unidade: "MWh",
+      valorUnitario: 0,
+      valorICMS: 0,
+      valorProduto: 0,
+      valorNota: 0
+    };
+    const data = venda != null ? [this.valores.resultadoFaturamento, venda].map(row => ({
+      ...row,
+      hideCol7: row.faturamento === 'Longo Prazo'
+    })) : [this.valores.resultadoFaturamento];
     
+    this.settingsResultado.actions.edit = data.length !== 1;
+
+    this.sourceResultado.load(data);    
     this.resultadoAnalitico = this.calculoEconomiaService.calcularAnalitico(this.relatorioMedicao);
     this.sourceResultadoAnalitico.load(this.resultadoAnalitico);
         
