@@ -146,13 +146,13 @@ export class EnergiaAcumuladaComponent extends EnergiaAcumuladaConfigSettings im
           this.energiaAcumulada = response.data;
           this.energiaAcumulada.pontoMedicaoDesc = this.pontosMedicao.find(x => x.id === response.data.pontoMedicaoId).descricao;
           await this.getEnergiasAcumuladas();
+          this.selected = true;
+          this.loadHistorico(this.energiaAcumulada.pontoMedicaoId);
         } else {
-          this.alertService.showError(response.message, 20000);
+          response.errors.map((x) => this.alertService.showError(`${x.value}`));
         }
       })
       .finally(() => {
-        this.selected = true;
-        this.loadHistorico(this.energiaAcumulada.pontoMedicaoId);
         this.loading = false;
       });
   }
