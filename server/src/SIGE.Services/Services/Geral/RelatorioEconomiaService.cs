@@ -29,9 +29,6 @@ namespace SIGE.Services.Services.Geral
                 mesReferencia = DateOnly.FromDateTime(DateTime.Now).GetPrimeiroDiaMes();
             var ret = new Response();
             var res = await _appDbContext.Database.SqlQueryRaw<RelatorioEconomiaListDto>(RelatorioEconomiaFactory.ListaRelatorios(mesReferencia.Value)).ToListAsync();
-            if (res == null || res.Count == 0)
-                res = await _appDbContext.Database.SqlQueryRaw<RelatorioEconomiaListDto>(RelatorioEconomiaFactory.ListaRelatorios(mesReferencia.Value.AddMonths(-1))).ToListAsync();
-
             if (res != null && res.Count != 0)
                 return ret.SetOk().SetData(res.DistinctBy(m => (m.DescPontoMedicao, m.MesReferencia)).OrderByDescending(m => (m.MesReferencia, m.DescPontoMedicao)));
 
