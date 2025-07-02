@@ -112,12 +112,12 @@
             <nb-tabset>
                 <nb-tab tabTitle="Resultado da Medição">
                     <div class="col-md-12">
-                        <ng2-smart-table #tabelaMedicao [settings]="settingsMedicao" [source]="sourceMedicao" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
+                        <ng2-smart-table [settings]="settingsMedicao" [source]="sourceMedicao" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
                     </div>
                   </nb-tab>
                 <nb-tab tabTitle="Coletas Incompletas" *ngIf="medicaoSelected.statusMedicao === 18 && sourceMedicaoIcompletas.count() > 0">
                     <div class="col-md-12">
-                        <ng2-smart-table #tabelaMedicaoIncompleta [settings]="settingsMedicao" [source]="sourceMedicaoIcompletas" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
+                        <ng2-smart-table [settings]="settingsMedicao" [source]="sourceMedicaoIcompletas" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
                     </div>
                 </nb-tab>
             </nb-tabset>

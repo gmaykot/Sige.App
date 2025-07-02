@@ -25,9 +25,6 @@ import { EditMedicaoComponent } from '../../../@shared/custom-component/edit-med
   styleUrls: ["./medicao.component.scss"],
 })
 export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
-  @ViewChild('tabelaMedicao') tabelaMedicao: any;
-  @ViewChild('tabelaMedicaoIncompleta') tabelaMedicaoIncompleta: any;
-
   public medicoes: Array<IMedicao> = [];
   public settingsMedicao = settingsMedicao;
   public source: LocalDataSource = new LocalDataSource();
@@ -120,8 +117,6 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
     this.coletando = true;
     this.sourceMedicao.load([]);
     this.sourceMedicaoIcompletas.load([]);
-    //this.tabelaMedicao?.grid?.setFilter([]);
-    //this.tabelaMedicaoIncompleta?.grid?.setFilter([]);
     var tamanhoDoLote = 15; // Tamanho do lote
     var lotes: IMedicao[][] = []
     
@@ -238,8 +233,6 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   }
 
   async selecionarColeta(event) {
-    //this.tabelaMedicao?.grid?.setFilter([]);
-    //this.tabelaMedicaoIncompleta?.grid?.setFilter([]);
     this.medicaoSelected = event?.data as IMedicao;
     this.selected = false;
     if (this.medicaoSelected && this.medicaoSelected.periodo == null)

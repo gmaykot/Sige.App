@@ -6,15 +6,22 @@ namespace SIGE.Core.SQLFactory
     {
         public static string ConcessionariasPorPontoMedicao(Guid pontoMedicaoId)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append("SELECT ");
-            builder.Append("    concessionaria.Id, ");
-            builder.Append("    concessionaria.Nome AS 'Descricao', ");
-            builder.Append("    null AS 'Obs' ");
-            builder.Append("FROM PontosMedicao ponto ");
-            builder.Append("JOIN Concessionarias concessionaria ON concessionaria.Id = ponto.ConcessionariaId ");
-            builder.Append(string.Format("WHERE ponto.Id = '{0}' ", pontoMedicaoId));
-            return builder.ToString();
+            StringBuilder builder = new();
+
+            builder.AppendLine("SELECT");
+            builder.AppendLine("    concessionaria.Id,");
+            builder.AppendLine("    concessionaria.Nome AS 'Descricao',");
+            builder.AppendLine("    NULL AS 'Obs'");
+            builder.AppendLine("FROM PontosMedicao ponto");
+            builder.AppendLine("JOIN Concessionarias concessionaria ON concessionaria.Id = ponto.ConcessionariaId");
+            builder.AppendLine("WHERE ponto.Id = '@PontosMedicaoId'");
+            builder.AppendLine("    AND ponto.DataExclusao IS NULL");
+
+            string query = builder.ToString()
+                .Replace("@PontosMedicaoId", pontoMedicaoId.ToString());
+
+            return query;
+
         }
     }
 }

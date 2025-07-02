@@ -8,20 +8,33 @@ namespace SIGE.Core.SQLFactory
     {
         public static string ListaRelatoriosMedicao(RelatorioMedicaoRequest relatorio)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append("SELECT forn.Id AS 'FornecedorId', relatorio.Id AS 'Id', contrato.Id AS 'ContratoId', contrato.DscGrupo AS 'DescGrupo', forn.Nome AS 'DescFornecedor', IFNULL(relatorio.Fase, 0) AS 'Fase', relatorio.MesReferencia AS 'MesReferencia', relatorio.DataEmissao AS 'DataEmissao'");
-            builder.Append("FROM Contratos contrato ");
-            builder.Append("INNER JOIN ContratoEmpresas contratoEmpresa ON contratoEmpresa.ContratoId = contrato.Id ");
-            builder.Append("INNER JOIN Empresas emp on emp.Id = contratoEmpresa.EmpresaId ");
-            builder.Append("INNER JOIN Fornecedores forn on forn.Id = contrato.FornecedorId ");
-            builder.Append("LEFT JOIN RelatoriosMedicao relatorio on relatorio.ContratoId = contrato.Id ");
-            builder.Append("ORDER BY emp.NomeFantasia, MesReferencia DESC");
-            return builder.ToString();
+            StringBuilder builder = new();
+
+            builder.AppendLine("SELECT");
+            builder.AppendLine("    forn.Id AS 'FornecedorId',");
+            builder.AppendLine("    relatorio.Id AS 'Id',");
+            builder.AppendLine("    contrato.Id AS 'ContratoId',");
+            builder.AppendLine("    contrato.DscGrupo AS 'DescGrupo',");
+            builder.AppendLine("    forn.Nome AS 'DescFornecedor',");
+            builder.AppendLine("    IFNULL(relatorio.Fase, 0) AS 'Fase',");
+            builder.AppendLine("    relatorio.MesReferencia AS 'MesReferencia',");
+            builder.AppendLine("    relatorio.DataEmissao AS 'DataEmissao'");
+            builder.AppendLine("FROM Contratos contrato");
+            builder.AppendLine("INNER JOIN ContratoEmpresas contratoEmpresa ON contratoEmpresa.ContratoId = contrato.Id");
+            builder.AppendLine("INNER JOIN Empresas emp ON emp.Id = contratoEmpresa.EmpresaId");
+            builder.AppendLine("INNER JOIN Fornecedores forn ON forn.Id = contrato.FornecedorId");
+            builder.AppendLine("LEFT JOIN RelatoriosMedicao relatorio ON relatorio.ContratoId = contrato.Id");
+            builder.AppendLine("WHERE contrato.DataExclusao IS NULL");
+            builder.AppendLine("ORDER BY emp.NomeFantasia, MesReferencia DESC");
+
+            string query = builder.ToString();
+
+            return query;
         }
 
         public static string ValoresRelatoriosMedicao(Guid contratoId, DateTime mesReferencia, Guid? empresaId)
         {
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
 
             builder.AppendLine("SELECT");
             builder.AppendLine("    total.ValorIcms,");
@@ -90,16 +103,18 @@ namespace SIGE.Core.SQLFactory
             builder.AppendLine("    SELECT * FROM RelatoriosMedicao");
             builder.AppendLine("    WHERE DATE_FORMAT(MesReferencia, '%Y-%m-01') = @MesReferencia");
             builder.AppendLine(") relatorio ON relatorio.ContratoId = contrato.Id");
-            builder.AppendLine("WHERE empresa.Ativo = true AND contrato.Ativo = true AND contrato.Status = 0");
+            builder.AppendLine("WHERE empresa.Ativo = true AND contrato.Ativo = true AND contrato.Status = 0 AND contrato.DataExclusao IS null");
             builder.AppendLine("  AND contrato.Id = @ContratoId");
             if (empresaId != null)
                 builder.AppendLine("  AND empresa.Id = @EmpresaId");
             builder.AppendLine("ORDER BY empresa.NomeFantasia");
 
-            return builder.ToString()
+            string query = builder.ToString()
                           .Replace("@MesReferencia", $"'{mesReferencia:yyyy-MM-dd}'")
                           .Replace("@ContratoId", $"'{contratoId}'")
                           .Replace("@EmpresaId", empresaId.HasValue ? $"'{empresaId.Value}'" : "NULL");
+
+            return query;
         }
     }
 }
