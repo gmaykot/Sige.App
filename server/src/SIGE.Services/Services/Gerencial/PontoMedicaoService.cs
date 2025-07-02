@@ -101,5 +101,10 @@ namespace SIGE.Services.Services.Gerencial
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
         }
+
+        public Task<Response> ObterSource()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

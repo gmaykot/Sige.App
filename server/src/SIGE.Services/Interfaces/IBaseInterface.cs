@@ -10,5 +10,6 @@ namespace SIGE.Services.Interfaces
         Task<Response> Alterar(T req);
         Task<Response> Excluir(Guid Id);
         Task<Response> ObterDropDown();
+        Task<Response> ObterSource();
     }
 }

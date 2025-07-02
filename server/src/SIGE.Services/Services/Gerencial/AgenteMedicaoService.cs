@@ -73,5 +73,10 @@ namespace SIGE.Services.Services.Gerencial
         {
             throw new NotImplementedException();
         }
+
+        public Task<Response> ObterSource()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

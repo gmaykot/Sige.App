@@ -126,5 +126,10 @@ namespace SIGE.Services.Services.Geral
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existem descontos ativos.");
         }
+
+        public Task<Response> ObterSource()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

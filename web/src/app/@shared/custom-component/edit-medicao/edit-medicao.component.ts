@@ -26,7 +26,6 @@ export class EditMedicaoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.medicao);
     this.control.patchValue({ consumoAtivo: this.medicao.consumoAtivo }, { emitEvent: false });
     this.control.patchValue({ mediaConsumoAtivo: this.medicao.mediaConsumoAtivo }, { emitEvent: false });
     this.control.patchValue({ status: this.medicao.status }, { emitEvent: false });

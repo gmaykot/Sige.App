@@ -321,7 +321,6 @@ export class FaturaEnergiaComponent implements OnInit {
 
   async loadLancamentos(): Promise<void> {
     this.loading = true;
-    console.log('getControlValues', this.getControlValues("id"));
     if (this.getControlValues("id") == null) {
       const [month, year] = this.getControlValues("mesReferencia").split('/');
       const mesReferencia = `${year}-${month}-01`;

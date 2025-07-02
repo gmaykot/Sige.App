@@ -92,5 +92,10 @@ namespace SIGE.Services.Services.Gerencial
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe fornecedor ativa.");
         }
+
+        public Task<Response> ObterSource()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

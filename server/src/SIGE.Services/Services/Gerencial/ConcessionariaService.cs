@@ -99,5 +99,10 @@ namespace SIGE.Services.Services.Gerencial
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, "Não existe concessionária cadastrada.");
         }
+
+        public Task<Response> ObterSource()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -111,5 +111,10 @@ namespace SIGE.Services.Services.Gerencial
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, "Não existe contrato ativo.");
         }
+
+        public Task<Response> ObterSource()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

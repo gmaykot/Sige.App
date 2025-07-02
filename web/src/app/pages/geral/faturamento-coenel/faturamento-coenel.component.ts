@@ -1,14 +1,13 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FaturamentoCoenelConfigSettings } from "./faturamento-coenel.config";
 import { Classes } from "../../../@core/enum/classes.const";
-import { NbLayoutScrollService, NbDialogService } from "@nebular/theme";
+import { NbLayoutScrollService, NbDialogService, NbTabsetComponent } from "@nebular/theme";
 import { FaturamentoCoenelService } from "../../../@core/services/geral/faturamento-coenel.service";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import { FormBuilderService } from "../../../@core/services/util/form-builder.service";
 import { EmpresaService } from "../../../@core/services/gerencial/empresa.service";
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { IDropDown } from "../../../@core/data/drop-down";
-import { Observable } from "rxjs";
 import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-medicao.service";
 import { LocalDataSource } from "ng2-smart-table";
 import { IFaturamentoCoenel } from "../../../@core/data/geral/faturamento-coenel";
@@ -21,6 +20,8 @@ import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-
   styleUrls: ['./faturamento-coenel.component.scss']
 })
 export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings implements OnInit {
+  @ViewChild(NbTabsetComponent) tabset!: NbTabsetComponent;
+
   public empresas: Array<IDropDown> = []
   public pontosMedicao: Array<IDropDown> = []
   public sourceHistoricos: LocalDataSource = new LocalDataSource();
@@ -38,16 +39,16 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
     private pontoMedicaoService: PontoMedicaoService
   ) 
   {
-    super(Classes.FATURAMENTO_COENEL, formBuilderService, service, alertService, scroolService, dialogService);
+    super(Classes.FATURAMENTO_COENEL, formBuilderService, service, alertService, scroolService, dialogService, true);
   }
 
   async onSubmitCustom() {
     if (!this.selected)
       this.control.patchValue({ pontoMedicaoId: this.control.get('pontoMedicaoId').value.id }, { emitEvent: false });
-
-    super.onSubmit();
+    await super.onSubmit();    
     this.editLabel = this.tempLabel;
     this.control.patchValue({ descPontoMedicao: this.tempPontoLabel }, { emitEvent: false });
+    await this.loadSourceHistorico(this.control.get('pontoMedicaoId').value);
   }
 
   onSearch(event: IDropDown) {
@@ -87,14 +88,21 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
     .getByPontoMedicao(pontoMedicaoId)
     .then((response: IResponseInterface<IFaturamentoCoenel[]>) => {
       if (response.success) {
+        console.log(response.data);
         this.sourceHistoricos.load(response.data);
       }
     });    
   }
 
+  async onDeleteCustom() {
+    await super.onDelete();
+    await super.loadSource()
+  }
+
   async onEdit() {
     this.editLabel = null;
-    super.onEdit();
+    super.onEdit();    
+    await super.loadSource();
   }
 
   onHelp() {
@@ -104,6 +112,7 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
   onItemSelected(selectedItem: IDropDown) {
     this.control.get('pontoMedicaoId').setValue(null);
     if (selectedItem) {
+      this.selected = false;
       this.tempLabel = selectedItem.descricao;
       this.getPontosMedicao(selectedItem.id);    
     }
@@ -140,5 +149,20 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
         }
       });          
     }
+  }
+
+  async onHistoricoConfirm() {
+    this.control.patchValue({
+      id: null,
+      pontoMedicaoId: this.control.get('pontoMedicaoId').value,
+      descPontoMedicao: this.tempPontoLabel,
+      vigenciaInicial: null,
+      vigenciaFinal: null,
+      valorFixo: null,
+      qtdeSalarios: null,
+      porcentagem: null      
+    });
+    this.scroolService.scrollTo(0,0);  
+    this.tabset?.selectTab(this.tabset.tabs.toArray()[0]);
   }
 }

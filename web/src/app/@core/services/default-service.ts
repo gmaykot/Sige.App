@@ -8,8 +8,17 @@ import { IResponseInterface } from "../data/response.interface";
 export class DefaultService<T> extends DefaultServiceUtil<T> {
   constructor(protected http: HttpService, protected urlBase: string,) { super(); }
 
-  public async get(): Promise<IResponseInterface<T[]>> {
+  public async get(source: boolean = false): Promise<IResponseInterface<T[]>> {
+    if (source && source === true)
+      return await this.getSource();
+    
     const ret = await this.http.get<IResponseInterface<T[]>>(`/${this.urlBase}`)
+    const formattedReq = this.formatPosGet(ret?.data);
+    return { ...ret, data: formattedReq };
+  }
+
+  public async getSource(): Promise<IResponseInterface<T[]>> {
+    const ret = await this.http.get<IResponseInterface<T[]>>(`/${this.urlBase}/source`)
     const formattedReq = this.formatPosGet(ret?.data);
     return { ...ret, data: formattedReq };
   }
@@ -31,7 +40,6 @@ export class DefaultService<T> extends DefaultServiceUtil<T> {
   public async put(req: T): Promise<IResponseInterface<T>> {
     const formattedReq = this.formatPrePost(req);
     const ret = await this.http.put<IResponseInterface<T>>(`/${this.urlBase}`, formattedReq);
-
     const formattedRet = this.formatPosGet(ret?.data);
     return { ...ret, data: formattedRet };
   }

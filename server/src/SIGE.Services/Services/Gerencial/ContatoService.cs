@@ -87,5 +87,10 @@ namespace SIGE.Services.Services.Gerencial
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, $"Não existe registro com o Id {Id}.");
         }
+
+        public Task<Response> ObterSource()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -21,6 +21,7 @@ export class DefaultComponent<T> implements OnInit {
   public selected = false;
   public selectedObject: T;
   public source: LocalDataSource = new LocalDataSource();
+  public sourceType: boolean = false;
 
   constructor(
     @Inject(String) protected className: any,
@@ -28,12 +29,14 @@ export class DefaultComponent<T> implements OnInit {
     protected service: DefaultService<T>,
     protected alertService: AlertService,
     protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService
+    protected dialogService: NbDialogService,
+    @Inject(Boolean) sourceType: boolean = false
   ) {
     this.control = this.createControl();
     this.isSuperUsuario = SessionStorageService.isSuperUsuario();
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
-    this.habilitaValidarRelatorio = SessionStorageService.habilitaValidarRelatorio();   
+    this.habilitaValidarRelatorio = SessionStorageService.habilitaValidarRelatorio();
+    this.sourceType = sourceType;
   }
   
   async ngOnInit() {
@@ -63,7 +66,7 @@ export class DefaultComponent<T> implements OnInit {
   async loadSource() {
     this.loading = true;
     await this.service
-      .get()
+      .get(this.sourceType)
       .then((response: IResponseInterface<T[]>) => {
         if (response.success) {
           this.source.load(response.data);
@@ -88,9 +91,9 @@ export class DefaultComponent<T> implements OnInit {
     this.edit = !this.edit;
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.control.valid) 
-      this.onChange();
+      await this.onChange();
     else this.alertService.showWarning("Os campos obrigatórios não foram preenchidos.");
   }
 
@@ -112,7 +115,7 @@ export class DefaultComponent<T> implements OnInit {
 
    private async onChange() {
     const objct = this.loadObject();
-    if (objct.id == null || objct.id == "") {
+    if (objct?.id == null || objct?.id == "") {
       await this.post(objct);
     } else {
       await this.put(objct);
@@ -124,18 +127,30 @@ export class DefaultComponent<T> implements OnInit {
   private async post(req: T) {
     await this.service.post(req).then(async (res: IResponseInterface<T>) =>
     {
-      this.onSelect(res);
-      await this.loadSource();
-      this.alertService.showSuccess("Registro cadastrado com sucesso."); 
+      if (res.success){
+        this.onSelect(res);
+        await this.loadSource();
+        this.alertService.showSuccess("Registro cadastrado com sucesso.");   
+      } else {
+        res.errors.map((x) => this.alertService.showError(x.value));
+      }  
+    }).catch((error) => {
+      this.alertService.showError(error);
     });
   }
 
   private async put(req: T) {
-    await this.service.put(req).then();
+    await this.service.put(req).then(async (res: IResponseInterface<T>) =>
     {
-      await this.loadSource();
-      
-      this.alertService.showSuccess("Registro alterado com sucesso."); 
-    }
+      if (res.success){
+        this.onSelect(res);
+        await this.loadSource();
+        this.alertService.showSuccess("Registro alterado com sucesso.");   
+      } else {
+        res.errors.map((x) => this.alertService.showError(x.value));
+      }  
+    }).catch((error) => {
+      this.alertService.showError(error);
+    });
   }
 }
