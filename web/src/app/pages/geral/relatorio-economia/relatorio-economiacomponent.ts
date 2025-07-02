@@ -16,7 +16,6 @@ import { EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
 import { TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
 import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component";
-import { LocalizacaoService } from "../../../@core/services/localizacao.service";
 
 @Component({
   selector: "ngx-relatorio-economia",
@@ -143,8 +142,7 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
     private relatorioService: RelatorioEconomiaService,
     private formBuilder: FormBuilder,
     private dialogService: NbDialogService,
-    private dateService: DateService,
-    private localizacaoService: LocalizacaoService
+    private dateService: DateService
   ) {}
 
   public control = this.formBuilder.group({
@@ -161,11 +159,6 @@ export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
     this.mesReferencia = new Date().toISOString().split("T")[0];
     await this.getRelatorios();
     this.loading = false;
-    try {
-      console.log(await this.localizacaoService.obterLocalizacaoFormatada());
-    } catch (erro) {
-      console.log('Não foi possível obter a localização.');
-    }
   }
 
   private async getRelatorios() {

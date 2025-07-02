@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Converter;
+using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Sistema;
 using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.Core.Models.Sistema.Externo;
@@ -12,6 +13,7 @@ using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 using SIGE.Core.Models.Sistema.Gerencial.Contrato;
 using SIGE.Core.Models.Sistema.Gerencial.Empresa;
+using System.Linq.Expressions;
 
 namespace SIGE.DataAccess.Context
 {
@@ -28,6 +30,21 @@ namespace SIGE.DataAccess.Context
 
             var assembly = typeof(AppDbContext).Assembly;
             modelBuilder.ApplyConfigurationsFromAssembly(assembly);
+
+            // Aplica filtro global para entidades com IExclusaoLogica
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(BaseModel).IsAssignableFrom(entityType.ClrType))
+                {
+                    var parameter = Expression.Parameter(entityType.ClrType, "e");
+                    var propertyMethod = Expression.Property(parameter, nameof(BaseModel.DataExclusao));
+                    var nullConstant = Expression.Constant(null, typeof(DateTime?));
+                    var body = Expression.Equal(propertyMethod, nullConstant);
+                    var lambda = Expression.Lambda(body, parameter);
+
+                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+                }
+            }
         }
         
         // Método para obter um DbSet genérico

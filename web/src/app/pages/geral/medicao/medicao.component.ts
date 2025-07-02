@@ -110,6 +110,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   }
 
   async onColect(medicao, periodo) {
+    this.scroolService.scrollTo(0,0);
     var coletaMedicao: IColetaMedicao =
     {
       medicoes: medicao ? [ medicao ] : this.medicoesChecked,
@@ -119,8 +120,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
     this.coletando = true;
     this.sourceMedicao.load([]);
     this.sourceMedicaoIcompletas.load([]);
-    this.tabelaMedicao?.grid.setFilter([]);
-    this.tabelaMedicaoIncompleta?.grid.setFilter([]);
+    //this.tabelaMedicao?.grid?.setFilter([]);
+    //this.tabelaMedicaoIncompleta?.grid?.setFilter([]);
     var tamanhoDoLote = 15; // Tamanho do lote
     var lotes: IMedicao[][] = []
     
@@ -128,9 +129,12 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       const loteAtual = coletaMedicao.medicoes.slice(i, i + tamanhoDoLote);
       lotes.push(loteAtual);
     }
+    this.percentual = 2;
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
     var erro = false;
     for (let i = 0; i < lotes.length; i += 1) {
-      this.percentual = ((i + 1) / lotes.length) * 100;
+      this.percentual = Math.min(Math.round(((i + 1) / lotes.length) * 100), 90);
       var coleta: IColetaMedicao =
       {
         medicoes: lotes[i],
@@ -146,8 +150,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
           this.sourceMedicaoIcompletas.load(response.data.listaMedidas.filter(m => m.consumoAtivo === 0 && (m.status === 'HCC' || m.status === 'HE')));
           if (this.medicaoSelected) {
             this.medicaoSelected.statusMedicao = response.data.medicao.statusMedicao;
-          }
-          await this.selecionarColeta({data: this.medicaoSelected});
+            await this.selecionarColeta({data: this.medicaoSelected});
+          }          
         } else {
           if (medicao)
             response.errors.map((x) => this.alertService.showError(`${x.key} - ${x.value}`));
@@ -234,8 +238,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   }
 
   async selecionarColeta(event) {
-    this.tabelaMedicao?.grid.setFilter([]);
-    this.tabelaMedicaoIncompleta?.grid.setFilter([]);
+    //this.tabelaMedicao?.grid?.setFilter([]);
+    //this.tabelaMedicaoIncompleta?.grid?.setFilter([]);
     this.medicaoSelected = event?.data as IMedicao;
     this.selected = false;
     if (this.medicaoSelected && this.medicaoSelected.periodo == null)
@@ -249,8 +253,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
         this.sourceMedicao.load([]);  
         this.sourceMedicaoIcompletas.load([]);
         this.controlEdit = this.formBuilder.group({
-          id: this.medicaoSelected.id,
-          icms: this.medicaoSelected.icms,
+          id: this.medicaoSelected?.id,
+          icms: this.medicaoSelected?.icms,
           proinfa: this.medicaoSelected.proinfa
         });        
         await this.medicaoService

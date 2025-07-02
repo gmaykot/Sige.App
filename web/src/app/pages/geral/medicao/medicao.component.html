@@ -1,5 +1,5 @@
 <nb-progress-bar [value]="percentual" status="warning" [displayValue]="true" *ngIf="coletando" style="margin-bottom: 20px;" size="large"></nb-progress-bar>
-<form [formGroup]="control" *ngIf="!selected && !coletando">
+<form [formGroup]="control" *ngIf="!selected">
   <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
     <nb-card-header>Coletar Medições</nb-card-header>      
     <nb-card-body>
@@ -25,17 +25,17 @@
   </nb-card>
 </form>
 <form [formGroup]="controlEdit">
-<nb-card [nbSpinner]="loading" nbSpinnerStatus="info" *ngIf="!selected && !coletando">
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info" *ngIf="!selected">
   <nb-card-header>Coletas Efetuadas</nb-card-header>      
   <nb-card-body>    
     <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="selecionarColeta($event)">
     </ng2-smart-table>
   </nb-card-body>  
 </nb-card>
-<div class="row" #dataToExport [nbSpinner]="loading" *ngIf="selected || coletando">
+<div class="row" #dataToExport [nbSpinner]="loading" *ngIf="selected">
   <div class="col-md-3">
       <nb-card size="medium" accent="warning">
-          <nb-card-header>Medições {{medicaoSelected.periodo | date: 'MM/yyyy'}}</nb-card-header>
+          <nb-card-header>Medições {{medicaoSelected?.periodo | date: 'MM/yyyy'}}</nb-card-header>
           <nb-card-body>
               <div class="progress-info">
                   <div class="row">
@@ -105,7 +105,7 @@
   </div>     
 </div>
 </form>
-<div class="row" [nbSpinner]="loading" *ngIf="selected || coletando">
+<div class="row" [nbSpinner]="loading" *ngIf="selected">
   <div class="col-md-12">
       <nb-card accent="primary">
           <nb-card-body>
