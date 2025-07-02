@@ -104,11 +104,18 @@ export class DefaultComponent<T> implements OnInit {
       if (excluir) {
         await this.service
         .delete(this.loadObject().id)
-        .then();
-        
-        this.clearForm();
-        this.alertService.showSuccess("Registro excluído com sucesso.");
-        await this.loadSource();
+        .then(async (response: IResponseInterface<T>) => {
+          if (response.success){
+            this.clearForm();
+            this.alertService.showSuccess("Registro excluído com sucesso.");
+            await this.loadSource();
+          } else {
+            response.errors.map((x) => this.alertService.showError(x.value));
+          }
+        })
+        .catch((error) => {
+          this.alertService.showError(error);
+        });
       }
     });
   }
@@ -120,8 +127,6 @@ export class DefaultComponent<T> implements OnInit {
     } else {
       await this.put(objct);
     }
-    this.edit = true;
-    this.selected = true;
   }
 
   private async post(req: T) {
@@ -131,6 +136,8 @@ export class DefaultComponent<T> implements OnInit {
         this.onSelect(res);
         await this.loadSource();
         this.alertService.showSuccess("Registro cadastrado com sucesso.");   
+        this.edit = true;
+        this.selected = true;    
       } else {
         res.errors.map((x) => this.alertService.showError(x.value));
       }  
@@ -146,6 +153,8 @@ export class DefaultComponent<T> implements OnInit {
         this.onSelect(res);
         await this.loadSource();
         this.alertService.showSuccess("Registro alterado com sucesso.");   
+        this.edit = true;
+        this.selected = true;    
       } else {
         res.errors.map((x) => this.alertService.showError(x.value));
       }  
