@@ -79,7 +79,7 @@ namespace SIGE.Core.SQLFactory
             sql.AppendLine("    bandeira.VigenciaInicial <= @VigenciaInicialFiltro");
             sql.AppendLine("    AND (bandeira.VigenciaFinal IS NULL OR bandeira.VigenciaFinal >= @VigenciaFinalFiltro)");
             sql.AppendLine("    AND bandeira.Ativo IS true");
-            sql.AppendLine("    AND bandeira..DataExclusao IS null;");
+            sql.AppendLine("    AND bandeira.DataExclusao IS null;");
 
             string query = sql.ToString();
 

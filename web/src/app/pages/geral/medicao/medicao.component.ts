@@ -67,6 +67,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   async ngOnInit() {
     await this.getMedicoes("", null, "", "");
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
+    if (!SessionStorageService.isSuperUsuario())
+      this.settingsMedicao.actions.delete = false;    
   }
 
   getMeses()
