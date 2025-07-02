@@ -140,18 +140,27 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
   private async post(bandeira: IBandeiraTarifaria) {
     await this.service.post(bandeira).then(async (res: IResponseInterface<IBandeiraTarifaria>) =>
     {
-      this.onSelect(res);
-      await this.getBandeiras();
-      this.alertService.showSuccess("Bandeira cadastrada com sucesso.");
+      if (res.success){
+        this.onSelect(res);
+        await this.getBandeiras();
+        this.alertService.showSuccess("Bandeira cadastrada com sucesso.");
+      } else {
+        res.errors.map((x) => this.alertService.showError(`${x.value}`));
+      }
     }).catch(() => {
       this.alertService.showError("Não foi possível cadastrar a bandeira neste momento.");
     });
   }
 
   private async put(bandeira: IBandeiraTarifaria) {
-    await this.service.put(bandeira).then(async () => {
-      await this.getBandeiras();
-      this.alertService.showSuccess("Bandeira alterada com sucesso.");
+    await this.service.put(bandeira).then(async (res: IResponseInterface<IBandeiraTarifaria>) => {
+      if (res.success){
+        this.onSelect(res);
+        await this.getBandeiras();
+        this.alertService.showSuccess("Bandeira alterada com sucesso.");
+      } else {
+        res.errors.map((x) => this.alertService.showError(`${x.value}`));
+      }
     }).catch(() => {
       this.alertService.showError("Não foi possível alterar a bandeira neste momento.");
     });
