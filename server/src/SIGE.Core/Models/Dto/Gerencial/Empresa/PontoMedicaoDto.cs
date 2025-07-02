@@ -14,6 +14,8 @@ namespace SIGE.Core.Models.Dto.Gerencial.Empresa
         public required ETipoConexao Conexao { get; set; }
         public required ETipoEnergia TipoEnergia { get; set; }
 
+        public DateTime DataExclusao { get; set; }
+
         public Guid? ConcessionariaId { get; set; }
         public string? DescConcessionaria { get; set; }
 

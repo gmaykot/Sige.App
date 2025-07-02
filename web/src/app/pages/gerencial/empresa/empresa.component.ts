@@ -24,6 +24,7 @@ import { AlertService } from "../../../@core/services/util/alert.service";
 import { IDropDown } from "../../../@core/data/drop-down";
 import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
 import { ConcessionariaService } from "../../../@core/services/gerencial/concessionaria.service";
+import { ETipoErroResponse } from "../../../@core/enum/tipo-erro-response";
 
 @Component({
   selector: "ngx-empresa",
@@ -384,49 +385,128 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     }
   } 
 
-  async onAgenteDelete(){
-    if (this.agentesChecked.length > 0){
-      this.dialogService
-      .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir os agentes de medição selecionados?'} })
-      .onClose.subscribe(async (excluir) => {
-        if (excluir){
-          var erroExcluir = false;
-          this.agentesChecked.forEach(agente => {
-            this.agenteMedicaoService.delete(agente.id).then(async (res: IResponseInterface<any>) => {
-              if (res.success){
-                this.agentes = this.agentes.filter(a => a.id != agente.id);
-                this.sourceAgenteMedicao.load(this.agentes);         
-                this.agentesChecked = [];        
-                this.alertService.showSuccess("Agente excluído com sucesso.");
-              } else 
-              {
-                erroExcluir = true;
-                res.errors.map((x) => this.alertService.showError(`Agente ${agente.nome} - ${x.value}`));
-              }
-            });            
-          });
+  async onAgenteDelete() {
+    if (this.agentesChecked.length === 0) return;
+  
+    const confirm = await this.dialogService
+      .open(CustomDeleteConfirmationComponent, {
+        context: {
+          mesage: `Deseja realmente excluir os ${this.agentesChecked.length} agentes de medição selecionados?`,
+        },
+      })
+      .onClose.toPromise();
+  
+    if (!confirm) return;
+  
+    for (const agente of this.agentesChecked) {
+      const res = await this.agenteMedicaoService.delete(agente.id);
+  
+      if (res.success) {
+        this.removeAgenteDaLista(agente);
+        this.alertService.showSuccess(`Agente ${agente.nome} excluído com sucesso.`);
+      } else {
+        const cascadeError = res.errors.find(
+          (x) => x.key === ETipoErroResponse.DeleteCascadeError.toString()
+        );
+  
+        if (cascadeError && SessionStorageService.isSuperUsuario()) {
+          const confirmarExclusaoLogica = await this.dialogService
+            .open(CustomDeleteConfirmationComponent, {
+              context: {
+                mesage: `ATENÇÃO!!! Deseja realmente excluir logicamente o registro? ${cascadeError.value}`,
+              },
+            })
+            .onClose.toPromise();
+  
+          if (confirmarExclusaoLogica) {
+            agente.dataExclusao = new Date().toISOString();
+            const putRes = await this.agenteMedicaoService.put(agente);
+  
+            if (putRes.success) {
+              this.removeAgenteDaLista(agente);
+              this.alertService.showSuccess(`Agente ${agente.nome} excluído com sucesso.`);
+            } else {
+              putRes.errors.forEach((x) =>
+                this.alertService.showError(`Agente ${agente.nome} - ${x.value}`)
+              );
+            }
+          }
+        } else {
+          res.errors.forEach((x) =>
+            this.alertService.showError(`Agente ${agente.nome} - ${x.value}`)
+          );
         }
-      });          
+      }
     }
+  }
+  
+  private removeAgenteDaLista(agente: IAgenteMedicao) {
+    this.agentes = this.agentes.filter(a => a.id !== agente.id);
+    this.sourceAgenteMedicao.load(this.agentes);
+    this.agentesChecked = [];    
+  }
+  
+  private removePontoDaLista(ponto: IPontoMedicao) {
+    this.pontos = this.pontos.filter((a) => a.id !== ponto.id);
+    this.sourcePontoMedicao.load(this.pontos);
+    this.pontosChecked = [];
   }
 
-  async onPontoDelete(){
-    if (this.pontosChecked.length > 0){
-      this.dialogService
-      .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir os pontos de medição selecionados?'} })
-      .onClose.subscribe(async (excluir) => {
-        if (excluir){
-          this.pontosChecked.forEach(ponto => {
-            this.pontos = this.pontos.filter(a => a.id != ponto.id);
-            this.pontoMedicaoService.delete(ponto.id).then()
-          });
-          this.sourcePontoMedicao.load(this.pontos);         
-          this.pontosChecked = [];  
-          this.alertService.showSuccess("Ponto excluído com sucesso.");
+  async onPontoDelete() {
+    if (this.pontosChecked.length === 0) return;
+  
+    const confirm = await this.dialogService
+      .open(CustomDeleteConfirmationComponent, {
+        context: {
+          mesage: `Deseja realmente excluir os ${this.pontosChecked.length} pontos de medição selecionados?`,
+        },
+      })
+      .onClose.toPromise();
+  
+    if (!confirm) return;
+  
+    for (const ponto of this.pontosChecked) {
+      const res = await this.pontoMedicaoService.delete(ponto.id);
+  
+      if (res.success) {
+        this.removePontoDaLista(ponto);
+        this.alertService.showSuccess(`Ponto ${ponto.nome} excluído com sucesso.`);
+      } else {
+        const cascadeError = res.errors.find(
+          (x) => x.key === ETipoErroResponse.DeleteCascadeError.toString()
+        );
+  
+        if (cascadeError && SessionStorageService.isSuperUsuario()) {
+          const confirmarExclusaoLogica = await this.dialogService
+            .open(CustomDeleteConfirmationComponent, {
+              context: {
+                mesage: `ATENÇÃO!!! Deseja realmente excluir logicamente o registro? ${cascadeError.value}`,
+              },
+            })
+            .onClose.toPromise();
+  
+          if (confirmarExclusaoLogica) {
+            ponto.dataExclusao = new Date().toISOString();
+            const putRes = await this.pontoMedicaoService.put(ponto);
+  
+            if (putRes.success) {
+              this.removePontoDaLista(ponto);
+              this.alertService.showSuccess(`Ponto ${ponto.nome} excluído com sucesso.`);
+            } else {
+              putRes.errors.forEach((x) =>
+                this.alertService.showError(`Ponto ${ponto.nome} - ${ponto.codigo}: ${x.value}`)
+              );
+            }
+          }
+        } else {
+          res.errors.forEach((x) =>
+            this.alertService.showError(`Ponto ${ponto.nome} - ${ponto.codigo}: ${x.value}`)
+          );
         }
-      });          
-    }
+      }
+    }    
   }
+  
 
   onContatoConfirm(){
     const empresa = this.getEmpresa();

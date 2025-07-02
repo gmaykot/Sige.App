@@ -20,7 +20,7 @@ namespace SIGE.Services.Schedule
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly RequestContext _requestContext = requestContext;
 
-        public async void DoWorkAsync()
+        public async Task DoWorkAsync()
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var request = httpContext?.Request;

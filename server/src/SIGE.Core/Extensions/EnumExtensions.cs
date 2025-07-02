@@ -58,6 +58,19 @@ namespace SIGE.Core.Extensions
             return anyEnum.ToString();
         }
 
+        /// <summary>
+        /// Retorna o valor numérico do enum como string.
+        /// Exemplo: MyEnum.Value1 (com valor 5) retorna "5".
+        /// </summary>
+        public static string GetValueString(this Enum anyEnum)
+        {
+            if (anyEnum == null)
+                return string.Empty;
+
+            // Converte o enum para int e depois para string
+            return Convert.ToInt32(anyEnum).ToString();
+        }
+
         public static string GetSigla(this Enum anyEnum)
         {
             if (anyEnum == null)

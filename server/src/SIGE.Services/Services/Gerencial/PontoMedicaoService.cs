@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Enumerators;
+using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Gerencial.Empresa;
@@ -31,7 +32,7 @@ namespace SIGE.Services.Services.Gerencial
         {
             var ret = await _appDbContext.PontosMedicao.Include(p => p.ConsumosMensal).FirstOrDefaultAsync(p => p.Id.Equals(Id));
             if (!ret.ConsumosMensal.IsNullOrEmpty())
-                return new Response().SetServiceUnavailable().AddError("Entity", "Existem medições vinculadas que impossibilitam a exclusão.");
+                return new Response().SetServiceUnavailable().AddError(ETipoErroResponse.DeleteCascadeError.GetValueString(), "Existem medições vinculadas que impossibilitam a exclusão.");
 
             _appDbContext.PontosMedicao.Remove(ret);
             _ = await _appDbContext.SaveChangesAsync();

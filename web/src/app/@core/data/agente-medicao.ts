@@ -6,5 +6,6 @@ export interface IAgenteMedicao {
     nome: string,
     codigoPerfilAgente: string,
     ativo: boolean,
-    pontosMedicao?: IPontoMedicao[]
+    pontosMedicao?: IPontoMedicao[],
+    dataExclusao?: string
 }
