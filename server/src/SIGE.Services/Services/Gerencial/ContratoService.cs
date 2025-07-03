@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Gerencial.Contrato;
 using SIGE.Core.Models.Sistema.Gerencial.Contrato;
@@ -50,21 +49,6 @@ namespace SIGE.Services.Services.Gerencial
                 return ret.SetCreated().SetData(_mapper.Map<ContratoEmpresaDto>(cont)).SetMessage("Empresa incluída no grupo com sucesso.");
             }
             return ret.SetBadRequest().AddError("Existente", "Empresa já pertence ao grupo.");
-        }
-
-        public override async Task<Response> Obter()
-        {
-            var ret = new Response();
-            var res = await _appDbContext.Contratos.AsNoTracking()
-                .Include(c => c.Fornecedor)
-                .Include(c => c.ContratoEmpresas).ThenInclude(c => c.Empresa)
-                .Include(c => c.ValoresAnuaisContrato)
-                .ThenInclude(c => c.ValoresMensaisContrato)
-                .ToListAsync();
-            if (res.Count > 0)
-                return ret.SetOk().SetData(_mapper.Map<IEnumerable<ContratoDto>>(res.OrderBy(c => c.DscGrupo)));
-
-            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe contrato ativo.");
         }
     }
 }

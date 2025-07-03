@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Gerencial.Empresa;
 using SIGE.Core.Models.Sistema.Gerencial.Empresa;
 using SIGE.Services.Interfaces.Gerencial;
@@ -17,8 +19,15 @@ namespace SIGE.Controller.Gerencial
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ObterDropDown(Guid Id) =>
-            Ok(await service.ObterDropDownPorEmpresa(Id));
+        public async Task<IActionResult> ObterDropDown(Guid Id)
+        {
+            var response = await _service.Obter<DropDownDto>(
+                filtro: b => b.AgenteMedicao.EmpresaId == Id,
+                orderBy: o => o.OrderBy(a => a.Nome),
+                include: i => i.Include(c => c.AgenteMedicao));
+
+            return Ok(response);
+        }
 
         [HttpGet("drop-down/segmento")]
         [SwaggerOperation(Description = "Obtém dropdown filtrado.")]

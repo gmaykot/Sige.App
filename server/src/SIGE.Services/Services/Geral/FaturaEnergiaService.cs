@@ -120,16 +120,11 @@ namespace SIGE.Services.Services.Geral
                 new("@PontoMedicaoId", MySqlDbType.Guid) { Value = pontoMedicaoId },
             };
 
-            var res  = await _appDbContext.Database.SqlQueryRaw<DescontoTUSDDto>(GerenciamentoMensalFactory.ObterDescontoTusd(), parameters).ToListAsync();
+            var res = await _appDbContext.Database.SqlQueryRaw<DescontoTUSDDto>(GerenciamentoMensalFactory.ObterDescontoTusd(), parameters).ToListAsync();
             if (res.Count > 0)
                 return ret.SetOk().SetData(res.FirstOrDefault());
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existem descontos ativos.");
-        }
-
-        public Task<Response> ObterSource()
-        {
-            throw new NotImplementedException();
         }
     }
 }

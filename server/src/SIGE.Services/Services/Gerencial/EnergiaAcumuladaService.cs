@@ -5,11 +5,10 @@ using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
 using SIGE.Core.Models.Sistema.Geral.Economia;
 using SIGE.DataAccess.Context;
-using SIGE.Services.Interfaces.Gerencial;
 
 namespace SIGE.Services.Services.Gerencial
 {
-    public class EnergiaAcumuladaService(AppDbContext appDbContext, IMapper mapper) : BaseService<EnergiaAcumuladaDto, EnergiaAcumuladaModel>(appDbContext, mapper), IEnergiaAcumuladaService
+    public class EnergiaAcumuladaService(AppDbContext appDbContext, IMapper mapper) : BaseService<EnergiaAcumuladaDto, EnergiaAcumuladaModel>(appDbContext, mapper)
     {
         /// <summary>
         /// Inclui o registro no banco de dados, verificando se a vigência não conflita com outros registros existentes.
@@ -66,7 +65,7 @@ namespace SIGE.Services.Services.Gerencial
                 .AnyAsync(x =>
                     x.MesReferencia == req.MesReferencia &&
                     x.PontoMedicaoId == req.PontoMedicaoId &&
-                    x.Ativo == true && 
+                    x.Ativo == true &&
                     x.Id != req.Id
                 );
 
@@ -83,6 +82,6 @@ namespace SIGE.Services.Services.Gerencial
 
             return new Response().SetOk().SetData(req)
                 .SetMessage("Registro alterado com sucesso.");
-        }        
+        }
     }
 }

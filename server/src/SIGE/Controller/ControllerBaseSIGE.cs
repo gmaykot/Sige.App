@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using SIGE.Core.Models.Defaults;
 using SIGE.Services.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller
 {
     [ApiController]
     [Route("[controller]")]
-    public abstract class BaseController<T, M>(IBaseInterface<T, M> service) : ControllerBase
+    public abstract class BaseController<T, M>(IBaseInterface<T, M> service, IMapper mapper = null) : ControllerBase
     {
         protected readonly IBaseInterface<T, M> _service = service;
+        protected readonly IMapper _mapper = mapper;
 
         [HttpPost]
         [SwaggerOperation(Description = "Inclui no sistema.")]
@@ -81,6 +83,6 @@ namespace SIGE.Controller
         {
             var response = await _service.ObterDropDown();
             return Ok(response);
-        }            
+        }
     }
 }

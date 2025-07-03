@@ -27,17 +27,6 @@ namespace SIGE.Services.Services.Gerencial
             return new Response().SetOk().SetMessage("Dados excluídos com sucesso.");
         }
 
-        async public Task<Response> ObterDropDownPorEmpresa(Guid EmpresaId)
-        {
-            var ret = new Response();
-            var res = await _appDbContext.PontosMedicao.Include(p => p.AgenteMedicao).Where(a => a.AgenteMedicao.EmpresaId.Equals(EmpresaId)).ToListAsync();
-            if (res.Count > 0)
-                return ret.SetOk().SetData(_mapper.Map<IEnumerable<DropDownDto>>(res).OrderBy(d => d.Descricao));
-
-            return ret.SetNotFound()
-                .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
-        }
-
         async public Task<Response> ObterDropDownComSegmento()
         {
             var ret = new Response();

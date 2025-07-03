@@ -111,15 +111,5 @@ namespace SIGE.Services.Services.Administrativo
 
             return new Response().SetOk().SetData(_mapper.Map<MenuSistemaDto>(res)).SetMessage("Menu cadastrado com sucesso.");
         }
-
-        public Task<Response> Obter(Guid Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Response> ObterSource()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

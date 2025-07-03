@@ -6,7 +6,6 @@ namespace SIGE.Services.Interfaces.Gerencial
 {
     public interface IPontoMedicaoService : IBaseInterface<PontoMedicaoDto, PontoMedicaoModel>
     {
-        Task<Response> ObterDropDownPorEmpresa(Guid EmpresaId);
         Task<Response> ObterDropDownComSegmento();
     }
 }

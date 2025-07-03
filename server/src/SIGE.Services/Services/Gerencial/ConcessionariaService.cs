@@ -1,18 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
-using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
-using SIGE.Services.Interfaces.Gerencial;
 
 namespace SIGE.Services.Services.Gerencial
 {
-    public class ConcessionariaService(AppDbContext appDbContext, IMapper mapper) : BaseService<ConcessionariaDto, ConcessionariaModel>(appDbContext, mapper), IConcessionariaService
+    public class ConcessionariaService(AppDbContext appDbContext, IMapper mapper) : BaseService<ConcessionariaDto, ConcessionariaModel>(appDbContext, mapper)
     {
         public override async Task<Response> Excluir(Guid Id)
         {
@@ -24,17 +20,6 @@ namespace SIGE.Services.Services.Gerencial
             _ = await _appDbContext.SaveChangesAsync();
 
             return new Response().SetOk().SetMessage("Concessonária excluída com sucesso.");
-        }
-
-        public async Task<Response> ObterPorPontoMedicao(Guid Id)
-        {
-            var ret = new Response();
-            var res = await _appDbContext.Database.SqlQueryRaw<DropDownDto>(ConcessionariasFactory.ConcessionariasPorPontoMedicao(Id)).ToListAsync();
-            if (res.Count > 0)
-                return ret.SetOk().SetData(res);
-
-            return ret.SetNotFound()
-                .AddError(ETipoErro.INFORMATIVO, "Não existe concessionária cadastrada.");
         }
     }
 }

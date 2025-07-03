@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
@@ -21,7 +22,8 @@ namespace SIGE.Controller.Gerencial
         {
             var response = await _service.Obter(
                 filtro: b => b.BandeiraTarifaria.Id == Id,
-                orderBy: q => q.OrderByDescending(x => x.MesReferencia), b => b.BandeiraTarifaria);
+                orderBy: q => q.OrderByDescending(x => x.MesReferencia),
+                include: i => i.Include(b => b.BandeiraTarifaria));
 
             return Ok(response);
         }

@@ -94,16 +94,16 @@ namespace SIGE.Services.Services.Geral
                 .SetMessage("Registro alterado com sucesso.");
         }
 
-        public override async Task<Response> Obter()
-        {
-            var ret = new Response();
-            var res = await _appDbContext.FaturamentosCoenel.ToListAsync();
-            if (res.Count > 0)
-                return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturamentoCoenelDto>>(res).OrderByDescending(f => f.VigenciaInicial));
+        //public override async Task<Response> Obter()
+        //{
+        //    var ret = new Response();
+        //    var res = await _appDbContext.FaturamentosCoenel.ToListAsync();
+        //    if (res.Count > 0)
+        //        return ret.SetOk().SetData(_mapper.Map<IEnumerable<FaturamentoCoenelDto>>(res).OrderByDescending(f => f.VigenciaInicial));
 
-            return ret.SetNotFound()
-                .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
-        }
+        //    return ret.SetNotFound()
+        //        .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
+        //}
 
         public async Task<Response> ObterPorPontoMedicao(Guid Id)
         {

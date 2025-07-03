@@ -94,7 +94,7 @@ namespace SIGE.Services.Services.Administrativo
             if (menusUsuario.Length > 0)
             {
                 var res = await _appDbContext.MenusUsuarios.Where(m => m.UsuarioId == menusUsuario.First().UsuarioId).ToListAsync();
-                foreach( var menu in menusUsuario)
+                foreach (var menu in menusUsuario)
                 {
                     if (res.FirstOrDefault(r => r.MenuSistemaId == menu.MenuSistemaId) == null)
                     {
@@ -109,16 +109,6 @@ namespace SIGE.Services.Services.Administrativo
 
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, $"Não existe registro a ser incluído.");
-        }
-
-        public Task<Response> ObterDropDown()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Response> ObterSource()
-        {
-            throw new NotImplementedException();
         }
     }
 }

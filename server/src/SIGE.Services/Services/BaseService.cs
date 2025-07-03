@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 
 namespace SIGE.Services.Services
 {
-    public class BaseService<T, M>(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<T, M> where M : class
+    public class BaseService<T, M>(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<T, M> where M : class where T : class
     {
         protected readonly AppDbContext _appDbContext = appDbContext;
         protected readonly IMapper _mapper = mapper;
@@ -23,7 +23,7 @@ namespace SIGE.Services.Services
 
             if (idProperty == null)
                 return new Response().SetBadRequest()
-                    .AddError(ETipoErro.ERRO, "A entidade não possui a propriedade 'Id'.");            
+                    .AddError(ETipoErro.ERRO, "A entidade não possui a propriedade 'Id'.");
 
             var id = idProperty.GetValue(req);
 
@@ -86,27 +86,24 @@ namespace SIGE.Services.Services
         }
 
         /// <summary>
-        /// Obtém todos os registros.
-        /// </summary>
-        public virtual async Task<Response> Obter()
-        {
-            var list = await ObterTodos();
-            if (list.Count != 0)
-                return new Response().SetOk().SetData(_mapper.Map<IEnumerable<T>>(list));
-
-            return new Response().SetNotFound()
-                .AddError(ETipoErro.INFORMATIVO, "Não existem registros cadastrados.");
-        }
-
-        /// <summary>
         /// Obtém todos os registros em formato de DropDown.
         /// </summary>
-        public async Task<Response> ObterDropDown()
+        public virtual async Task<Response> ObterDropDown(
+            Expression<Func<M, bool>>? filtro = null,
+            Func<IQueryable<M>, IQueryable<M>>? include = null)
         {
-            var list = await ObterTodos();
+            IQueryable<M> query = _appDbContext.Set<M>();
+
+            if (include != null)
+                query = include(query);
+
+            if (filtro != null)
+                query = query.Where(filtro);
+
+            var list = await query.ToListAsync();
+
             if (list.Count != 0)
-                return new Response().SetOk()
-                    .SetData(_mapper.Map<IEnumerable<DropDownDto>>(list).OrderBy(d => d.Descricao));
+                return new Response().SetOk().SetData(_mapper.Map<IEnumerable<DropDownDto>>(list).OrderBy(d => d.Descricao));
 
             return new Response().SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, "Não existem registros cadastrados.");
@@ -118,12 +115,23 @@ namespace SIGE.Services.Services
         public virtual async Task<Response> Obter(
             Expression<Func<M, bool>>? filtro = null,
             Func<IQueryable<M>, IOrderedQueryable<M>>? orderBy = null,
-            params Expression<Func<M, object>>[] includes)
+            Func<IQueryable<M>, IQueryable<M>>? include = null)
+        {
+            return await Obter<T>(filtro, orderBy, include);
+        }
+
+        /// <summary>
+        /// Obtém registros com filtro opcional.
+        /// </summary>
+        public virtual async Task<Response> Obter<TD>(
+            Expression<Func<M, bool>>? filtro = null,
+            Func<IQueryable<M>, IOrderedQueryable<M>>? orderBy = null,
+            Func<IQueryable<M>, IQueryable<M>>? include = null) where TD : class
         {
             IQueryable<M> query = _appDbContext.Set<M>();
 
-            foreach (var include in includes)
-                query = query.Include(include);
+            if (include != null)
+                query = include(query);
 
             if (filtro != null)
                 query = query.Where(filtro);
@@ -134,18 +142,10 @@ namespace SIGE.Services.Services
             var list = await query.ToListAsync();
 
             if (list.Count != 0)
-                return new Response().SetOk().SetData(_mapper.Map<IEnumerable<T>>(list));
+                return new Response().SetOk().SetData(_mapper.Map<IEnumerable<TD>>(list));
 
             return new Response().SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, "Não existem registros cadastrados.");
-        }
-
-        /// <summary>
-        /// Método auxiliar para obter todos os registros da entidade.
-        /// </summary>
-        protected async Task<List<M>> ObterTodos()
-        {
-            return await _appDbContext.Set<M>().ToListAsync();
         }
 
         /// <summary>
