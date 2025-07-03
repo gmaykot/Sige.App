@@ -8,7 +8,6 @@ using SIGE.Core.Models.Dto.Geral.FaturaEnergia;
 using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
 using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
 using SIGE.Core.Models.Dto.Gerencial;
-using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
@@ -62,35 +61,34 @@ namespace SIGE.Services.Services.Geral
                     if (tarifa != null)
                     {
                         var tarifaCalculada = _mapper.Map<TarifaCalculadaDto>(tarifa);
-                        var consumo = await _appDbContext.ConsumosMensais.FirstOrDefaultAsync(c => c.PontoMedicaoId == pontoMedicaoId && c.MesReferencia == mesReferencia);
-                        if (consumo != null)
-                        {
-                            var parameters = new MySqlParameter[]
-                                {
-                                    new("@MesReferencia", MySqlDbType.Date) { Value = fatura.MesReferencia },
-                                    new("@PontoMedicaoId", MySqlDbType.Guid) { Value = fatura.PontoMedicaoId },
-                                    new("@ConcessionariaId", MySqlDbType.Guid) { Value = fatura.ConcessionariaId },
-                                };
 
-                            var paramRelatorio = await _appDbContext.Database.SqlQueryRaw<ParametrosRelatorioEconomiaDto>(RelatorioEconomiaFactory.ObterParametrosRelatorioEconomia(), parameters).FirstOrDefaultAsync();
-
-                            tarifaCalculada.ICMS = consumo.Icms;
-                            tarifaCalculada.Cofins = paramRelatorio.ValorCofins;
-                            tarifaCalculada.Proinfa = consumo.Proinfa;
-                            tarifaCalculada.PIS = paramRelatorio.ValorPis;
-                            tarifaCalculada.BandeiraAdicional = paramRelatorio.ValorBandeiraAplicado;
-                            tarifaCalculada.TotalPercentualTUSD = relMedicoes.TipoEnergia.GetValorTipoEnergia();
-                            tarifaCalculada.PercentualTUSD = fatura.ValorDescontoTUSD;
-
-                            res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste.ToString("d", new CultureInfo("pt-BR"))}";
-                            var relatorio = new RelatorioFinalDto
+                        var parameters = new MySqlParameter[]
                             {
-                                Cabecalho = res,
-                                Grupos = [GrupoCativoMapper(0, fatura, consumo, tarifaCalculada, res.Conexao), GrupoLivreMapper(1, fatura, consumo, tarifaCalculada, relMedicoes, valores, res.Conexao, valorAnalitico)],
+                                new("@MesReferencia", MySqlDbType.Date) { Value = fatura.MesReferencia },
+                                new("@PontoMedicaoId", MySqlDbType.Guid) { Value = fatura.PontoMedicaoId },
+                                new("@ConcessionariaId", MySqlDbType.Guid) { Value = fatura.ConcessionariaId },
                             };
-                            relatorio.Comparativo = CompartivoFinal(relatorio, paramRelatorio, paramRelatorio?.SalarioMinimoValor, paramRelatorio?.ValorTotalAcumulado);
-                            return ret.SetOk().SetData(relatorio);
-                        }
+
+                        var paramRelatorio = await _appDbContext.Database.SqlQueryRaw<ParametrosRelatorioEconomiaDto>(RelatorioEconomiaFactory.ObterParametrosRelatorioEconomia(), parameters).FirstOrDefaultAsync();
+                        //Aplicar validações de obrigatoriedades
+
+                        tarifaCalculada.ICMS = paramRelatorio.Icms;
+                        tarifaCalculada.Cofins = paramRelatorio.ValorCofins;
+                        tarifaCalculada.Proinfa = paramRelatorio.Proinfa;
+                        tarifaCalculada.PIS = paramRelatorio.ValorPis;
+                        tarifaCalculada.BandeiraAdicional = paramRelatorio.ValorBandeiraAplicado;
+                        tarifaCalculada.TotalPercentualTUSD = relMedicoes.TipoEnergia.GetValorTipoEnergia();
+                        tarifaCalculada.PercentualTUSD = fatura.ValorDescontoTUSD;
+
+                        res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste.ToString("d", new CultureInfo("pt-BR"))}";
+                        var relatorio = new RelatorioFinalDto
+                        {
+                            Cabecalho = res,
+                            Grupos = [GrupoCativoMapper(0, fatura, tarifaCalculada, res.Conexao), GrupoLivreMapper(1, fatura, tarifaCalculada, relMedicoes, valores, res.Conexao, valorAnalitico)],
+                        };
+                        relatorio.Comparativo = CompartivoFinal(relatorio, paramRelatorio, paramRelatorio?.SalarioMinimoValor, paramRelatorio?.ValorTotalAcumulado);
+                        return ret.SetOk().SetData(relatorio);
+
                     }
                 }
             }
@@ -169,7 +167,7 @@ namespace SIGE.Services.Services.Geral
             };
         }
 
-        private GrupoRelatorioFinalDto GrupoCativoMapper(int ordem, FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, ETipoConexao conexao)
+        private GrupoRelatorioFinalDto GrupoCativoMapper(int ordem, FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, ETipoConexao conexao)
         {
             var grupo = new GrupoRelatorioFinalDto
             {
@@ -324,11 +322,11 @@ namespace SIGE.Services.Services.Geral
             return grupo;
         }
 
-        private GrupoRelatorioFinalDto GrupoLivreMapper(int ordem, FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ETipoConexao conexao, ValoresMedicaoAnaliticoDto valorAnalitico)
+        private GrupoRelatorioFinalDto GrupoLivreMapper(int ordem, FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ETipoConexao conexao, ValoresMedicaoAnaliticoDto valorAnalitico)
         {
             var listaFinal = new List<LancamentoRelatorioFinalDto>();
-            var parte1 = LancMercadoLivreParte1(fatura, consumo, tarifaCalculada, relMedicoes, valores, valorAnalitico);
-            var parte2 = LancMercadoLivreParte2(fatura, consumo, tarifaCalculada, relMedicoes, valores, valorAnalitico);
+            var parte1 = LancMercadoLivreParte1(fatura, tarifaCalculada, relMedicoes, valores, valorAnalitico);
+            var parte2 = LancMercadoLivreParte2(fatura, tarifaCalculada, relMedicoes, valores, valorAnalitico);
             var parte3 = LancMercadoLivreParte3(fatura);
             var parte4 = LancMercadoLivreParte4(fatura);
             var parte5 = LancMercadoLivreParte5(fatura);
@@ -396,7 +394,7 @@ namespace SIGE.Services.Services.Geral
             return grupo;
         }
 
-        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte1(FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico)
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte1(FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico)
         {
             List<LancamentoRelatorioFinalDto> parte1 =
                 [
@@ -412,7 +410,7 @@ namespace SIGE.Services.Services.Geral
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "PROINFA",
-                        Montante = consumo.Proinfa,
+                        Montante = tarifaCalculada.Proinfa,
                         TipoMontante = ETipoMontante.MWH,
                     },
                     new LancamentoRelatorioFinalDto {
@@ -446,7 +444,7 @@ namespace SIGE.Services.Services.Geral
             return parte1;
         }
 
-        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte2(FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico)
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte2(FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico)
         {
             List<LancamentoRelatorioFinalDto> parte2 =
                 [

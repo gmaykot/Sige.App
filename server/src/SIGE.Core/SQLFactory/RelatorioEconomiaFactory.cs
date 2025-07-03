@@ -68,7 +68,8 @@ namespace SIGE.Core.SQLFactory {
         }
 
         public static string ObterParametrosRelatorioEconomia() {
-            var builder = new StringBuilder();
+
+            StringBuilder builder = new();
 
             builder.AppendLine("SELECT");
             builder.AppendLine("    f.Id AS FaturamentoId,");
@@ -92,13 +93,16 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("        WHEN 1 THEN bt.ValorBandeiraAmarela");
             builder.AppendLine("        WHEN 2 THEN bt.ValorBandeiraVermelha1");
             builder.AppendLine("        WHEN 3 THEN bt.ValorBandeiraVermelha2");
-            builder.AppendLine("    END AS ValorBandeiraAplicado");
+            builder.AppendLine("    END AS ValorBandeiraAplicado,");
+            builder.AppendLine("    cm.Id AS ConsumoId,");
+            builder.AppendLine("    cm.Proinfa,");
+            builder.AppendLine("    cm.Icms");
             builder.AppendLine("FROM FaturamentosCoenel f");
             builder.AppendLine("LEFT JOIN ImpostosConcessionarias imp");
-            builder.AppendLine("  ON imp.ConcessionariaId = @ConcessionariaId");
-            builder.AppendLine("  AND DATE_FORMAT(imp.MesReferencia, '%Y-%m-01') = DATE_FORMAT(@MesReferencia, '%Y-%m-01')");
-            builder.AppendLine("  AND imp.Ativo = TRUE");
-            builder.AppendLine("  AND imp.DataExclusao IS NULL");
+            builder.AppendLine("    ON imp.ConcessionariaId = @ConcessionariaId");
+            builder.AppendLine("    AND DATE_FORMAT(imp.MesReferencia, '%Y-%m-01') = DATE_FORMAT(@MesReferencia, '%Y-%m-01')");
+            builder.AppendLine("    AND imp.Ativo = TRUE");
+            builder.AppendLine("    AND imp.DataExclusao IS NULL");
             builder.AppendLine("LEFT JOIN (");
             builder.AppendLine("    SELECT *");
             builder.AppendLine("    FROM SalariosMinimos");
@@ -110,20 +114,25 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("    LIMIT 1");
             builder.AppendLine(") sm ON 1=1");
             builder.AppendLine("LEFT JOIN EnergiasAcumuladas ea");
-            builder.AppendLine("  ON ea.PontoMedicaoId = @PontoMedicaoId");
-            builder.AppendLine("  AND DATE_FORMAT(ea.MesReferencia, '%Y-%m-01') = DATE_FORMAT(@MesReferencia, '%Y-%m-01')");
-            builder.AppendLine("  AND ea.Ativo = TRUE");
-            builder.AppendLine("  AND ea.DataExclusao IS NULL");
+            builder.AppendLine("    ON ea.PontoMedicaoId = @PontoMedicaoId");
+            builder.AppendLine("    AND DATE_FORMAT(ea.MesReferencia, '%Y-%m-01') = DATE_FORMAT(@MesReferencia, '%Y-%m-01')");
+            builder.AppendLine("    AND ea.Ativo = TRUE");
+            builder.AppendLine("    AND ea.DataExclusao IS NULL");
             builder.AppendLine("LEFT JOIN BandeiraTarifariaVigente btv");
-            builder.AppendLine("  ON DATE_FORMAT(btv.MesReferencia, '%Y-%m-01') = DATE_FORMAT(@MesReferencia, '%Y-%m-01')");
-            builder.AppendLine("  AND btv.Ativo = TRUE");
-            builder.AppendLine("  AND btv.DataExclusao IS NULL");
+            builder.AppendLine("    ON DATE_FORMAT(btv.MesReferencia, '%Y-%m-01') = DATE_FORMAT(@MesReferencia, '%Y-%m-01')");
+            builder.AppendLine("    AND btv.Ativo = TRUE");
+            builder.AppendLine("    AND btv.DataExclusao IS NULL");
             builder.AppendLine("LEFT JOIN BandeirasTarifarias bt");
-            builder.AppendLine("  ON bt.Id = btv.BandeiraTarifariaId");
-            builder.AppendLine("  AND DATE_FORMAT(@MesReferencia, '%Y-%m-01') BETWEEN DATE_FORMAT(bt.VigenciaInicial, '%Y-%m-01')");
+            builder.AppendLine("    ON bt.Id = btv.BandeiraTarifariaId");
+            builder.AppendLine("    AND DATE_FORMAT(@MesReferencia, '%Y-%m-01') BETWEEN DATE_FORMAT(bt.VigenciaInicial, '%Y-%m-01')");
             builder.AppendLine("                                                AND IFNULL(DATE_FORMAT(bt.VigenciaFinal, '%Y-%m-01'), DATE_FORMAT(@MesReferencia, '%Y-%m-01'))");
-            builder.AppendLine("  AND bt.Ativo = TRUE");
-            builder.AppendLine("  AND bt.DataExclusao IS NULL");
+            builder.AppendLine("    AND bt.Ativo = TRUE");
+            builder.AppendLine("    AND bt.DataExclusao IS NULL");
+            builder.AppendLine("LEFT JOIN ConsumosMensais cm");
+            builder.AppendLine("    ON cm.PontoMedicaoId = @PontoMedicaoId");
+            builder.AppendLine("    AND DATE_FORMAT(cm.MesReferencia, '%Y-%m-01') = DATE_FORMAT(@MesReferencia, '%Y-%m-01')");
+            builder.AppendLine("    AND cm.Ativo = TRUE");
+            builder.AppendLine("    AND cm.DataExclusao IS NULL");
             builder.AppendLine("WHERE f.PontoMedicaoId = @PontoMedicaoId");
             builder.AppendLine("  AND f.VigenciaInicial <= @MesReferencia");
             builder.AppendLine("  AND (f.VigenciaFinal IS NULL OR f.VigenciaFinal >= @MesReferencia)");

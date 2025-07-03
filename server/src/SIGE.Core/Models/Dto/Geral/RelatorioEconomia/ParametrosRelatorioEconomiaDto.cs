@@ -14,6 +14,10 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia {
         public double? ValorPis { get; set; }
         public double? ValorCofins { get; set; }
 
+        public int? ConsumoId { get; set; }
+        public double? Proinfa { get; set; }
+        public double? Icms { get; set; }
+
         public Guid? SalarioMinimoId { get; set; }
         public double? SalarioMinimoValor { get; set; }
 
