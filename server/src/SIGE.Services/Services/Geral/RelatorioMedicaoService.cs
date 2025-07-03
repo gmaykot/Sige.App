@@ -41,7 +41,7 @@ namespace SIGE.Services.Services.Geral
         {
             var ret = new Response();
 
-            var rel = await _appDbContext.RelatoriosMedicao.FirstOrDefaultAsync(r => r.ContratoId.Equals(contratoId) && r.MesReferencia.Equals(mesReferencia));
+            var rel = await _appDbContext.RelatoriosMedicao.IgnoreAutoIncludes().FirstOrDefaultAsync(r => r.ContratoId.Equals(contratoId) && r.MesReferencia.Equals(mesReferencia));
             var res = await _appDbContext.Database.SqlQueryRaw<RelatorioMedicaoDto>(RelatorioMedicaoFactory.ValoresRelatoriosMedicao(contratoId, mesReferencia, null)).FirstOrDefaultAsync();
             if (res == null)
                 return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Verifique a medição do mês de referência e os valores contratuais cadastrados.");
@@ -70,7 +70,7 @@ namespace SIGE.Services.Services.Geral
             });
 
             res.MesReferencia = mesReferencia;
-            res.DataEmissao = DataSige.Hoje();            
+            res.DataEmissao = DataSige.Hoje();
 
             if (rel == null)
             {
@@ -82,7 +82,7 @@ namespace SIGE.Services.Services.Geral
             {
                 res.Id = rel.Id;
                 _mapper.Map(res, rel);
-            }                
+            }
 
             _appDbContext.SaveChanges();
 
