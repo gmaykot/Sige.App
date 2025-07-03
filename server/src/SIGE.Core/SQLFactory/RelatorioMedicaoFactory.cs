@@ -1,13 +1,9 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using System.Text;
 using SIGE.Core.Models.Requests;
-using System.Text;
 
-namespace SIGE.Core.SQLFactory
-{
-    public static class RelatorioMedicaoFactory
-    {
-        public static string ListaRelatoriosMedicao(RelatorioMedicaoRequest relatorio)
-        {
+namespace SIGE.Core.SQLFactory {
+    public static class RelatorioMedicaoFactory {
+        public static string ListaRelatoriosMedicao(RelatorioMedicaoRequest relatorio) {
             StringBuilder builder = new();
 
             builder.AppendLine("SELECT");
@@ -32,12 +28,12 @@ namespace SIGE.Core.SQLFactory
             return query;
         }
 
-        public static string ValoresRelatoriosMedicao(Guid contratoId, DateTime mesReferencia, Guid? empresaId)
-        {
+        public static string ValoresRelatoriosMedicao(Guid contratoId, DateTime mesReferencia, Guid? empresaId) {
             StringBuilder builder = new();
 
             builder.AppendLine("SELECT");
             builder.AppendLine("    total.ValorIcms,");
+            builder.AppendLine("    total.ValorProinfa,");
             builder.AppendLine("    total.TipoEnergia AS 'TipoEnergia',");
             builder.AppendLine("    CONCAT(empresa.Logradouro, ', ', empresa.Bairro, ', ', empresa.Cidade, '/', empresa.Estado) AS 'DescEndereco',");
             builder.AppendLine("    empresa.Cnpj AS 'NumCnpj',");
@@ -84,8 +80,9 @@ namespace SIGE.Core.SQLFactory
             builder.AppendLine("        ponto.TipoEnergia AS 'TipoEnergia',");
             builder.AppendLine("        SUM(medicao.ConsumoAtivo) AS 'ConsumoAtivo',");
             builder.AppendLine("        SUM(DISTINCT consumo.Proinfa) AS 'Proinfa',");
-            builder.AppendLine("        consumo.ICMS AS 'Icms',");
-            builder.AppendLine("        valor.Icms AS 'ValorIcms'");
+            builder.AppendLine("        SUM(DISTINCT valor.Proinfa) AS 'ValorProinfa',");
+            builder.AppendLine("        SUM(DISTINCT consumo.Icms) AS 'Icms',");
+            builder.AppendLine("        SUM(DISTINCT valor.Icms) AS 'ValorIcms'");
             builder.AppendLine("    FROM Medicoes medicao");
             builder.AppendLine("    INNER JOIN ConsumosMensais consumo ON consumo.Id = medicao.ConsumoMensalId");
             builder.AppendLine("    INNER JOIN PontosMedicao ponto ON ponto.Id = consumo.PontoMedicaoId");

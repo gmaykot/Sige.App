@@ -10,7 +10,7 @@ using SIGE.Services.Interfaces.Administrativo;
 
 namespace SIGE.Services.Services.Administrativo
 {
-    public class MenuSistemaService(AppDbContext appDbContext, IMapper mapper) : IMenuSistemaService
+    public class MenuSistemaService(AppDbContext appDbContext, IMapper mapper) : BaseService<MenuSistemaDto, MenuSistemaModel>(appDbContext, mapper), IMenuSistemaService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;

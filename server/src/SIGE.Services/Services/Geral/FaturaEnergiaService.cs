@@ -16,7 +16,7 @@ using SIGE.Services.Interfaces.Geral;
 
 namespace SIGE.Services.Services.Geral
 {
-    public class FaturaEnergiaService(AppDbContext appDbContext, IMapper mapper, RequestContext requestContext) : IFaturaEnergiaService
+    public class FaturaEnergiaService(AppDbContext appDbContext, IMapper mapper, RequestContext requestContext) : BaseService<FaturaEnergiaDto, FaturaEnergiaModel>(appDbContext, mapper), IFaturaEnergiaService
     {
         private readonly RequestContext _requestContext = requestContext;
         private readonly AppDbContext _appDbContext = appDbContext;

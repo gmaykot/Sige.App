@@ -12,7 +12,7 @@ using SIGE.Core.Models.Dto.Administrativo.Usuario;
 
 namespace SIGE.Services.Services.Administrativo
 {
-    public class UsuarioService(AppDbContext appDbContext, IMapper mapper) : IUsuarioService
+    public class UsuarioService(AppDbContext appDbContext, IMapper mapper) : BaseService<UsuarioDto, UsuarioModel>(appDbContext, mapper), IUsuarioService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;

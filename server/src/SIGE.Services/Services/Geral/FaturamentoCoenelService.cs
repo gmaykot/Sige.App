@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Geral;
-using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
 using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;

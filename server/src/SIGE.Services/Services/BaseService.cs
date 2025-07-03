@@ -6,11 +6,10 @@ using SIGE.Core.Models.Dto.Default;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 using System.Linq.Expressions;
-using System.Linq;
 
 namespace SIGE.Services.Services
 {
-    public class BaseService<T, M>(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<T> where M : class
+    public class BaseService<T, M>(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<T, M> where M : class
     {
         protected readonly AppDbContext _appDbContext = appDbContext;
         protected readonly IMapper _mapper = mapper;
@@ -118,21 +117,19 @@ namespace SIGE.Services.Services
         /// </summary>
         public virtual async Task<Response> Obter(
             Expression<Func<M, bool>>? filtro = null,
-            Expression<Func<M, object>>? orderBy = null,
+            Func<IQueryable<M>, IOrderedQueryable<M>>? orderBy = null,
             params Expression<Func<M, object>>[] includes)
         {
             IQueryable<M> query = _appDbContext.Set<M>();
 
             foreach (var include in includes)
-            {
                 query = query.Include(include);
-            }
 
             if (filtro != null)
                 query = query.Where(filtro);
 
             if (orderBy != null)
-                query = query.OrderBy(orderBy);
+                query = orderBy(query);
 
             var list = await query.ToListAsync();
 

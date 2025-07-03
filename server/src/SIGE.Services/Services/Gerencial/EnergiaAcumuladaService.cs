@@ -66,7 +66,8 @@ namespace SIGE.Services.Services.Gerencial
                 .AnyAsync(x =>
                     x.MesReferencia == req.MesReferencia &&
                     x.PontoMedicaoId == req.PontoMedicaoId &&
-                    x.Ativo == true
+                    x.Ativo == true && 
+                    x.Id != req.Id
                 );
 
             if (haConflito)
@@ -82,36 +83,6 @@ namespace SIGE.Services.Services.Gerencial
 
             return new Response().SetOk().SetData(req)
                 .SetMessage("Registro alterado com sucesso.");
-        }
-
-        public async Task<Response> ObterPorPontoMedicao(Guid Id)
-        {
-            var ret = new Response();
-            var res = await _appDbContext.EnergiasAcumuladas.Include(e => e.PontoMedicao).Where(b => b.PontoMedicaoId == Id).OrderByDescending(b => b.MesReferencia).ToListAsync();
-            if (res != null)
-                return ret.SetOk().SetData(_mapper.Map<IEnumerable<EnergiaAcumuladaDto>>(res));
-
-            return ret.SetNotFound()
-                .AddError(ETipoErro.INFORMATIVO, $"Não existe registro com o Id {Id}.");
-        }
-
-        public async Task<Response> ObterPorMesReferencia(DateTime? MesReferencia)
-        {
-            var ret = new Response();
-            IQueryable<EnergiaAcumuladaModel> query = _appDbContext.EnergiasAcumuladas.Include(e => e.PontoMedicao);
-
-            if (MesReferencia != null)
-            {
-                query = query.Where(e => e.MesReferencia <= MesReferencia);
-            }
-
-            var res = await query.GroupBy(e => e.PontoMedicaoId).Select(g => g.OrderByDescending(e => e.MesReferencia).First()).ToListAsync();
-
-            if (res != null)
-                return ret.SetOk().SetData(_mapper.Map<IEnumerable<EnergiaAcumuladaDto>>(res));
-
-            return ret.SetNotFound()
-                .AddError(ETipoErro.INFORMATIVO, $"Não existe registro com a referência {MesReferencia}.");
-        }
+        }        
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
@@ -7,8 +8,6 @@ using SIGE.Core.Models.Dto.Geral.FaturaEnergia;
 using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
 using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
 using SIGE.Core.Models.Dto.Gerencial;
-using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
-using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
@@ -66,73 +65,49 @@ namespace SIGE.Services.Services.Geral
                         var consumo = await _appDbContext.ConsumosMensais.FirstOrDefaultAsync(c => c.PontoMedicaoId == pontoMedicaoId && c.MesReferencia == mesReferencia);
                         if (consumo != null)
                         {
-                            var faturamento = await _appDbContext.FaturamentosCoenel
-                                .Where(f =>
-                                    f.PontoMedicaoId == pontoMedicaoId &&
-                                    DateOnly.FromDateTime(f.VigenciaInicial) <= fatura.MesReferencia &&
-                                    (
-                                        f.VigenciaFinal == null ||
-                                        DateOnly.FromDateTime(f.VigenciaFinal.Value) >= fatura.MesReferencia
-                                    )
-                                )
-                                .OrderByDescending(f => f.VigenciaInicial)
-                                .FirstOrDefaultAsync();
-                            var imposto = _mapper.Map<ImpostoConcessionariaDto>(await _appDbContext.ImpostosConcessionarias.FirstOrDefaultAsync(i => i.ConcessionariaId == fatura.ConcessionariaId && i.MesReferencia == fatura.MesReferencia));
-                            var salarioMinimo = await _appDbContext.SalariosMinimos
-                                .Where(s =>
-                                    DateOnly.FromDateTime(s.VigenciaInicial) <= fatura.MesReferencia &&
-                                    (s.VigenciaFinal == null || DateOnly.FromDateTime(s.VigenciaFinal.Value) >= fatura.MesReferencia)
-                                )
-                                .OrderByDescending(s => s.VigenciaInicial)
-                                .FirstOrDefaultAsync();
-                            var energiaAcumulada = await _appDbContext.EnergiasAcumuladas.OrderByDescending(e => e.MesReferencia).FirstOrDefaultAsync(e => e.PontoMedicaoId == pontoMedicaoId);
-                            var bandeiraVigente = await _appDbContext.BandeiraTarifariaVigente
-                                .Include(b => b.BandeiraTarifaria)
-                                .Where(b =>
-                                    DateOnly.FromDateTime(b.MesReferencia) == fatura.MesReferencia &&
-                                    DateOnly.FromDateTime(b.BandeiraTarifaria.VigenciaInicial) <= fatura.MesReferencia &&
-                                    (
-                                        b.BandeiraTarifaria.VigenciaFinal == null ||
-                                        DateOnly.FromDateTime(b.BandeiraTarifaria.VigenciaFinal.Value) >= fatura.MesReferencia
-                                    )
-                                )
-                                .OrderByDescending(b => b.MesReferencia)
-                                .FirstOrDefaultAsync();
+                            var parameters = new MySqlParameter[]
+                                {
+                                    new("@MesReferencia", MySqlDbType.Date) { Value = fatura.MesReferencia },
+                                    new("@PontoMedicaoId", MySqlDbType.Guid) { Value = fatura.PontoMedicaoId },
+                                    new("@ConcessionariaId", MySqlDbType.Guid) { Value = fatura.ConcessionariaId },
+                                };
+
+                            var paramRelatorio = await _appDbContext.Database.SqlQueryRaw<ParametrosRelatorioEconomiaDto>(RelatorioEconomiaFactory.ObterParametrosRelatorioEconomia(), parameters).FirstOrDefaultAsync();
 
                             tarifaCalculada.ICMS = consumo.Icms;
-                            tarifaCalculada.Cofins = imposto.ValorCofins;
+                            tarifaCalculada.Cofins = paramRelatorio.ValorCofins;
                             tarifaCalculada.Proinfa = consumo.Proinfa;
-                            tarifaCalculada.PIS = imposto.ValorPis;
-                            tarifaCalculada.BandeiraAdicional = bandeiraVigente.ValorBandeira();
+                            tarifaCalculada.PIS = paramRelatorio.ValorPis;
+                            tarifaCalculada.BandeiraAdicional = paramRelatorio.ValorBandeiraAplicado;
                             tarifaCalculada.TotalPercentualTUSD = relMedicoes.TipoEnergia.GetValorTipoEnergia();
                             tarifaCalculada.PercentualTUSD = fatura.ValorDescontoTUSD;
 
                             res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste.ToString("d", new CultureInfo("pt-BR"))}";
                             var relatorio = new RelatorioFinalDto
-                            {                                
+                            {
                                 Cabecalho = res,
                                 Grupos = [GrupoCativoMapper(0, fatura, consumo, tarifaCalculada, res.Conexao), GrupoLivreMapper(1, fatura, consumo, tarifaCalculada, relMedicoes, valores, res.Conexao, valorAnalitico)],
                             };
-                            relatorio.Comparativo = CompartivoFinal(relatorio, faturamento, salarioMinimo?.Valor, energiaAcumulada?.ValorTotalAcumulado);                            
+                            relatorio.Comparativo = CompartivoFinal(relatorio, paramRelatorio, paramRelatorio?.SalarioMinimoValor, paramRelatorio?.ValorTotalAcumulado);
                             return ret.SetOk().SetData(relatorio);
                         }
                     }
                 }
             }
-            
+
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de economia no período.");
         }
 
-        private ComparativoRelatorioFinalDto CompartivoFinal(RelatorioFinalDto relatorio, FaturamentoCoenelModel faturamento, double? valorSalarioMinimo, double? totalAcumulado)
+        private ComparativoRelatorioFinalDto CompartivoFinal(RelatorioFinalDto relatorio, ParametrosRelatorioEconomiaDto paramRelatorio, double? valorSalarioMinimo, double? totalAcumulado)
         {
-            if (faturamento == null)
+            if (paramRelatorio == null)
                 return new ComparativoRelatorioFinalDto { Observacao = "ATENÇÃO! Cadastre o faturamento em Menu > Geral > Faturamento Coenel" };
 
             var totalCativo = relatorio.Grupos.ElementAt(0).SubGrupos?.ElementAt(0)?.Total?.Total;
             var totalLivre = relatorio.Grupos.ElementAt(1).SubGrupos?.ElementAt(0)?.Total?.Total;
             var totalEconomia = totalCativo - totalLivre;
-            var lancamentoCoenel = LancamentoCoenel(faturamento, totalEconomia, valorSalarioMinimo);
-            
+            var lancamentoCoenel = LancamentoCoenel(paramRelatorio, totalEconomia, valorSalarioMinimo);
+
             relatorio.Grafico = new GraficoRelatorioFinalDto { Titulo = "GRÁFICO ECONOMIA NO MÊS" };
             relatorio.Grafico.Linhas.Add(new LinhaGraficoFinalDto { Label = "Mercado Cativo", Valor = totalCativo });
             relatorio.Grafico.Linhas.Add(new LinhaGraficoFinalDto { Label = "Mercado Livre", Valor = totalLivre });
@@ -170,27 +145,27 @@ namespace SIGE.Services.Services.Geral
             return ret;
         }
 
-        private LancamentoComparativoDto LancamentoCoenel(FaturamentoCoenelModel faturamento, double? totalEconomia, double? valorSalarioMinimo)
+        private LancamentoComparativoDto LancamentoCoenel(ParametrosRelatorioEconomiaDto paramRelatorio, double? totalEconomia, double? valorSalarioMinimo)
         {
-            if (faturamento == null)
+            if (paramRelatorio == null)
                 return new LancamentoComparativoDto();
 
             double? totalDevido = 0;
 
-            if (faturamento?.Porcentagem != null && faturamento.Porcentagem > 0)
-                totalDevido += totalEconomia * (faturamento?.Porcentagem / 100);
+            if (paramRelatorio?.Porcentagem != null && paramRelatorio.Porcentagem > 0)
+                totalDevido += totalEconomia * (paramRelatorio?.Porcentagem / 100);
 
-            if (faturamento?.ValorFixo != null && faturamento.ValorFixo > 0)
-                totalDevido += faturamento?.ValorFixo;
+            if (paramRelatorio?.ValorFixo != null && paramRelatorio.ValorFixo > 0)
+                totalDevido += paramRelatorio?.ValorFixo;
 
-            if (faturamento?.QtdeSalarios != null && faturamento.QtdeSalarios > 0)
-                totalDevido += faturamento?.QtdeSalarios * valorSalarioMinimo;
+            if (paramRelatorio?.QtdeSalarios != null && paramRelatorio.QtdeSalarios > 0)
+                totalDevido += paramRelatorio?.QtdeSalarios * valorSalarioMinimo;
 
             return new LancamentoComparativoDto
             {
                 Descricao = "Valor devido à Coenel-DE",
                 Valor = totalDevido,
-                Observacao = faturamento.ToString()
+                Observacao = paramRelatorio.ToString()
             };
         }
 
@@ -382,8 +357,8 @@ namespace SIGE.Services.Services.Geral
             listaFinal.Add(new LancamentoRelatorioFinalDto
             {
                 Descricao = "Sub-total de valores referente a Distribuidora",
-                Total = parte4.Where(p => p.TipoMontante != ETipoMontante.Percentual).Sum(p => p.Total) + 
-                        parte3.Where(p => p.TipoMontante != ETipoMontante.Percentual).Sum(p => p.Total) + 
+                Total = parte4.Where(p => p.TipoMontante != ETipoMontante.Percentual).Sum(p => p.Total) +
+                        parte3.Where(p => p.TipoMontante != ETipoMontante.Percentual).Sum(p => p.Total) +
                         parte2.Where(p => p.TipoMontante != ETipoMontante.Percentual).Sum(p => p.Total),
                 Totalizador = true
             });
@@ -423,7 +398,7 @@ namespace SIGE.Services.Services.Geral
 
         private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte1(FaturaEnergiaDto fatura, ConsumoMensalModel consumo, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico)
         {
-            List<LancamentoRelatorioFinalDto> parte1 = 
+            List<LancamentoRelatorioFinalDto> parte1 =
                 [
                     new LancamentoRelatorioFinalDto {
                         Descricao = "Perdas Reais",

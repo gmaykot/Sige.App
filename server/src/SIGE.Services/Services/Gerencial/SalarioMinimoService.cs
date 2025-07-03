@@ -5,11 +5,10 @@ using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Gerencial;
 using SIGE.Core.Models.Sistema.Gerencial;
 using SIGE.DataAccess.Context;
-using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services.Gerencial
 {
-    public class SalarioMinimoService(AppDbContext appDbContext, IMapper mapper) : BaseService<SalarioMinimoDto, SalarioMinimoModel>(appDbContext, mapper), IBaseInterface<SalarioMinimoDto>
+    public class SalarioMinimoService(AppDbContext appDbContext, IMapper mapper) : BaseService<SalarioMinimoDto, SalarioMinimoModel>(appDbContext, mapper)
     {
 
         /// <summary>

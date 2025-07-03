@@ -12,7 +12,7 @@ using SIGE.Services.Interfaces.Administrativo;
 
 namespace SIGE.Services.Services.Administrativo
 {
-    public class MenuUsuarioService(AppDbContext appDbContext, IMapper mapper, ICacheManager cacheManager, IOptions<CacheOption> cacheOption) : IMenuUsuarioService
+    public class MenuUsuarioService(AppDbContext appDbContext, IMapper mapper, ICacheManager cacheManager, IOptions<CacheOption> cacheOption) : BaseService<MenuUsuarioDto, MenuUsuarioModel>(appDbContext, mapper), IMenuUsuarioService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
