@@ -54,7 +54,7 @@ namespace SIGE.Services.Services.Geral
                 var valores = calculo.Calcular(relMedicoes);
                 var valorAnalitico = calculo.CalcularAnalitico(relMedicoes).Where(c => c.NumCnpj == res.CNPJ).FirstOrDefault();
 
-                var fatura = _mapper.Map<FaturaEnergiaDto>(await _appDbContext.FaturasEnergia.AsNoTracking().IgnoreAutoIncludes().Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.PontoMedicaoId == pontoMedicaoId && f.MesReferencia == mesReferencia));
+                var fatura = _mapper.Map<FaturaEnergiaDto>(await _appDbContext.FaturasEnergia.AsNoTracking().Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.PontoMedicaoId == pontoMedicaoId && f.MesReferencia == mesReferencia));
                 if (fatura != null)
                 {
                     var tarifa = _mapper.Map<TarifaAplicacaoDto>(await _appDbContext.TarifasAplicacao.AsNoTracking().IgnoreAutoIncludes().Where(t => t.ConcessionariaId == fatura.ConcessionariaId && t.Segmento == res.Segmento && t.SubGrupo == res.Conexao && t.Ativo).OrderByDescending(t => t.DataUltimoReajuste).FirstOrDefaultAsync());
