@@ -4,14 +4,12 @@ import { IDropDown } from '../../../@core/data/drop-down';
 import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { settingsTarifaAplicacao } from '../../../@shared/table-config/tarifa-aplicacao.config';
-import { TarifaAplicacaoService } from '../../../@core/services/gerencial/tarifa-aplicacao.service';
+import { TarifaAplicacaoService } from './tarifa-aplicacao.service';
 import { ITarifaAplicacao } from '../../../@core/data/tarifa-aplicacao';
 import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
 import { DefaultComponent } from '../../../@shared/custom-component/default/default-component';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { Classes } from '../../../@core/enum/classes.const';
-import { DateService } from '../../../@core/services/util/date.service';
-import { SUB_GRUPOS } from '../../../@core/enum/const-dropbox';
 import { SEGMENTO, TIPO_CONEXAO } from '../../../@core/enum/status-contrato';
 
 @Component({
@@ -20,28 +18,35 @@ import { SEGMENTO, TIPO_CONEXAO } from '../../../@core/enum/status-contrato';
   styleUrls: ['./tarifa-aplicacao.component.scss']
 })
 export default class TarifaAplicacaoComponent extends DefaultComponent<ITarifaAplicacao> implements OnInit {
-  settings = settingsTarifaAplicacao;
-  public concessionarias?: IDropDown[];  
-  segmentos = SEGMENTO;
-  conexoes = TIPO_CONEXAO;
-
+  public concessionarias?: IDropDown[];
+  public conexoes = TIPO_CONEXAO;
+  public segmentos = SEGMENTO;
+  public settings = settingsTarifaAplicacao;
+  
   constructor(
-    private concessionariaService: ConcessionariaService,
-    protected service: TarifaAplicacaoService,
-    protected formBuilderService: FormBuilderService,
     protected alertService: AlertService,
+    private concessionariaService: ConcessionariaService,
+    protected dialogService: NbDialogService,
+    protected formBuilderService: FormBuilderService,
     protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService
-  ) 
-  {
-    super(Classes.TARIFA_APLICACAO, formBuilderService, service, alertService, scroolService, dialogService);
+    protected service: TarifaAplicacaoService
+  ) {
+    super(
+      Classes.TARIFA_APLICACAO,
+      formBuilderService,
+      service,
+      alertService,
+      scroolService,
+      dialogService,
+      true
+    );
   }
-
+  
   async ngOnInit() {
     await super.ngOnInit();
-    await this.getConcessionarias();    
+    await this.getConcessionarias();
   }
-
+  
   async getConcessionarias() {
     this.loading = true;
     await this.concessionariaService
@@ -49,16 +54,8 @@ export default class TarifaAplicacaoComponent extends DefaultComponent<ITarifaAp
       .then((response: IResponseInterface<IDropDown[]>) => {
         if (response.success) {
           this.concessionarias = response.data;
-        }         
+        }
       });
     this.loading = false;
-  }
-
-  onSelectCustom(event){
-    this.onSelect(event);
-  }
-
-  onSubmitCustom(): void {
-    this.onSubmit();
   }
 }

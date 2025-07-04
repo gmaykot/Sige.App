@@ -4,12 +4,10 @@ using SIGE.Core.Models.Defaults;
 using SIGE.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace SIGE.Controller
-{
+namespace SIGE.Controller {
     [ApiController]
     [Route("[controller]")]
-    public abstract class BaseController<T, M>(IBaseInterface<T, M> service, IMapper mapper = null) : ControllerBase
-    {
+    public abstract class BaseController<T, M>(IBaseInterface<T, M> service, IMapper mapper = null) : ControllerBase {
         protected readonly IBaseInterface<T, M> _service = service;
         protected readonly IMapper _mapper = mapper;
 
@@ -19,8 +17,7 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public virtual async Task<IActionResult> Incluir([FromBody] T req)
-        {
+        public virtual async Task<IActionResult> Incluir([FromBody] T req) {
             var response = await _service.Incluir(req);
             return Ok(response);
         }
@@ -31,8 +28,7 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public virtual async Task<IActionResult> Alterar([FromBody] T req)
-        {
+        public virtual async Task<IActionResult> Alterar([FromBody] T req) {
             var response = await _service.Alterar(req);
             return Ok(response);
         }
@@ -43,8 +39,7 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public virtual async Task<IActionResult> Excluir([FromRoute] Guid id)
-        {
+        public virtual async Task<IActionResult> Excluir([FromRoute] Guid id) {
             var response = await _service.Excluir(id);
             return Ok(response);
         }
@@ -55,9 +50,19 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public virtual async Task<IActionResult> Obter([FromRoute] Guid id)
-        {
+        public virtual async Task<IActionResult> Obter([FromRoute] Guid id) {
             var response = await _service.Obter(id);
+            return Ok(response);
+        }
+
+        [HttpGet("load/{id}")]
+        [SwaggerOperation(Description = "Obtém um registro pelo ID.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public virtual async Task<IActionResult> Load([FromRoute] Guid id) {
+            var response = await _service.Load(id);
             return Ok(response);
         }
 
@@ -67,8 +72,7 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public virtual async Task<IActionResult> Obter()
-        {
+        public virtual async Task<IActionResult> Obter() {
             var response = await _service.Obter();
             return Ok(response);
         }
@@ -79,9 +83,19 @@ namespace SIGE.Controller
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ObterDropDown()
-        {
+        public async Task<IActionResult> ObterDropDown() {
             var response = await _service.ObterDropDown();
+            return Ok(response);
+        }
+
+        [HttpGet("source")]
+        [SwaggerOperation(Description = "Obtém a lista com Id e Descrição")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ObterSource() {
+            var response = await _service.ObterSource();
             return Ok(response);
         }
     }

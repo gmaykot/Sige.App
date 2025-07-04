@@ -107,6 +107,9 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
           this.empresaDropdown = response.data; 
         }                        
         this.loading = false;
+      }).catch((e) => {
+        e.error?.errors?.map((x: any) => this.alertService.showError(x.value));
+        this.loading = false;
       });
   }
 
@@ -133,8 +136,8 @@ export class ContratoComponent extends ContratoConfigSettings implements OnInit 
         }      
         this.loading = false;
       }).catch((e) => {
+        e.error?.errors?.map((x: any) => this.alertService.showError(x.value));
         this.loading = false;
-        this.alertService.showError(e);
       });    
   }
   

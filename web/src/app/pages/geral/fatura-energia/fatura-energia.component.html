@@ -37,7 +37,7 @@
             <!-- Dados Fatura -->
             <nb-step [label]="labelOne" [stepControl]="control">
                 <ng-template #labelOne>Fatura</ng-template>
-                <h6>Dados da Fatura {{ getPontoMedicaoDesc() }} <div *ngIf="getControlValues('pontoMedicaoDesc') != null" class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
+                <h6>Dados da Fatura {{ getPontoMedicaoDesc() }} <div *ngIf="getControlValues('pontoMedicaoDesc') !== null" class="h7 {{getControlValues('segmento') === 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') === 0 ? 'VERDE' : 'AZUL'}}</div></h6>
                 <nb-card style="border: 0rem;" [nbSpinner]="loading">
                     <nb-card-body>
                         <form [formGroup]="control">
@@ -65,7 +65,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="inputLastName" class="label">Concessionária*</label>
-                                        <input *ngIf="concessionarias.length <= 1" readonly nbInput fullWidth [value]="concessionarias.length == 1 ? concessionarias[0].descricao : ''" style="background-color: transparent; border: 0px;">
+                                        <input *ngIf="concessionarias.length <= 1" readonly nbInput fullWidth [value]="concessionarias.length === 1 ? concessionarias[0].descricao : ''" style="background-color: transparent; border: 0px;">
                                         <nb-select *ngIf="concessionarias.length > 1" fullWidth placeholder="Selecione" formControlName="concessionariaId">
                                             <nb-option *ngFor="let con of concessionarias"
                                                 value="{{con.id}}">{{con.descricao}}</nb-option>
@@ -77,14 +77,14 @@
                     </nb-card-body>
                 </nb-card>
                 <button nbButton (click)="onCancel()">Cancelar</button>
-                <button *ngIf="getControlValues('id') != null && getControlValues('validado') == false" nbButton style="margin-left: 0.5rem;" status="danger" (click)="onDelete()">Excluir</button>
+                <button *ngIf="getControlValues('id') !== null && getControlValues('validado') === false" nbButton style="margin-left: 0.5rem;" status="danger" (click)="onDelete()">Excluir</button>
                 <button nbButton style="margin-left: 0.5rem;" nbStepperNext [disabled]="!habilitaFatura()" (click)="loadLancamentos()">Próximo</button>
             </nb-step>
 
             <!-- Lançamentos -->
             <nb-step [label]="labelTwo">
                 <ng-template #labelTwo>Lançamentos</ng-template>
-                <h6>Lançamentos {{ getPontoMedicaoDesc() }} <div class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
+                <h6>Lançamentos {{ getPontoMedicaoDesc() }} <div class="h7 {{getControlValues('segmento') === 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') === 0 ? 'VERDE' : 'AZUL'}}</div></h6>
                 <div class="card-row">
                     <div class="card-col">  
                         <nb-card>
@@ -454,8 +454,8 @@
                                     <ng-container *ngFor="let lanc of filtrarLancamentos(true, false, true)">
                                         <tr>
                                             <td style="text-align: left;">{{ lanc.descricao }}</td>
-                                            <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '1' ? 'red' : '' }">
-                                            {{ lanc.tipo == '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
+                                            <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo === '1' ? 'red' : '' }">
+                                            {{ lanc.tipo === '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
                                             </td>
                                         </tr>
                                         </ng-container>
@@ -470,8 +470,8 @@
                                     <ng-container *ngFor="let lanc of filtrarLancamentos(false, false)">
                                       <tr>
                                         <td style="text-align: left;">{{ lanc.descricao }}</td>
-                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '1' ? 'red' : '' }">
-                                          {{ lanc.tipo == '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo === '1' ? 'red' : '' }">
+                                          {{ lanc.tipo === '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
                                         </td>
                                       </tr>
                                     </ng-container>
@@ -486,8 +486,8 @@
                                     <ng-container *ngFor="let lanc of filtrarLancamentos(true, false)">
                                       <tr>
                                         <td style="text-align: left;">{{ lanc.descricao }}</td>
-                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '1' ? 'red' : '' }">
-                                          {{ lanc.tipo == '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo === '1' ? 'red' : '' }">
+                                          {{ lanc.tipo === '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
                                         </td>
                                       </tr>
                                     </ng-container>
@@ -502,8 +502,8 @@
                                     <ng-container *ngFor="let lanc of filtrarLancamentos(true, true)">
                                       <tr>
                                         <td style="text-align: left;">{{ lanc.descricao }}</td>
-                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo == '1' ? 'red' : '' }">
-                                          {{ lanc.tipo == '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
+                                        <td [ngStyle]="{ 'text-align': 'center', 'color': lanc.tipo === '1' ? 'red' : '' }">
+                                          {{ lanc.tipo === '1' ? '(' + (lanc.valor | currency:'BRL':'symbol':'1.2-4') + ')' : (lanc.valor | currency:'BRL':'symbol':'1.2-4') }}
                                         </td>
                                       </tr>
                                     </ng-container>

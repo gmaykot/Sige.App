@@ -29,6 +29,12 @@ export class DefaultService<T> extends DefaultServiceUtil<T> {
     return { ...ret, data: formattedReq };
   }
 
+  public async load(id: string): Promise<IResponseInterface<T>> {
+    const ret = await this.http.get<IResponseInterface<T>>(`/${this.urlBase}/load/${id}`);
+    const formattedReq = this.formatPosGet(ret?.data);
+    return { ...ret, data: formattedReq };
+  }
+
   public async post(req: T): Promise<IResponseInterface<T>> {
     const formattedReq = this.formatPrePost(req);
     const ret = await this.http.post<IResponseInterface<T>>(`/${this.urlBase}`, formattedReq);

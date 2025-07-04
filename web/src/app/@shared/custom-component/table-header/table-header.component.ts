@@ -6,11 +6,8 @@ import { SessionStorageService } from '../../../@core/services/util/session-stor
   templateUrl: './table-header.component.html',
   styleUrls: ['./table-header.component.scss']
 })
-export class TableHeaderComponent implements OnInit{
+export class TableHeaderComponent {
   
-  ngOnInit(): void {
-  }
-
   @Input() showActions: boolean = false;
   @Input() showHelp: boolean = false;
   @Input() title: string = '';

@@ -8,16 +8,13 @@ import { STATUS_FASE } from '../../@core/enum/filtro-medicao';
     <div echarts [options]="options" class="echart"></div>
   `,
 })
-export class EchartsPieComponent implements AfterViewInit, OnDestroy, OnInit {
+export class EchartsPieComponent implements AfterViewInit, OnDestroy {
   @Input() descricao: string = '';
   @Input() dataSource: any[] = [];
   options: any = {};
   themeSubscription: any;
 
   constructor(private theme: NbThemeService) {
-  }
-
-  ngOnInit(): void {
   }
 
   ngAfterViewInit() {

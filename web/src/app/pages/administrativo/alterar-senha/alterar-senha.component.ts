@@ -11,7 +11,7 @@ import { IResponseInterface } from '../../../@core/data/response.interface';
   templateUrl: './alterar-senha.component.html',
   styleUrls: ['./alterar-senha.component.scss']
 })
-export class AlterarSenhaComponent implements OnInit{
+export class AlterarSenhaComponent {
   public habilitaOperacoes: boolean = false;
   public loading = false;
   public control = this.formBuilder.group({
@@ -30,9 +30,6 @@ export class AlterarSenhaComponent implements OnInit{
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
   }
   
-  ngOnInit(): void {
-  }
-
   limparFormulario(): void {
     this.control.reset();
   }

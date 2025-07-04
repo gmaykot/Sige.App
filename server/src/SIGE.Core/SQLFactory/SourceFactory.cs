@@ -1,11 +1,8 @@
 ﻿using System.Text;
 
-namespace SIGE.Core.SQLFactory
-{
-    public static class FaturamentoFactory
-    {
-        public static string ObterSource()
-        {
+namespace SIGE.Core.SQLFactory {
+    public static class SourceFactory {
+        public static string FaturamentosCoenel() {
             var builder = new StringBuilder();
 
             builder.AppendLine("WITH FaturamentosRanked AS (");
@@ -27,9 +24,30 @@ namespace SIGE.Core.SQLFactory
             builder.AppendLine("INNER JOIN AgentesMedicao agente ON ponto.AgenteMedicaoId = agente.Id");
             builder.AppendLine("INNER JOIN Empresas empresa ON agente.EmpresaId = empresa.Id");
             builder.AppendLine("WHERE fr.rn = 1");
-            builder.AppendLine("ORDER BY ponto.Nome, empresa.NomeFantasia;");
+            builder.AppendLine("ORDER BY empresa.NomeFantasia ASC, ponto.Nome ASC, fr.VigenciaFinal DESC");
 
             string query = builder.ToString();
+
+            return query;
+        }
+
+        public static string TarifaAplicacao() {
+            var builder = new StringBuilder();
+
+            builder.AppendLine("SELECT");
+            builder.AppendLine("    tarifa.Id,");
+            builder.AppendLine("    tarifa.ConcessionariaId,");
+            builder.AppendLine("    concessionaria.Nome AS DescConcessionaria,");
+            builder.AppendLine("    tarifa.NumeroResolucao,");
+            builder.AppendLine("    tarifa.SubGrupo,");
+            builder.AppendLine("    tarifa.Segmento,");
+            builder.AppendLine("    tarifa.DataUltimoReajuste,");
+            builder.AppendLine("    tarifa.Ativo");
+            builder.AppendLine("FROM TarifasAplicacao tarifa");
+            builder.AppendLine("INNER JOIN Concessionarias concessionaria ON concessionaria.Id = tarifa.ConcessionariaId");
+            builder.AppendLine("ORDER BY concessionaria.Nome ASC, tarifa.segmento ASC, tarifa.DataUltimoReajuste DESC");
+
+            var query = builder.ToString();
 
             return query;
         }

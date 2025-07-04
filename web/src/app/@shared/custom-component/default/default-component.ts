@@ -47,7 +47,7 @@ export class DefaultComponent<T> implements OnInit {
     return this.formBuilderService.createFormGroup<T>(this.className);
   }
 
-  createControlObject(objeto) {
+  createControlObject(objeto: T) {
     this.control = this.formBuilderService.createFormGroupObject<T>(this.className, objeto);
   }
 
@@ -77,18 +77,38 @@ export class DefaultComponent<T> implements OnInit {
       this.loading = false;
   }
 
-  onSelect(event){
-    this.clearForm();
-    this.createControlObject(event.data);
-    this.selectedObject = event.data;
-    this.selected = true;
-    this.edit = true;
-    this.scroolService.scrollTo(0,0);
+  onSelect(event: any){
+    if (event.data){
+      this.clearForm();
+      this.createControlObject(event.data);
+      this.selectedObject = event.data;
+      this.selected = true;
+      this.edit = true;
+      this.scroolService.scrollTo(0,0);
+    }
   }
 
   onEdit() {
     this.clearForm();
     this.edit = !this.edit;
+  }
+
+  onLoad(id: string) {
+    if (id) {
+      this.service
+      .load(id)
+      .then((response: IResponseInterface<T>) => {
+        if (response.success) {
+          this.createControlObject(response.data[0]);
+          this.selectedObject = response.data[0];
+          this.selected = true;
+          this.edit = true;
+          this.scroolService.scrollTo(0,0);
+        } else {
+          this.alertService.showError("Erro ao carregar registro.");
+        }
+      });
+    }
   }
 
   async onSubmit(): Promise<void> {

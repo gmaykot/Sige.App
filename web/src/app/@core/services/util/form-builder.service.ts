@@ -31,7 +31,6 @@ export class FormBuilderService {
 
     // Obtém os valores padrões com base no nome da interface
     const defaultValues = defaultValuesMap[typeName];
-
     if (!defaultValues) {
       throw new Error(`Valores padrão para o tipo ${typeName} não foram encontrados.`);
     }

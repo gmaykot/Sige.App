@@ -1,22 +1,24 @@
 ﻿using AutoMapper;
+using MySqlConnector;
+using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Gerencial;
+using SIGE.Core.Models.Dto.Source;
 using SIGE.Core.Models.Sistema.Gerencial;
+using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 
-namespace SIGE.Services.Services.Gerencial
-{
-    public class TarifaAplicacaoService(AppDbContext appDbContext, IMapper mapper) : BaseService<TarifaAplicacaoDto, TarifaAplicacaoModel>(appDbContext, mapper)
-    {
+namespace SIGE.Services.Services.Gerencial {
+    public class TarifaAplicacaoService(AppDbContext appDbContext, IMapper mapper) : BaseService<TarifaAplicacaoDto, TarifaAplicacaoModel>(appDbContext, mapper) {
+        public override async Task<Response> ObterSource() {
+            return await ExecutarSource<TarifaAplicacaoSourceDto>(SourceFactory.TarifaAplicacao());
+        }
 
-        //public async Task<Response> Obter()
-        //{
-        //    var ret = new Response();
-        //    var res = await _appDbContext.TarifasAplicacao.Include(t => t.Concessionaria).ToListAsync();
-        //    if (res.Count > 0)
-        //        return ret.SetOk().SetData(_mapper.Map<IEnumerable<TarifaAplicacaoDto>>(res));
-
-        //    return ret.SetNotFound()
-        //        .AddError(ETipoErro.INFORMATIVO, $"Não existem registros cadastrados.");
-        //}
+        public override async Task<Response> Load(Guid id) {
+            var parameters = new MySqlParameter[]
+            {
+                new("@Id", MySqlDbType.Guid) { Value = id },
+            };
+            return await ExecutarSource<TarifaAplicacaoDto>(CarregarFactory.TarifaAplicacao(), parameters);
+        }
     }
 }

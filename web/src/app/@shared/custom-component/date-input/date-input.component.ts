@@ -1,6 +1,6 @@
 /* eslint-disable @angular-eslint/component-selector */
 import { DatePipe } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, forwardRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
