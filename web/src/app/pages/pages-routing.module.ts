@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PagesComponent } from './pages.component';
+import { GeralGuard } from '../@core/guards/GeralGuard';
 import { NotFoundComponent } from '../@core/pages/not-found/not-found.component';
 import { UnauthorizedComponent } from '../@core/pages/unauthorized/unauthorized.component';
-import { GeralGuard } from '../@core/guards/GeralGuard';
 
 const routes: Routes = [
   {

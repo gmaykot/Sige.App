@@ -223,10 +223,12 @@
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "ngx",
-      "style": "scss"
+      "style": "scss",
+      "skipTests": true
     },
     "@schematics/angular:directive": {
-      "prefix": "ngx"
+      "prefix": "ngx",
+      "skipTests": true
     },
     "@angular-eslint/schematics:application": {
       "setParserOptionsProject": true
