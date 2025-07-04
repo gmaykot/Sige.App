@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -70,6 +70,9 @@ import { ValorAnualComponent } from './custom-component/valor-anual.component';
 import { ValorMensalComponent } from './custom-component/valor-mensal.component';
 import { ChartjsBarComponent } from './charts/chartjs-bar.component';
 import { ThemeModule } from '../@theme/theme.module';
+import { AlertService } from '../@core/services/util/alert.service';
+import { CapitalizePipe } from '../@theme/pipes';
+import { RelatorioMedicaoPdfService } from '../pages/geral/relatorio-medicao/relatorio-medicao-pdf.service';
 
 @NgModule({
   imports: [
@@ -138,7 +141,6 @@ import { ThemeModule } from '../@theme/theme.module';
     ImpostoConcessionariaComponent,
     ListaContatoComponent,
     MedicaoCurtoPrazoComponent,
-    MoedaParentesesPipe,
     PontoMedicaoComponent,
     RadioButtonComponent,
     SelectPeriodoComponent,
@@ -147,6 +149,7 @@ import { ThemeModule } from '../@theme/theme.module';
     ValidacaoMedicaoComponent,
     ValorAnualComponent,
     ValorMensalComponent,
+    MoedaParentesesPipe
   ],
   exports: [
     // Angular core modules
@@ -196,6 +199,8 @@ import { ThemeModule } from '../@theme/theme.module';
     AjudaOperacaoComponent,
     CustomRegistrationComponent,
     TableHeaderComponent,
+    MoedaParentesesPipe
   ],
+  providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService, MoedaParentesesPipe]
 })
 export class SharedModule {}

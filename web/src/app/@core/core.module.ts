@@ -14,7 +14,7 @@ import {
 } from './utils';
 import { NbCardModule, NbButtonModule, NbAlertModule, NbCheckboxModule, NbInputModule, NbSpinnerModule } from '@nebular/theme';
 import { ThemeModule } from '../@theme/theme.module';
-import { NgxLoginComponent } from '../pages/login/login.component';
+import { NgxLoginComponent } from './pages/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NotFoundComponent } from './pages/not-found/not-found.component';

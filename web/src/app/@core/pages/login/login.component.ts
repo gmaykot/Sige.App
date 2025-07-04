@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NB_AUTH_OPTIONS, NbAuthService, getDeepFromObject } from '@nebular/auth';
-import { OAuth2Service } from '../../@core/services/util/oauth2.service';
-import { MenuUsuarioService } from '../../@core/services/administrativo/menu-usuario.service';
-import { SessionSige } from '../../@core/enum/session.const';
+import { OAuth2Service } from '../../services/util/oauth2.service';
+import { MenuUsuarioService } from '../../services/administrativo/menu-usuario.service';
+import { SessionSige } from '../../enum/session.const';
 
 @Component({
   selector: 'ngx-login',
