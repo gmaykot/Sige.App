@@ -3,12 +3,14 @@ import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+// Angular and Third-party modules
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { MatTableModule } from '@angular/material/table';
 import { ChartModule } from 'angular2-chartjs';
 
+// Nebular modules
 import {
   NbAccordionModule,
   NbActionsModule,
@@ -39,20 +41,20 @@ import {
   NbWindowModule,
 } from '@nebular/theme';
 
-// Components and Pipes
-import { TableHeaderComponent } from './custom-component/table-header/table-header.component';
-import { CustomRegistrationComponent } from './custom-component/custom-registration/custom-registration.component';
+// Shared components
 import { AjudaOperacaoComponent } from './custom-component/ajuda-operacao/ajuda-operacao.component';
-import { ValidacaoMedicaoComponent } from './custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
-import { MoedaParentesesPipe } from '../@core/pipe/moeda-parenteses.pipe';
 import { AgenteMedicaoComponent } from './custom-component/agente-medicao.component';
 import { AlertComponent } from './custom-component/alert-component/alert-component';
 import { AutoCompleteComponent } from './custom-component/auto-complete/auto-complete.component';
 import { BandeiraTarifariaVigenteComponent } from './custom-component/bandeira-tarifaria-vigente/bandeira-tarifaria-vigente.component';
+import { ChartjsBarComponent } from './charts/chartjs-bar.component';
+import { EchartsBarComponent } from './charts/echarts-bar.component';
+import { EchartsPieComponent } from './charts/echarts-pie.component';
 import { CheckboxComponent } from './custom-component/checkbox-component';
 import { ContatoComponent } from './custom-component/contato.component';
 import { ListaContatoComponent } from './custom-component/contato/contato.subcomponent';
 import { CustomDeleteConfirmationComponent } from './custom-component/custom-delete-confirmation.component';
+import { CustomRegistrationComponent } from './custom-component/custom-registration/custom-registration.component';
 import { DateInputComponent } from './custom-component/date-input/date-input.component';
 import { DeleteActionLinkComponent } from './custom-component/delete-action-link/delete-action-link.component';
 import { EditMedicaoComponent } from './custom-component/edit-medicao/edit-medicao.component';
@@ -66,33 +68,33 @@ import { PontoMedicaoComponent } from './custom-component/ponto-medicao.componen
 import { RadioButtonComponent } from './custom-component/radiobutton-component';
 import { SelectPeriodoComponent } from './custom-component/select-periodo.component';
 import { SelectStatusComponent } from './custom-component/select-status.component';
+import { TableHeaderComponent } from './custom-component/table-header/table-header.component';
+import { ValidacaoMedicaoComponent } from './custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
 import { ValorAnualComponent } from './custom-component/valor-anual.component';
 import { ValorMensalComponent } from './custom-component/valor-mensal.component';
-import { ChartjsBarComponent } from './charts/chartjs-bar.component';
+
+// Pipes and Services
 import { ThemeModule } from '../@theme/theme.module';
+import { MoedaParentesesPipe } from '../@core/pipe/moeda-parenteses.pipe';
 import { AlertService } from '../@core/services/util/alert.service';
 import { CapitalizePipe } from '../@theme/pipes';
 import { RelatorioMedicaoPdfService } from '../pages/geral/relatorio-medicao/relatorio-medicao-pdf.service';
-import { EchartsBarComponent } from './charts/echarts-bar.component';
-import { EchartsPieComponent } from './charts/echarts-pie.component';
+import { StatusIconComponent } from './custom-component/status-icon/status-icon.component';
 
 @NgModule({
   imports: [
-    // Angular core modules
     CommonModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
     ThemeModule,
 
-    // Third-party modules
     Ng2SmartTableModule,
     NgxMaskModule.forRoot(),
     NgxEchartsModule,
     MatTableModule,
     ChartModule,
 
-    // Nebular modules
     NbAccordionModule,
     NbActionsModule,
     NbAlertModule,
@@ -122,7 +124,6 @@ import { EchartsPieComponent } from './charts/echarts-pie.component';
     NbWindowModule.forRoot(),
   ],
   declarations: [
-    // Shared components
     AjudaOperacaoComponent,
     AgenteMedicaoComponent,
     AlertComponent,
@@ -133,17 +134,17 @@ import { EchartsPieComponent } from './charts/echarts-pie.component';
     EchartsPieComponent,
     CheckboxComponent,
     ContatoComponent,
+    ListaContatoComponent,
     CustomDeleteConfirmationComponent,
     CustomRegistrationComponent,
-    DateFilterComponent,
     DateInputComponent,
     DeleteActionLinkComponent,
     EditMedicaoComponent,
-    EnvioEmailComponent,    
+    EnvioEmailComponent,
+    DateFilterComponent,
     GrupoEmpresaComponent,
     HistoricoMedicaoComponent,
     ImpostoConcessionariaComponent,
-    ListaContatoComponent,
     MedicaoCurtoPrazoComponent,
     PontoMedicaoComponent,
     RadioButtonComponent,
@@ -153,24 +154,22 @@ import { EchartsPieComponent } from './charts/echarts-pie.component';
     ValidacaoMedicaoComponent,
     ValorAnualComponent,
     ValorMensalComponent,
-    MoedaParentesesPipe
+    MoedaParentesesPipe,
+    StatusIconComponent
   ],
   exports: [
-    // Angular core modules
     CommonModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
     ThemeModule,
 
-    // Third-party modules
     Ng2SmartTableModule,
     NgxMaskModule,
     NgxEchartsModule,
     MatTableModule,
     ChartModule,
 
-    // Nebular modules
     NbAccordionModule,
     NbActionsModule,
     NbAlertModule,
@@ -199,7 +198,6 @@ import { EchartsPieComponent } from './charts/echarts-pie.component';
     NbUserModule,
     NbWindowModule,
 
-    // Shared components
     AjudaOperacaoComponent,
     CustomRegistrationComponent,
     TableHeaderComponent,
@@ -208,6 +206,13 @@ import { EchartsPieComponent } from './charts/echarts-pie.component';
     EchartsBarComponent,
     ChartjsBarComponent
   ],
-  providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService, MoedaParentesesPipe]
+  providers: [
+    DecimalPipe,
+    CurrencyPipe,
+    CapitalizePipe,
+    RelatorioMedicaoPdfService,
+    AlertService,
+    MoedaParentesesPipe
+  ]
 })
 export class SharedModule {}

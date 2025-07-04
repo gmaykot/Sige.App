@@ -45,8 +45,25 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("    tarifa.Ativo");
             builder.AppendLine("FROM TarifasAplicacao tarifa");
             builder.AppendLine("INNER JOIN Concessionarias concessionaria ON concessionaria.Id = tarifa.ConcessionariaId");
+            builder.AppendLine("WHERE tarifa.DataExclusao IS NULL");
             builder.AppendLine("ORDER BY concessionaria.Nome ASC, tarifa.segmento ASC, tarifa.DataUltimoReajuste DESC");
 
+            var query = builder.ToString();
+
+            return query;
+        }
+
+        public static string SalarioMinimo() {
+            var builder = new StringBuilder();
+            builder.AppendLine("SELECT");
+            builder.AppendLine("    salario.Id,");
+            builder.AppendLine("    salario.VigenciaInicial,");
+            builder.AppendLine("    salario.VigenciaFinal,");
+            builder.AppendLine("    salario.Valor,");
+            builder.AppendLine("    salario.Ativo");
+            builder.AppendLine("FROM SalariosMinimos salario");
+            builder.AppendLine("WHERE salario.DataExclusao IS NULL");
+            builder.AppendLine("ORDER BY salario.VigenciaInicial DESC");
             var query = builder.ToString();
 
             return query;

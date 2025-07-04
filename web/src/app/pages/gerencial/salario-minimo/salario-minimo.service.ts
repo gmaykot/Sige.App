@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { DefaultService } from "../default-service";
-import { HttpService } from "../util/http.service";
-import { ISalarioMinimo } from "../../data/gerencial/salario-minimo";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
+import { ISalarioMinimo } from "../../../@core/data/gerencial/salario-minimo";
 
 @Injectable({ providedIn: "root" })
 export class SalarioMinimoService extends DefaultService<ISalarioMinimo> {

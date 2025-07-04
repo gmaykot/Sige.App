@@ -72,7 +72,10 @@ export class DefaultComponent<T> implements OnInit {
           this.source.load(response.data);
         } else {
           this.source.load([]);
+          response.errors?.map((x: any) => this.alertService.showError(x.value));
         }
+      }).catch((error) => {
+        this.alertService.showError(error);
       });
       this.loading = false;
   }
@@ -105,8 +108,10 @@ export class DefaultComponent<T> implements OnInit {
           this.edit = true;
           this.scroolService.scrollTo(0,0);
         } else {
-          this.alertService.showError("Erro ao carregar registro.");
+          response.errors?.map((x: any) => this.alertService.showError(x.value));
         }
+      }).catch((error) => {
+        this.alertService.showError(error);
       });
     }
   }
@@ -130,7 +135,7 @@ export class DefaultComponent<T> implements OnInit {
             this.alertService.showSuccess("Registro excluído com sucesso.");
             await this.loadSource();
           } else {
-            response.errors.map((x) => this.alertService.showError(x.value));
+            response.errors?.map((x: any) => this.alertService.showError(x.value));
           }
         })
         .catch((error) => {
@@ -159,7 +164,7 @@ export class DefaultComponent<T> implements OnInit {
         this.edit = true;
         this.selected = true;    
       } else {
-        res.errors.map((x) => this.alertService.showError(x.value));
+        res.errors?.map((x: any) => this.alertService.showError(x.value));
       }  
     }).catch((error) => {
       this.alertService.showError(error);
@@ -176,7 +181,7 @@ export class DefaultComponent<T> implements OnInit {
         this.edit = true;
         this.selected = true;    
       } else {
-        res.errors.map((x) => this.alertService.showError(x.value));
+        res.errors?.map((x: any) => this.alertService.showError(x.value));
       }  
     }).catch((error) => {
       this.alertService.showError(error);

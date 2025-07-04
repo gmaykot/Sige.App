@@ -145,7 +145,7 @@ namespace SIGE.Services.Services {
         /// </summary>
         public virtual async Task<Response> ObterSource() {
             return new Response().SetServiceUnavailable()
-                .AddError(ETipoErro.INFORMATIVO, "Serviço não implementado.");
+                .AddError(ETipoErro.INFORMATIVO, "Serviço para carregamento de registros não implementado.");
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace SIGE.Services.Services {
         /// </summary>
         public virtual async Task<Response> Load(Guid id) {
             return new Response().SetServiceUnavailable()
-                .AddError(ETipoErro.INFORMATIVO, "Serviço não implementado.");
+                .AddError(ETipoErro.INFORMATIVO, "Serviço para busca de registro não implementado.");
         }
 
 
@@ -166,7 +166,7 @@ namespace SIGE.Services.Services {
 
             var res = await _appDbContext.Database.SqlQueryRaw<TDto>(sql, parameters ?? []).ToListAsync();
 
-            if (res != null && res.Any())
+            if (res != null && res.Count != 0)
                 return ret.SetOk().SetData(_mapper.Map<IEnumerable<TDto>>(res));
 
             return ret.SetNotFound()

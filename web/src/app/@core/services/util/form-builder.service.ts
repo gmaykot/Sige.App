@@ -71,8 +71,8 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     tipoPerfil: ['', [Validators.required]],
     senha: ['', [Validators.required]],
     contraSenha: ['', [Validators.required]],
+    menusUsuario: [[], null],
     ativo: [true, null],
-    menusUsuario: [[], null]
   },
   Concessionaria: {
     id: ['', null],
@@ -87,7 +87,8 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     descConcessionaria: ['', null],
     mesReferencia: ['', [Validators.required]],
     valorPis: [0, [Validators.required]],
-    valorCofins: [0, [Validators.required]]
+    valorCofins: [0, [Validators.required]],
+    ativo: [true, null]
   },
   FaturamentoCoenel: {
     id: ['', null],
@@ -98,22 +99,26 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     vigenciaFinal: ['', null],
     valorFixo: [0, [Validators.required]],
     qtdeSalarios: [0, [Validators.required]],
-    porcentagem: [0, [Validators.required]]
+    porcentagem: [0, [Validators.required]],
+    ativo: [true, null]
   },
   SalarioMinimo: {
     id: ['', null],
     vigenciaInicial: ['', [Validators.required]],
     vigenciaFinal: ['', null],
-    valor: [0, [Validators.required]]
+    valor: [0, [Validators.required]],
+    ativo: [true, null]
   },
   BandeiraTarifariaVigente: {
     id: ['', null],
     bandeiraTarifariaId: ['', [Validators.required]],
     mesReferencia: ['', [Validators.required]],
     bandeira: [0, [Validators.required]],
+    ativo: [true, null]
   },
   LancamentosMensais: {
     id: ['', null],
     pontoMedicaoId: ['', [Validators.required]],
+    ativo: [true, null]
   }
 };

@@ -4,7 +4,7 @@ import { DefaultComponent } from '../../../@shared/custom-component/default/defa
 import { salarioMinimoSettings } from '../../../@shared/table-config/gerencial/salario-minimo.config';
 import { NbLayoutScrollService, NbDialogService } from '@nebular/theme';
 import { Classes } from '../../../@core/enum/classes.const';
-import { SalarioMinimoService } from '../../../@core/services/gerencial/salario-minimo.service';
+import { SalarioMinimoService } from './salario-minimo.service';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
 
@@ -24,6 +24,6 @@ export class SalarioMinimoComponent extends DefaultComponent<ISalarioMinimo> imp
     protected dialogService: NbDialogService
   ) 
   {
-    super(Classes.SALARIO_MINIMO, formBuilderService, service, alertService, scroolService, dialogService);
+    super(Classes.SALARIO_MINIMO, formBuilderService, service, alertService, scroolService, dialogService, true);
   }
 }

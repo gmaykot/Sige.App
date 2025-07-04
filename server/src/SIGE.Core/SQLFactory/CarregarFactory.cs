@@ -30,5 +30,23 @@ namespace SIGE.Core.SQLFactory {
 
             return query;
         }
+
+        public static string SalarioMinimo() {
+            var builder = new StringBuilder();
+            builder.AppendLine("SELECT");
+            builder.AppendLine("    salario.Id,");
+            builder.AppendLine("    salario.VigenciaInicial,");
+            builder.AppendLine("    salario.VigenciaFinal,");
+            builder.AppendLine("    salario.Valor,");
+            builder.AppendLine("    salario.Ativo,");
+            builder.AppendLine("    salario.DataExclusao,");
+            builder.AppendLine("    salario.DataRegistro");
+            builder.AppendLine("FROM SalariosMinimos salario");
+            builder.AppendLine("WHERE salario.DataExclusao IS NULL AND salario.Id = @Id");
+            builder.AppendLine("ORDER BY salario.VigenciaInicial DESC, salario.DataRegistro DESC");
+            var query = builder.ToString();
+
+            return query;
+        }
     }
 }
