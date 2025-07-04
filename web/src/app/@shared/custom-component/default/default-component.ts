@@ -4,7 +4,7 @@ import { SessionStorageService } from "../../../@core/services/util/session-stor
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import { NbDialogService, NbLayoutScrollService } from "@nebular/theme";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, Injector, OnInit } from "@angular/core";
 import { CustomDeleteConfirmationComponent } from "../custom-delete-confirmation.component";
 import { DefaultService } from "../../../@core/services/default-service";
 
@@ -12,26 +12,34 @@ import { DefaultService } from "../../../@core/services/default-service";
   template: ''
 })
 export class DefaultComponent<T> implements OnInit {
+  protected formBuilderService: FormBuilderService;
+  protected alertService: AlertService;
+  protected scrollService: NbLayoutScrollService;
+  protected dialogService: NbDialogService;
+
   public control = null;
   public edit = false;
   public habilitaOperacoes: boolean = false;
   public habilitaValidarRelatorio: boolean = false;
   public isSuperUsuario: boolean = false;
-  public loading = true;
+  public loading = false;
   public selected = false;
   public selectedObject: T;
   public source: LocalDataSource = new LocalDataSource();
   public sourceType: boolean = false;
+  public settings: any;
 
   constructor(
-    @Inject(String) protected className: any,
-    protected formBuilderService: FormBuilderService,
+    protected injector: Injector,
     protected service: DefaultService<T>,
-    protected alertService: AlertService,
-    protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService,
+    @Inject(String) protected className: string,
     @Inject(Boolean) sourceType: boolean = false
   ) {
+    this.formBuilderService = injector.get(FormBuilderService);
+    this.alertService = injector.get(AlertService);
+    this.scrollService = injector.get(NbLayoutScrollService);
+    this.dialogService = injector.get(NbDialogService);
+
     this.control = this.createControl();
     this.isSuperUsuario = SessionStorageService.isSuperUsuario();
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
@@ -81,48 +89,57 @@ export class DefaultComponent<T> implements OnInit {
   }
 
   onSelect(event: any){
+    this.loading = true;
     if (event.data){
       this.clearForm();
       this.createControlObject(event.data);
       this.selectedObject = event.data;
       this.selected = true;
       this.edit = true;
-      this.scroolService.scrollTo(0,0);
+      this.scrollService.scrollTo(0,0);
     }
+    this.loading = false;
   }
 
   onEdit() {
+    this.loading = true;
     this.clearForm();
     this.edit = !this.edit;
+    this.loading = false;
   }
 
-  onLoad(id: string) {
-    if (id) {
-      this.service
-      .load(id)
+  async onLoad(event: any) {
+    this.loading = true;
+    if (event.data){
+      await this.service
+      .load(event.data?.id)
       .then((response: IResponseInterface<T>) => {
         if (response.success) {
           this.createControlObject(response.data[0]);
           this.selectedObject = response.data[0];
           this.selected = true;
           this.edit = true;
-          this.scroolService.scrollTo(0,0);
+          this.scrollService.scrollTo(0,0);
         } else {
-          response.errors?.map((x: any) => this.alertService.showError(x.value));
+          response.errors?.map((x: any) => this.alertService.showError(x?.value));
         }
       }).catch((error) => {
         this.alertService.showError(error);
       });
     }
+    this.loading = false;
   }
 
   async onSubmit(): Promise<void> {
+    this.loading = true;
     if (this.control.valid) 
       await this.onChange();
     else this.alertService.showWarning("Os campos obrigatórios não foram preenchidos.");
+    this.loading = false;
   }
 
   async onDelete() {
+    this.loading = true;
     this.dialogService
     .open(CustomDeleteConfirmationComponent)
     .onClose.subscribe(async (excluir) => {
@@ -143,7 +160,7 @@ export class DefaultComponent<T> implements OnInit {
         });
       }
     });
-  }
+    }
 
    private async onChange() {
     const objct = this.loadObject();

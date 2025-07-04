@@ -16,7 +16,7 @@ import { ViewCell } from 'ng2-smart-table';
   `,
   styles: [`
     i {
-      cursor: pointer;
+      cursor: null;
       display: inline-block;
       line-height: 1;
     }

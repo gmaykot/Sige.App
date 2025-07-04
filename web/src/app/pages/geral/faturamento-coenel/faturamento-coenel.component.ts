@@ -1,10 +1,8 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, Injector, OnInit, ViewChild } from "@angular/core";
 import { FaturamentoCoenelConfigSettings } from "./faturamento-coenel.config";
 import { Classes } from "../../../@core/enum/classes.const";
-import { NbLayoutScrollService, NbDialogService, NbTabsetComponent } from "@nebular/theme";
+import { NbTabsetComponent } from "@nebular/theme";
 import { FaturamentoCoenelService } from "../../../@core/services/geral/faturamento-coenel.service";
-import { AlertService } from "../../../@core/services/util/alert.service";
-import { FormBuilderService } from "../../../@core/services/util/form-builder.service";
 import { EmpresaService } from "../../../@core/services/gerencial/empresa.service";
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { IDropDown } from "../../../@core/data/drop-down";
@@ -31,15 +29,12 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
 
   constructor(
     protected service: FaturamentoCoenelService,
-    protected formBuilderService: FormBuilderService,
-    protected alertService: AlertService,
-    protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService,
     private empresaService: EmpresaService,
-    private pontoMedicaoService: PontoMedicaoService
+    private pontoMedicaoService: PontoMedicaoService,
+    protected injector: Injector
   ) 
   {
-    super(Classes.FATURAMENTO_COENEL, formBuilderService, service, alertService, scroolService, dialogService, true);
+    super(injector, service, Classes.FATURAMENTO_COENEL, true);
   }
 
   async onSubmitCustom() {
@@ -162,7 +157,7 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
       qtdeSalarios: null,
       porcentagem: null      
     });
-    this.scroolService.scrollTo(0,0);  
+    this.scrollService.scrollTo(0,0);  
     this.tabset?.selectTab(this.tabset.tabs.toArray()[0]);
   }
 }

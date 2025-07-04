@@ -1,4 +1,6 @@
-export interface ITarifaAplicacao {
+import { BaseEntity } from "../../../@core/entity/base-entity.interface";
+
+export class TarifaAplicacaoEntity implements BaseEntity {
     id?: string;
     concessionariaId?: string;
     descConcessionaria?: string;
@@ -14,4 +16,15 @@ export interface ITarifaAplicacao {
     kWhForaPontaTE?: number;
     reatKWhPFTE?: number;
     ativo?: boolean;
+
+    static SourceInstance(): TarifaAplicacaoEntity {
+        return {
+          id: "",
+          descConcessionaria: "",
+          subGrupo: 0,
+          segmento: 0,
+          dataUltimoReajuste: "",
+          numeroResolucao: ""
+        };
+    };
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Injector, OnInit } from "@angular/core";
 import { ConcessionariaService } from "../../../@core/services/gerencial/concessionaria.service";
 import { NbDialogService, NbLayoutScrollService } from "@nebular/theme";
 import { AlertService } from "../../../@core/services/util/alert.service";
@@ -22,14 +22,11 @@ export class ConcessionariaComponent extends ConcessionariaConfigSettings implem
 
   constructor(
     protected service: ConcessionariaService,
-    protected formBuilderService: FormBuilderService,
-    protected alertService: AlertService,
-    protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService,
-    private impostoService: ImpostoConcessionariaService
+    private impostoService: ImpostoConcessionariaService,
+    protected injector: Injector
   ) 
   {
-    super(Classes.CONCESSIONARIA, formBuilderService, service, alertService, scroolService, dialogService);
+    super(injector, service, Classes.CONCESSIONARIA);
   }
 
   async ngOnInit() {

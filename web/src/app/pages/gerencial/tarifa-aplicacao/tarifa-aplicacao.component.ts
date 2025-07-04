@@ -1,48 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { IDropDown } from '../../../@core/data/drop-down';
 import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { settingsTarifaAplicacao } from '../../../@shared/table-config/tarifa-aplicacao.config';
 import { TarifaAplicacaoService } from './tarifa-aplicacao.service';
-import { ITarifaAplicacao } from '../../../@core/data/tarifa-aplicacao';
 import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
 import { DefaultComponent } from '../../../@shared/custom-component/default/default-component';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { Classes } from '../../../@core/enum/classes.const';
 import { SEGMENTO, TIPO_CONEXAO } from '../../../@core/enum/status-contrato';
+import { TarifaAplicacaoEntity } from './tarifa-aplicacao.interface';
+import { SmartTableConfigService } from '../../../@core/services/util/smart-table-config.service';
 
 @Component({
   selector: 'ngx-tarifa-aplicacao',
   templateUrl: './tarifa-aplicacao.component.html',
   styleUrls: ['./tarifa-aplicacao.component.scss']
 })
-export default class TarifaAplicacaoComponent extends DefaultComponent<ITarifaAplicacao> implements OnInit {
+export default class TarifaAplicacaoComponent extends DefaultComponent<TarifaAplicacaoEntity> implements OnInit {
   public concessionarias?: IDropDown[];
   public conexoes = TIPO_CONEXAO;
   public segmentos = SEGMENTO;
-  public settings = settingsTarifaAplicacao;
   
   constructor(
-    protected alertService: AlertService,
     private concessionariaService: ConcessionariaService,
-    protected dialogService: NbDialogService,
-    protected formBuilderService: FormBuilderService,
-    protected scroolService: NbLayoutScrollService,
-    protected service: TarifaAplicacaoService
+    protected service: TarifaAplicacaoService,
+    protected injector: Injector,
+    private smartService: SmartTableConfigService
   ) {
-    super(
-      Classes.TARIFA_APLICACAO,
-      formBuilderService,
-      service,
-      alertService,
-      scroolService,
-      dialogService,
-      true
-    );
+    super(injector, service, Classes.TARIFA_APLICACAO, true);
   }
   
   async ngOnInit() {
+    this.settings = this.smartService.generateTableSettingsFromObject(TarifaAplicacaoEntity.SourceInstance(), {
+      exibirStatus: true,
+      permitirDelete: true,
+    });    
     await super.ngOnInit();
     await this.getConcessionarias();
   }

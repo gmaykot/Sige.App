@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { LocalDataSource } from 'ng2-smart-table';
 import { UsuarioConfigSettings } from './usuario.config.settings';
@@ -24,15 +24,12 @@ export class UsuarioComponent extends UsuarioConfigSettings implements OnInit {
 
   constructor(
     protected service: UsuarioService,
-    protected formBuilderService: FormBuilderService,
-    protected alertService: AlertService,
-    protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService,
     private menuUsuarioService: MenuUsuarioService,
     private menuSistemaService: MenuSistemaService,
+    protected injector: Injector
   ) 
   {
-    super(Classes.USUARIO, formBuilderService, service, alertService, scroolService, dialogService);
+    super(injector, service, Classes.USUARIO);
   }
 
   async onSelectCustom(event) {
