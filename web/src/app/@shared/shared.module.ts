@@ -73,6 +73,8 @@ import { ThemeModule } from '../@theme/theme.module';
 import { AlertService } from '../@core/services/util/alert.service';
 import { CapitalizePipe } from '../@theme/pipes';
 import { RelatorioMedicaoPdfService } from '../pages/geral/relatorio-medicao/relatorio-medicao-pdf.service';
+import { EchartsBarComponent } from './charts/echarts-bar.component';
+import { EchartsPieComponent } from './charts/echarts-pie.component';
 
 @NgModule({
   imports: [
@@ -127,6 +129,8 @@ import { RelatorioMedicaoPdfService } from '../pages/geral/relatorio-medicao/rel
     AutoCompleteComponent,
     BandeiraTarifariaVigenteComponent,
     ChartjsBarComponent,
+    EchartsBarComponent,
+    EchartsPieComponent,
     CheckboxComponent,
     ContatoComponent,
     CustomDeleteConfirmationComponent,
@@ -199,7 +203,10 @@ import { RelatorioMedicaoPdfService } from '../pages/geral/relatorio-medicao/rel
     AjudaOperacaoComponent,
     CustomRegistrationComponent,
     TableHeaderComponent,
-    MoedaParentesesPipe
+    MoedaParentesesPipe,
+    EchartsPieComponent,
+    EchartsBarComponent,
+    ChartjsBarComponent
   ],
   providers: [DecimalPipe, CurrencyPipe, CapitalizePipe, DecimalPipe, RelatorioMedicaoPdfService, AlertService, MoedaParentesesPipe]
 })
