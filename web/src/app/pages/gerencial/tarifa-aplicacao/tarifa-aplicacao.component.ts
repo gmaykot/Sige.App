@@ -1,13 +1,9 @@
 import { Component, Injector, OnInit } from '@angular/core';
-import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { IDropDown } from '../../../@core/data/drop-down';
 import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
 import { IResponseInterface } from '../../../@core/data/response.interface';
-import { settingsTarifaAplicacao } from '../../../@shared/table-config/tarifa-aplicacao.config';
 import { TarifaAplicacaoService } from './tarifa-aplicacao.service';
-import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
 import { DefaultComponent } from '../../../@shared/custom-component/default/default-component';
-import { AlertService } from '../../../@core/services/util/alert.service';
 import { Classes } from '../../../@core/enum/classes.const';
 import { SEGMENTO, TIPO_CONEXAO } from '../../../@core/enum/status-contrato';
 import { TarifaAplicacaoEntity } from './tarifa-aplicacao.interface';

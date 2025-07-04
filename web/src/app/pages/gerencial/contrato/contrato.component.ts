@@ -7,7 +7,7 @@ import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-compo
 import { ContratoService } from '../../../@core/services/gerencial/contrato.service';
 import { IContrato } from '../../../@core/data/contrato';
 import { EmpresaService } from '../../../@core/services/gerencial/empresa.service';
-import { FornecedorService } from '../../../@core/services/gerencial/fornecedor.service';
+import { FornecedorService } from '../fornecedor/fornecedor.service';
 import { ValorAnualContratoService } from '../../../@core/services/gerencial/valor-anual-contrato';
 import { ValorMensalContratoService } from '../../../@core/services/gerencial/valor-mensal-contrato';
 import { SEGMENTO, STATUS_CONTRATO, TIPO_ENERGIA } from '../../../@core/enum/status-contrato';

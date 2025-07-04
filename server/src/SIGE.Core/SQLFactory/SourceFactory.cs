@@ -94,5 +94,24 @@ namespace SIGE.Core.SQLFactory {
 
             return query;
         }
+
+        public static string Fornecedores() {
+            var builder = new StringBuilder();
+
+            builder.AppendLine("SELECT");
+            builder.AppendLine("    Id,");
+            builder.AppendLine("    Nome,");
+            builder.AppendLine("    CNPJ,");
+            builder.AppendLine("    TelefoneContato,");
+            builder.AppendLine("    TelefoneAlternativo,");
+            builder.AppendLine("    Ativo");
+            builder.AppendLine("FROM Fornecedores");
+            builder.AppendLine("WHERE DataExclusao IS NULL");
+            builder.AppendLine("ORDER BY Nome;");
+
+            var query = builder.ToString();
+
+            return query;
+        }
     }
 }

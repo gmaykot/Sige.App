@@ -8,4 +8,5 @@ export enum Classes
     SALARIO_MINIMO = 'SalarioMinimo',
     USUARIO = 'Usuario',
     ENERGIA_ACUMULADA = 'EnergiaAcumulada',
+    FORNECEDOR = 'Fornecedor',
 }

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { EnergiaAcumuladaControl } from '../../../pages/gerencial/energia-acumulada/energia-acumulada.service';
 import { TarifaAplicacaoControl } from '../../../pages/gerencial/tarifa-aplicacao/tarifa-aplicacao.service';
 import { SalarioMinimoControl } from '../../../pages/gerencial/salario-minimo/salario-minimo.service';
+import { FornecedorControl } from '../../../pages/gerencial/fornecedor/fornecedor.service';
 
 @Injectable({
   providedIn: 'root',
@@ -98,5 +99,6 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
   },
   EnergiaAcumulada: EnergiaAcumuladaControl,
   TarifaAplicacao: TarifaAplicacaoControl,
-  SalarioMinimo: SalarioMinimoControl
+  SalarioMinimo: SalarioMinimoControl,
+  Fornecedor: FornecedorControl
 };
