@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AjudaOperacaoComponent } from '../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component';
 import { NbLayoutScrollService, NbDialogService } from '@nebular/theme';
 import { GerenciamentoMensalService } from './gerenciamento-mensal.service';
@@ -14,7 +14,7 @@ import { FormBuilder } from '@angular/forms';
   templateUrl: './gerenciamento-mensal.component.html',
   styleUrls: ['./gerenciamento-mensal.component.scss']
 })
-export class GerenciamentoMensalComponent extends GerenciamentoMensalConfigSettings {
+export class GerenciamentoMensalComponent extends GerenciamentoMensalConfigSettings implements OnInit{
 public selected: any = false;
 public loading: any = false;
 public pisCofinsSelected: any = false;

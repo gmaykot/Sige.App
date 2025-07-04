@@ -16,7 +16,7 @@ export class ValorMensalPontoMedicaoComponent {
   onSubmitCustom(){}
   onDelete(){}
   clearForm(){}
-  onSelectCustom($event){}
+  onSelectCustom(){}
   onEdit(){}
   onHelp(){}
 }

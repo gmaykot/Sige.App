@@ -46,7 +46,6 @@ export class _RelatorioMedicaoPdfService {
   ): jsPDF {
     // TAMANHO A4 EM PT: 595.35 x 841.995
     const doc = new jsPDF("p", "pt", "a4");
-    const ajusteMargim = -50;
 
     /* LOGO & TITULO CABEÇALHO ---------------------------------------------------------------- */
     this.pdfConfig.addImagem(doc, {

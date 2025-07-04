@@ -1,11 +1,6 @@
 import { DatePipe } from "@angular/common";
-import { STATUS_CONTRATO, TIPO_ENERGIA } from "../../@core/enum/status-contrato";
+import { STATUS_CONTRATO } from "../../@core/enum/status-contrato";
 import { DateFilterComponent } from "../custom-component/filters/date-filter.component";
-
-
-const tipoEnergiaToList = Object.values(TIPO_ENERGIA).map(value => {
-  return { value: value.id, title: value.desc };
-});
 
 const statusToList = Object.values(STATUS_CONTRATO).map(value => {
   return { value: value.id, title: value.desc };

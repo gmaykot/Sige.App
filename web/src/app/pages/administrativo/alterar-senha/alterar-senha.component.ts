@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { UsuarioService } from '../../../@core/services/administrativo/usuario.service';
-import { IUsuarioSenha, Usuario } from '../../../@core/data/usuario';
+import { IUsuarioSenha } from '../../../@core/data/usuario';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 
 @Component({

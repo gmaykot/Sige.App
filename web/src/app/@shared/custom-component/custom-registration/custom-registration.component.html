@@ -1,6 +1,6 @@
 <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
     <nb-card-header> 
-      <ngx-table-header [title]="title" [showActions]="showActions" [showHelp]="showHelp" (onEdit)="onEditF($event)" (onHelp)="onHelpF($event)"></ngx-table-header>
+      <ngx-table-header [title]="title" [showActions]="showActions" [showHelp]="showHelp" (editCustom)="onEditCustom($event)" (helpCustom)="onHelpCustom($event)"></ngx-table-header>
     </nb-card-header>
   
     <nb-card-body>

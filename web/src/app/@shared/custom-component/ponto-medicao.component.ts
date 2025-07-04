@@ -4,8 +4,6 @@ import { IPontoMedicao } from '../../@core/data/ponto-medicao';
 import { IAgenteMedicao } from '../../@core/data/agente-medicao';
 import { FormBuilder, Validators } from '@angular/forms';
 import { SEGMENTO, TIPO_CONEXAO, TIPO_ENERGIA } from '../../@core/enum/status-contrato';
-import { IDropDown } from '../../@core/data/drop-down';
-
 
 @Component({
   selector: 'ngx-ponto-medicao-component',

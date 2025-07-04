@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { IDropDown } from '../../../@core/data/drop-down';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';

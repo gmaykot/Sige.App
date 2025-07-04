@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { RelatorioEconomiaPdfService } from "./relatorio-economia-pdf.service";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import { LocalDataSource } from "ng2-smart-table";
@@ -22,16 +22,12 @@ import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-
   templateUrl: "./relatorio-economia.component.html",
   styleUrls: ["./relatorio-economia.component.scss"],
 })
-export class RelatorioEconomiaComponent implements OnInit, AfterViewInit  {
+export class RelatorioEconomiaComponent implements OnInit {
   public chartOption: EChartsOption = null;
   chartInstance!: echarts.ECharts;
 
   onChartInit(chart: echarts.ECharts): void {
     this.chartInstance = chart;
-  }
-
-  ngAfterViewInit(): void {
-    
   }
   
   initChart() {

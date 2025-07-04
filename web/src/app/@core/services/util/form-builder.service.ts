@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { SEGMENTO } from '../../enum/status-contrato';
 
 @Injectable({
   providedIn: 'root',

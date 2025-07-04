@@ -1,17 +1,3 @@
-interface Grupo {
-  ordem: number;
-  titulo: string;
-  colunaQuantidade: string;
-  colunaValor: string;
-  colunaTotal: string;
-  subGrupos: SubGrupo[];
-}
-
-interface SubGrupo {
-  lancamentos: Lancamento[];
-  total: Total;
-}
-
 interface Lancamento {
   ordem: number;
   descricao: string;

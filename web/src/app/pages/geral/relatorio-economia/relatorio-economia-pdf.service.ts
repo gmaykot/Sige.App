@@ -225,10 +225,6 @@ export class RelatorioEconomiaPdfService {
       height: 57,
     });
 
-    const dataHoje = new Date();
-    const dataOptions = { month: "numeric" as const, year: "numeric" as const };
-    const dataFormatada = dataHoje.toLocaleDateString("pt-BR", dataOptions);
-
     const ajusteMargim = 20;
     let margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
         /* COMPARATIVO GRÁFICO */

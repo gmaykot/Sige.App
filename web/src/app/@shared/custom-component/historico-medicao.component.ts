@@ -1,10 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
-import { ViewCell } from 'ng2-smart-table';
-import { CustomDeleteConfirmationComponent } from './custom-delete-confirmation.component';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { IDropDown } from '../../@core/data/drop-down';
+import { CustomDeleteConfirmationComponent } from './custom-delete-confirmation.component';
 
 @Component({
     selector: 'ngx-historico-medicao-component',

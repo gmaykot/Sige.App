@@ -52,11 +52,6 @@ export interface IValorAnaliticoMedicao
     icms: number;
 }
 
-export interface IRelatorioMedicaoRequest
-{
-
-}
-
 export interface IValoresMedicao
 {
     valorConsumoTotal: number,

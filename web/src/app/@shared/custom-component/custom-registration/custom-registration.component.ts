@@ -15,18 +15,18 @@ export class CustomRegistrationComponent {
   @Input() showActions: boolean = false;
   @Input() showHelp: boolean = false;
   @Output() deleteConfirm = new EventEmitter();
-  @Output() onEdit = new EventEmitter();
-  @Output() onHelp = new EventEmitter();
+  @Output() editCustom = new EventEmitter();
+  @Output() helpCustom = new EventEmitter();
 
   onDeleteConfirm(event?: any) {
     this.deleteConfirm.emit(event);
   }
 
-  onEditF(event?: any) {
-    this.onEdit.emit(event);
+  onEditCustom(event?: any) {
+    this.editCustom.emit(event);
   }
 
-  onHelpF(event?: any) {
-    this.onHelp.emit(event);
+  onHelpCustom(event?: any) {
+    this.helpCustom.emit(event);
   }
 }

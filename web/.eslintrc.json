@@ -10,7 +10,8 @@
       },
       "extends": [
         "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/template/process-inline-templates"
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "plugin:@typescript-eslint/recommended"
       ],
       "rules": {
         "@angular-eslint/no-input-rename": [
@@ -35,6 +36,7 @@
             "type": "attribute"
           }
         ],
+        "@angular-eslint/no-output-on-prefix": "error",
         "@typescript-eslint/no-unused-vars": [
           "warn",
           {

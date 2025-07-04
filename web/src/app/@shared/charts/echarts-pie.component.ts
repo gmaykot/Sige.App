@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
-import { STATUS_FASE } from '../../@core/enum/filtro-medicao';
 
 @Component({
   selector: 'ngx-echarts-pie',

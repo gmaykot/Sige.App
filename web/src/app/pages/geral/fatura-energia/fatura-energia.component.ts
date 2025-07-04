@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { IDropDown } from "../../../@core/data/drop-down";
 import { LocalDataSource } from "ng2-smart-table";
 import { FormBuilder, Validators } from "@angular/forms";

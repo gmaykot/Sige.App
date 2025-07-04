@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { NbDialogRef } from '@nebular/theme';
-import { ValidacaoMedicaoComponent } from '../validacao-medicao/validacao-medicao/validacao-medicao.component';
 
 @Component({
   selector: 'ngx-edit-medicao',

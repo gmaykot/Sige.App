@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from './http.service';
-import { IAuth } from '../../data/auth';
 import { IEmailData } from '../../data/email-data';
 
 @Injectable({ providedIn: 'root' })

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 
 @Component({
@@ -11,18 +11,18 @@ export class TableHeaderComponent {
   @Input() showActions: boolean = false;
   @Input() showHelp: boolean = false;
   @Input() title: string = '';
-  @Output() onEdit = new EventEmitter();
-  @Output() onHelp = new EventEmitter();
+  @Output() editCustom = new EventEmitter();
+  @Output() helpCustom = new EventEmitter();
 
   showTableActions(): boolean {
     return this.showActions && SessionStorageService.habilitaOperacoes();
   }
 
   edit(){
-    this.onEdit.emit();
+    this.editCustom.emit();
   }
 
   help(){
-    this.onHelp.emit();
+    this.helpCustom.emit();
   }
 }

@@ -1,4 +1,3 @@
-import { style } from "@angular/animations";
 import { DeleteActionLinkComponent } from "../../@shared/custom-component/delete-action-link/delete-action-link.component";
 
 export interface CardSettings {

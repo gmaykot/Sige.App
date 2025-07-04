@@ -211,7 +211,7 @@
             <!-- Lançamentos Adicionais -->
             <nb-step [label]="labelThree">
                 <ng-template #labelThree>Lançamentos Adicionais</ng-template>
-                <h6>Lançamentos Adicionais {{ getPontoMedicaoDesc() }} <div class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div></h6>
+                <h6>Lançamentos Adicionais {{ getPontoMedicaoDesc() }} <div class="h7 {{getControlValues('segmento') === 0 ? 'green' : 'blue'}}" style="margin-bottom: 1.7rem;">Segmento {{getControlValues('segmento') === 0 ? 'VERDE' : 'AZUL'}}</div></h6>
                 <nb-card style="border: 0rem;">
                     <nb-card-body>
                         <form [formGroup]="lancamentoControl">
@@ -307,7 +307,7 @@
                                         </div> 
                                         <div class="col-sm-4">
                                             <label for="inputLastName" class="label-emissao">Segmento</label>
-                                            <div class="h7 {{getControlValues('segmento') == 0 ? 'green' : 'blue'}}">{{getControlValues('segmento') == 0 ? 'VERDE' : 'AZUL'}}</div>
+                                            <div class="h7 {{getControlValues('segmento') === 0 ? 'green' : 'blue'}}">{{getControlValues('segmento') === 0 ? 'VERDE' : 'AZUL'}}</div>
                                         </div> 
                                     </div>
                                     <div class="row" style="margin-bottom: 0.7rem;">
@@ -520,8 +520,8 @@
                     </div>
                 </div>
                 <button nbButton nbStepperPrevious>Voltar</button>
-                <button nbButton style="margin-left: 0.5rem;" status="warning" *ngIf="getControlValues('validado') == false" (click)="emitirFatura()">{{editLabel ? 'Alterar' : 'Emitir'}} Fatura</button>
-                <button nbButton style="margin-left: 0.5rem;" status="danger" *ngIf="getControlValues('id') != null" (click)="onValid(!getControlValues('validado'))">{{getControlValues('validado') == false ? 'Validar' : 'Limpar Validação'}}</button>
+                <button nbButton style="margin-left: 0.5rem;" status="warning" *ngIf="getControlValues('validado') === false" (click)="emitirFatura()">{{editLabel ? 'Alterar' : 'Emitir'}} Fatura</button>
+                <button nbButton style="margin-left: 0.5rem;" status="danger" *ngIf="getControlValues('id') !== null" (click)="onValid(!getControlValues('validado'))">{{getControlValues('validado') === false ? 'Validar' : 'Limpar Validação'}}</button>
                 <button nbButton style="margin-left: 0.5rem;" (click)="onCancel()">Sair</button>
             </nb-step>
         </nb-stepper>

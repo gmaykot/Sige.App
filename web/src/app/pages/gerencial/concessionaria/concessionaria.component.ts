@@ -106,7 +106,6 @@ export class ConcessionariaComponent extends ConcessionariaConfigSettings implem
       .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir os impostos selecionados?'} })
       .onClose.subscribe(async (excluir) => {
         if (excluir){
-          var erroExcluir = false;
           this.impostosChecked.forEach(imposto => {
             this.impostoService.delete(imposto.id).then(async (res: IResponseInterface<any>) => {
               if (res.success){
@@ -115,7 +114,6 @@ export class ConcessionariaComponent extends ConcessionariaConfigSettings implem
                 this.alertService.showSuccess("Imposto excluído com sucesso.");
               } else 
               {
-                erroExcluir = true;
                 res.errors.map((x) => this.alertService.showError(`Imposto ${imposto.nome} - ${x.value}`));
               }
             });            

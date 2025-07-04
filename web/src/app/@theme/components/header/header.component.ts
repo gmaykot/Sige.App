@@ -12,8 +12,6 @@ import { Subject } from "rxjs";
 import { Router } from "@angular/router";
 import { UsuarioService } from "../../../@core/services/administrativo/usuario.service";
 import { Usuario } from "../../../@core/data/usuario";
-import { FormBuilder } from "@angular/forms";
-import { environment } from "../../../../environments/environment";
 import { OAuth2Service } from "../../../@core/services/util/oauth2.service";
 import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
 

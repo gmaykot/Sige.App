@@ -1,10 +1,8 @@
-import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
 import { AlertService } from '../../../@core/services/util/alert.service';
-import { DateService } from '../../../@core/services/util/date.service';
 import { BandeiraTarifariaConfigSettings } from './bandeira-tarifaria.config.settings';
 import { BandeiraTarifariaService } from '../../../@core/services/gerencial/bandeira-tarifaria.service';
 import { IBandeiraTarifaria } from '../../../@core/data/bandeira-tarifaria';
@@ -231,7 +229,6 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
       .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir as bandeiras selecionadas?'} })
       .onClose.subscribe(async (excluir) => {
         if (excluir){
-          var erroExcluir = false;
           this.bandeirasChecked.forEach(bandeira => {
             this.bandeiraVigenteService.delete(bandeira.id).then(async (res: IResponseInterface<any>) => {
               if (res.success){
@@ -240,7 +237,6 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
                 this.alertService.showSuccess("Bandeira excluída com sucesso.");
               } else 
               {
-                erroExcluir = true;
                 res.errors.map((x) => this.alertService.showError(`Bandeira ${bandeira.bandeira} - ${x.value}`));
               }
             });            

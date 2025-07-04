@@ -1,5 +1,3 @@
-import { DatePipe } from "@angular/common";
-
 export const faturamentoSettings = {
     add: {
       addButtonContent: '<i class="nb-plus"></i>',

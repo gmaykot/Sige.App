@@ -1,4 +1,3 @@
-import { SUB_GRUPOS } from '../../@core/enum/const-dropbox';
 import { SEGMENTO, TIPO_CONEXAO } from '../../@core/enum/status-contrato';
 
 export const settingsTarifaAplicacao = {

@@ -1,8 +1,3 @@
-export interface IRelatorioEconomiaRequest
-{
-
-}
-
 export interface IRelatorioEconomiaList {  
     contratoId: string;
     fornecedorId: string;

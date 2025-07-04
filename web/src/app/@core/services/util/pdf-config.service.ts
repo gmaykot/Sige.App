@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import jsPDF, { TextOptionsLight } from "jspdf";
-import autoTable, { Styles, UserOptions } from "jspdf-autotable";
+import autoTable, { UserOptions } from "jspdf-autotable";
 
 export interface EstiloTextoPdf {
   fontSize: number;
@@ -55,8 +55,6 @@ export const margins = {
 
 @Injectable({ providedIn: "root" })
 export class PdfConfigService {
-  constructor() {}
-
   private estiloTextoTemas = {
     padrao: {
       fontSize: 9,

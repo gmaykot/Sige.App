@@ -3,7 +3,7 @@ import { IResponseInterface } from '../../data/response.interface';
 import { HttpService } from '../util/http.service';
 import { DefaultService } from '../default-service';
 import { IRelatorioFinal } from '../../data/geral/relatorio-economia/relatorio-final';
-import { IRelatorioEconomiaList, IRelatorioEconomiaRequest } from '../../data/gerencial/relatorio-economia';
+import { IRelatorioEconomiaList } from '../../data/gerencial/relatorio-economia';
 
 @Injectable({ providedIn: 'root' })
 export class RelatorioEconomiaService extends DefaultService<IRelatorioFinal> {

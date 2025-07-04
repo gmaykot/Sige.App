@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NbSortDirection, NbSortRequest, NbTreeGridDataSource, NbTreeGridDataSourceBuilder } from '@nebular/theme';
+import { NbSortDirection, NbTreeGridDataSource, NbTreeGridDataSourceBuilder } from '@nebular/theme';
 import { EmailService } from '../../../@core/services/util/email.service';
 
 interface TreeNode<T> {
@@ -79,7 +79,7 @@ export class AcompanhamentoEmailComponent implements OnInit {
 }
 
 @Component({
-  selector: 'nb-fs-icon',
+  selector: 'ngx-fs-icon',
   template: `
     <nb-tree-grid-row-toggle [expanded]="expanded" *ngIf="isDir(); else fileIcon">
     </nb-tree-grid-row-toggle>
