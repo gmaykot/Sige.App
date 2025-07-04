@@ -7,6 +7,7 @@ export class EnergiaAcumuladaEntity implements BaseEntity{
   mesReferencia?: string;
   valorMensalAcumulado?: number;
   valorTotalAcumulado?: number;
+  ativo?: boolean;
 
   static SourceInstance(): EnergiaAcumuladaEntity {
     return {

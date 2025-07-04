@@ -12,8 +12,7 @@ export class SalarioMinimoEntity implements BaseEntity {
       id: "",
       vigenciaInicial: new Date(),
       vigenciaFinal: new Date(),
-      valor: 0,
-      ativo: true,
+      valor: 0
     };
   }
 }

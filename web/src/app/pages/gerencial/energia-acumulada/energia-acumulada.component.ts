@@ -6,7 +6,7 @@ import { DefaultComponent } from '../../../@shared/custom-component/default/defa
 import { Classes } from '../../../@core/enum/classes.const';
 import { EnergiaAcumuladaEntity } from './energia-acumulada.interface';
 import { SmartTableConfigService } from '../../../@core/services/util/smart-table-config.service';
-import { EnergiaAcumuladaService } from '../../../@core/services/gerencial/energia-acumulada.service';
+import { EnergiaAcumuladaService } from './energia-acumulada.service';
 import { PontoMedicaoService } from '../../../@core/services/gerencial/ponto-medicao.service';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { IDropDown } from '../../../@core/data/drop-down';
@@ -47,7 +47,7 @@ export class EnergiaAcumuladaComponent extends DefaultComponent<EnergiaAcumulada
     this.settingsHistorico = this.smartService.generateTableSettingsFromObject(
       EnergiaAcumuladaEntity.SourceHistoricoInstance(),
       {
-        exibirStatus: false,
+        exibirStatus: true,
         permitirDelete: true,
       }
     );
@@ -81,10 +81,7 @@ export class EnergiaAcumuladaComponent extends DefaultComponent<EnergiaAcumulada
   }
 
   async onItemSelected(event: IDropDown) {
-    this.loading = true;
-
     await this.loadHistorico(event.id);
-
     this.control.patchValue({
       pontoMedicaoId: event.id,
     });

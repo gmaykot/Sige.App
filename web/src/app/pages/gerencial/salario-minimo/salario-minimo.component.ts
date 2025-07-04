@@ -1,11 +1,7 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { DefaultComponent } from '../../../@shared/custom-component/default/default-component';
-import { salarioMinimoSettings } from '../../../@shared/table-config/gerencial/salario-minimo.config';
-import { NbLayoutScrollService, NbDialogService } from '@nebular/theme';
 import { Classes } from '../../../@core/enum/classes.const';
 import { SalarioMinimoService } from './salario-minimo.service';
-import { AlertService } from '../../../@core/services/util/alert.service';
-import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
 import { SalarioMinimoEntity } from './salario-minimo.interface';
 import { SmartTableConfigService } from '../../../@core/services/util/smart-table-config.service';
 

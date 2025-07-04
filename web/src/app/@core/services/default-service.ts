@@ -44,6 +44,7 @@ export class DefaultService<T> extends DefaultServiceUtil<T> {
   }
 
   public async put(req: T): Promise<IResponseInterface<T>> {
+    console.log(req);
     const formattedReq = this.formatPrePost(req);
     const ret = await this.http.put<IResponseInterface<T>>(`/${this.urlBase}`, formattedReq);
     const formattedRet = this.formatPosGet(ret?.data);

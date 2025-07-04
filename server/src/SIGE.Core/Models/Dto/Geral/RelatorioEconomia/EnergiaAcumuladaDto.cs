@@ -6,5 +6,6 @@
         public double? ValorTotalAcumulado { get; set; }
         public Guid? PontoMedicaoId { get; set; }
         public string? PontoMedicaoDesc { get; set; }
+        public bool? Ativo { get; set; }
     }
 }
