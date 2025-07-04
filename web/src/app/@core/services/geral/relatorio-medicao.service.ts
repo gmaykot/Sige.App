@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IResponseInterface } from '../../data/response.interface';
 import { HttpService } from '../util/http.service';
-import { IRelatorioMedicaoRequest, IRelatorioMedicaoList, IRelatorioMedicao } from '../../data/relatorio-medicao';
+import { IRelatorioMedicaoList, IRelatorioMedicao } from '../../data/relatorio-medicao';
 import { DefaultService } from '../default-service';
 import { IRelatorioFinal } from '../../data/geral/relatorio-economia/relatorio-final';
 
@@ -12,7 +12,7 @@ export class RelatorioMedicaoService extends DefaultService<IRelatorioMedicao> {
         super(http, "relatorio-medicao");
     }
    
-    public async getRelatorios(relatorio: IRelatorioMedicaoRequest): Promise<IResponseInterface<IRelatorioMedicaoList[]>> {
+    public async getRelatorios(relatorio: any): Promise<IResponseInterface<IRelatorioMedicaoList[]>> {
         return await this.http.post<IResponseInterface<IRelatorioMedicaoList[]>>(`/${this.urlBase}`, relatorio);
     }
 

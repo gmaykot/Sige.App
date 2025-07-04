@@ -16,7 +16,7 @@ import { IContatoEmail, IEmailData } from '../../../@core/data/email-data';
 import { EnvioEmailComponent } from '../../../@shared/custom-component/envio-email/envio-email.component';
 import { IContato } from '../../../@core/data/contato';
 import { AlertService } from '../../../@core/services/util/alert.service';
-import { IFaturamentoMedicao, IRelatorioMedicao, IRelatorioMedicaoList, IRelatorioMedicaoRequest, IValoresMedicao, IValoresMedicaoAnalitico } from '../../../@core/data/relatorio-medicao';
+import { IFaturamentoMedicao, IRelatorioMedicao, IRelatorioMedicaoList, IValoresMedicao, IValoresMedicaoAnalitico } from '../../../@core/data/relatorio-medicao';
 import { ValidacaoMedicaoComponent } from '../../../@shared/custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { MedicaoService } from '../../../@core/services/geral/medicao.service';
@@ -219,7 +219,7 @@ export class RelatorioMedicaoComponent implements OnInit {
   }
 
   private async getRelatorios() {
-    var relatorio: IRelatorioMedicaoRequest = {
+    var relatorio: any = {
     };
     await this.relatorioMedicaoService
       .getRelatorios(relatorio)
