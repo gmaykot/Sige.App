@@ -85,7 +85,7 @@ namespace SIGE.Services.Services.Gerencial {
         }
 
         public override async Task<Response> ObterSource() {
-            return await ExecutarSource<SalarioMinimoDto>(SourceFactory.SalarioMinimo());
+            return await ExecutarSource<SalarioMinimoDto>(SourceFactory.SalariosMinimo());
         }
 
         public override async Task<Response> Load(Guid id) {
@@ -93,7 +93,7 @@ namespace SIGE.Services.Services.Gerencial {
             {
                 new("@Id", MySqlDbType.Guid) { Value = id },
             };
-            return await ExecutarSource<SalarioMinimoDto>(CarregarFactory.SalarioMinimo(), parameters);
+            return await ExecutarSource<SalarioMinimoDto>(CarregarFactory.SalariosMinimos(), parameters);
         }
     }
 }

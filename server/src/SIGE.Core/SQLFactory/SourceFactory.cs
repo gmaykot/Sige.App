@@ -31,7 +31,7 @@ namespace SIGE.Core.SQLFactory {
             return query;
         }
 
-        public static string TarifaAplicacao() {
+        public static string TarifasAplicacao() {
             var builder = new StringBuilder();
 
             builder.AppendLine("SELECT");
@@ -53,7 +53,7 @@ namespace SIGE.Core.SQLFactory {
             return query;
         }
 
-        public static string SalarioMinimo() {
+        public static string SalariosMinimo() {
             var builder = new StringBuilder();
             builder.AppendLine("SELECT");
             builder.AppendLine("    salario.Id,");
@@ -64,6 +64,32 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("FROM SalariosMinimos salario");
             builder.AppendLine("WHERE salario.DataExclusao IS NULL");
             builder.AppendLine("ORDER BY salario.VigenciaInicial DESC");
+            var query = builder.ToString();
+
+            return query;
+        }
+
+        public static string EnergiasAcumuladas() {
+            var builder = new StringBuilder();
+
+            builder.AppendLine("SELECT");
+            builder.AppendLine("    ea.Id,");
+            builder.AppendLine("    ea.MesReferencia,");
+            builder.AppendLine("    ea.ValorMensalAcumulado,");
+            builder.AppendLine("    ea.ValorTotalAcumulado,");
+            builder.AppendLine("    ea.PontoMedicaoId,");
+            builder.AppendLine("    ea.Ativo,");
+            builder.AppendLine("    pm.Nome AS PontoMedicaoDesc");
+            builder.AppendLine("FROM EnergiasAcumuladas ea");
+            builder.AppendLine("INNER JOIN (");
+            builder.AppendLine("    SELECT PontoMedicaoId, MAX(MesReferencia) AS UltimaReferencia");
+            builder.AppendLine("    FROM EnergiasAcumuladas");
+            builder.AppendLine("    WHERE DataExclusao IS NULL");
+            builder.AppendLine("    GROUP BY PontoMedicaoId");
+            builder.AppendLine(") ult ON ea.PontoMedicaoId = ult.PontoMedicaoId AND ea.MesReferencia = ult.UltimaReferencia");
+            builder.AppendLine("INNER JOIN PontosMedicao pm ON pm.Id = ea.PontoMedicaoId");
+            builder.AppendLine("WHERE ea.DataExclusao IS NULL AND pm.DataExclusao IS NULL");
+            builder.AppendLine("ORDER BY pm.Nome;");
             var query = builder.ToString();
 
             return query;

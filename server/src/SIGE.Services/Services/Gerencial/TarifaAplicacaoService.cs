@@ -10,7 +10,7 @@ using SIGE.DataAccess.Context;
 namespace SIGE.Services.Services.Gerencial {
     public class TarifaAplicacaoService(AppDbContext appDbContext, IMapper mapper) : BaseService<TarifaAplicacaoDto, TarifaAplicacaoModel>(appDbContext, mapper) {
         public override async Task<Response> ObterSource() {
-            return await ExecutarSource<TarifaAplicacaoSourceDto>(SourceFactory.TarifaAplicacao());
+            return await ExecutarSource<TarifaAplicacaoSourceDto>(SourceFactory.TarifasAplicacao());
         }
 
         public override async Task<Response> Load(Guid id) {
@@ -18,7 +18,7 @@ namespace SIGE.Services.Services.Gerencial {
             {
                 new("@Id", MySqlDbType.Guid) { Value = id },
             };
-            return await ExecutarSource<TarifaAplicacaoDto>(CarregarFactory.TarifaAplicacao(), parameters);
+            return await ExecutarSource<TarifaAplicacaoDto>(CarregarFactory.TarifasAplicacao(), parameters);
         }
     }
 }

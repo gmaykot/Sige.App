@@ -71,7 +71,7 @@ export class SmartTableConfigService {
 
   private detectType(value: any): string {
     if (typeof value === 'number') return 'number';
-    if (typeof value === 'boolean') return 'checkbox';
+    if (typeof value === 'boolean') return 'string';
     if (value instanceof Date) return 'string';
     return 'string';
   }
@@ -86,6 +86,13 @@ export class SmartTableConfigService {
       return {
         valuePrepareFunction: (val: number) =>
           lookupMaps[key].find((item) => item.id === val)?.desc ?? val,
+      };
+    }
+
+    if (typeof value === 'boolean') {
+      return {
+        valuePrepareFunction: (val: boolean) =>
+          val ? 'Sim' : 'Não',
       };
     }
 

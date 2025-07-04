@@ -204,7 +204,8 @@ import { StatusIconComponent } from './custom-component/status-icon/status-icon.
     MoedaParentesesPipe,
     EchartsPieComponent,
     EchartsBarComponent,
-    ChartjsBarComponent
+    ChartjsBarComponent,
+    AutoCompleteComponent
   ],
   providers: [
     DecimalPipe,

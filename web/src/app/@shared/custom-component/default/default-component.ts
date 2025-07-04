@@ -66,6 +66,12 @@ export class DefaultComponent<T> implements OnInit {
     this.selectedObject = null;
   }
 
+  resetForm(): void {
+    this.control.reset();
+    this.selected = false;
+    this.selectedObject = null;
+  }
+
   loadObject(){
     this.selectedObject = null;
     return this.control.value;
@@ -139,11 +145,11 @@ export class DefaultComponent<T> implements OnInit {
   }
 
   async onDelete() {
-    this.loading = true;
     this.dialogService
     .open(CustomDeleteConfirmationComponent)
     .onClose.subscribe(async (excluir) => {
       if (excluir) {
+        this.loading = true;
         await this.service
         .delete(this.loadObject().id)
         .then(async (response: IResponseInterface<T>) => {
@@ -158,6 +164,7 @@ export class DefaultComponent<T> implements OnInit {
         .catch((error) => {
           this.alertService.showError(error);
         });
+        this.loading = false;
       }
     });
     }
@@ -169,6 +176,7 @@ export class DefaultComponent<T> implements OnInit {
     } else {
       await this.put(objct);
     }
+    this.selectedObject = objct;
   }
 
   private async post(req: T) {

@@ -120,5 +120,14 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     id: ['', null],
     pontoMedicaoId: ['', [Validators.required]],
     ativo: [true, null]
+  },
+  EnergiaAcumulada: {
+    id: ['', null],
+    pontoMedicaoId: ['', [Validators.required]],
+    pontoMedicaoDesc: ['', null],
+    mesReferencia: ['', [Validators.required]],
+    valorMensalAcumulado: [0, [Validators.required]],
+    valorTotalAcumulado: [0, [Validators.required]],
+    ativo: [true, null]
   }
 };

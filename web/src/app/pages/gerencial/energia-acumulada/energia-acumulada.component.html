@@ -10,10 +10,10 @@
                     <input hidden id="id" type="text" formControlName="id">
                     <div class="row">
                       <div class="col-md-9">
-                        <label *ngIf="energiaAcumulada !== null" class="label">Ponto de Medição*</label>
-                        <input *ngIf="energiaAcumulada !== null" readonly nbInput fullWidth [value]="energiaAcumulada.pontoMedicaoDesc" style="background-color: transparent; border: 0px; margin-top: -1.7rem;">
+                        <label *ngIf="selectedObject !== null" class="label">Ponto de Medição*</label>
+                        <input *ngIf="selectedObject !== null" readonly nbInput fullWidth [value]="pontoMedicaoDesc" style="background-color: transparent; border: 0px; margin-top: -1.7rem;">
 
-                        <ngx-auto-complete *ngIf="pontosMedicao.length > 1 && energiaAcumulada === null" [label]="'Ponto de Medição'" [items]="pontosMedicao" [editLabel]="editLabel"
+                        <ngx-auto-complete *ngIf="pontosMedicao.length > 1 && selectedObject === null" [label]="'Ponto de Medição'" [items]="pontosMedicao" [editLabel]="editLabel"
                             (itemSelected)="onItemSelected($event)"></ngx-auto-complete>
                       </div>
                       </div>
@@ -28,30 +28,30 @@
                       <div class="col-md-3">
                         <div class="form-group">
                           <label for="inputFirstName" class="label">Energia Mensal Acumulada*</label>
-                          <input type="number" nbInput fullWidth id="inputFirstName" formControlName="ValorMensalAcumulado">
+                          <input type="number" nbInput fullWidth id="inputFirstName" formControlName="valorMensalAcumulado">
                         </div>
                       </div>                      
                       <div class="col-md-3">
                         <div class="form-group">
                           <label class="label">Energia Total Acumulada</label>
-                          <input type="number" nbInput fullWidth formControlName="ValorTotalAcumulado">
+                          <input type="number" nbInput fullWidth formControlName="valorTotalAcumulado">
                         </div>
                       </div>
                     </div>                    
                   </nb-card-body>
                   <nb-card-footer>
                     <button type="submit" nbButton status="info" (click)="onSubmit()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
-                    <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteConfirm()">Excluir</button>
-                    <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton style="margin-left: 0.5rem;" (click)="onCreate()">Novo</button>
-                    <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="limparFormulario()">Voltar</button>
+                    <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDelete()">Excluir</button>
+                    <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton style="margin-left: 0.5rem;" (click)="resetForm()">Novo</button>
+                    <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="clearForm()">Voltar</button>
                   </nb-card-footer>
                 </nb-card>
                 </nb-tab>
-                <nb-tab *ngIf="energiaAcumulada !== null && carregarHistorico()" tabTitle="Histórico de Energia Acumulada">
+                <nb-tab *ngIf="selected !== null && sourceHistorico.count() > 1" tabTitle="Histórico de Energia Acumulada">
                 <nb-card style="border: 0rem;">
                   <nb-card-body>
-                    <label *ngIf="energiaAcumulada !== null" class="label">Ponto de Medição*</label>
-                    <input *ngIf="energiaAcumulada !== null" readonly nbInput fullWidth [value]="energiaAcumulada.pontoMedicaoDesc" style="background-color: transparent; border: 0px; margin-top: -1.7rem;">
+                    <label *ngIf="selected !== null" class="label">Ponto de Medição*</label>
+                    <input *ngIf="selected !== null" readonly nbInput fullWidth [value]="pontoMedicaoDesc" style="background-color: transparent; border: 0px; margin-top: -1.7rem;">
 
                     <ng2-smart-table [settings]="settingsHistorico" [source]="sourceHistorico" (deleteConfirm)="onSelect($event)">
                     </ng2-smart-table>
@@ -80,7 +80,7 @@
       </nb-card-header>
   
       <nb-card-body>
-        <ng2-smart-table [settings]="settingsEnergiaAcumulada" [source]="source" (deleteConfirm)="onSelect($event)">
+        <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onLoad($event)">
         </ng2-smart-table>
       </nb-card-body>
     </nb-card>
