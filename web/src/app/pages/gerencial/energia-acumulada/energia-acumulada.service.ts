@@ -3,6 +3,7 @@ import { DefaultService } from "../../../@core/services/default-service";
 import { HttpService } from "../../../@core/services/util/http.service";
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { EnergiaAcumuladaEntity } from "./energia-acumulada.interface";
+import { Validators } from "@angular/forms";
 
 @Injectable({ providedIn: "root" })
 export class EnergiaAcumuladaService extends DefaultService<EnergiaAcumuladaEntity> {
@@ -24,3 +25,13 @@ export class EnergiaAcumuladaService extends DefaultService<EnergiaAcumuladaEnti
       return { ...ret, data: formattedReq };
   }
 }
+
+export const EnergiaAcumuladaControl: DefaultValues<EnergiaAcumuladaEntity> = {
+  id: ["", null],
+  pontoMedicaoId: ["", [Validators.required]],
+  pontoMedicaoDesc: ["", null],
+  mesReferencia: ["", [Validators.required]],
+  valorMensalAcumulado: [0, [Validators.required]],
+  valorTotalAcumulado: [0, [Validators.required]],
+  ativo: [true, null],
+};

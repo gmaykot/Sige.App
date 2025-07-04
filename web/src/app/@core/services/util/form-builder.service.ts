@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { EnergiaAcumuladaControl } from '../../../pages/gerencial/energia-acumulada/energia-acumulada.service';
+import { TarifaAplicacaoControl } from '../../../pages/gerencial/tarifa-aplicacao/tarifa-aplicacao.service';
+import { SalarioMinimoControl } from '../../../pages/gerencial/salario-minimo/salario-minimo.service';
 
 @Injectable({
   providedIn: 'root',
@@ -41,28 +44,7 @@ export class FormBuilderService {
   }
 }
 
-type DefaultValues<T> = {
-  [K in keyof T]: any;
-};
-
-const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
-  TarifaAplicacao: {
-    id: ['', null],
-    descConcessionaria: ['', null],
-    concessionariaId: ['', [Validators.required]],
-    numeroResolucao: ['', [Validators.required]],
-    subGrupo: [0, [Validators.required]],
-    segmento: [0, [Validators.required]],
-    dataUltimoReajuste: [null, [Validators.required]],
-    kwPonta: [0, [Validators.required]],
-    kwForaPonta: [0, [Validators.required]],
-    kWhPontaTUSD: [0, [Validators.required]],
-    kWhForaPontaTUSD: [0, [Validators.required]],
-    kWhPontaTE: [0, [Validators.required]],
-    kWhForaPontaTE: [0, [Validators.required]],
-    reatKWhPFTE: [0, [Validators.required]],
-    ativo: [true, [Validators.required]]
-  },
+const defaultValuesMap: { [key: string]: DefaultValues<any> } = {  
   Usuario: {
     id: ['', null],
     nome: ['', [Validators.required]],
@@ -102,13 +84,6 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     porcentagem: [0, [Validators.required]],
     ativo: [true, null]
   },
-  SalarioMinimo: {
-    id: ['', null],
-    vigenciaInicial: ['', [Validators.required]],
-    vigenciaFinal: ['', null],
-    valor: [0, [Validators.required]],
-    ativo: [true, null]
-  },
   BandeiraTarifariaVigente: {
     id: ['', null],
     bandeiraTarifariaId: ['', [Validators.required]],
@@ -121,13 +96,7 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     pontoMedicaoId: ['', [Validators.required]],
     ativo: [true, null]
   },
-  EnergiaAcumulada: {
-    id: ['', null],
-    pontoMedicaoId: ['', [Validators.required]],
-    pontoMedicaoDesc: ['', null],
-    mesReferencia: ['', [Validators.required]],
-    valorMensalAcumulado: [0, [Validators.required]],
-    valorTotalAcumulado: [0, [Validators.required]],
-    ativo: [true, null]
-  }
+  EnergiaAcumulada: EnergiaAcumuladaControl,
+  TarifaAplicacao: TarifaAplicacaoControl,
+  SalarioMinimo: SalarioMinimoControl
 };
