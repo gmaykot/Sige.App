@@ -36,6 +36,7 @@ export class FornecedorComponent extends DefaultComponent<FornecedorEntity> impl
     }, this.contatoService);
     
     await super.ngOnInit();
+    await this.onActivateSubscribe();
   }
 
   async onLoad(event: any): Promise<void> {
@@ -55,9 +56,24 @@ export class FornecedorComponent extends DefaultComponent<FornecedorEntity> impl
     this.loading = false;
   }
 
-  async onRefresh(event: any) {
-    if (event && event === true){
-      await this.loadContatos(this.selectedObject.id);
+  async onActivateSubscribe(){
+    this.statusSubscription = this.statusEventService.click$.subscribe(async (dado) => {
+      await this.onRefresh(dado.service);
+    });
+  }
+
+  async onRefresh(event: any){
+    if (event){
+      switch (event) {
+        case this.service?.constructor?.name:
+          await this.loadSource()
+          break;
+          case this.contatoService?.constructor?.name:
+            await this.loadContatos(this.selectedObject.id);
+            break;
+          default:
+          break;
+      }
     }
   }
 }

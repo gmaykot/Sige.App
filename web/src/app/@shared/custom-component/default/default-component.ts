@@ -19,7 +19,6 @@ export class DefaultComponent<T> implements OnInit, OnDestroy {
   protected scrollService: NbLayoutScrollService;
   protected dialogService: NbDialogService;
   protected statusEventService: StatusIconEventService;
-  protected subscribeLoaded: boolean = false;
 
   public control = null;
   public edit = false;
@@ -56,30 +55,9 @@ export class DefaultComponent<T> implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.statusSubscription.unsubscribe();
   }
-  
-  async onActivateSubscribe(){
-    this.subscribeLoaded = true;
-    this.statusSubscription = this.statusEventService.click$.subscribe(async (dado) => {
-      await this.toggleActive(dado);
-    });
-  }
 
   async ngOnInit() {
     await this.loadSource();
-    if (!this.subscribeLoaded) this.onActivateSubscribe();
-  }
-
-  async toggleActive(dado: any) {
-    await this.service.toggleActive(dado).then(async (response: IResponseInterface<T>) => {
-      if (response.success) {
-        this.alertService.showSuccess(`Registro ${dado.ativo ? 'ATIVADO' : 'DESATIVADO'} com sucesso.`);   
-        await this.loadSource();
-      } else {
-        response.errors?.map((x: any) => this.alertService.showError(x.value));
-      }
-    }).catch((error) => {
-      this.alertService.showError(error);
-    });
   }
 
   createControl() {

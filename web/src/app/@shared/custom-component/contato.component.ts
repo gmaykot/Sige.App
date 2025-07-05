@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { IContato } from '../../@core/data/contato';
 
 @Component({
@@ -30,7 +30,7 @@ import { IContato } from '../../@core/data/contato';
             <div class="row">       
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <label for="inputFirstName" class="label">Telefone*</label>
+                        <label for="inputFirstName" class="label">Telefone</label>
                         <input type="text" [mask]="control.get('telefone').value?.length > 10 ? '(00) 00000-0000' : '(00) 0000-00009'" placeholder="(00) 0000-0000" nbInput fullWidth id="inputFirstName" formControlName="telefone">
                     </div>
                 </div>
@@ -38,7 +38,7 @@ import { IContato } from '../../@core/data/contato';
             <div class="row">       
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <label for="inputFirstName" class="label">Setor / Área*</label>
+                        <label for="inputFirstName" class="label">Setor / Área</label>
                         <input type="text" nbInput fullWidth id="inputFirstName" formControlName="cargo">
                     </div>
                 </div>
@@ -53,8 +53,9 @@ import { IContato } from '../../@core/data/contato';
         </nb-card-body>
         <nb-card-footer>
             <div class="text-center">
-                <button nbButton status="warning" (click)="submit()">Confirmar</button>
-                <button nbButton status="basic" style="margin-left: 2.5rem;" (click)="cancel()">Cancelar</button>
+                <button nbButton status="warning" (click)="submit()" [disabled]="!control.valid">{{contato.id ? 'Alterar' : 'Cadastrar'}}</button>
+                <button *ngIf="contato.id" nbButton status="danger" [style.marginLeft]="'0.5rem'" (click)="delete()">Excluir</button>
+                <button nbButton status="basic" [style.marginLeft]="contato.id ? '0.5rem' : '2.5rem'" (click)="cancel()">Cancelar</button>
             </div>
         </nb-card-footer>  
     </nb-card>
@@ -65,13 +66,14 @@ export class ContatoComponent implements OnInit {
   @Input() contato: IContato;
   public control = this.formBuilder.group({
     id: '',
-    nome: '',
-    email: '',
-    telefone: '',
-    cargo: '',
+    nome: ['', Validators.required],
+    email: ['', Validators.required],
+    telefone: ['', null],
+    cargo: ['', null],
     fornecedorId: '',
     empresaId: '',
-    recebeEmail: true
+    recebeEmail: [true, null],
+    ativo: [true, null]
   });
   
   constructor(protected dialogRef: NbDialogRef<ContatoComponent>, private formBuilder: FormBuilder) {        
@@ -91,7 +93,8 @@ export class ContatoComponent implements OnInit {
       cargo: this.contato.cargo,
       fornecedorId: this.contato.fornecedorId,
       empresaId: this.contato.empresaId,
-      recebeEmail: this.contato.recebeEmail
+      recebeEmail: this.contato.recebeEmail,
+      ativo: this.contato.ativo
     });
   }
 
@@ -101,7 +104,14 @@ export class ContatoComponent implements OnInit {
 
   submit() {
     this.control.value.telefone = this.formatTelefone(this.control.value.telefone);
-    this.dialogRef.close(this.control.value);
+    this.dialogRef.close({
+      contato: this.control.value,
+      delete: false
+    });
+  }
+
+  delete() {
+    this.dialogRef.close({ contato: this.contato, delete: true });
   }
 
   formatTelefone(telefone?: string): string {

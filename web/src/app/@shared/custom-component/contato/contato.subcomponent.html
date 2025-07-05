@@ -4,8 +4,6 @@
         </ng2-smart-table>
     </nb-card-body>
     <nb-card-footer>
-      <button type="submit" nbButton status="info" (click)="onCreate()" *ngIf="checked.length === 0">Cadastrar</button>
-      <button type="submit" nbButton status="info" (click)="onEdit()" *ngIf="checked.length === 1">Alterar</button>
-      <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDelete()"[disabled]="checked.length === 0">Excluir</button>
+      <button type="submit" nbButton status="info" (click)="onCreate()">Cadastrar</button>
     </nb-card-footer>                  
   </nb-card>    

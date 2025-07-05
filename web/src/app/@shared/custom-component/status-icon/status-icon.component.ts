@@ -1,14 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ViewCell } from 'ng2-smart-table';
-import { AlertService } from '../../../@core/services/util/alert.service';
-import { AlertComponent } from '../alert-component/alert-component';
 import { NbDialogService } from '@nebular/theme';
-import { ContatoComponent } from '../contato.component';
-import { ContatoService } from '../../../@core/services/gerencial/contato.service';
-import { IResponseInterface } from '../../../@core/data/response.interface';
-import { IContato } from '../../../@core/data/contato';
 import { CustomDeleteConfirmationComponent } from '../custom-delete-confirmation.component';
 import { DefaultService } from '../../../@core/services/default-service';
+import { IResponseInterface } from '../../../@core/data/response.interface';
+import { AlertService } from '../../../@core/services/util/alert.service';
 import { StatusIconEventService } from '../../../@core/services/util/status-icon-event.service';
 
 @Component({
@@ -39,8 +35,6 @@ export class StatusIconComponent implements ViewCell, OnInit {
   @Input() rowData: any;
   public service: DefaultService<any>;
 
-  @Output() refreshEvent = new EventEmitter<boolean>();
-
   public iconColor = 'gray';
   public iconClass: string = '';
   public tooltipText: string = '';
@@ -55,7 +49,7 @@ export class StatusIconComponent implements ViewCell, OnInit {
   onMouseLeave() {
     this.iconColor = this.defaultColor;
   }
-  constructor(private dialogService: NbDialogService, private statusEventService: StatusIconEventService) { }
+  constructor(private dialogService: NbDialogService, private alertService: AlertService, private statusEventService: StatusIconEventService) { }
 
   ngOnInit() {
     const isActive = this.rowData.ativo === true || 
@@ -69,12 +63,28 @@ export class StatusIconComponent implements ViewCell, OnInit {
   }
 
   async onClick(){
-    this.dialogService.open(CustomDeleteConfirmationComponent, { context: { mesage: `Deseja realmente ${this.rowData.ativo ? 'DESATIVAR' : 'ATIVAR'} o registro?` } })
-    .onClose.subscribe(async (excluir) => {
-      if (excluir){        
-        this.rowData.ativo = !this.rowData.ativo;
-        this.statusEventService.emitirClique(this.rowData);
+    if (this.service){      
+      this.dialogService.open(CustomDeleteConfirmationComponent, { context: { mesage: `Deseja realmente ${this.rowData.ativo ? 'DESATIVAR' : 'ATIVAR'} o registro?` } })
+      .onClose.subscribe(async (excluir) => {
+        if (excluir){        
+          this.rowData.ativo = !this.rowData.ativo;        
+          await this.toggleActive(this.rowData);          
+        }
+      });          
+    }
+  }
+
+  async toggleActive(dado: any) {
+    await this.service.toggleActive(dado).then(async (response: IResponseInterface<any>) => {
+      if (response.success) {
+        this.alertService.showSuccess(`Registro ${dado.ativo ? 'ATIVADO' : 'DESATIVADO'} com sucesso.`);   
+        this.statusEventService.emitirClique({service: this.service?.constructor?.name, success: true});
+      } else {
+        this.statusEventService.emitirClique({service: this.service?.constructor?.name, success: false});
+        response.errors?.map((x: any) => this.alertService.showError(x.value));
       }
-    });          
+    }).catch((error) => {
+      this.alertService.showError(error);
+    });
   }
 }

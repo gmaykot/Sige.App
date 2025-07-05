@@ -20,6 +20,7 @@ export class SmartTableConfigService {
         title: "",
         type: "custom",
         width: "8px",
+        filter: false,
         renderComponent: StatusIconComponent,
         onComponentInitFunction: (instance: StatusIconComponent) => {
           instance.service = service;
