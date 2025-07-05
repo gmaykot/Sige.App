@@ -205,7 +205,11 @@ import { StatusIconComponent } from './custom-component/status-icon/status-icon.
     EchartsPieComponent,
     EchartsBarComponent,
     ChartjsBarComponent,
-    AutoCompleteComponent
+    AutoCompleteComponent,
+    StatusIconComponent
+  ],
+  entryComponents: [
+    StatusIconComponent,
   ],
   providers: [
     DecimalPipe,

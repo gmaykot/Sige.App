@@ -9,6 +9,7 @@ namespace SIGE.Services.Interfaces {
         Task<Response> Excluir(Guid Id);
         Task<Response> Load(Guid id);
         Task<Response> ObterSource();
+        Task<Response> ToogleAtivo(T req);
 
         Task<Response> ObterDropDown(Expression<Func<M, bool>>? filtro = null, Func<IQueryable<M>, IQueryable<M>>? include = null);
         Task<Response> Obter(Expression<Func<M, bool>>? filtro = null, Func<IQueryable<M>, IOrderedQueryable<M>>? orderBy = null, Func<IQueryable<M>, IQueryable<M>>? include = null);

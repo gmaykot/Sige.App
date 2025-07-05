@@ -33,6 +33,17 @@ namespace SIGE.Controller {
             return Ok(response);
         }
 
+        [HttpPut("toggle-ativo")]
+        [SwaggerOperation(Description = "Altera os dados no sistema.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public virtual async Task<IActionResult> ToogleAtivo([FromBody] T req) {
+            var response = await _service.ToogleAtivo(req);
+            return Ok(response);
+        }
+
         [HttpDelete("{id}")]
         [SwaggerOperation(Description = "Exclui os dados do sistema.")]
         [ProducesResponseType(typeof(Response), 200)]

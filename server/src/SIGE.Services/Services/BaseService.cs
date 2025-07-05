@@ -172,5 +172,38 @@ namespace SIGE.Services.Services {
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, "Não existem registros cadastrados.");
         }
+
+        public async Task<Response> ToogleAtivo(T req) {
+            var idProperty = typeof(T).GetProperty("Id");
+
+            if (idProperty == null)
+                return new Response().SetBadRequest()
+                    .AddError(ETipoErro.ERRO, "A entidade não possui a propriedade 'Id'.");
+
+            var id = idProperty.GetValue(req);
+
+            if (id == null)
+                return new Response().SetBadRequest()
+                    .AddError(ETipoErro.ERRO, "O Id informado é inválido.");
+
+            var entity = await _appDbContext.Set<M>().FindAsync(id);
+            if (entity is null)
+                return new Response().SetNotFound()
+                    .AddError(ETipoErro.INFORMATIVO, $"Registro com Id {id} não encontrado.");
+
+            var ativoPropEntity = typeof(M).GetProperty("Ativo");
+            var ativoPropReq = typeof(T).GetProperty("Ativo");
+
+            if (ativoPropEntity == null || ativoPropReq == null)
+                return new Response().SetBadRequest()
+                    .AddError(ETipoErro.ERRO, "A entidade não possui a propriedade 'Ativo'.");
+
+            var valorAtivo = ativoPropReq.GetValue(req);
+            ativoPropEntity.SetValue(entity, valorAtivo);
+
+            await _appDbContext.SaveChangesAsync();
+
+            return new Response().SetOk().SetMessage("Registro alterado com sucesso.");
+        }
     }
 }

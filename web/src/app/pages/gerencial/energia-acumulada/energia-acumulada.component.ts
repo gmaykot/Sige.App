@@ -35,7 +35,6 @@ export class EnergiaAcumuladaComponent extends DefaultComponent<EnergiaAcumulada
 
   async ngOnInit() {
     super.ngOnInit();
-
     this.settings = this.smartService.generateTableSettingsFromObject(
       EnergiaAcumuladaEntity.SourceInstance(),
       {

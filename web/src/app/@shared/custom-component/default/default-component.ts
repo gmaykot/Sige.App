@@ -4,18 +4,22 @@ import { SessionStorageService } from "../../../@core/services/util/session-stor
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import { NbDialogService, NbLayoutScrollService } from "@nebular/theme";
-import { Component, Inject, Injector, OnInit } from "@angular/core";
+import { Component, Inject, Injector, OnDestroy, OnInit } from "@angular/core";
 import { CustomDeleteConfirmationComponent } from "../custom-delete-confirmation.component";
 import { DefaultService } from "../../../@core/services/default-service";
+import { StatusIconEventService } from "../../../@core/services/util/status-icon-event.service";
+import { Subscription } from "rxjs";
 
 @Component({
   template: ''
 })
-export class DefaultComponent<T> implements OnInit {
+export class DefaultComponent<T> implements OnInit, OnDestroy {
   protected formBuilderService: FormBuilderService;
   protected alertService: AlertService;
   protected scrollService: NbLayoutScrollService;
   protected dialogService: NbDialogService;
+  protected statusEventService: StatusIconEventService;
+  protected subscribeLoaded: boolean = false;
 
   public control = null;
   public edit = false;
@@ -28,6 +32,7 @@ export class DefaultComponent<T> implements OnInit {
   public source: LocalDataSource = new LocalDataSource();
   public sourceType: boolean = false;
   public settings: any;
+  public statusSubscription: Subscription;
 
   constructor(
     protected injector: Injector,
@@ -39,16 +44,42 @@ export class DefaultComponent<T> implements OnInit {
     this.alertService = injector.get(AlertService);
     this.scrollService = injector.get(NbLayoutScrollService);
     this.dialogService = injector.get(NbDialogService);
-
+    this.statusEventService = injector.get(StatusIconEventService);
+    
     this.control = this.createControl();
     this.isSuperUsuario = SessionStorageService.isSuperUsuario();
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
     this.habilitaValidarRelatorio = SessionStorageService.habilitaValidarRelatorio();
     this.sourceType = sourceType;
   }
+
+  ngOnDestroy(): void {
+    this.statusSubscription.unsubscribe();
+  }
   
+  async onActivateSubscribe(){
+    this.subscribeLoaded = true;
+    this.statusSubscription = this.statusEventService.click$.subscribe(async (dado) => {
+      await this.toggleActive(dado);
+    });
+  }
+
   async ngOnInit() {
     await this.loadSource();
+    if (!this.subscribeLoaded) this.onActivateSubscribe();
+  }
+
+  async toggleActive(dado: any) {
+    await this.service.toggleActive(dado).then(async (response: IResponseInterface<T>) => {
+      if (response.success) {
+        this.alertService.showSuccess(`Registro ${dado.ativo ? 'ATIVADO' : 'DESATIVADO'} com sucesso.`);   
+        await this.loadSource();
+      } else {
+        response.errors?.map((x: any) => this.alertService.showError(x.value));
+      }
+    }).catch((error) => {
+      this.alertService.showError(error);
+    });
   }
 
   createControl() {

@@ -33,11 +33,11 @@ export class FornecedorComponent extends DefaultComponent<FornecedorEntity> impl
     this.settings = this.smartService.generateTableSettingsFromObject(FornecedorEntity.SourceInstance(), {
       exibirStatus: true,
       permitirDelete: true,
-    });
+    }, this.service);
     this.settingsContato = this.smartService.generateTableSettingsFromObject(IContato.SourceInstance(), {
       exibirStatus: true,
       permitirDelete: true,
-    });
+    }, this.contatoService);
     
     await super.ngOnInit();
   }

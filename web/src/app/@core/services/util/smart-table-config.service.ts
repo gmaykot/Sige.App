@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StatusIconComponent } from '../../../@shared/custom-component/status-icon/status-icon.component';
 import { SEGMENTO, TIPO_CONEXAO } from '../../enum/status-contrato';
+import { DefaultService } from '../default-service';
 
 @Injectable({ providedIn: 'root' })
 export class SmartTableConfigService {
@@ -9,7 +10,8 @@ export class SmartTableConfigService {
     options?: {
       exibirStatus?: boolean;
       permitirDelete?: boolean;
-    }
+    },
+    service?: DefaultService<T>
   ) {
     const columns: any = {};
     // Adiciona coluna status automaticamente se solicitado
@@ -22,9 +24,10 @@ export class SmartTableConfigService {
         filter: false,
         sort: false,
         addable: false,
-        editable: false,
+        editable: false
       };
     }
+
     for (const key in exampleObj) {
       
       if (!exampleObj.hasOwnProperty(key)) continue;

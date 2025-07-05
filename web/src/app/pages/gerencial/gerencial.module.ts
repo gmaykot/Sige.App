@@ -23,7 +23,7 @@ import { ValorConcessionariaComponent } from './valor-concessionaria/valor-conce
     FornecedorComponent,
     SalarioMinimoComponent,
     TarifaAplicacaoComponent,
-    ValorConcessionariaComponent 
+    ValorConcessionariaComponent
   ],
   imports: [
     SharedModule,
