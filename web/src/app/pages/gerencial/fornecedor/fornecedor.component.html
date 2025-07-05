@@ -53,18 +53,8 @@
                   </nb-card-footer>          
                 </nb-card>                
               </nb-tab>
-            <nb-tab tabTitle="Grupo de Contatos" *ngIf="selected">
-              <nb-card style="border: 0rem;">                 
-                <nb-card-body>
-                  <ng2-smart-table [settings]="settingsContato" [source]="sourceContato" (deleteConfirm)="onSelect($event)">
-                  </ng2-smart-table>
-                </nb-card-body>
-                <nb-card-footer>
-                  <button type="submit" nbButton status="info" (click)="onContatoConfirm()" *ngIf="contatosChecked.length === 0 && habilitaOperacoes">Cadastrar</button>
-                  <button type="submit" nbButton status="info" (click)="onContatoEdit()" *ngIf="contatosChecked.length === 1 && habilitaOperacoes">Alterar</button>
-                  <button type="submit" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onContatoDelete()" *ngIf="habilitaOperacoes" [disabled]="contatosChecked.length === 0">Excluir</button>
-                </nb-card-footer>                  
-              </nb-card>                 
+            <nb-tab tabTitle="Grupo de Contatos" *ngIf="selected && contatos?.length > 0">
+              <ngx-subcontato-component [contatos]="contatos" [fornecedorId]="selectedObject.id" (refreshEvent)="onRefresh($event)" (alertEvent)="onAlert($event)"></ngx-subcontato-component>             
             </nb-tab>
             </nb-tabset>
           </nb-card-body>

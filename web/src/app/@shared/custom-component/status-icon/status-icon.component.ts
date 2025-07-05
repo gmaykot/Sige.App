@@ -37,6 +37,7 @@ import { StatusIconEventService } from '../../../@core/services/util/status-icon
 export class StatusIconComponent implements ViewCell, OnInit {
   @Input() value: string | number;
   @Input() rowData: any;
+  public service: DefaultService<any>;
 
   @Output() refreshEvent = new EventEmitter<boolean>();
 
@@ -54,8 +55,7 @@ export class StatusIconComponent implements ViewCell, OnInit {
   onMouseLeave() {
     this.iconColor = this.defaultColor;
   }
-  constructor(private alertService: AlertService, private dialogService: NbDialogService, private statusEventService: StatusIconEventService) { }
-
+  constructor(private dialogService: NbDialogService, private statusEventService: StatusIconEventService) { }
 
   ngOnInit() {
     const isActive = this.rowData.ativo === true || 

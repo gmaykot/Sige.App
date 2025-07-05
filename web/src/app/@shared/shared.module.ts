@@ -206,7 +206,8 @@ import { StatusIconComponent } from './custom-component/status-icon/status-icon.
     EchartsBarComponent,
     ChartjsBarComponent,
     AutoCompleteComponent,
-    StatusIconComponent
+    StatusIconComponent,
+    ListaContatoComponent
   ],
   entryComponents: [
     StatusIconComponent,

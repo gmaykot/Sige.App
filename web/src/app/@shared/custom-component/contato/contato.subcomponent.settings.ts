@@ -13,7 +13,7 @@ export class ContatosSettings {
         width: "8px",
         class: "checkbox",
         renderComponent: CheckboxComponent,
-        onComponentInitFunction: (instance) => {
+        onComponentInitFunction: (instance: CheckboxComponent) => {
           instance.event.subscribe((row) => {
             this.onCheckContato(row);
           });

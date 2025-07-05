@@ -52,7 +52,7 @@ export class DefaultService<T> extends DefaultServiceUtil<T> {
 
   public async toggleActive(req: T): Promise<IResponseInterface<T>> {
     const formattedReq = this.formatPrePost(req);
-    const ret = await this.http.put<IResponseInterface<T>>(`/${this.urlBase}`, formattedReq);
+    const ret = await this.http.put<IResponseInterface<T>>(`/${this.urlBase}/toggle-ativo`, formattedReq);
     const formattedRet = this.formatPosGet(ret?.data);
     return { ...ret, data: formattedRet };
   }  

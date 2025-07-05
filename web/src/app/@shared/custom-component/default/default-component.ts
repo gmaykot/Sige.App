@@ -175,6 +175,29 @@ export class DefaultComponent<T> implements OnInit, OnDestroy {
     this.loading = false;
   }
 
+  async onRefresh(event: any) {
+    if (event && event === true){
+      this.clearForm();
+      await this.loadSource();
+    }
+  }
+
+  async onAlert(event: any) {
+    if (event){
+      switch (event?.type) {
+        case 'success':
+          this.alertService.showSuccess(event?.message);
+          break;
+        case 'warning':
+          this.alertService.showWarning(event?.message);
+          break;
+        case 'danger':
+          this.alertService.showError(event?.message);
+          break;
+      }
+    }
+  }
+
   async onDelete() {
     this.dialogService
     .open(CustomDeleteConfirmationComponent)

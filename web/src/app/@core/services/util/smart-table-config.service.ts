@@ -17,14 +17,13 @@ export class SmartTableConfigService {
     // Adiciona coluna status automaticamente se solicitado
     if (options?.exibirStatus) {
       columns['status'] = {
-        title: '',
-        type: 'custom',
+        title: "",
+        type: "custom",
+        width: "8px",
         renderComponent: StatusIconComponent,
-        width: '10px',
-        filter: false,
-        sort: false,
-        addable: false,
-        editable: false
+        onComponentInitFunction: (instance: StatusIconComponent) => {
+          instance.service = service;
+        },
       };
     }
 

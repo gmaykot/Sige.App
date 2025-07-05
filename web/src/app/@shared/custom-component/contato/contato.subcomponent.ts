@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output, Optional } from "@angular/core";
+import { Component, OnInit, Input, EventEmitter, Output, Optional, OnChanges, SimpleChanges } from "@angular/core";
 import { NbDialogRef, NbDialogService } from "@nebular/theme";
 import { ContatosSettings } from "./contato.subcomponent.settings";
 import { LocalDataSource } from "ng2-smart-table";
@@ -8,13 +8,14 @@ import { ContatoComponent } from "../contato.component";
 import { ContatoService } from "../../../@core/services/gerencial/contato.service";
 import { CustomDeleteConfirmationComponent } from "../custom-delete-confirmation.component";
 import { HttpErrorResponse } from "@angular/common/http";
+import { SmartTableConfigService } from "../../../@core/services/util/smart-table-config.service";
 
 @Component({
   selector: "ngx-subcontato-component",
   templateUrl: "./contato.subcomponent.html",
   styleUrls: ["./contato.subcomponent.scss"],
 })
-export class ListaContatoComponent extends ContatosSettings implements OnInit {
+export class ListaContatoComponent extends ContatosSettings implements OnInit, OnChanges {
   @Input() contatos: Array<IContato> = [];
   @Input() fornecedorId?: string;
   @Input() empresaId?: string;
@@ -28,11 +29,23 @@ export class ListaContatoComponent extends ContatosSettings implements OnInit {
     @Optional() protected dialogRef: NbDialogRef<ContatoComponent>,
     private dialogService: NbDialogService,
     private contatoService: ContatoService,
+    private smartService: SmartTableConfigService
   ) {
     super();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['contatos']) {
+      this.source.load(this.contatos);
+    }    
+  }
+
   ngOnInit(): void {
+    this.settings = this.smartService.generateTableSettingsFromObject(IContato.SourceInstance(), {
+      exibirStatus: true,
+      permitirDelete: true,
+    }, this.contatoService);
+
     this.source.load(this.contatos);
   }
 
@@ -66,11 +79,11 @@ export class ListaContatoComponent extends ContatosSettings implements OnInit {
     });
   }
 
-  onEdit(): void 
+  onEdit(event: any): void 
   {
-    if (this.checked && this.checked.length > 0)
+    if (event.data)
         {
-          var contato = this.checked.pop();
+          var contato = event.data;
             this.dialogService
             .open(ContatoComponent, { context: { contato: contato }, })
             .onClose.subscribe(async (ret: IContato) => {
@@ -87,7 +100,6 @@ export class ListaContatoComponent extends ContatosSettings implements OnInit {
                     });
               } else 
               {
-                this.alertEvent.emit({ message: "Erro ao cadastrar contato.", type: 'danger' });
                 this.refreshEvent.emit(false);      
               }
               this.onClear();
