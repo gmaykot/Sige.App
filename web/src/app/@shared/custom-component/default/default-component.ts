@@ -53,7 +53,7 @@ export class DefaultComponent<T> implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.statusSubscription.unsubscribe();
+    this.statusSubscription?.unsubscribe();
   }
 
   async ngOnInit() {
