@@ -4,13 +4,13 @@ import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { BandeiraTarifariaConfigSettings } from './bandeira-tarifaria.config.settings';
-import { BandeiraTarifariaService } from '../../../@core/services/gerencial/bandeira-tarifaria.service';
+import { BandeiraTarifariaService } from './bandeira-tarifaria.service';
 import { IBandeiraTarifaria } from '../../../@core/data/bandeira-tarifaria';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { IBandeiraTarifariaVigente } from '../../../@core/data/bandeira-tarifaria-vigente';
-import { BandeiraTarifariaVigenteService } from '../../../@core/services/gerencial/bandeira-tarifaria-vigente.service';
+import { BandeiraTarifariaVigenteService } from './bandeira-tarifaria-vigente.service';
 import { BandeiraTarifariaVigenteComponent } from '../../../@shared/custom-component/bandeira-tarifaria-vigente/bandeira-tarifaria-vigente.component';
 
 @Component({

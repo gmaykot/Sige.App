@@ -1,30 +1,31 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
+import { Validators, FormBuilder } from "@angular/forms";
+import { NbTabsetComponent, NbIconConfig, NbDialogService, NbLayoutScrollService } from "@nebular/theme";
 import { LocalDataSource } from "ng2-smart-table";
-import { FormBuilder, Validators } from "@angular/forms";
-import { UF } from "../../../@core/data/estados";
-import { EmpresaService } from "../../../@core/services/gerencial/empresa.service";
-import { IEmpresa } from "../../../@core/data/empresa";
-import { IResponseInterface } from "../../../@core/data/response.interface";
-import { NbDialogService, NbIconConfig, NbLayoutScrollService, NbTabsetComponent } from "@nebular/theme";
-import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
 import { IAgenteMedicao } from "../../../@core/data/agente-medicao";
-import { IPontoMedicao } from "../../../@core/data/ponto-medicao";
-import { AgenteMedicaoComponent } from "../../../@shared/custom-component/agente-medicao.component";
-import { PontoMedicaoComponent } from "../../../@shared/custom-component/ponto-medicao.component";
-import { MedicaoService } from "../../../@core/services/geral/medicao.service";
-import { AgenteMedicaoService } from "../../../@core/services/gerencial/agente-medicao.service";
-import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-medicao.service";
-import { EmpresaConfigSettings } from "./empresa.config.settings";
-import { IContato } from "../../../@core/data/contato";
-import { ContatoComponent } from "../../../@shared/custom-component/contato.component";
-import { ContatoService } from "../../../@core/services/gerencial/contato.service";
-import { CepService } from "../../../@core/services/util/cep.service";
 import { ICep } from "../../../@core/data/cep";
-import { AlertService } from "../../../@core/services/util/alert.service";
+import { IContato } from "../../../@core/data/contato";
 import { IDropDown } from "../../../@core/data/drop-down";
-import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
-import { ConcessionariaService } from "../../../@core/services/gerencial/concessionaria.service";
+import { IEmpresa } from "../../../@core/data/empresa";
+import { UF } from "../../../@core/data/estados";
+import { IPontoMedicao } from "../../../@core/data/ponto-medicao";
+import { IResponseInterface } from "../../../@core/data/response.interface";
 import { ETipoErroResponse } from "../../../@core/enum/tipo-erro-response";
+import { ContatoService } from "../../../@core/services/gerencial/contato.service";
+import { AlertService } from "../../../@core/services/util/alert.service";
+import { CepService } from "../../../@core/services/util/cep.service";
+import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
+import { AgenteMedicaoComponent } from "../../../@shared/custom-component/agente-medicao.component";
+import { ContatoComponent } from "../../../@shared/custom-component/contato.component";
+import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
+import { PontoMedicaoComponent } from "../../../@shared/custom-component/ponto-medicao.component";
+import { MedicaoService } from "../../geral/medicao/medicao.service";
+import { ConcessionariaService } from "../concessionaria/concessionaria.service";
+import { AgenteMedicaoService } from "./agente-medicao.service";
+import { EmpresaConfigSettings } from "./empresa.config.settings";
+import { EmpresaService } from "./empresa.service";
+import { PontoMedicaoService } from "./ponto-medicao.service";
+
 
 @Component({
   selector: "ngx-empresa",

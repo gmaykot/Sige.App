@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
-import { DefaultService } from "../default-service";
-import { IPontoMedicao } from "../../data/ponto-medicao";
-import { HttpService } from "../util/http.service";
-import { IDropDown } from "../../data/drop-down";
-import { IResponseInterface } from "../../data/response.interface";
+import { IDropDown } from "../../../@core/data/drop-down";
+import { IPontoMedicao } from "../../../@core/data/ponto-medicao";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
+
 
 @Injectable({ providedIn: "root" })
 export class PontoMedicaoService extends DefaultService<IPontoMedicao> {

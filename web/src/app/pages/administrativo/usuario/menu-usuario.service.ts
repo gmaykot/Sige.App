@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { IMenuUsuario } from "../../data/menu-usuario";
-import { HttpService } from "../util/http.service";
-import { DefaultService } from "../default-service";
-import { IResponseInterface } from "../../data/response.interface";
+import { IMenuUsuario } from "../../../@core/data/menu-usuario";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
 
 @Injectable({ providedIn: "root" })
 export class MenuUsuarioService extends DefaultService<IMenuUsuario> {

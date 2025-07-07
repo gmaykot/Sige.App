@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { IMenuSistema } from "../../data/menu-sistema";
-import { HttpService } from "../util/http.service";
-import { DefaultService } from "../default-service";
-import { IDropDown } from "../../data/drop-down";
-import { IResponseInterface } from "../../data/response.interface";
+import { IDropDown } from "../../../@core/data/drop-down";
+import { IMenuSistema } from "../../../@core/data/menu-sistema";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
 
 @Injectable({ providedIn: "root" })
 export class MenuSistemaService extends DefaultService<IMenuSistema> {

@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { IResponseInterface } from '../../data/response.interface';
-import { HttpService } from '../util/http.service';
-import { DefaultService } from '../default-service';
-import { IRelatorioFinal } from '../../data/geral/relatorio-economia/relatorio-final';
-import { IRelatorioEconomiaList } from '../../data/gerencial/relatorio-economia';
+import { Injectable } from "@angular/core";
+import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/relatorio-final";
+import { IRelatorioEconomiaList } from "../../../@core/data/gerencial/relatorio-economia";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
 
 @Injectable({ providedIn: 'root' })
 export class RelatorioEconomiaService extends DefaultService<IRelatorioFinal> {

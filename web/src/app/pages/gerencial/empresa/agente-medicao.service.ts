@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
-import { DefaultService } from "../default-service";
-import { IAgenteMedicao } from "../../data/agente-medicao";
-import { HttpService } from "../util/http.service";
+import { IAgenteMedicao } from "../../../@core/data/agente-medicao";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
+
 
 @Injectable({ providedIn: "root" })
 export class AgenteMedicaoService extends DefaultService<IAgenteMedicao> {

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { HttpService } from "../util/http.service";
-import { DefaultService } from "../default-service";
-import { IBandeiraTarifaria } from "../../data/bandeira-tarifaria";
+import { HttpService } from "../../../@core/services/util/http.service";
+import { DefaultService } from "../../../@core/services/default-service";
+import { IBandeiraTarifaria } from "../../../@core/data/bandeira-tarifaria";
 
 @Injectable({ providedIn: "root" })
 export class BandeiraTarifariaService extends DefaultService<IBandeiraTarifaria> {

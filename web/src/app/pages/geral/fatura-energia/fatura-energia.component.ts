@@ -7,16 +7,17 @@ import {
   settingsLancamentos,
   settingsLancamentosSemDelete,
 } from "../../../@shared/table-config/fatura-energia.config";
-import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-medicao.service";
-import { IResponseInterface } from "../../../@core/data/response.interface";
-import { ConcessionariaService } from "../../../@core/services/gerencial/concessionaria.service";
-import { DateService } from "../../../@core/services/util/date.service";
-import { FaturaEnergiaService } from "../../../@core/services/geral/fatura-energia.service";
+
 import { IFaturaEnergia } from "../../../@core/data/fatura.energia";
 import { DatePipe } from "@angular/common";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import * as uuid from 'uuid';
 import { IDescontoTusdMensal } from "../gerenciamento-mensal/gerenciamento-mensal.interface";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { DateService } from "../../../@core/services/util/date.service";
+import { ConcessionariaService } from "../../gerencial/concessionaria/concessionaria.service";
+import { PontoMedicaoService } from "../../gerencial/empresa/ponto-medicao.service";
+import { FaturaEnergiaService } from "./fatura-energia.service";
 
 
 @Component({

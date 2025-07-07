@@ -2,15 +2,16 @@ import { Component, Injector, OnInit, ViewChild } from "@angular/core";
 import { FaturamentoCoenelConfigSettings } from "./faturamento-coenel.config";
 import { Classes } from "../../../@core/enum/classes.const";
 import { NbTabsetComponent } from "@nebular/theme";
-import { FaturamentoCoenelService } from "../../../@core/services/geral/faturamento-coenel.service";
-import { EmpresaService } from "../../../@core/services/gerencial/empresa.service";
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { IDropDown } from "../../../@core/data/drop-down";
-import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-medicao.service";
+
 import { LocalDataSource } from "ng2-smart-table";
 import { IFaturamentoCoenel } from "../../../@core/data/geral/faturamento-coenel";
 import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
 import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component";
+import { FaturamentoCoenelService } from "./faturamento-coenel.service";
+import { EmpresaService } from "../../gerencial/empresa/empresa.service";
+import { PontoMedicaoService } from "../../gerencial/empresa/ponto-medicao.service";
 
 @Component({
   selector: 'ngx-faturamento-coenel',

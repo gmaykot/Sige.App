@@ -1,16 +1,14 @@
-import { Component, Injector, OnInit } from "@angular/core";
-import { ConcessionariaService } from "../../../@core/services/gerencial/concessionaria.service";
-import { NbDialogService, NbLayoutScrollService } from "@nebular/theme";
-import { AlertService } from "../../../@core/services/util/alert.service";
-import { Classes } from "../../../@core/enum/classes.const";
-import { FormBuilderService } from "../../../@core/services/util/form-builder.service";
-import { ImpostoConcessionariaService } from "../../../@core/services/gerencial/imposto-concessionaria.service";
-import { ImpostoConcessionariaComponent } from "../../../@shared/custom-component/imposto-concessionaria/imposto-concessionaria.component";
+import { Component, OnInit, Injector } from "@angular/core";
+import { LocalDataSource } from "ng2-smart-table";
 import { IImpostoConcessionaria } from "../../../@core/data/imposto-concessionaria";
 import { IResponseInterface } from "../../../@core/data/response.interface";
-import { LocalDataSource } from "ng2-smart-table";
-import { ConcessionariaConfigSettings } from "./concessionaria.config.settings";
+import { Classes } from "../../../@core/enum/classes.const";
 import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
+import { ImpostoConcessionariaComponent } from "../../../@shared/custom-component/imposto-concessionaria/imposto-concessionaria.component";
+import { ConcessionariaConfigSettings } from "./concessionaria.config.settings";
+import { ConcessionariaService } from "./concessionaria.service";
+import { ImpostoConcessionariaService } from "./imposto-concessionaria.service";
+
 
 @Component({
   selector: "ngx-concessionaria",

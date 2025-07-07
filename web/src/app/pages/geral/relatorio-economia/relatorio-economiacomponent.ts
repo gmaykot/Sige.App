@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { RelatorioEconomiaPdfService } from "./relatorio-economia-pdf.service";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import { LocalDataSource } from "ng2-smart-table";
-import { RelatorioEconomiaService } from "../../../@core/services/geral/relatorio-economia.service";
 import { IRelatorioEconomiaList } from "../../../@core/data/gerencial/relatorio-economia";
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { FormBuilder, Validators } from "@angular/forms";
@@ -16,6 +15,7 @@ import { EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
 import { TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
 import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component";
+import { RelatorioEconomiaService } from "./relatorio-economia.service";
 
 @Component({
   selector: "ngx-relatorio-economia",
@@ -135,7 +135,6 @@ export class RelatorioEconomiaComponent implements OnInit {
     private relatorioEconomiaPdfService: RelatorioEconomiaPdfService,
     private service: RelatorioEconomiaService,
     private alertService: AlertService,
-    private relatorioService: RelatorioEconomiaService,
     private formBuilder: FormBuilder,
     private dialogService: NbDialogService,
     private dateService: DateService
@@ -212,7 +211,7 @@ export class RelatorioEconomiaComponent implements OnInit {
       if (this.relatorioFinal) {
       this.relatorioEconomiaPdfService.downloadPDF(this.relatorioFinal, graficoImagem);
     } else {
-      const response = await this.relatorioService.getFinalPdf(
+      const response = await this.service.getFinalPdf(
         this.relatorioEconomia.pontoMedicaoId, 
         this.mesReferencia
       );

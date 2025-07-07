@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
-import { IImpostoConcessionaria } from "../../data/imposto-concessionaria";
-import { DefaultService } from "../default-service";
-import { HttpService } from "../util/http.service";
-import { IResponseInterface } from "../../data/response.interface";
+import { IImpostoConcessionaria } from "../../../@core/data/imposto-concessionaria";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
+
 
 @Injectable({ providedIn: "root" })
 export class ImpostoConcessionariaService extends DefaultService<IImpostoConcessionaria> {

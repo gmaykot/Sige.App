@@ -3,7 +3,7 @@ import { settingsRelatorioMedicao, settingsResultadoAnalitico, settingsResultado
 import { LocalDataSource } from 'ng2-smart-table';
 import { DateService } from '../../../@core/services/util/date.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { RelatorioMedicaoService } from '../../../@core/services/geral/relatorio-medicao.service';
+import { RelatorioMedicaoService } from './relatorio-medicao.service';
 import { ContatoService } from '../../../@core/services/gerencial/contato.service';
 import { DatePipe } from '@angular/common';
 import { NbDialogService, NbGlobalPhysicalPosition } from '@nebular/theme';
@@ -19,10 +19,10 @@ import { AlertService } from '../../../@core/services/util/alert.service';
 import { IFaturamentoMedicao, IRelatorioMedicao, IRelatorioMedicaoList, IValoresMedicao, IValoresMedicaoAnalitico } from '../../../@core/data/relatorio-medicao';
 import { ValidacaoMedicaoComponent } from '../../../@shared/custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
-import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 import { AjudaOperacaoComponent } from '../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component';
 import { RelatorioMedicaoPdfService } from './relatorio-medicao-pdf.service';
+import { MedicaoService } from '../medicao/medicao.service';
 import { MedicaoCurtoPrazoComponent } from '../../../@shared/custom-component/medicao-curto-prazo/medicao-curto-prazo.component';
 
 @Component({

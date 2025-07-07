@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { LocalDataSource } from 'ng2-smart-table';
-import { MenuSistemaService } from '../../../@core/services/administrativo/menu-sistema.service';
 import { IMenuSistema } from '../../../@core/data/menu-sistema';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { settingsMenuSistema } from '../../../@shared/table-config/menu-sistema.config';
 import { NbDialogService } from '@nebular/theme';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
+import { MenuSistemaService } from './menu-sistema.service';
 
 @Component({
   selector: 'ngx-menu-sistema',

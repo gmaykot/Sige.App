@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
-import { DefaultService } from "../default-service";
-import { IValorMensal } from "../../data/valor-mensal";
-import { HttpService } from "../util/http.service";
+import { IValorMensal } from "../../../@core/data/valor-mensal";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
+
 
 @Injectable({ providedIn: "root" })
 export class ValorMensalContratoService extends DefaultService<IValorMensal> {

@@ -7,9 +7,9 @@ import { Classes } from '../../../@core/enum/classes.const';
 import { EnergiaAcumuladaEntity } from './energia-acumulada.interface';
 import { SmartTableConfigService } from '../../../@core/services/util/smart-table-config.service';
 import { EnergiaAcumuladaService } from './energia-acumulada.service';
-import { PontoMedicaoService } from '../../../@core/services/gerencial/ponto-medicao.service';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { IDropDown } from '../../../@core/data/drop-down';
+import { PontoMedicaoService } from '../empresa/ponto-medicao.service';
 
 @Component({
   selector: 'ngx-energia-acumulada',

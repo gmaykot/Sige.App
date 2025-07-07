@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
-import { IResponseInterface } from '../../data/response.interface';
-import { IAnaliseViabilidade } from '../../data/analise-viabilidade';
-import { HttpService } from '../util/http.service';
+import { Injectable } from "@angular/core";
+import { IAnaliseViabilidade } from "../../../@core/data/analise-viabilidade";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { HttpService } from "../../../@core/services/util/http.service";
+
 
 @Injectable({ providedIn: 'root' })
 export class AnailseViabilidadeService {

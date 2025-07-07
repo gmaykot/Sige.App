@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
-import { IUsuario, IUsuarioSenha, Usuario } from "../../data/usuario";
 import { of as observableOf, Observable } from "rxjs";
-import { DefaultService } from "../default-service";
-import { HttpService } from "../util/http.service";
-import { IResponseInterface } from "../../data/response.interface";
-import { SessionSige } from "../../enum/session.const";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { IUsuario, Usuario, IUsuarioSenha } from "../../../@core/data/usuario";
+import { SessionSige } from "../../../@core/enum/session.const";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
+
 
 @Injectable({ providedIn: "root" })
 export class UsuarioService  extends DefaultService<IUsuario> {

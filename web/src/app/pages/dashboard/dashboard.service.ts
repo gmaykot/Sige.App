@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { IResponseInterface } from "../../data/response.interface";
-import { HttpService } from "../util/http.service";
-import { IChecklist } from "../../data/administrativo/checklist";
-import { IConsumoMeses } from "../../data/administrativo/consumo-meses";
-import { IContratosFinalizados } from "../../data/administrativo/contratos-finalizados";
-import { IStatusMedicao } from "../../data/administrativo/status-medicao";
-import { DefaultService } from "../default-service";
+import { IChecklist } from "../../@core/data/administrativo/checklist";
+import { IConsumoMeses } from "../../@core/data/administrativo/consumo-meses";
+import { IContratosFinalizados } from "../../@core/data/administrativo/contratos-finalizados";
+import { IStatusMedicao } from "../../@core/data/administrativo/status-medicao";
+import { IResponseInterface } from "../../@core/data/response.interface";
+import { DefaultService } from "../../@core/services/default-service";
+import { HttpService } from "../../@core/services/util/http.service";
 
 @Injectable({ providedIn: "root" })
 export class DashboardService extends DefaultService<any>{

@@ -6,7 +6,6 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { IIntegracaoCCEE, IIntegracaoCCEETotais, IValoresGrafico } from '../../../@core/data/integracao-ccee.response';
 import { IColetaMedicao, IMedicao } from '../../../@core/data/medicao';
 import { IResponseInterface } from '../../../@core/data/response.interface';
-import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { settingsMedicao } from '../../../@shared/table-config/medicoes.config';
 import { MedicaoConfigSettings } from '../medicao/medicao.config.settings';
@@ -18,6 +17,7 @@ import { HistoricoMedicaoComponent } from '../../../@shared/custom-component/his
 import { IMedicaoValores } from '../../../@core/data/resultado-medicao';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { EditMedicaoComponent } from '../../../@shared/custom-component/edit-medicao/edit-medicao.component';
+import { MedicaoService } from './medicao.service';
 
 @Component({
   selector: "ngx-medicao",

@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
-import { HttpService } from "../util/http.service";
-import { DefaultService } from "../default-service";
-import { IFaturamentoCoenel } from "../../data/geral/faturamento-coenel";
-import { IResponseInterface } from "../../data/response.interface";
+import { IFaturamentoCoenel } from "../../../@core/data/geral/faturamento-coenel";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
+
 
 @Injectable({ providedIn: "root" })
 export class FaturamentoCoenelService extends DefaultService<IFaturamentoCoenel> {

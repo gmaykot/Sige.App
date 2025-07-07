@@ -1,8 +1,9 @@
+
 import { Injectable } from "@angular/core";
-import { DefaultService } from "../default-service";
-import { IFaturaEnergia } from "../../data/fatura.energia";
-import { HttpService } from "../util/http.service";
-import { IResponseInterface } from "../../data/response.interface";
+import { IFaturaEnergia } from "../../../@core/data/fatura.energia";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
 import { IDescontoTusdMensal } from "../../../pages/geral/gerenciamento-mensal/gerenciamento-mensal.interface";
 
 @Injectable({ providedIn: "root" })

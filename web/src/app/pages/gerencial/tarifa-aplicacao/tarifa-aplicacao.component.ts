@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { IDropDown } from '../../../@core/data/drop-down';
-import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
+import { ConcessionariaService } from '../concessionaria/concessionaria.service';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { TarifaAplicacaoService } from './tarifa-aplicacao.service';
 import { DefaultComponent } from '../../../@shared/custom-component/default/default-component';

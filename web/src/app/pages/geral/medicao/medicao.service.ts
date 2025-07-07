@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { IResponseInterface } from '../../data/response.interface';
-import { IColetaMedicao, IMedicao } from '../../data/medicao';
-import { IMedicaoValores, IResultadoMedicao } from '../../data/resultado-medicao';
-import { IIntegracaoCCEE } from '../../data/integracao-ccee.response';
-import { IAgenteMedicao } from '../../data/agente-medicao';
-import { HttpService } from '../util/http.service';
+import { Injectable } from "@angular/core";
+import { IAgenteMedicao } from "../../../@core/data/agente-medicao";
+import { IIntegracaoCCEE } from "../../../@core/data/integracao-ccee.response";
+import { IMedicao, IColetaMedicao } from "../../../@core/data/medicao";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { IResultadoMedicao, IMedicaoValores } from "../../../@core/data/resultado-medicao";
+import { HttpService } from "../../../@core/services/util/http.service";
+
 
 @Injectable({ providedIn: 'root' })
 export class MedicaoService {

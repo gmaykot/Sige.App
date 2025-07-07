@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { IConcessionaria } from "../../data/concessionarias";
-import { HttpService } from "../util/http.service";
-import { DefaultService } from "../default-service";
-import { IResponseInterface } from "../../data/response.interface";
-import { IDropDown } from "../../data/drop-down";
+import { IConcessionaria } from "../../../@core/data/concessionarias";
+import { HttpService } from "../../../@core/services/util/http.service";
+import { DefaultService } from "../../../@core/services/default-service";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { IDropDown } from "../../../@core/data/drop-down";
 
 @Injectable({ providedIn: "root" })
 export class ConcessionariaService extends DefaultService<IConcessionaria> {

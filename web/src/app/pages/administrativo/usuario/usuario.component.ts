@@ -1,18 +1,16 @@
-import { Component, Injector, OnInit } from '@angular/core';
-import { AlertService } from '../../../@core/services/util/alert.service';
-import { LocalDataSource } from 'ng2-smart-table';
-import { UsuarioConfigSettings } from './usuario.config.settings';
-import { UsuarioService } from '../../../@core/services/administrativo/usuario.service';
-import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
-import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
-import { Classes } from '../../../@core/enum/classes.const';
-import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
-import { MenuUsuarioComponent } from '../../../@shared/custom-component/menu-usuario/menu-usuario.component';
-import { IMenuUsuario } from '../../../@core/data/menu-usuario';
-import { MenuUsuarioService } from '../../../@core/services/administrativo/menu-usuario.service';
-import { IResponseInterface } from '../../../@core/data/response.interface';
-import { MenuSistemaService } from '../../../@core/services/administrativo/menu-sistema.service';
-import { IDropDown } from '../../../@core/data/drop-down';
+import { Component, OnInit, Injector } from "@angular/core";
+import { LocalDataSource } from "ng2-smart-table";
+import { IDropDown } from "../../../@core/data/drop-down";
+import { IMenuUsuario } from "../../../@core/data/menu-usuario";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { Classes } from "../../../@core/enum/classes.const";
+import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
+import { MenuUsuarioComponent } from "../../../@shared/custom-component/menu-usuario/menu-usuario.component";
+import { MenuSistemaService } from "../menu-sistema/menu-sistema.service";
+import { MenuUsuarioService } from "./menu-usuario.service";
+import { UsuarioConfigSettings } from "./usuario.config.settings";
+import { UsuarioService } from "./usuario.service";
+
 
 @Component({
   selector: 'ngx-usuario',

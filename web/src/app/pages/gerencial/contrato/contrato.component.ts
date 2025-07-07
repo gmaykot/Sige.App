@@ -1,29 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
-import { LocalDataSource } from 'ng2-smart-table';
-import { IResponseInterface } from '../../../@core/data/response.interface';
-import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
-import { ContratoService } from '../../../@core/services/gerencial/contrato.service';
-import { IContrato } from '../../../@core/data/contrato';
-import { EmpresaService } from '../../../@core/services/gerencial/empresa.service';
-import { FornecedorService } from '../fornecedor/fornecedor.service';
-import { ValorAnualContratoService } from '../../../@core/services/gerencial/valor-anual-contrato';
-import { ValorMensalContratoService } from '../../../@core/services/gerencial/valor-mensal-contrato';
-import { SEGMENTO, STATUS_CONTRATO, TIPO_ENERGIA } from '../../../@core/enum/status-contrato';
-import { IDropDown } from '../../../@core/data/drop-down';
-import { DatePipe } from '@angular/common';
-import { ContratoConfigSettings } from './contrato.config.settings';
-import { IValorAnual } from '../../../@core/data/valor-anual';
-import { IValorMensal } from '../../../@core/data/valor-mensal';
-import { IEmpresa } from '../../../@core/data/empresa';
-import { IContratoEmpresas } from '../../../@core/data/contrato-empresas';
-import { ValorAnualComponent } from '../../../@shared/custom-component/valor-anual.component';
-import { ValorMensalComponent } from '../../../@shared/custom-component/valor-mensal.component';
-import { GrupoEmpresaComponent } from '../../../@shared/custom-component/grupo-empresa.component';
-import { DateService } from '../../../@core/services/util/date.service';
-import { AlertService } from '../../../@core/services/util/alert.service';
-import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
+import { DatePipe } from "@angular/common";
+import { Component, OnInit } from "@angular/core";
+import { Validators, FormBuilder } from "@angular/forms";
+import { NbDialogService, NbLayoutScrollService } from "@nebular/theme";
+import { LocalDataSource } from "ng2-smart-table";
+import { IContrato } from "../../../@core/data/contrato";
+import { IContratoEmpresas } from "../../../@core/data/contrato-empresas";
+import { IDropDown } from "../../../@core/data/drop-down";
+import { IEmpresa } from "../../../@core/data/empresa";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { IValorAnual } from "../../../@core/data/valor-anual";
+import { IValorMensal } from "../../../@core/data/valor-mensal";
+import { STATUS_CONTRATO, TIPO_ENERGIA, SEGMENTO } from "../../../@core/enum/status-contrato";
+import { AlertService } from "../../../@core/services/util/alert.service";
+import { DateService } from "../../../@core/services/util/date.service";
+import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
+import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
+import { GrupoEmpresaComponent } from "../../../@shared/custom-component/grupo-empresa.component";
+import { ValorAnualComponent } from "../../../@shared/custom-component/valor-anual.component";
+import { ValorMensalComponent } from "../../../@shared/custom-component/valor-mensal.component";
+import { EmpresaService } from "../empresa/empresa.service";
+import { FornecedorService } from "../fornecedor/fornecedor.service";
+import { ContratoConfigSettings } from "./contrato.config.settings";
+import { ContratoService } from "./contrato.service";
+import { ValorAnualContratoService } from "./valor-anual-contrato";
+import { ValorMensalContratoService } from "./valor-mensal-contrato";
+
 
 @Component({
   selector: 'ngx-contrato',

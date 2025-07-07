@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
-import { IContrato } from "../../data/contrato";
-import { IResponseInterface } from "../../data/response.interface";
-import { DefaultService } from "../default-service";
-import { HttpService } from "../util/http.service";
-import { IContratoEmpresas } from "../../data/contrato-empresas";
+import { IContrato } from "../../../@core/data/contrato";
+import { IContratoEmpresas } from "../../../@core/data/contrato-empresas";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { DefaultService } from "../../../@core/services/default-service";
+import { HttpService } from "../../../@core/services/util/http.service";
+
 
 @Injectable({ providedIn: "root" })
 export class ContratoService extends DefaultService<IContrato> {

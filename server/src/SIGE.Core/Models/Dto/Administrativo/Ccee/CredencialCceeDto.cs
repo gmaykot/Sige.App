@@ -1,7 +1,5 @@
-﻿namespace SIGE.Core.Models.Dto.Administrativo.Ccee
-{
-    public class CredencialCceeDto
-    {
+﻿namespace SIGE.Core.Models.Dto.Administrativo.Ccee {
+    public class CredencialCceeDto {
         public Guid? Id { get; set; }
         public required string AuthUsername { get; set; }
         public required string AuthPassword { get; set; }

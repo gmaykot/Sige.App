@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IConcessionaria } from '../../../@core/data/concessionarias';
-import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
+import { ConcessionariaService } from '../../gerencial/concessionaria/concessionaria.service';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { IEmpresa } from '../../../@core/data/empresa';
-import { EmpresaService } from '../../../@core/services/gerencial/empresa.service';
 import { settingsAnaliseViabilidade, settingsAnaliseViabilidadeResponse } from '../../../@shared/table-config/analise.viabilidade.config';
 import { LocalDataSource } from 'ng2-smart-table';
 import { IFaturaEnergia } from '../../../@core/data/fatura.energia';
 import { IAnaliseViabilidade } from '../../../@core/data/analise-viabilidade';
-import { AnailseViabilidadeService } from '../../../@core/services/geral/analise-viabilidade.service';
+import { EmpresaService } from '../../gerencial/empresa/empresa.service';
+import { AnailseViabilidadeService } from './analise-viabilidade.service';
 
 @Component({
   selector: 'ngx-analise-viabilidade',
