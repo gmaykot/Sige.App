@@ -53,7 +53,7 @@ public class SoapEnvelope {
                         Parametros = new Parametros {
                             Parametro = new Parametro {
                                 Nome = "CODIGO_AGENTE",
-                                Valor = credencial.AuthCodigoAgente
+                                Valor = credencial.AuthCodigoPerfilAgente
                             }
                         }
                     }
