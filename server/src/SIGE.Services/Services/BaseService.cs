@@ -59,6 +59,17 @@ namespace SIGE.Services.Services {
         /// Inclui um novo registro.
         /// </summary>
         public virtual async Task<Response> Incluir(T req) {
+            var idProperty = typeof(T).GetProperty("Id");
+
+            if (idProperty == null)
+                return new Response().SetBadRequest()
+                    .AddError(ETipoErro.ERRO, "A entidade não possui a propriedade 'Id'.");
+
+            var id = idProperty.GetValue(req);
+
+            if (id != null)
+                return await Alterar(req);
+
             var entity = _mapper.Map<M>(req);
             await _appDbContext.AddAsync(entity);
             await _appDbContext.SaveChangesAsync();
