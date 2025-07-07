@@ -39,6 +39,10 @@ export class EmpresaConfigSettings {
         title: "Nome",
         type: "string",
       },
+      codigoAgente: {
+        title: "Código Agente",
+        type: "string",
+      },
       codigoPerfilAgente: {
         title: "Código Perfil",
         type: "string",
