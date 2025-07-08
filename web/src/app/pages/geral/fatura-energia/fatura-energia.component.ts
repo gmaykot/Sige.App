@@ -329,6 +329,7 @@ export class FaturaEnergiaComponent implements OnInit {
       .obterFaturaDescontos(mesReferencia, this.getControlValues("pontoMedicaoId"))
       .then((response: IResponseInterface<IDescontoTusdMensal>) => {
         if (response.success) {
+          console.log(response.data);
           this.control.patchValue({
             valorDescontoTUSD: response.data.valorDescontoTUSD,
             valorDescontoRETUSD: response.data.valorDescontoRETUSD
