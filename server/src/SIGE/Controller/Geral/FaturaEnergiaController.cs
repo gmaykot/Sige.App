@@ -4,12 +4,10 @@ using SIGE.Core.Models.Dto.Geral.FaturaEnergia;
 using SIGE.Services.Interfaces.Geral;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace SIGE.Controller.Geral
-{
+namespace SIGE.Controller.Geral {
     [ApiController]
     [Route("fatura-energia")]
-    public class FaturaEnergiaController(IFaturaEnergiaService service) : ControllerBase
-    {
+    public class FaturaEnergiaController(IFaturaEnergiaService service) : ControllerBase {
         private readonly IFaturaEnergiaService _service = service;
 
         [HttpPost()]
@@ -73,6 +71,6 @@ namespace SIGE.Controller.Geral
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> ObterDescontosTusdRetusd([FromRoute] DateTime mesReferencia, Guid pontoMedicaoId) =>
-    Ok(await _service.ObterDescontosTusdRetusd(mesReferencia, pontoMedicaoId));
+            Ok(await _service.ObterDescontosTusdRetusd(mesReferencia, pontoMedicaoId));
     }
 }

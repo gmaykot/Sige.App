@@ -6,17 +6,15 @@ using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Geral.FaturaEnergia;
+using SIGE.Core.Models.Dto.GerenciamentoMensal;
 using SIGE.Core.Models.Sistema.Geral.FaturaEnergia;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
 
-namespace SIGE.Services.Services.Geral
-{
-    public class FaturaEnergiaService(AppDbContext appDbContext, IMapper mapper) : BaseService<FaturaEnergiaDto, FaturaEnergiaModel>(appDbContext, mapper), IFaturaEnergiaService
-    {
-        public override async Task<Response> Alterar(FaturaEnergiaDto req)
-        {
+namespace SIGE.Services.Services.Geral {
+    public class FaturaEnergiaService(AppDbContext appDbContext, IMapper mapper) : BaseService<FaturaEnergiaDto, FaturaEnergiaModel>(appDbContext, mapper), IFaturaEnergiaService {
+        public override async Task<Response> Alterar(FaturaEnergiaDto req) {
             var fornecedor = await _appDbContext.FaturasEnergia.Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.Id == req.Id);
             var lancamentos = fornecedor.LancamentosAdicionais;
             _mapper.Map(req, fornecedor);
@@ -25,8 +23,7 @@ namespace SIGE.Services.Services.Geral
 
             _ = await _appDbContext.SaveChangesAsync();
 
-            if (!req.LancamentosAdicionais.IsNullOrEmpty())
-            {
+            if (!req.LancamentosAdicionais.IsNullOrEmpty()) {
                 lancamentos = _mapper.Map<IEnumerable<LancamentoAdicionalModel>>(req.LancamentosAdicionais);
                 await _appDbContext.AddRangeAsync(lancamentos);
                 _ = await _appDbContext.SaveChangesAsync();
@@ -35,8 +32,7 @@ namespace SIGE.Services.Services.Geral
             return new Response().SetOk().SetMessage("Dados alterados com sucesso.");
         }
 
-        public async Task<Response> Obter()
-        {
+        public async Task<Response> Obter() {
             var ret = new Response();
             var res = await _appDbContext.FaturasEnergia.Include(f => f.Concessionaria).Include(f => f.PontoMedicao).Include(f => f.LancamentosAdicionais).ToListAsync();
             if (res.Count > 0)
@@ -45,8 +41,7 @@ namespace SIGE.Services.Services.Geral
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe fatura ativo.");
         }
 
-        public async Task<Response> ObterFaturas(DateOnly? mesReferencia, Guid? pontoMedicaoId)
-        {
+        public async Task<Response> ObterFaturas(DateOnly? mesReferencia, Guid? pontoMedicaoId) {
             if (mesReferencia == null)
                 mesReferencia = DateOnly.FromDateTime(DateTime.Now).GetPrimeiroDiaMes();
 
@@ -62,15 +57,14 @@ namespace SIGE.Services.Services.Geral
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe fatura ativo.");
         }
 
-        public async Task<Response> ObterDescontosTusdRetusd(DateTime mesReferencia, Guid pontoMedicaoId)
-        {
+        public async Task<Response> ObterDescontosTusdRetusd(DateTime mesReferencia, Guid pontoMedicaoId) {
             var parameters = new MySqlParameter[]
             {
                 new("@MesReferencia", MySqlDbType.Date) { Value = mesReferencia },
                 new("@PontoMedicaoId", MySqlDbType.Guid) { Value = pontoMedicaoId },
             };
 
-            return await ExecutarSource(GerenciamentoMensalFactory.ObterDescontoTusd(), parameters);
+            return await ExecutarSource<DescontoTUSDDto>(GerenciamentoMensalFactory.ObterDescontoTusd(), parameters);
         }
     }
 }
