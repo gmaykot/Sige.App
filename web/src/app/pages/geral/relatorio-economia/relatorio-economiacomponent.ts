@@ -180,7 +180,6 @@ export class RelatorioEconomiaComponent implements OnInit {
           this.relatorioEconomia.cabecalho = response.data.cabecalho;
           this.relatorioFinal = response.data;
           this.relatorioFinal.grupos.sort((a, b) => a.ordem - b.ordem);
-          console.log(this.relatorioFinal.grupos);
           this.selected = true;
           this.initChart();
         } else {
