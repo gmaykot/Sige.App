@@ -3,7 +3,7 @@ using SIGE.Core.Enumerators;
 
 namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia {
     public class ParametrosRelatorioEconomiaDto {
-        public Guid FaturamentoId { get; set; }
+        public Guid? FaturamentoId { get; set; }
         public DateTime VigenciaInicial { get; set; }
         public DateTime? VigenciaFinal { get; set; }
         public double ValorFixo { get; set; }

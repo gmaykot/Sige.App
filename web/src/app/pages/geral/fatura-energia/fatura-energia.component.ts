@@ -330,8 +330,8 @@ export class FaturaEnergiaComponent implements OnInit {
       .then((response: IResponseInterface<IDescontoTusdMensal>) => {
         if (response.success) {          
           this.control.patchValue({
-            valorDescontoTUSD: response.data[0]?.valorDescontoTUSD,
-            valorDescontoRETUSD: response.data[0]?.valorDescontoRETUSD
+            valorDescontoTUSD: response.data?.valorDescontoTUSD,
+            valorDescontoRETUSD: response.data?.valorDescontoRETUSD
           });
         } else {
           this.control.patchValue({

@@ -156,29 +156,38 @@ namespace SIGE.Services.Services.Externo {
                 return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Sem credenciais cadastradas no sistema.");
 
             var medicoes = new List<IntegracaoCceeMedidasDto>();
+            var cred = _mapper.Map<CredencialCceeDto>(credenciais);
+            cred.CodigoAgente = "60854";
+            cred.CodigoPerfilAgente = "45752";
 
-            var envelope = SoapEnvelope.FromCredencial(_mapper.Map<CredencialCceeDto>(credenciais), "202502016000", "63", "288");
+            var envelope = SoapEnvelope.FromCredencial(cred, "202502016000", "63", "288");
             var xmlRequest = SoapXmlHelper.SerializeSoapEnvelope(envelope);
 
             var httpContent = new StringContent(xmlRequest, Encoding.UTF8, "text/xml");
-            httpContent.Headers.Add("SOAPAction", _option.ListarMedidas.SoapAction);
+            httpContent.Headers.Add("SOAPAction", _option.ResultadoRelatorios.SoapAction);
 
             try {
-                var res = await _httpClient.PostAsync(_option.ListarMedidas.Url, httpContent);
+                var res = await _httpClient.PostAsync(_option.ResultadoRelatorios.Url, httpContent);
                 if (res.IsSuccessStatusCode) {
                     var content = await res.Content.ReadAsStringAsync();
                     if (string.IsNullOrEmpty(content))
                         return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Retorno do serviço 'Listar Medidas' inválido.");
 
-                    XDocument doc = XDocument.Parse(content.XmlSanitazer());
-                    var medidas = doc.DescendantNodes().FirstOrDefault(n => n.ToString().Contains("bmmedidas"));
-                    var json = JsonConvert.SerializeXNode(medidas, Formatting.None, true);
-
-                    var resXml = JsonConvert.DeserializeObject<IntegracaoCceeXmlDto>(json);
-                    if (resXml == null || resXml.ListaMedidas == null || !resXml.ListaMedidas.Any())
-                        return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Nenhuma medida listada no período.");
-
-                    medicoes.AddRange(_mapper.Map<IEnumerable<IntegracaoCceeMedidasDto>>(resXml.ListaMedidas.OrderBy(n => n.PeriodoFinal).ToList()));
+                    var retorno = SoapXmlHelper.DeserializeSoapEnvelope(content);
+                    var valoresMaioresQueZero = retorno.Body.ListarResultadoRelatorioResponse.Resultados
+                        .SelectMany(r => r.Valores
+                            .Select(v => v.Trim('\'').Split("','"))
+                            .Where(campos => {
+                                var ultimoCampo = campos.LastOrDefault();
+                                return double.TryParse(ultimoCampo, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double valor) && valor > 0;
+                            })
+                            .Select(campos => new {
+                                Agente = campos[2],
+                                ValorFinal = double.Parse(campos.Last(), System.Globalization.CultureInfo.InvariantCulture)
+                            })
+                        )
+                        .ToList();
+                    return ret.SetOk().SetData(valoresMaioresQueZero).SetMessage("Integração efetuada com sucesso.");
                 }
                 else {
                     return ret.SetBadRequest().AddError(ETipoErro.ERRO, "Erro ao executar a integração com a Ccee")
@@ -191,24 +200,7 @@ namespace SIGE.Services.Services.Externo {
                                                     .AddError("Message", ex.Message)
                                                     .AddError("InnerException", ex.InnerException.Message);
             }
-
-            var resCcee = new IntegracaoCceeDto {
-                EmpresaId = req.EmpresaId,
-                Periodo = req.Periodo,
-                TipoMedicao = req.TipoMedicao,
-                ListaMedidas = medicoes.OrderBy(m => m.PontoMedicao).ThenBy(m => m.PeriodoFinal)
-            };
-            if (resCcee.ListaMedidas.Any()) {
-                resCcee.Totais = new IntegracaoCceeTotaisDto() {
-                    MediaConsumoAtivo = resCcee.ListaMedidas.Average(m => m.ConsumoAtivo),
-                    SomaConsumoAtivo = resCcee.ListaMedidas.Sum(m => m.ConsumoAtivo),
-                };
-            }
-            else {
-                return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "SemNenhuma medida listada no período.");
-            }
-
-            return ret.SetOk().SetData(resCcee).SetMessage("Integração efetuada com sucesso.");
+            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "SemNenhuma medida listada no período.");
         }
     }
 }

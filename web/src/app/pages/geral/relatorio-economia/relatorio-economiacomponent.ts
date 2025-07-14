@@ -176,6 +176,7 @@ export class RelatorioEconomiaComponent implements OnInit {
     await this.service
       .getFinal(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia)
       .then((response: IResponseInterface<IRelatorioFinal>) => {
+        console.log(response);
         if (response.success) {
           this.relatorioEconomia.cabecalho = response.data.cabecalho;
           this.relatorioFinal = response.data;

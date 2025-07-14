@@ -49,39 +49,61 @@ namespace SIGE.Services.Services.Geral {
                 var valorAnalitico = calculo.CalcularAnalitico(relMedicoes).Where(c => c.NumCnpj == res.CNPJ).FirstOrDefault();
 
                 var fatura = _mapper.Map<FaturaEnergiaDto>(await _appDbContext.FaturasEnergia.AsNoTracking().Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.PontoMedicaoId == pontoMedicaoId && f.MesReferencia == mesReferencia));
-                if (fatura != null) {
-                    var tarifa = _mapper.Map<TarifaAplicacaoDto>(await _appDbContext.TarifasAplicacao.AsNoTracking().IgnoreAutoIncludes().Where(t => t.ConcessionariaId == fatura.ConcessionariaId && t.Segmento == res.Segmento && t.SubGrupo == res.Conexao && t.Ativo).OrderByDescending(t => t.DataUltimoReajuste).FirstOrDefaultAsync());
-                    if (tarifa != null) {
-                        var tarifaCalculada = _mapper.Map<TarifaCalculadaDto>(tarifa);
+                if (fatura == null)
+                    ret.AddError(ETipoErro.INFORMATIVO, "Fatura de Energia não encontrada.");
 
-                        var parameters = new MySqlParameter[]
-                            {
-                                new("@MesReferencia", MySqlDbType.Date) { Value = fatura.MesReferencia },
-                                new("@PontoMedicaoId", MySqlDbType.Guid) { Value = fatura.PontoMedicaoId },
-                                new("@ConcessionariaId", MySqlDbType.Guid) { Value = fatura.ConcessionariaId },
-                            };
+                var tarifa = _mapper.Map<TarifaAplicacaoDto>(await _appDbContext.TarifasAplicacao.AsNoTracking().IgnoreAutoIncludes().Where(t => t.ConcessionariaId == fatura.ConcessionariaId && t.Segmento == res.Segmento && t.SubGrupo == res.Conexao && t.Ativo).OrderByDescending(t => t.DataUltimoReajuste).FirstOrDefaultAsync());
+                if (tarifa == null)
+                    ret.AddError(ETipoErro.INFORMATIVO, "Tarifa de Aplicação não encontrada.");
 
-                        var paramRelatorio = await _appDbContext.Database.SqlQueryRaw<ParametrosRelatorioEconomiaDto>(RelatorioEconomiaFactory.ObterParametrosRelatorioEconomia(), parameters).FirstOrDefaultAsync();
-                        //Aplicar validações de obrigatoriedades
+                var tarifaCalculada = _mapper.Map<TarifaCalculadaDto>(tarifa);
 
-                        tarifaCalculada.ICMS = paramRelatorio.Icms;
-                        tarifaCalculada.Cofins = paramRelatorio.ValorCofins;
-                        tarifaCalculada.Proinfa = paramRelatorio.Proinfa;
-                        tarifaCalculada.PIS = paramRelatorio.ValorPis;
-                        tarifaCalculada.BandeiraAdicional = paramRelatorio.ValorBandeiraAplicado;
-                        tarifaCalculada.TotalPercentualTUSD = relMedicoes.TipoEnergia.GetValorTipoEnergia();
-                        tarifaCalculada.PercentualTUSD = fatura.ValorDescontoTUSD;
+                var parameters = new MySqlParameter[]
+                    {
+                        new("@MesReferencia", MySqlDbType.Date) { Value = fatura.MesReferencia },
+                        new("@PontoMedicaoId", MySqlDbType.Guid) { Value = fatura.PontoMedicaoId },
+                        new("@ConcessionariaId", MySqlDbType.Guid) { Value = fatura.ConcessionariaId },
+                    };
 
-                        res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste?.ToString("d", new CultureInfo("pt-BR"))}";
-                        var relatorio = new RelatorioFinalDto {
-                            Cabecalho = res,
-                            Grupos = [GrupoCativoMapper(0, fatura, tarifaCalculada, res.Conexao), GrupoLivreMapper(1, fatura, tarifaCalculada, relMedicoes, valores, res.Conexao, valorAnalitico)],
-                        };
-                        relatorio.Comparativo = CompartivoFinal(relatorio, paramRelatorio, paramRelatorio?.SalarioMinimoValor, paramRelatorio?.ValorTotalAcumulado);
-                        return ret.SetOk().SetData(relatorio);
+                var paramRelatorio = await _appDbContext.Database.SqlQueryRaw<ParametrosRelatorioEconomiaDto>(RelatorioEconomiaFactory.ObterParametrosRelatorioEconomia(), parameters).FirstOrDefaultAsync();
 
-                    }
-                }
+                // Verificações por tabela:
+                if (paramRelatorio == null || paramRelatorio?.FaturamentoId == null)
+                    return ret.SetBadRequest().AddError(ETipoErro.INFORMATIVO, "Dados de Faturamento Coenel não encontrados.");
+
+                if (paramRelatorio?.ImpostoId == null)
+                    ret.AddError(ETipoErro.INFORMATIVO, "Dados de Impostos não encontrados.");
+
+                if (paramRelatorio?.SalarioMinimoId == null)
+                    ret.AddError(ETipoErro.INFORMATIVO, "Dados de Salário Mínimo não encontrados.");
+
+                if (paramRelatorio?.EnergiaAcumuladaId == null)
+                    ret.AddError(ETipoErro.INFORMATIVO, "Dados de Energia Acumulada não encontrados.");
+
+                if (paramRelatorio?.BandeiraVigenteId == null)
+                    ret.AddError(ETipoErro.INFORMATIVO, "Dados de Bandeira Tarifária Vigente não encontrados.");
+
+                if (paramRelatorio?.ConsumoId == null)
+                    ret.AddError(ETipoErro.INFORMATIVO, "Dados de Consumo Mensal não encontrados.");
+
+                if (ret.Errors.Count() > 0)
+                    return ret.SetBadRequest();
+
+                tarifaCalculada.ICMS = paramRelatorio.Icms;
+                tarifaCalculada.Cofins = paramRelatorio.ValorCofins;
+                tarifaCalculada.Proinfa = paramRelatorio.Proinfa;
+                tarifaCalculada.PIS = paramRelatorio.ValorPis;
+                tarifaCalculada.BandeiraAdicional = paramRelatorio.ValorBandeiraAplicado;
+                tarifaCalculada.TotalPercentualTUSD = relMedicoes.TipoEnergia.GetValorTipoEnergia();
+                tarifaCalculada.PercentualTUSD = fatura.ValorDescontoTUSD;
+
+                res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste?.ToString("d", new CultureInfo("pt-BR"))}";
+                var relatorio = new RelatorioFinalDto {
+                    Cabecalho = res,
+                    Grupos = [GrupoCativoMapper(0, fatura, tarifaCalculada, res.Conexao), GrupoLivreMapper(1, fatura, tarifaCalculada, relMedicoes, valores, res.Conexao, valorAnalitico)],
+                };
+                relatorio.Comparativo = CompartivoFinal(relatorio, paramRelatorio, paramRelatorio?.SalarioMinimoValor, paramRelatorio?.ValorTotalAcumulado);
+                return ret.SetOk().SetData(relatorio);
             }
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de economia no período.");

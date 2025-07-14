@@ -1,5 +1,4 @@
-﻿// SoapEnvelope.cs
-using System.Text;
+﻿using System.Text;
 using System.Xml.Serialization;
 using SIGE.Core.Models.Dto.Administrativo.Ccee;
 
@@ -29,9 +28,7 @@ public class SoapEnvelope {
         return new SoapEnvelope {
             Header = new SoapHeader {
                 MessageHeader = new MessageHeader {
-                    CodigoPerfilAgente = credencial.AuthCodigoPerfilAgente,
-                    TransactionId = Guid.NewGuid().ToString(),
-                    Versao = null
+                    CodigoPerfilAgente = credencial.CodigoPerfilAgente
                 },
                 Paginacao = new Paginacao {
                     Numero = 1,
@@ -53,7 +50,7 @@ public class SoapEnvelope {
                         Parametros = new Parametros {
                             Parametro = new Parametro {
                                 Nome = "CODIGO_AGENTE",
-                                Valor = credencial.AuthCodigoPerfilAgente
+                                Valor = credencial.CodigoAgente
                             }
                         }
                     }
@@ -78,11 +75,11 @@ public class MessageHeader {
     [XmlElement(ElementName = "codigoPerfilAgente", Namespace = "http://xmlns.energia.org.br/MH/v2")]
     public string CodigoPerfilAgente { get; set; }
 
-    [XmlElement(ElementName = "transactionId", Namespace = "http://xmlns.energia.org.br/MH/v2")]
-    public string TransactionId { get; set; }
+    //[XmlElement(ElementName = "transactionId", Namespace = "http://xmlns.energia.org.br/MH/v2")]
+    //public string? TransactionId { get; set; } = null;
 
-    [XmlElement(ElementName = "versao", Namespace = "http://xmlns.energia.org.br/MH/v2", IsNullable = true)]
-    public string Versao { get; set; }
+    //[XmlElement(ElementName = "versao", Namespace = "http://xmlns.energia.org.br/MH/v2", IsNullable = true)]
+    //public string? Versao { get; set; } = null;
 }
 
 public class Paginacao {
@@ -114,6 +111,47 @@ public class UsernameToken {
 public class SoapBody {
     [XmlElement(ElementName = "listarResultadoRelatorioRequest", Namespace = "http://xmlns.energia.org.br/BM/v2")]
     public ListarResultadoRelatorioRequest ListarResultadoRelatorioRequest { get; set; }
+
+    [XmlElement(ElementName = "listarResultadoRelatorioResponse", Namespace = "http://xmlns.energia.org.br/BM/v2")]
+    public ListarResultadoRelatorioResponse ListarResultadoRelatorioResponse { get; set; }
+}
+
+public class ListarResultadoRelatorioResponse {
+    [XmlArray("resultados", Namespace = "http://xmlns.energia.org.br/BM/v2")]
+    [XmlArrayItem("resultadoRelatorio", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    public List<ResultadoRelatorio> Resultados { get; set; } = new();
+}
+
+public class ResultadoRelatorio {
+    [XmlElement("cabecalho", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    public string Cabecalho { get; set; }
+
+    [XmlElement("relatorio", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    public RelatorioDetalhado Relatorio { get; set; }
+
+    [XmlArray("valores", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    [XmlArrayItem("valor", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    public List<string> Valores { get; set; }
+}
+
+public class RelatorioDetalhado {
+    [XmlElement("id", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    public string Id { get; set; }
+
+    [XmlElement("nome", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    public string Nome { get; set; }
+
+    [XmlArray("quadros", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    [XmlArrayItem("quadro", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    public List<QuadroSimples> Quadros { get; set; }
+}
+
+public class QuadroSimples {
+    [XmlElement("id", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    public string Id { get; set; }
+
+    [XmlElement("nome", Namespace = "http://xmlns.energia.org.br/BO/v2")]
+    public string Nome { get; set; }
 }
 
 public class ListarResultadoRelatorioRequest {

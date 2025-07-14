@@ -184,6 +184,23 @@ namespace SIGE.Services.Services {
                 .AddError(ETipoErro.INFORMATIVO, "Não existem registros cadastrados.");
         }
 
+        protected async Task<Response> ExecutarSourceSingle<TDto>(string sql, MySqlParameter[]? parameters = null, Func<IQueryable<TDto>, IOrderedQueryable<TDto>>? orderBy = null) {
+            var ret = new Response();
+
+            var query = _appDbContext.Database.SqlQueryRaw<TDto>(sql, parameters ?? []);
+
+            if (orderBy != null)
+                query = orderBy(query);
+
+            var res = await query.ToListAsync();
+
+            if (res != null)
+                return ret.SetOk().SetData(_mapper.Map<TDto>(res.FirstOrDefault()));
+
+            return ret.SetNotFound()
+                .AddError(ETipoErro.INFORMATIVO, "Não existem registros cadastrados.");
+        }
+
         public async Task<Response> ToogleAtivo(T req) {
             var idProperty = typeof(T).GetProperty("Id");
 

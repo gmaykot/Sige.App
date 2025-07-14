@@ -10,7 +10,6 @@ import { BandeiraTarifariaComponent } from './bandeira-tarifaria/bandeira-tarifa
 import { SalarioMinimoComponent } from './salario-minimo/salario-minimo.component';
 import { EnergiaAcumuladaComponent } from './energia-acumulada/energia-acumulada.component';
 import TarifaAplicacaoComponent from './tarifa-aplicacao/tarifa-aplicacao.component';
-import { SAGuard } from '../../@core/guards/SAGuard';
 
 const routes: Routes = [
   { path: 'empresas', component: EmpresaComponent },
@@ -21,7 +20,7 @@ const routes: Routes = [
   { path: 'bandeira-tarifaria', component: BandeiraTarifariaComponent },
   { path: 'tarifas-aplicacao', component: TarifaAplicacaoComponent },
   { path: 'salario-minimo', component: SalarioMinimoComponent },
-  { path: 'energia-acumulada', component: EnergiaAcumuladaComponent, canActivate: [SAGuard] },
+  { path: 'energia-acumulada', component: EnergiaAcumuladaComponent },
 ];
 
 @NgModule({

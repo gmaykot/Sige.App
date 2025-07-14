@@ -64,7 +64,7 @@ namespace SIGE.Services.Services.Geral {
                 new("@PontoMedicaoId", MySqlDbType.Guid) { Value = pontoMedicaoId },
             };
 
-            return await ExecutarSource<DescontoTUSDDto>(GerenciamentoMensalFactory.ObterDescontoTusd(), parameters);
+            return await ExecutarSourceSingle<DescontoTUSDDto>(GerenciamentoMensalFactory.ObterDescontoTusd(), parameters);
         }
     }
 }
