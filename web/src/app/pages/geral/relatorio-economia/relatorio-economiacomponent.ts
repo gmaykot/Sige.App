@@ -176,11 +176,11 @@ export class RelatorioEconomiaComponent implements OnInit {
     await this.service
       .getFinal(this.relatorioEconomia.pontoMedicaoId, this.mesReferencia)
       .then((response: IResponseInterface<IRelatorioFinal>) => {
-        console.log(response);
-        if (response.success) {
+        if (response.success && response.status == 200) {
           this.relatorioEconomia.cabecalho = response.data.cabecalho;
           this.relatorioFinal = response.data;
           this.relatorioFinal.grupos.sort((a, b) => a.ordem - b.ordem);
+          console.log(this.relatorioFinal.grupos);
           this.selected = true;
           this.initChart();
         } else {

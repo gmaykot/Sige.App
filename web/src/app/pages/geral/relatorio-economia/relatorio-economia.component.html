@@ -167,7 +167,7 @@
                                         <td style="text-align: center;">{{ !lanc.tarifa || lanc.tarifa === 0 ? lanc.totalizador === true ? '' : '-' : lanc.tarifa | number:'1.2-7' }} {{getTipo(lanc.tipoTarifa, lanc.tarifa)}}</td>
                                         <td style="text-align: center; {{lanc.total && lanc.total < 0 ? 'color: red' : ''}}">{{ !lanc.total || lanc?.total === 0 ? lanc?.totalizador === true ? '' : '-' : lanc?.total | moedaParenteses }}</td>
                                       </tr>
-                                      <tr [ngClass]="lanc.totalizador === true ? 'total-linha' : lanc.subTotalizador === true ? 'sub-total-linha' : ''" *ngIf="lanc.observacao !== null">
+                                      <tr [ngClass]="lanc.totalizador === true ? 'total-linha' : lanc.subTotalizador === true ? 'sub-total-linha' : ''" *ngIf="lanc.observacao && lanc.observacao !== null">
                                         <td colspan="2">{{ lanc.descricao }}</td>
                                         <td colspan="2">{{ lanc.observacao }}</td>
                                       </tr>
