@@ -61,7 +61,7 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia {
                     return KWForaPontaComImposto;
 
                 var fatorTusd = TotalPercentualTUSD - PercentualTUSD * 100;
-                var total = (KWForaPontaComImposto * 1) * (fatorTusd + TotalPercentualTUSD);
+                var total = (KWForaPontaComImposto * 1) * (fatorTusd + (100 - TotalPercentualTUSD));
                 return total / 100;
             }
         }
@@ -72,7 +72,7 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia {
                     return KWForaPontaComImposto;
 
                 var fatorTusd = TotalPercentualTUSD - PercentualTUSD * 100;
-                var total = (KWForaPontaSemICMS * 1) * (fatorTusd + TotalPercentualTUSD);
+                var total = (KWForaPontaSemICMS * 1) * (fatorTusd + (100 - TotalPercentualTUSD));
                 return total / 100;
             }
         }
