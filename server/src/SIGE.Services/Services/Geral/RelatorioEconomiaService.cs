@@ -434,7 +434,7 @@ namespace SIGE.Services.Services.Geral {
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "Desconto - TUSD (RETUSD)",
-                        Total = fatura.ValorDescontoRETUSD
+                        Total = fatura.ValorDescontoRETUSD*-1
                     }
             ];
 
