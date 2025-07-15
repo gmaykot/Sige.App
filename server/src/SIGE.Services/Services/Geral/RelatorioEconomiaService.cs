@@ -77,9 +77,6 @@ namespace SIGE.Services.Services.Geral {
                 if (paramRelatorio?.SalarioMinimoId == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Dados de Salário Mínimo não encontrados.");
 
-                if (paramRelatorio?.EnergiaAcumuladaId == null)
-                    ret.AddError(ETipoErro.INFORMATIVO, "Dados de Energia Acumulada não encontrados.");
-
                 if (paramRelatorio?.BandeiraVigenteId == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Dados de Bandeira Tarifária Vigente não encontrados.");
 
@@ -88,6 +85,9 @@ namespace SIGE.Services.Services.Geral {
 
                 if (ret.Errors.Count() > 0)
                     return ret.SetBadRequest();
+
+                if (paramRelatorio?.EnergiaAcumuladaId == null)
+                    ret.AddError(ETipoErro.INFORMATIVO, "Dados de Energia Acumulada não encontrados.");
 
                 tarifaCalculada.ICMS = paramRelatorio.Icms;
                 tarifaCalculada.Cofins = paramRelatorio.ValorCofins;
@@ -415,7 +415,7 @@ namespace SIGE.Services.Services.Geral {
                         Montante = (double)valorAnalitico.Quantidade,
                         TipoMontante = ETipoMontante.MWH,
                         Tarifa = (double)valorAnalitico.ValorUnitario,
-                        Total = (double)valorAnalitico.ValorNota,
+                        Total = (double)valorAnalitico.ValorProduto,
                         TipoTarifa = ETipoTarifa.RS_MWH
                     },
                     new LancamentoRelatorioFinalDto {

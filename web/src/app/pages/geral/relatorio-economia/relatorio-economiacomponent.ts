@@ -182,6 +182,7 @@ export class RelatorioEconomiaComponent implements OnInit {
           this.relatorioFinal.grupos.sort((a, b) => a.ordem - b.ordem);
           this.selected = true;
           this.initChart();
+          response.errors.map((x) => this.alertService.showWarning(x.value));
         } else {
           response.errors.map((x) => this.alertService.showError(x.value));
         }
