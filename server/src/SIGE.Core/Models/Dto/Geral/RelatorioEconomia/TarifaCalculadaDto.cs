@@ -3,10 +3,8 @@
 // Project-level suppressions either have no target or are given
 // a specific target and scoped to a namespace, type, member, etc.
 
-namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
-{
-    public class TarifaCalculadaDto
-    {
+namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia {
+    public class TarifaCalculadaDto {
         public double? ICMS { get; set; }
         public double? PIS { get; set; }
         public double? Cofins { get; set; }
@@ -25,89 +23,73 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
         public double? ReatKWhPFTE { get; set; }
 
 
-        public double? BandeiraAdicionalComImposto
-        {
+        public double? BandeiraAdicionalComImposto {
             get => CalculoBaseComImposto(BandeiraAdicional);
         }
 
-        public double? KWPontaComImposto
-        {
+        public double? KWPontaComImposto {
             get => CalculoBaseComImposto(KWPonta);
         }
 
-        public double? KWForaPontaComImposto
-        {
+        public double? KWForaPontaComImposto {
             get => CalculoBaseComImposto(KWForaPonta);
         }
 
-        public double? KWForaPontaSemICMS
-        {
+        public double? KWForaPontaSemICMS {
             get => CalculoBaseSemICMS(KWForaPonta);
         }
 
-        public double? KWPontaSemICMS
-        {
+        public double? KWPontaSemICMS {
             get => CalculoBaseSemICMS(KWPonta);
         }
 
-        public double? KWhPontaTUSDComImposto
-        {
+        public double? KWhPontaTUSDComImposto {
             get => CalculoBaseComImposto(KWhPontaTUSD);
         }
 
-        public double? KWhPontaTUSDCalculadoComImposto
-        {
-            get
-            {
-                var fatorTusd = (100 - PercentualTUSD*100) /100;
+        public double? KWhPontaTUSDCalculadoComImposto {
+            get {
+                var fatorTusd = (100 - PercentualTUSD * 100) / 100;
                 var total = ((KWhPontaTUSDComImposto - KWhForaPontaTUSDComImposto) * fatorTusd) + KWhForaPontaTUSDComImposto;
                 return total;
             }
         }
 
-        public double? KWhForaPontaTUSDCalculadoComImposto
-        {
-            get
-            {
+        public double? KWhForaPontaTUSDCalculadoComImposto {
+            get {
                 if (TotalPercentualTUSD == 0)
                     return KWForaPontaComImposto;
 
                 var fatorTusd = TotalPercentualTUSD - PercentualTUSD * 100;
-                var total = (KWForaPontaComImposto * 1) * (fatorTusd + TotalPercentualTUSD);
+                var total = (KWForaPontaComImposto * 1) * (fatorTusd + (100 - TotalPercentualTUSD));
                 return total / 100;
             }
         }
 
-        public double? KWhForaPontaTUSDNaoConsumidaCalculadoComImposto
-        {
-            get
-            {
+        public double? KWhForaPontaTUSDNaoConsumidaCalculadoComImposto {
+            get {
                 if (TotalPercentualTUSD == 0)
                     return KWForaPontaComImposto;
 
                 var fatorTusd = TotalPercentualTUSD - PercentualTUSD * 100;
-                var total = (KWForaPontaSemICMS* 1) * (fatorTusd + TotalPercentualTUSD);
+                var total = (KWForaPontaSemICMS * 1) * (fatorTusd + (100 - TotalPercentualTUSD));
                 return total / 100;
             }
         }
 
-        public double? KWhForaPontaTUSDComImposto
-        {
+        public double? KWhForaPontaTUSDComImposto {
             get => CalculoBaseComImposto(KWhForaPontaTUSD);
         }
 
-        public double? KWhPontaTEComImposto
-        {
+        public double? KWhPontaTEComImposto {
             get => CalculoBaseComImposto(KWhPontaTE);
         }
 
-        public double? KWhForaPontaTEComImposto
-        {
+        public double? KWhForaPontaTEComImposto {
             get => CalculoBaseComImposto(KWhForaPontaTE);
         }
 
-        public double? ReatKWhPFTEComImposto
-        {
+        public double? ReatKWhPFTEComImposto {
             get => CalculoBaseComImposto(ReatKWhPFTE);
         }
 
@@ -121,9 +103,9 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
             PIS + Cofins;
 
         public double? BaseCofinsCalculado() =>
-            (100-BaseCofins())/100;
+            (100 - BaseCofins()) / 100;
 
         public double? BaseICMS() =>
-            (100-ICMS)/100;
+            (100 - ICMS) / 100;
     }
 }
