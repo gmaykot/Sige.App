@@ -89,8 +89,8 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("    btv.Id AS BandeiraVigenteId,");
             builder.AppendLine("    btv.Bandeira,");
             builder.AppendLine("    CASE btv.Bandeira");
-            builder.AppendLine("        WHEN 0 THEN bt.ValorBandeiraVerde");
-            builder.AppendLine("        WHEN 1 THEN bt.ValorBandeiraAmarela");
+            builder.AppendLine("        WHEN 0 THEN bt.ValorBandeiraAmarela");
+            builder.AppendLine("        WHEN 1 THEN bt.ValorBandeiraVerde");
             builder.AppendLine("        WHEN 2 THEN bt.ValorBandeiraVermelha1");
             builder.AppendLine("        WHEN 3 THEN bt.ValorBandeiraVermelha2");
             builder.AppendLine("    END AS ValorBandeiraAplicado,");
