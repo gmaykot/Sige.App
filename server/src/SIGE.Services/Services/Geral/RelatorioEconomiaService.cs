@@ -415,7 +415,7 @@ namespace SIGE.Services.Services.Geral {
                         Montante = (double)valorAnalitico.Quantidade,
                         TipoMontante = ETipoMontante.MWH,
                         Tarifa = (double)valorAnalitico.ValorUnitario,
-                        Total = (double)valorAnalitico.ValorNota,
+                        Total = (double)valorAnalitico.ValorProduto,
                         TipoTarifa = ETipoTarifa.RS_MWH
                     },
                     new LancamentoRelatorioFinalDto {

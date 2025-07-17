@@ -168,7 +168,7 @@ export class RelatorioEconomiaComponent implements OnInit {
         }
       })
       .catch((httpMessage: any) => {
-        this.alertService.showError(httpMessage);
+        this.alertService.showError(httpMessage?.message);
       });
   }
 
@@ -188,7 +188,7 @@ export class RelatorioEconomiaComponent implements OnInit {
         }
       })
       .catch((httpMessage: any) => {
-        this.alertService.showError(httpMessage);
+        this.alertService.showError(httpMessage?.message);
       });
   }
 
