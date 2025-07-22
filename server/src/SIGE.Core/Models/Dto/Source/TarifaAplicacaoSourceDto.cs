@@ -8,7 +8,7 @@ namespace SIGE.Core.Models.Dto.Source {
         public string? NumeroResolucao { get; set; }
         public ETipoConexao? SubGrupo { get; set; }
         public ETipoSegmento? Segmento { get; set; }
-        public DateTime? DataUltimoReajuste { get; set; }
+        public DateTime DataUltimoReajuste { get; set; }
         public bool? Ativo { get; set; }
     }
 }

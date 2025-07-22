@@ -54,17 +54,17 @@ namespace SIGE.Services.Services.Geral {
 
                 var ultimoDiaMes = DateTime.DaysInMonth(mesReferencia.Year, mesReferencia.Month);
                 var dataReferencia = new DateTime(mesReferencia.Year, mesReferencia.Month, ultimoDiaMes);
-                var tarifa = _mapper.Map<TarifaAplicacaoDto>(
-                    await _appDbContext.TarifasAplicacao
-                        .AsNoTracking()
-                        .IgnoreAutoIncludes()
-                        .Where(t => t.ConcessionariaId == fatura.ConcessionariaId
-                            && t.Segmento == res.Segmento
-                            && t.SubGrupo == res.Conexao
-                            && t.Ativo
-                            && t.DataUltimoReajuste <= dataReferencia)
-                        .OrderByDescending(t => t.DataUltimoReajuste)
-                        .FirstOrDefaultAsync());
+                var tarifas = _mapper.Map<List<TarifaAplicacaoDto>>(await _appDbContext.TarifasAplicacao
+                            .AsNoTracking()
+                            .IgnoreAutoIncludes()
+                            .Where(t => t.ConcessionariaId == fatura.ConcessionariaId
+                                && t.Segmento == res.Segmento
+                                && t.SubGrupo == res.Conexao
+                                && t.Ativo
+                                && t.DataUltimoReajuste <= dataReferencia)
+                            .OrderByDescending(t => t.DataUltimoReajuste).ToListAsync());
+
+                var tarifa = tarifas.Count == 1 ? tarifas.FirstOrDefault() : CalcularTarifaProporcional(tarifas, mesReferencia);
 
                 if (tarifa == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Tarifa de Aplicação não encontrada.");
@@ -110,7 +110,7 @@ namespace SIGE.Services.Services.Geral {
                 tarifaCalculada.TotalPercentualTUSD = relMedicoes.TipoEnergia.GetValorTipoEnergia();
                 tarifaCalculada.PercentualTUSD = fatura.ValorDescontoTUSD;
 
-                res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste?.ToString("d", new CultureInfo("pt-BR"))}";
+                res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste.ToString("d", new CultureInfo("pt-BR"))}";
                 var relatorio = new RelatorioFinalDto {
                     Cabecalho = res,
                     Grupos = [GrupoCativoMapper(0, fatura, tarifaCalculada, res.Conexao), GrupoLivreMapper(1, fatura, tarifaCalculada, relMedicoes, valores, res.Conexao, valorAnalitico)],
@@ -578,5 +578,54 @@ namespace SIGE.Services.Services.Geral {
 
             return ret;
         }
+
+        private TarifaAplicacaoDto CalcularTarifaProporcional(List<TarifaAplicacaoDto> tarifas, DateOnly mesReferencia) {
+            var inicioMes = mesReferencia.ToDateTime(TimeOnly.MinValue);
+            var fimMes = new DateTime(mesReferencia.Year, mesReferencia.Month, DateTime.DaysInMonth(mesReferencia.Year, mesReferencia.Month));
+
+            // Filtra apenas tarifas com vigência iniciada e finalizada dentro do mês
+            var tarifasValidas = tarifas
+                .Where(t => t.DataUltimoReajuste >= inicioMes && t.DataUltimoReajuste <= fimMes)
+                .OrderBy(t => t.DataUltimoReajuste)
+                .ToList();
+
+            if (!tarifasValidas.Any())
+                return null;
+
+            // Cria lista com intervalo de vigência entre cada tarifa
+            var tarifasComDias = new List<(TarifaAplicacaoDto tarifa, int dias)>();
+
+            for (int i = 0; i < tarifasValidas.Count; i++) {
+                var atual = tarifasValidas[i];
+                var inicio = atual.DataUltimoReajuste;
+
+                DateTime fim;
+                if (i + 1 < tarifasValidas.Count)
+                    fim = tarifasValidas[i + 1].DataUltimoReajuste.AddDays(-1); // fim é um dia antes da próxima
+                else
+                    fim = fimMes; // última tarifa vai até fim do mês
+
+                var dias = (fim - inicio).Days + 1;
+                if (dias > 0)
+                    tarifasComDias.Add((atual, dias));
+            }
+
+            var totalDias = tarifasComDias.Sum(t => t.dias);
+
+            decimal Proporcional(Func<TarifaAplicacaoDto, decimal?> selector) =>
+                tarifasComDias.Sum(t => (selector(t.tarifa) ?? 0) * t.dias) / totalDias;
+
+            return new TarifaAplicacaoDto {
+                KWPonta = Proporcional(t => t.KWPonta),
+                KWForaPonta = Proporcional(t => t.KWForaPonta),
+                KWhPontaTUSD = Proporcional(t => t.KWhPontaTUSD),
+                KWhForaPontaTUSD = Proporcional(t => t.KWhForaPontaTUSD),
+                KWhPontaTE = Proporcional(t => t.KWhPontaTE),
+                KWhForaPontaTE = Proporcional(t => t.KWhForaPontaTE),
+                ReatKWhPFTE = Proporcional(t => t.ReatKWhPFTE),
+                // Você pode adicionar mais campos se necessário
+            };
+        }
+
     }
 }
