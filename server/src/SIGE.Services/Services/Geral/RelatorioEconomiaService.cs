@@ -438,6 +438,14 @@ namespace SIGE.Services.Services.Geral {
                     }
             ];
 
+            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.NaturezaMercado == ETipoNaturezaMercado.LIVRE_CONSUMO)) {
+                parte1.Add(new LancamentoRelatorioFinalDto {
+                    Descricao = lanc.Descricao,
+                    Total = lanc.Tipo.Equals(ETipoLancamento.DEBITO) ? lanc.Valor : lanc.Valor * -1
+                });
+            }
+
+
             return parte1;
         }
 
@@ -509,7 +517,7 @@ namespace SIGE.Services.Services.Geral {
                     }
             ];
 
-            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == false && l.Descricao.StartsWith("Subvenção Tarif"))) {
+            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == false && l.Descricao.StartsWith("Subvenção Tarif") && l.NaturezaMercado != ETipoNaturezaMercado.LIVRE_CONSUMO)) {
                 parte2.Add(new LancamentoRelatorioFinalDto {
                     Descricao = lanc.Descricao,
                     Total = lanc.Tipo.Equals(ETipoLancamento.DEBITO) ? lanc.Valor : lanc.Valor * -1
@@ -522,7 +530,7 @@ namespace SIGE.Services.Services.Geral {
         private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte3(FaturaEnergiaDto fatura) {
             List<LancamentoRelatorioFinalDto> ret = [];
 
-            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == false && !l.Descricao.StartsWith("Subvenção Tarif"))) {
+            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == false && !l.Descricao.StartsWith("Subvenção Tarif") && l.NaturezaMercado != ETipoNaturezaMercado.LIVRE_CONSUMO)) {
                 ret.Add(new LancamentoRelatorioFinalDto {
                     Descricao = lanc.Descricao,
                     Total = lanc.Tipo.Equals(ETipoLancamento.DEBITO) ? lanc.Valor : lanc.Valor * -1
@@ -535,7 +543,7 @@ namespace SIGE.Services.Services.Geral {
         private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte4(FaturaEnergiaDto fatura) {
             List<LancamentoRelatorioFinalDto> ret = [];
 
-            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == false && l.TipoCCEE == false)) {
+            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == false && l.TipoCCEE == false && l.NaturezaMercado != ETipoNaturezaMercado.LIVRE_CONSUMO)) {
                 ret.Add(new LancamentoRelatorioFinalDto {
                     Descricao = lanc.Descricao,
                     Total = lanc.Tipo.Equals(ETipoLancamento.DEBITO) ? lanc.Valor : lanc.Valor * -1
@@ -548,7 +556,7 @@ namespace SIGE.Services.Services.Geral {
         private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte5(FaturaEnergiaDto fatura) {
             List<LancamentoRelatorioFinalDto> ret = [];
 
-            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == true)) {
+            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.ContabilizaFatura == true && l.TipoCCEE == true && l.NaturezaMercado != ETipoNaturezaMercado.LIVRE_CONSUMO)) {
                 ret.Add(new LancamentoRelatorioFinalDto {
                     Descricao = lanc.Descricao,
                     Total = lanc.Tipo.Equals(ETipoLancamento.DEBITO) ? lanc.Valor : lanc.Valor * -1
