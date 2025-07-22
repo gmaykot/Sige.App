@@ -31,7 +31,8 @@ export const NATUREZA_MERCADO =
 [
     { id: 0, desc: 'CATIVO'},
     { id: 1, desc: 'LIVRE'},
-    { id: 2, desc: 'CATIVO/LIVRE'}
+    { id: 2, desc: 'CATIVO/LIVRE'},
+    { id: 3, desc: 'LIVRE - CONSUMO'}
 ]
 
 export const TIPO_CONEXAO = [
