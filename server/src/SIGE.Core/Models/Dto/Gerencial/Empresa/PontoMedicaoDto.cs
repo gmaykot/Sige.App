@@ -6,6 +6,7 @@ namespace SIGE.Core.Models.Dto.Gerencial.Empresa {
         public required string Nome { get; set; }
         public required string Codigo { get; set; }
         public required bool AcumulacaoLiquida { get; set; } = false;
+        public required bool IncideICMS { get; set; } = true;
         public bool Ativo { get; set; }
 
         public required ETipoSegmento Segmento { get; set; }

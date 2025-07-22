@@ -78,12 +78,17 @@ import { SEGMENTO, TIPO_CONEXAO, TIPO_ENERGIA } from '../../@core/enum/status-co
       </div>      
     </div>  
     <div class="row">  
-      <div class="col-sm-6">
+      <div class="col-sm-5">
         <div class="form-group">
             <nb-toggle labelPosition="end" formControlName="acumulacaoLiquida">Acumulação Líquida*</nb-toggle>
         </div>
       </div>
-      <div class="col-sm-6">
+      <div class="col-sm-4">
+        <div class="form-group">
+            <nb-toggle labelPosition="end" formControlName="incideICMS">Incide ICMS*</nb-toggle>
+        </div>
+      </div>      
+      <div class="col-sm-3">
         <div class="form-group">
             <nb-toggle labelPosition="end" formControlName="ativo">Ativo*</nb-toggle>
         </div>
@@ -117,6 +122,7 @@ export class PontoMedicaoComponent implements OnInit {
     conexao: ["", Validators.required],
     tipoEnergia: ["", Validators.required],
     acumulacaoLiquida: false,
+    incideICMS: false,
     ativo: true,
     concessionariaId: ["", Validators.required],
     descConcessionaria: ""
@@ -137,6 +143,7 @@ export class PontoMedicaoComponent implements OnInit {
       codigo: this.ponto.codigo,
       agenteMedicaoId: this.ponto.agenteMedicaoId,
       acumulacaoLiquida: this.ponto.acumulacaoLiquida,
+      incideICMS: this.ponto.incideICMS,
       ativo: this.ponto.ativo,
       segmento: this.ponto.segmento.toString(),
       agenteMedicao: '',

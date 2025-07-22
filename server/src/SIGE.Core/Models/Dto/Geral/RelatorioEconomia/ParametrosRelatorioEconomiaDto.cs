@@ -29,6 +29,8 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia {
         public ETipoBandeira? Bandeira { get; set; }
         public double? ValorBandeiraAplicado { get; set; }
 
+        public required bool IncideICMS { get; set; } = true;
+
         public override string ToString() {
             StringBuilder stringBuilder = new StringBuilder();
             if (Porcentagem > 0)

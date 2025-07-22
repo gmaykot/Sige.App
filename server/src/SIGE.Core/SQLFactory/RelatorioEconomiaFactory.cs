@@ -78,6 +78,7 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("    f.ValorFixo,");
             builder.AppendLine("    f.Porcentagem,");
             builder.AppendLine("    f.QtdeSalarios,");
+            builder.AppendLine("    ponto.IncideICMS,");
             builder.AppendLine("    imp.Id AS ImpostoId,");
             builder.AppendLine("    imp.ValorPis,");
             builder.AppendLine("    imp.ValorCofins,");
@@ -133,6 +134,8 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("    AND DATE_FORMAT(cm.MesReferencia, '%Y-%m-01') = DATE_FORMAT(@MesReferencia, '%Y-%m-01')");
             builder.AppendLine("    AND cm.Ativo = TRUE");
             builder.AppendLine("    AND cm.DataExclusao IS NULL");
+            builder.AppendLine("LEFT JOIN PontosMedicao ponto");
+            builder.AppendLine("    ON ponto.PontoMedicaoId = @PontoMedicaoId");
             builder.AppendLine("WHERE f.PontoMedicaoId = @PontoMedicaoId");
             builder.AppendLine("  AND f.VigenciaInicial <= @MesReferencia");
             builder.AppendLine("  AND (f.VigenciaFinal IS NULL OR f.VigenciaFinal >= @MesReferencia)");

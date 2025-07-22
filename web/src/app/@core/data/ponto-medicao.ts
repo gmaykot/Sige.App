@@ -10,6 +10,7 @@ export interface IPontoMedicao {
     concessionariaId?: string,
     descConcessionaria?: string,
     acumulacaoLiquida: boolean,
+    incideICMS: boolean,
     ativo: boolean,
     dataExclusao?: string
 }
