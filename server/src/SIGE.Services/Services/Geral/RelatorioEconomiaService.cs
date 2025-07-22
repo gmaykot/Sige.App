@@ -52,7 +52,20 @@ namespace SIGE.Services.Services.Geral {
                 if (fatura == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Fatura de Energia não encontrada.");
 
-                var tarifa = _mapper.Map<TarifaAplicacaoDto>(await _appDbContext.TarifasAplicacao.AsNoTracking().IgnoreAutoIncludes().Where(t => t.ConcessionariaId == fatura.ConcessionariaId && t.Segmento == res.Segmento && t.SubGrupo == res.Conexao && t.Ativo).OrderByDescending(t => t.DataUltimoReajuste).FirstOrDefaultAsync());
+                var dataReferencia = mesReferencia.ToDateTime(TimeOnly.MinValue);
+
+                var tarifa = _mapper.Map<TarifaAplicacaoDto>(
+                                await _appDbContext.TarifasAplicacao
+                                    .AsNoTracking()
+                                    .IgnoreAutoIncludes()
+                                    .Where(t => t.ConcessionariaId == fatura.ConcessionariaId
+                                        && t.Segmento == res.Segmento
+                                        && t.SubGrupo == res.Conexao
+                                        && t.Ativo
+                                        && t.DataUltimoReajuste <= dataReferencia)
+                                    .OrderByDescending(t => t.DataUltimoReajuste)
+                                    .FirstOrDefaultAsync());
+
                 if (tarifa == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Tarifa de Aplicação não encontrada.");
 
