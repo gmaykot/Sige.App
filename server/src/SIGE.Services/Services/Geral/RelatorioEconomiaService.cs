@@ -52,23 +52,19 @@ namespace SIGE.Services.Services.Geral {
                 if (fatura == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Fatura de Energia não encontrada.");
 
-                var mes = mesReferencia.Month;
-                var ano = mesReferencia.Year;
-
+                var ultimoDiaMes = DateTime.DaysInMonth(mesReferencia.Year, mesReferencia.Month);
+                var dataReferencia = new DateTime(mesReferencia.Year, mesReferencia.Month, ultimoDiaMes);
                 var tarifa = _mapper.Map<TarifaAplicacaoDto>(
-                                await _appDbContext.TarifasAplicacao
-                                    .AsNoTracking()
-                                    .IgnoreAutoIncludes()
-                                    .Where(t => t.ConcessionariaId == fatura.ConcessionariaId
-                                        && t.Segmento == res.Segmento
-                                        && t.SubGrupo == res.Conexao
-                                        && t.Ativo
-                                        && (
-                                            t.DataUltimoReajuste.Year < ano ||
-                                            (t.DataUltimoReajuste.Year == ano && t.DataUltimoReajuste.Month <= mes)
-                                        ))
-                                    .OrderByDescending(t => t.DataUltimoReajuste)
-                                    .FirstOrDefaultAsync());
+                    await _appDbContext.TarifasAplicacao
+                        .AsNoTracking()
+                        .IgnoreAutoIncludes()
+                        .Where(t => t.ConcessionariaId == fatura.ConcessionariaId
+                            && t.Segmento == res.Segmento
+                            && t.SubGrupo == res.Conexao
+                            && t.Ativo
+                            && t.DataUltimoReajuste <= dataReferencia)
+                        .OrderByDescending(t => t.DataUltimoReajuste)
+                        .FirstOrDefaultAsync());
 
                 if (tarifa == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Tarifa de Aplicação não encontrada.");
