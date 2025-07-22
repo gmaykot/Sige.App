@@ -135,7 +135,7 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("    AND cm.Ativo = TRUE");
             builder.AppendLine("    AND cm.DataExclusao IS NULL");
             builder.AppendLine("LEFT JOIN PontosMedicao ponto");
-            builder.AppendLine("    ON ponto.PontoMedicaoId = @PontoMedicaoId");
+            builder.AppendLine("    ON ponto.Id = @PontoMedicaoId");
             builder.AppendLine("WHERE f.PontoMedicaoId = @PontoMedicaoId");
             builder.AppendLine("  AND f.VigenciaInicial <= @MesReferencia");
             builder.AppendLine("  AND (f.VigenciaFinal IS NULL OR f.VigenciaFinal >= @MesReferencia)");
