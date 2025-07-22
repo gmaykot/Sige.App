@@ -102,7 +102,7 @@ namespace SIGE.Services.Services.Geral {
                 if (paramRelatorio?.EnergiaAcumuladaId == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Dados de Energia Acumulada não encontrados.");
 
-                tarifaCalculada.ICMS = paramRelatorio.Icms;
+                tarifaCalculada.ICMS = paramRelatorio.IncideICMS ? paramRelatorio.Icms : 0;
                 tarifaCalculada.Cofins = paramRelatorio.ValorCofins;
                 tarifaCalculada.Proinfa = paramRelatorio.Proinfa;
                 tarifaCalculada.PIS = paramRelatorio.ValorPis;
@@ -113,7 +113,7 @@ namespace SIGE.Services.Services.Geral {
                 res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste?.ToString("d", new CultureInfo("pt-BR"))}";
                 var relatorio = new RelatorioFinalDto {
                     Cabecalho = res,
-                    Grupos = [GrupoCativoMapper(0, fatura, tarifaCalculada, res.Conexao), GrupoLivreMapper(1, fatura, tarifaCalculada, relMedicoes, valores, res.Conexao, valorAnalitico, paramRelatorio)],
+                    Grupos = [GrupoCativoMapper(0, fatura, tarifaCalculada, res.Conexao), GrupoLivreMapper(1, fatura, tarifaCalculada, relMedicoes, valores, res.Conexao, valorAnalitico)],
                 };
                 relatorio.Comparativo = CompartivoFinal(relatorio, paramRelatorio, paramRelatorio?.SalarioMinimoValor, paramRelatorio?.ValorTotalAcumulado);
                 return ret.SetOk().SetData(relatorio);
@@ -340,9 +340,9 @@ namespace SIGE.Services.Services.Geral {
             return grupo;
         }
 
-        private GrupoRelatorioFinalDto GrupoLivreMapper(int ordem, FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ETipoConexao conexao, ValoresMedicaoAnaliticoDto valorAnalitico, ParametrosRelatorioEconomiaDto paramRelatorio) {
+        private GrupoRelatorioFinalDto GrupoLivreMapper(int ordem, FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ETipoConexao conexao, ValoresMedicaoAnaliticoDto valorAnalitico) {
             var listaFinal = new List<LancamentoRelatorioFinalDto>();
-            var parte1 = LancMercadoLivreParte1(fatura, tarifaCalculada, relMedicoes, valores, valorAnalitico, paramRelatorio);
+            var parte1 = LancMercadoLivreParte1(fatura, tarifaCalculada, relMedicoes, valores, valorAnalitico);
             var parte2 = LancMercadoLivreParte2(fatura, tarifaCalculada, relMedicoes, valores, valorAnalitico);
             var parte3 = LancMercadoLivreParte3(fatura);
             var parte4 = LancMercadoLivreParte4(fatura);
@@ -405,7 +405,7 @@ namespace SIGE.Services.Services.Geral {
             return grupo;
         }
 
-        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte1(FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico, ParametrosRelatorioEconomiaDto paramRelatorio) {
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte1(FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico) {
             List<LancamentoRelatorioFinalDto> parte1 =
                 [
                     new LancamentoRelatorioFinalDto {
@@ -428,7 +428,7 @@ namespace SIGE.Services.Services.Geral {
                         Montante = (double)valorAnalitico.Quantidade,
                         TipoMontante = ETipoMontante.MWH,
                         Tarifa = (double)valorAnalitico.ValorUnitario,
-                        Total = paramRelatorio.IncideICMS ? (double)valorAnalitico.ValorNota :  (double)valorAnalitico.ValorProduto,
+                        Total = (double)valorAnalitico.ValorNota,
                         TipoTarifa = ETipoTarifa.RS_MWH
                     },
                     new LancamentoRelatorioFinalDto {
