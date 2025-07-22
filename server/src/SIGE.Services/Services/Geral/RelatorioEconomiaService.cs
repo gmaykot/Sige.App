@@ -52,7 +52,8 @@ namespace SIGE.Services.Services.Geral {
                 if (fatura == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Fatura de Energia não encontrada.");
 
-                var dataReferencia = mesReferencia.ToDateTime(TimeOnly.MinValue);
+                var mes = mesReferencia.Month;
+                var ano = mesReferencia.Year;
 
                 var tarifa = _mapper.Map<TarifaAplicacaoDto>(
                                 await _appDbContext.TarifasAplicacao
@@ -62,7 +63,10 @@ namespace SIGE.Services.Services.Geral {
                                         && t.Segmento == res.Segmento
                                         && t.SubGrupo == res.Conexao
                                         && t.Ativo
-                                        && t.DataUltimoReajuste <= dataReferencia)
+                                        && (
+                                            t.DataUltimoReajuste.Year < ano ||
+                                            (t.DataUltimoReajuste.Year == ano && t.DataUltimoReajuste.Month <= mes)
+                                        ))
                                     .OrderByDescending(t => t.DataUltimoReajuste)
                                     .FirstOrDefaultAsync());
 
