@@ -7,7 +7,7 @@ import { EChartsOption, ECharts } from 'echarts';
     <div echarts
          [options]="options"
          [style.height.px]="height"
-         style="width: 58%; max-width: 100%; position: absolute; left: -9999px; top: 0;"
+         style="width: 40%; max-width: 100%; position: absolute; left: -9999px; top: 0;"
          (chartInit)="onChartInit($event)">
     </div>
   `

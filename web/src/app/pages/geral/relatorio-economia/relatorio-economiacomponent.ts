@@ -240,7 +240,7 @@ export class RelatorioEconomiaComponent implements OnInit {
     const componentRef = this.graficoContainer.createComponent(factory);
   
     componentRef.instance.options = this.chartOption;
-    componentRef.instance.height = 250;
+    componentRef.instance.height = 300;
   
     const chart = await new Promise<ECharts>((resolve) => {
       componentRef.instance.chartReady.subscribe((chartInstance: ECharts) => {
