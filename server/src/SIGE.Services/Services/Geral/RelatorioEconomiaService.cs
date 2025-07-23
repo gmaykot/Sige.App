@@ -45,8 +45,6 @@ namespace SIGE.Services.Services.Geral {
 
                 var relMedicoes = relMedicao.Data as RelatorioMedicaoDto;
                 var calculo = new CalculoEconomiaService();
-                var valores = calculo.Calcular(relMedicoes);
-                var valorAnalitico = calculo.CalcularAnalitico(relMedicoes).Where(c => c.NumCnpj == res.CNPJ).FirstOrDefault();
 
                 var fatura = _mapper.Map<FaturaEnergiaDto>(await _appDbContext.FaturasEnergia.AsNoTracking().Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.PontoMedicaoId == pontoMedicaoId && f.MesReferencia == mesReferencia));
                 if (fatura == null)
@@ -101,6 +99,9 @@ namespace SIGE.Services.Services.Geral {
 
                 if (paramRelatorio?.EnergiaAcumuladaId == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Dados de Energia Acumulada não encontrados.");
+
+                var valores = calculo.Calcular(relMedicoes, paramRelatorio.IncideICMS);
+                var valorAnalitico = calculo.CalcularAnalitico(relMedicoes, paramRelatorio.IncideICMS).Where(c => c.NumCnpj == res.CNPJ).FirstOrDefault();
 
                 tarifaCalculada.ICMS = paramRelatorio.Icms;
                 tarifaCalculada.Cofins = paramRelatorio.ValorCofins;
@@ -432,18 +433,20 @@ namespace SIGE.Services.Services.Geral {
                         TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
-                        Montante = (double)valorAnalitico.ComprarCurtoPrazo,
+                        Montante = (double)valores.ComprarCurtoPrazo,
                         Descricao = "Compra de energia - Curto Prazo",
                         TipoMontante = ETipoMontante.KW,
                         Tarifa = (double)relMedicoes.ValorCompraCurtoPrazo,
-                        TipoTarifa = ETipoTarifa.RS_KWH
+                        TipoTarifa = ETipoTarifa.RS_KWH,
+                        Total = (double)valorAnalitico.ComprarCurtoPrazo
                     },
                     new LancamentoRelatorioFinalDto {
-                        Montante = (double)valorAnalitico.VenderCurtoPrazo,
+                        Montante = (double)valores.VenderCurtoPrazo,
                         Descricao = "Venda de energia - Curto Prazo",
                         TipoMontante = ETipoMontante.KW,
                         Tarifa = (double)relMedicoes.ValorVendaCurtoPrazo,
-                        TipoTarifa = ETipoTarifa.RS_KWH
+                        TipoTarifa = ETipoTarifa.RS_KWH,
+                        Total = (double)valorAnalitico.VenderCurtoPrazo
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "Desconto - TUSD (RETUSD)",

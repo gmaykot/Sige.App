@@ -185,6 +185,7 @@ export class RelatorioMedicaoComponent implements OnInit {
   
   atualizaValoresEconomia(){
     this.valores = this.calculoEconomiaService.calcular(this.relatorioMedicao);
+    this.resultadoAnalitico = this.calculoEconomiaService.calcularAnalitico(this.relatorioMedicao);
     const valorUnitario = this.relatorioMedicao.valorCompraCurtoPrazo > 0 ? this.relatorioMedicao.valorCompraCurtoPrazo : this.relatorioMedicao.valorVendaCurtoPrazo;
     const quantidade = this.valores.comprarCurtoPrazo ?? this.valores.venderCurtoPrazo;
     const venda: IFaturamentoMedicao = this.valores.dentroTake ? null :{
@@ -192,9 +193,9 @@ export class RelatorioMedicaoComponent implements OnInit {
       quantidade: quantidade,
       unidade: "MWh",
       valorUnitario: valorUnitario,
-      valorICMS: valorUnitario*quantidade * 0.17,
+      valorICMS: valorUnitario*quantidade * (this.relatorioMedicao.icms/100),
       valorProduto: valorUnitario*quantidade,
-      valorNota: valorUnitario*quantidade+(valorUnitario * 0.17)
+      valorNota: this.calculoEconomiaService.curtoPrazoUnitario(quantidade, valorUnitario, this.relatorioMedicao.icms, true)
     };
     const data = venda != null ? [this.valores.resultadoFaturamento, venda].map(row => ({
       ...row,
@@ -204,7 +205,6 @@ export class RelatorioMedicaoComponent implements OnInit {
     this.settingsResultado.actions.delete = data.length !== 1;
 
     this.sourceResultado.load(data);    
-    this.resultadoAnalitico = this.calculoEconomiaService.calcularAnalitico(this.relatorioMedicao);
     this.sourceResultadoAnalitico.load(this.resultadoAnalitico);
         
     if (this.valores.comprarCurtoPrazo > 0)
@@ -362,7 +362,7 @@ export class RelatorioMedicaoComponent implements OnInit {
 
   async onDeleteConfirm($event) {
     this.dialogService
-      .open(MedicaoCurtoPrazoComponent, { context: { medicao: $event.data } })
+      .open(MedicaoCurtoPrazoComponent, { context: { medicao: $event.data, icms: this.relatorioMedicao.icms } })
       .onClose.subscribe(async (medicao) => {
         const data = await this.sourceResultado.getAll();
         const index = data.findIndex(item => item.faturamento === medicao.faturamento);

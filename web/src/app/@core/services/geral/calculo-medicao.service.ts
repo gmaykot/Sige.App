@@ -56,10 +56,9 @@ export class CalculoEconomiaService {
           valorICMS: totalIcms,
           valorProduto: valorProduto,
           valorNota: totalNota,
-          comprarCurtoPrazo: this.curtoPrazoUnitario(total3Porcento, unitario3Porcento, valores.comprarCurtoPrazo),
-          venderCurtoPrazo: this.curtoPrazoUnitario(total3Porcento, unitario3Porcento, valores.venderCurtoPrazo),
+          comprarCurtoPrazo: this.curtoPrazoUnitario(valores.comprarCurtoPrazo, relatorio.valorCompraCurtoPrazo, relatorio.icms, true),
+          venderCurtoPrazo: this.curtoPrazoUnitario(valores.venderCurtoPrazo, relatorio.valorVendaCurtoPrazo, relatorio.icms, true),
         };
-        
         retorno.push(ret);
       });      
       } catch (error) {
@@ -180,10 +179,21 @@ export class CalculoEconomiaService {
     return (total*1.03)-proinfa;
   }
 
-  public curtoPrazoUnitario(totalGeral: number, totalUnitario: number, valorGeral:number): number
-  {
-    if (valorGeral > 0)
-      return (totalUnitario/totalGeral)*valorGeral;
-    return 0.0;
+  public curtoPrazoUnitario(
+    quantidade: number | null,
+    valorUnitario: number | null,
+    icms: number | null,
+    incideIcms: boolean
+  ): number | null {
+    if (quantidade == null || valorUnitario == null) {
+      return null;
+    }
+  
+    const valorProduto = quantidade * valorUnitario;
+    const valorIcms = (icms ?? 0) * (valorProduto / 100.0);
+    const valorNota = valorProduto + (incideIcms ? valorIcms : 0);
+  
+    return valorNota;
   }
+  
 }

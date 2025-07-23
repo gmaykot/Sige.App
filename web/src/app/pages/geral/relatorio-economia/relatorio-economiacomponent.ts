@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { RelatorioEconomiaPdfService } from "./relatorio-economia-pdf.service";
 import { AlertService } from "../../../@core/services/util/alert.service";
 import { LocalDataSource } from "ng2-smart-table";
@@ -11,11 +11,12 @@ import { ValidacaoMedicaoComponent } from "../../../@shared/custom-component/val
 import { DateService } from "../../../@core/services/util/date.service";
 import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/relatorio-final";
 import { settingsRelatorioEconomia } from "../../../@shared/table-config/relatorio-economia.config";
-import { EChartsOption } from 'echarts';
+import { ECharts, EChartsOption } from 'echarts';
 import * as echarts from 'echarts';
 import { TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
 import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component";
 import { RelatorioEconomiaService } from "./relatorio-economia.service";
+import { ChartRendererComponent } from "../../../@shared/charts/chart-renderer.component";
 
 @Component({
   selector: "ngx-relatorio-economia",
@@ -23,6 +24,8 @@ import { RelatorioEconomiaService } from "./relatorio-economia.service";
   styleUrls: ["./relatorio-economia.component.scss"],
 })
 export class RelatorioEconomiaComponent implements OnInit {
+  @ViewChild('graficoContainer', { read: ViewContainerRef }) graficoContainer!: ViewContainerRef;
+
   public chartOption: EChartsOption = null;
   chartInstance!: echarts.ECharts;
 
@@ -135,7 +138,8 @@ export class RelatorioEconomiaComponent implements OnInit {
     private alertService: AlertService,
     private formBuilder: FormBuilder,
     private dialogService: NbDialogService,
-    private dateService: DateService
+    private dateService: DateService,
+    private resolver: ComponentFactoryResolver
   ) {}
 
   public control = this.formBuilder.group({
@@ -190,21 +194,21 @@ export class RelatorioEconomiaComponent implements OnInit {
       });
   }
 
+  sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   public async downloadAsPdf(): Promise<void> {
     this.alertService.showWarning(
       "Iniciando a geração e download do relatório de economia em PDF.",
-      120
+      1000
     );
 
     try {
       let graficoImagem = null;
 
       if (this.chartInstance && this.chartInstance.getDom()) {
-        graficoImagem = this.chartInstance.getDataURL({
-          type: 'png',
-          pixelRatio: 2,
-          backgroundColor: '#fff'
-        });
+        graficoImagem =  await this.gerarGraficoImagem();
       }
 
       if (this.relatorioFinal) {
@@ -228,6 +232,34 @@ export class RelatorioEconomiaComponent implements OnInit {
     this.alertService.showError("Ocorreu um erro ao gerar o PDF. Tente novamente.");
   }
   }
+
+  async gerarGraficoImagem(): Promise<string | null> {
+    this.graficoContainer.clear();
+  
+    const factory = this.resolver.resolveComponentFactory(ChartRendererComponent);
+    const componentRef = this.graficoContainer.createComponent(factory);
+  
+    componentRef.instance.options = this.chartOption;
+    componentRef.instance.height = 250;
+  
+    const chart = await new Promise<ECharts>((resolve) => {
+      componentRef.instance.chartReady.subscribe((chartInstance: ECharts) => {
+        resolve(chartInstance);
+      });
+    });
+  
+    await this.sleep(300); // Dá tempo de renderizar
+  
+    const imagem = chart.getDataURL({
+      type: 'png',
+      pixelRatio: 2,
+      backgroundColor: '#fff'
+    });
+  
+    componentRef.destroy(); // Limpa da memória
+    return imagem;
+  }
+  
 
   clear() {
     this.mesReferencia = null;

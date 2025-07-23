@@ -80,6 +80,7 @@ import { AlertService } from '../@core/services/util/alert.service';
 import { CapitalizePipe } from '../@theme/pipes';
 import { RelatorioMedicaoPdfService } from '../pages/geral/relatorio-medicao/relatorio-medicao-pdf.service';
 import { StatusIconComponent } from './custom-component/status-icon/status-icon.component';
+import { ChartRendererComponent } from './charts/chart-renderer.component';
 
 @NgModule({
   imports: [
@@ -155,7 +156,8 @@ import { StatusIconComponent } from './custom-component/status-icon/status-icon.
     ValorAnualComponent,
     ValorMensalComponent,
     MoedaParentesesPipe,
-    StatusIconComponent
+    StatusIconComponent,
+    ChartRendererComponent
   ],
   exports: [
     CommonModule,
@@ -207,7 +209,8 @@ import { StatusIconComponent } from './custom-component/status-icon/status-icon.
     ChartjsBarComponent,
     AutoCompleteComponent,
     StatusIconComponent,
-    ListaContatoComponent
+    ListaContatoComponent,
+    ChartRendererComponent
   ],
   entryComponents: [
     StatusIconComponent,

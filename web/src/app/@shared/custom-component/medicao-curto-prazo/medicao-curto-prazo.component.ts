@@ -9,6 +9,7 @@ import { NbDialogRef } from '@nebular/theme';
 })
 export class MedicaoCurtoPrazoComponent  implements OnInit {
   @Input() medicao: any = null;
+  @Input() icms: number = 17;
 
   public control = this.formBuilder.group({
     faturamento: [null],
@@ -48,7 +49,7 @@ export class MedicaoCurtoPrazoComponent  implements OnInit {
     const valorUnitario = this.control.get('valorUnitario')?.value ?? 0;
 
     const valorProduto = quantidade * valorUnitario;
-    const valorICMS = 17 * valorProduto / 100;
+    const valorICMS = this.icms * valorProduto / 100;
     const valorNota = valorProduto + valorICMS;
 
     this.control.patchValue({
@@ -56,5 +57,6 @@ export class MedicaoCurtoPrazoComponent  implements OnInit {
       valorICMS,
       valorNota
     }, { emitEvent: false });
+    console.log(this.control.value);
   }
 }
