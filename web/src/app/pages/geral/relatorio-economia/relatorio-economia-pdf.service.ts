@@ -21,7 +21,7 @@ export class RelatorioEconomiaPdfService {
     pdf.save(
       `relatorio_economia_${response.cabecalho.unidade
         .replace(" ", "_")
-        .toLocaleLowerCase()}.pdf`
+        .toLocaleLowerCase()}_${response.cabecalho.mesReferencia.replace("/", "")}.pdf`
     );
   }
 
@@ -749,7 +749,7 @@ export class RelatorioEconomiaPdfService {
         },
         {
           content: formatarValorComUnidade(
-            +lancamento.tipoLancamento,
+            +lancamento.tipoTarifa,
             lancamento.tarifa
           ),
           styles: { halign: "center" },
@@ -843,43 +843,5 @@ export class RelatorioEconomiaPdfService {
 
     margintTopTabelaDinamico = processarGruposRelatorio();
     return doc;
-  }
-
-  public linhaValida(linha: any[]): boolean {
-    const item = linha[1];
-    const valor = typeof item === "string" ? item : item?.content;
-    return valor !== "-" && valor !== "" && valor !== null;
-  }
-
-  public mock(): IRelatorioFinal {
-    const relatorioFinal: IRelatorioFinal = {
-      cabecalho: {
-        titulo: "",
-        subTitulo: "",
-        unidade: "",
-        subMercado: "",
-        conexao: "",
-        concessao: "",
-        cnpj: "",
-        inscricaoEstadual: "",
-        endereco: "",
-        municipio: "",
-        uf: "",
-        dataAnalise: new Date().toISOString(),
-        mesReferencia: "",
-        numerorDiasMes: 0,
-        periodoHoroSazonal: "",
-        tarifaFornecimento: "",
-      },
-      grupos: [],
-      comparativo: {
-        // preencher os campos conforme a interface correspondente
-      },
-      grafico: {
-        // preencher os campos conforme a interface correspondente
-      },
-    };
-
-    return relatorioFinal;
   }
 }
