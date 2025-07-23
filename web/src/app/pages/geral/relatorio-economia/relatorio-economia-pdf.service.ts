@@ -820,7 +820,7 @@ export class RelatorioEconomiaPdfService {
       for (const grupo of relatorio.grupos) {
         const secaoGrupoMarginTop = criarTituloSecao(
           grupo.titulo,
-          margintTopTabelaDinamico + margins.sectionMarginTop-10
+          margintTopTabelaDinamico + margins.sectionMarginTop-8
         );
 
         const linhas: any[][] = [];
@@ -863,8 +863,8 @@ export class RelatorioEconomiaPdfService {
                 content: grupo.colunaQuantidade || "",
                 styles: { cellWidth: 90 },
               },
-              { content: grupo.colunaValor || "" },
-              { content: grupo.colunaTotal || "" },
+              { content: grupo.colunaValor +" (R$)"|| "" },
+              { content: grupo.colunaTotal +" (R$)"|| "" },
             ],
           ],
           linhas: linhas,
