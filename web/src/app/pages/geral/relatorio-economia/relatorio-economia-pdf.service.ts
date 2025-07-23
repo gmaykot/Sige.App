@@ -50,6 +50,18 @@ export class RelatorioEconomiaPdfService {
     const formatadorNumero = new Intl.NumberFormat("pt-BR", {
       style: "decimal",
       minimumFractionDigits: 2,
+      maximumFractionDigits: 4,
+    });
+
+    const formatadorNumeroMWh = new Intl.NumberFormat("pt-BR", {
+      style: "decimal",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 3,
+    });
+
+    const formatadorNumeroTarifa = new Intl.NumberFormat("pt-BR", {
+      style: "decimal",
+      minimumFractionDigits: 2,
       maximumFractionDigits: 8,
     });
 
@@ -79,7 +91,20 @@ export class RelatorioEconomiaPdfService {
         3: "%",
       };
 
-      return `${formatadorNumero.format(valor)} ${tipos[tipo]}`;
+      return `${tipo === 0 ? formatadorNumeroMWh.format(valor) : formatadorNumero.format(valor)} ${tipos[tipo]}`;
+    };
+
+    const formatarTarifaComUnidade = (tipo: number, valor: number) => {
+      if (valor === undefined || valor === null || valor === 0) return "-";
+
+      const tipos = {
+        0: "MWh",
+        1: "kW",
+        2: "kWh",
+        3: "%",
+      };
+
+      return `R$ ${formatadorNumeroTarifa.format(valor)} ${tipos[tipo]}`;
     };
 
     const criarTituloSecao = (
@@ -771,7 +796,7 @@ export class RelatorioEconomiaPdfService {
           styles: { halign: "center" },
         },
         {
-          content: formatarValorComUnidade(
+          content: formatarTarifaComUnidade(
             +lancamento.tipoTarifa,
             lancamento.tarifa
           ),
@@ -795,7 +820,7 @@ export class RelatorioEconomiaPdfService {
       for (const grupo of relatorio.grupos) {
         const secaoGrupoMarginTop = criarTituloSecao(
           grupo.titulo,
-          margintTopTabelaDinamico + margins.sectionMarginTop
+          margintTopTabelaDinamico + margins.sectionMarginTop-10
         );
 
         const linhas: any[][] = [];
