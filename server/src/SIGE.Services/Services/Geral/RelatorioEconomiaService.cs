@@ -519,28 +519,28 @@ namespace SIGE.Services.Services.Geral {
                     new LancamentoRelatorioFinalDto {
                         Descricao = "TUSD encargos - Ponta",
                         Montante = fatura.ValorConsumoTUSDPonta,
-                        TipoMontante = ETipoMontante.KW,
+                        TipoMontante = ETipoMontante.KWH,
                         Tarifa =   tarifaCalculada.KWhPontaTUSDCalculadoComImposto,
                         TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "TUSD encargos - Fora de Ponta",
                         Montante = fatura.ValorConsumoTUSDForaPonta,
-                        TipoMontante = ETipoMontante.KW,
+                        TipoMontante = ETipoMontante.KWH,
                         Tarifa =  tarifaCalculada.KWhForaPontaTUSDComImposto,
                         TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "Consumo Reativo - Ponta",
                         Montante = fatura.ValorConsumoMedidoReativoPonta,
-                        TipoMontante = ETipoMontante.KW,
+                        TipoMontante = ETipoMontante.KWH,
                         Tarifa =  fatura.TarifaMedidaReativaPonta,
                         TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "Consumo Reativo - Fora de Ponta",
                         Montante = fatura.ValorConsumoMedidoReativoForaPonta,
-                        TipoMontante = ETipoMontante.KW,
+                        TipoMontante = ETipoMontante.KWH,
                         Tarifa =  fatura.TarifaMedidaReativaForaPonta,
                         TipoTarifa = ETipoTarifa.RS_KWH
                     }
