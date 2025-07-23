@@ -49,7 +49,7 @@ export class RelatorioEconomiaPdfService {
     const formatadorNumero = new Intl.NumberFormat("pt-BR", {
       style: "decimal",
       minimumFractionDigits: 2,
-      maximumFractionDigits: 3,
+      maximumFractionDigits: 8,
     });
 
     const formatadorNumeroSimples = new Intl.NumberFormat("pt-BR", {
@@ -602,7 +602,7 @@ export class RelatorioEconomiaPdfService {
             {
               content:
                 lancamento.percentual !== undefined
-                  ? `${formatadorNumero.format(lancamento.percentual)}%`
+                  ? `${formatadorNumeroSimples.format(lancamento.percentual)}%`
                   : "",
               styles: { halign: "center" as const },
             },

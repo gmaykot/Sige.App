@@ -102,7 +102,7 @@ namespace SIGE.Services.Services.Geral {
                 if (paramRelatorio?.EnergiaAcumuladaId == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Dados de Energia Acumulada não encontrados.");
 
-                tarifaCalculada.ICMS = paramRelatorio.IncideICMS ? paramRelatorio.Icms : 0;
+                tarifaCalculada.ICMS = paramRelatorio.Icms;
                 tarifaCalculada.Cofins = paramRelatorio.ValorCofins;
                 tarifaCalculada.Proinfa = paramRelatorio.Proinfa;
                 tarifaCalculada.PIS = paramRelatorio.ValorPis;
@@ -113,7 +113,7 @@ namespace SIGE.Services.Services.Geral {
                 res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste.ToString("d", new CultureInfo("pt-BR"))}";
                 var relatorio = new RelatorioFinalDto {
                     Cabecalho = res,
-                    Grupos = [GrupoCativoMapper(0, fatura, tarifaCalculada, res.Conexao), GrupoLivreMapper(1, fatura, tarifaCalculada, relMedicoes, valores, res.Conexao, valorAnalitico)],
+                    Grupos = [GrupoCativoMapper(0, fatura, tarifaCalculada, res.Conexao, paramRelatorio), GrupoLivreMapper(1, fatura, tarifaCalculada, relMedicoes, valores, res.Conexao, valorAnalitico, paramRelatorio.IncideICMS)],
                 };
                 relatorio.Comparativo = CompartivoFinal(relatorio, paramRelatorio, paramRelatorio?.SalarioMinimoValor, paramRelatorio?.ValorTotalAcumulado);
                 return ret.SetOk().SetData(relatorio);
@@ -140,7 +140,7 @@ namespace SIGE.Services.Services.Geral {
                 .ToList();
             var ret = new ComparativoRelatorioFinalDto {
                 Titulo = "Comparativo – Mercado Cativo vs. Mercado Livre",
-                Observacao = "Observação: Todos os valores contemplam PIS/COFINS e ICMS",
+                Observacao = $"Observação: Todos os valores contemplam PIS/COFINS{(paramRelatorio.IncideICMS ? " e ICMS" : "")}",
                 Lancamentos = [
                     new LancamentoComparativoDto {
                         Descricao = "Diferença Cativo vs. Livre",
@@ -189,7 +189,7 @@ namespace SIGE.Services.Services.Geral {
             };
         }
 
-        private GrupoRelatorioFinalDto GrupoCativoMapper(int ordem, FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, ETipoConexao conexao) {
+        private GrupoRelatorioFinalDto GrupoCativoMapper(int ordem, FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, ETipoConexao conexao, ParametrosRelatorioEconomiaDto paramRelatorio) {
             var grupo = new GrupoRelatorioFinalDto {
                 Ordem = ordem,
                 Titulo = $"MERCADO CATIVO - {conexao.GetSigla()} - TOTAL",
@@ -203,67 +203,67 @@ namespace SIGE.Services.Services.Geral {
                                         Descricao = "Demanda Contratada - Ponta",
                                         Montante = fatura.ValorDemandaContratadaPonta,
                                         TipoMontante = ETipoMontante.KW,
-                                        TipoTarifa = ETipoTarifa.RS_KW
+                                        TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Demanda Contratada - Fora de Ponta",
                                         Montante = fatura.ValorDemandaContratadaForaPonta,
                                         TipoMontante = ETipoMontante.KW,
-                                        TipoTarifa = ETipoTarifa.RS_KW
+                                        TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Demanda Faturada - Ponta (Consumida)",
                                         Montante = fatura.ValorDemandaFaturadaPontaConsumida,
                                         TipoMontante = ETipoMontante.KW,
                                         Tarifa = tarifaCalculada.KWPontaComImposto,
-                                        TipoTarifa = ETipoTarifa.RS_KW
+                                        TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Demanda Faturada - Fora de Ponta (Consumida)",
                                         Montante = fatura.ValorDemandaFaturadaForaPontaConsumida,
                                         TipoMontante = ETipoMontante.KW,
                                         Tarifa = tarifaCalculada.KWForaPontaComImposto,
-                                        TipoTarifa = ETipoTarifa.RS_KW
+                                        TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Demanda Faturada - Ponta (Não Utilizada)",
                                         Montante = fatura.ValorDemandaFaturadaPontaNaoConsumida,
                                         TipoMontante = ETipoMontante.KW,
                                         Tarifa = tarifaCalculada.KWPontaSemICMS,
-                                        TipoTarifa = ETipoTarifa.RS_KW
+                                        TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Demanda Faturada - Fora de Ponta (Não Utilizada)",
                                         Montante = fatura.ValorDemandaFaturadaForaPontaNaoConsumida,
                                         TipoMontante = ETipoMontante.KW,
                                         Tarifa = tarifaCalculada.KWForaPontaSemICMS,
-                                        TipoTarifa = ETipoTarifa.RS_KW
+                                        TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Demanda Ultrapassagem - Ponta",
                                         Montante = fatura.ValorDemandaUltrapassagemPonta,
                                         TipoMontante = ETipoMontante.KW,
                                         Tarifa = tarifaCalculada.KWPontaComImposto*2,
-                                        TipoTarifa = ETipoTarifa.RS_KW
+                                        TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Demanda Ultrapassagem - Fora de Ponta",
                                         Montante = fatura.ValorDemandaUltrapassagemForaPonta,
                                         TipoMontante = ETipoMontante.KW,
                                         Tarifa = tarifaCalculada.KWForaPontaComImposto*2,
-                                        TipoTarifa = ETipoTarifa.RS_KW
+                                        TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Demanda Reativa - Ponta",
                                         Montante = fatura.ValorDemandaReativaPonta,
                                         Tarifa = 65.41866801,
-                                        TipoTarifa = ETipoTarifa.RS_KW
+                                        TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Demanda Reativa - Fora de Ponta",
                                         Montante = fatura.ValorDemandaReativaForaPonta,
                                         Tarifa = 65.41866801,
-                                        TipoTarifa = ETipoTarifa.RS_KW
+                                        TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
                                         Descricao = "Consumo Medido - Ponta - TUSD",
@@ -294,13 +294,13 @@ namespace SIGE.Services.Services.Geral {
                                         TipoTarifa = ETipoTarifa.RS_KWH
                                     },
                                     new LancamentoRelatorioFinalDto {
-                                        Descricao = "Adicional Bandeira Ponta",
+                                        Descricao = $"Adicional Bandeira {paramRelatorio.Bandeira.GetDescription()} Ponta",
                                         Tarifa = tarifaCalculada.BandeiraAdicionalComImposto,
                                         TipoTarifa = ETipoTarifa.RS_KWH,
                                         Total = fatura.ValorConsumoTEPonta*tarifaCalculada.BandeiraAdicionalComImposto
                                     },
                                     new LancamentoRelatorioFinalDto {
-                                        Descricao = "Adicional Bandeira Fora de Ponta",
+                                        Descricao = $"Adicional Bandeira {paramRelatorio.Bandeira.GetDescription()} Fora de Ponta",
                                         Tarifa = tarifaCalculada.BandeiraAdicionalComImposto,
                                         TipoTarifa = ETipoTarifa.RS_KWH,
                                         Total = fatura.ValorConsumoTEForaPonta*tarifaCalculada.BandeiraAdicionalComImposto
@@ -340,10 +340,10 @@ namespace SIGE.Services.Services.Geral {
             return grupo;
         }
 
-        private GrupoRelatorioFinalDto GrupoLivreMapper(int ordem, FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ETipoConexao conexao, ValoresMedicaoAnaliticoDto valorAnalitico) {
+        private GrupoRelatorioFinalDto GrupoLivreMapper(int ordem, FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ETipoConexao conexao, ValoresMedicaoAnaliticoDto valorAnalitico, bool incideICMS) {
             var listaFinal = new List<LancamentoRelatorioFinalDto>();
-            var parte1 = LancMercadoLivreParte1(fatura, tarifaCalculada, relMedicoes, valores, valorAnalitico);
-            var parte2 = LancMercadoLivreParte2(fatura, tarifaCalculada, relMedicoes, valores, valorAnalitico);
+            var parte1 = LancMercadoLivreParte1(fatura, tarifaCalculada, relMedicoes, valores, valorAnalitico, incideICMS);
+            var parte2 = LancMercadoLivreParte2(fatura, tarifaCalculada);
             var parte3 = LancMercadoLivreParte3(fatura);
             var parte4 = LancMercadoLivreParte4(fatura);
             var parte5 = LancMercadoLivreParte5(fatura);
@@ -405,7 +405,7 @@ namespace SIGE.Services.Services.Geral {
             return grupo;
         }
 
-        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte1(FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico) {
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte1(FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico, bool incideICMS) {
             List<LancamentoRelatorioFinalDto> parte1 =
                 [
                     new LancamentoRelatorioFinalDto {
@@ -428,22 +428,22 @@ namespace SIGE.Services.Services.Geral {
                         Montante = (double)valorAnalitico.Quantidade,
                         TipoMontante = ETipoMontante.MWH,
                         Tarifa = (double)valorAnalitico.ValorUnitario,
-                        Total = (double)valorAnalitico.ValorNota,
-                        TipoTarifa = ETipoTarifa.RS_MWH
+                        Total = incideICMS ? (double)valorAnalitico.ValorNota : (double)valorAnalitico.ValorProduto,
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Montante = (double)valorAnalitico.ComprarCurtoPrazo,
                         Descricao = "Compra de energia - Curto Prazo",
                         TipoMontante = ETipoMontante.KW,
                         Tarifa = (double)relMedicoes.ValorCompraCurtoPrazo,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Montante = (double)valorAnalitico.VenderCurtoPrazo,
                         Descricao = "Venda de energia - Curto Prazo",
                         TipoMontante = ETipoMontante.KW,
                         Tarifa = (double)relMedicoes.ValorVendaCurtoPrazo,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "Desconto - TUSD (RETUSD)",
@@ -462,7 +462,7 @@ namespace SIGE.Services.Services.Geral {
             return parte1;
         }
 
-        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte2(FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, RelatorioMedicaoDto relMedicoes, ValoresCaltuloMedicaoDto valores, ValoresMedicaoAnaliticoDto valorAnalitico) {
+        private IList<LancamentoRelatorioFinalDto> LancMercadoLivreParte2(FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada) {
             List<LancamentoRelatorioFinalDto> parte2 =
                 [
                     new LancamentoRelatorioFinalDto {
@@ -470,63 +470,63 @@ namespace SIGE.Services.Services.Geral {
                         Montante = fatura.ValorDemandaFaturadaPontaConsumida,
                         TipoMontante = ETipoMontante.KW,
                         Tarifa = tarifaCalculada.KWPontaComImposto,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "TUSD - Ponta (Não Utilizada)",
                         Montante = fatura.ValorDemandaFaturadaPontaNaoConsumida,
                         TipoMontante = ETipoMontante.KW,
                         Tarifa = tarifaCalculada.KWPontaComImposto,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
-                        Descricao = "TUSD - Fora de Ponta (Consumida)",
+                        Descricao = $"TUSD - Fora de Ponta (Consumida){(fatura.ValorDescontoTUSD > 0 ? " - " + fatura.ValorDescontoTUSD.ToString("P2", new CultureInfo("pt-BR")).Replace(" %", "%") : "")}",
                         Montante = fatura.ValorDemandaFaturadaForaPontaConsumida,
                         TipoMontante = ETipoMontante.KW,
                         Tarifa = tarifaCalculada.KWhForaPontaTUSDCalculadoComImposto,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "TUSD - Fora de Ponta (Não Utilizada)",
                         Montante = fatura.ValorDemandaFaturadaForaPontaNaoConsumida,
                         TipoMontante = ETipoMontante.KW,
                         Tarifa = tarifaCalculada.KWhForaPontaTUSDNaoConsumidaCalculadoComImposto,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "TUSD - Ultrapassagem Fora de Ponta",
                         Montante = fatura.ValorDemandaUltrapassagemForaPonta,
                         TipoMontante = ETipoMontante.KW,
                         Tarifa = tarifaCalculada.KWForaPontaComImposto*2,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "TUSD encargos - Ponta",
                         Montante = fatura.ValorConsumoTUSDPonta,
                         TipoMontante = ETipoMontante.KW,
                         Tarifa =   tarifaCalculada.KWhPontaTUSDCalculadoComImposto,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "TUSD encargos - Fora de Ponta",
                         Montante = fatura.ValorConsumoTUSDForaPonta,
                         TipoMontante = ETipoMontante.KW,
                         Tarifa =  tarifaCalculada.KWhForaPontaTUSDComImposto,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "Consumo Reativo - Ponta",
                         Montante = fatura.ValorConsumoMedidoReativoPonta,
                         TipoMontante = ETipoMontante.KW,
                         Tarifa =  fatura.TarifaMedidaReativaPonta,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     },
                     new LancamentoRelatorioFinalDto {
                         Descricao = "Consumo Reativo - Fora de Ponta",
                         Montante = fatura.ValorConsumoMedidoReativoForaPonta,
                         TipoMontante = ETipoMontante.KW,
                         Tarifa =  fatura.TarifaMedidaReativaForaPonta,
-                        TipoTarifa = ETipoTarifa.RS_KW
+                        TipoTarifa = ETipoTarifa.RS_KWH
                     }
             ];
 
