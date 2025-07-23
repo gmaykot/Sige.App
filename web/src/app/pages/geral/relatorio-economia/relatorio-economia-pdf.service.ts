@@ -11,6 +11,7 @@ import { IRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/re
 import { ILancamentoRelatorioFinal } from "../../../@core/data/geral/relatorio-economia/lancamento-relatorio-final";
 import { TIPO_CONEXAO } from "../../../@core/enum/status-contrato";
 import { HelperPdfService } from "../../../@core/services/util/help-pdf.service";
+import { BANDEIRAS } from "../../../@core/enum/const-dropbox";
 
 @Injectable({ providedIn: "root" })
 export class RelatorioEconomiaPdfService {
@@ -452,6 +453,28 @@ export class RelatorioEconomiaPdfService {
       },
     });
 
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: 'Bandeira Tarifária',
+      x: margins.marginLeft + 400,
+      y: margins.marginTop + 55 / 2 + 57 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontSize: 6,
+        textColor: "gray",
+      },
+    });  
+    this.pdfConfig.adicionarTextoEmPosicao(doc, {
+      texto: BANDEIRAS[cabecalho.bandeira]?.desc ?? '-',
+      x: margins.marginLeft + 400,
+      y: margins.marginTop + 55 / 2 + 67 - ajusteMargim,
+      tema: "cabecalho",
+      propriedadesPersonalizadas: {
+        fontStyle: "bold",
+        fontSize: 8,
+        textColor: this.getCorBandeira(cabecalho.bandeira)
+      },
+    });
+
     this.pdfConfig.adicionarTextoHorizontal(doc, {
       textoCentro: `Quadro Comparativo Mensal Mercado Cativo x Livre ${cabecalho.mesReferencia ?? ''}`,
       marginTop: margins.marginTop + 100,
@@ -843,5 +866,15 @@ export class RelatorioEconomiaPdfService {
 
     margintTopTabelaDinamico = processarGruposRelatorio();
     return doc;
+  }
+
+  getCorBandeira(id: number): string {
+    switch (id) {
+      case 0: return '#FFC107'; // Amarela
+      case 1: return '#4CAF50'; // Verde
+      case 2: return '#F44336'; // Vermelha 1
+      case 3: return '#B71C1C'; // Vermelha 2
+      default: return '#000000'; // Preto padrão
+    }
   }
 }

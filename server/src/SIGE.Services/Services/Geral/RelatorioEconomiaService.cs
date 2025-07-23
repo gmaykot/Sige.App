@@ -110,6 +110,7 @@ namespace SIGE.Services.Services.Geral {
                 tarifaCalculada.BandeiraAdicional = paramRelatorio.ValorBandeiraAplicado;
                 tarifaCalculada.TotalPercentualTUSD = relMedicoes.TipoEnergia.GetValorTipoEnergia();
                 tarifaCalculada.PercentualTUSD = fatura.ValorDescontoTUSD;
+                res.Bandeira = paramRelatorio.Bandeira;
 
                 res.TarifaFornecimento = $"Tarifa Fornecimento - Resolução ANEEL nº {tarifa.NumeroResolucao}, {tarifa.DataUltimoReajuste.ToString("d", new CultureInfo("pt-BR"))}";
                 var relatorio = new RelatorioFinalDto {

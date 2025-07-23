@@ -46,6 +46,7 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("    'Sul' AS 'SubMercado',");
             builder.AppendLine("    ponto.conexao AS 'Conexao',");
             builder.AppendLine("    concessionaria.Nome AS 'Concessao',");
+            builder.AppendLine("    null 'Bandeira',");
             builder.AppendLine("    empresa.CNPJ AS 'CNPJ',");
             builder.AppendLine("    empresa.InscricaoEstadual AS 'InscricaoEstadual',");
             builder.AppendLine("    empresa.Logradouro AS 'Endereco',");

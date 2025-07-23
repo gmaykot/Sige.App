@@ -1,10 +1,8 @@
-﻿using SIGE.Core.Enumerators;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using SIGE.Core.Enumerators;
 
-namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
-{
-    public class CabecalhoRelatorioFinalDto
-    {
+namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia {
+    public class CabecalhoRelatorioFinalDto {
         [NotMapped]
         public string? Titulo { get; set; }
         public Guid? ContratoId { get; set; }
@@ -16,6 +14,7 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
         public required string Unidade { get; set; }
         public required string SubMercado { get; set; }
         public required ETipoConexao Conexao { get; set; }
+        public ETipoBandeira? Bandeira { get; set; }
         public required string Concessao { get; set; }
         public string? CNPJ { get; set; }
         public string? InscricaoEstadual { get; set; }

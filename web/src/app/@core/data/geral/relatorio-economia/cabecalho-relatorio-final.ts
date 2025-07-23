@@ -5,6 +5,7 @@ export interface ICabecalhoRelatorioFinal {
     unidade: string;
     subMercado: string;
     conexao: string;
+    bandeira?: number;
     concessao: string;
     cnpj: string;
     inscricaoEstadual: string;
