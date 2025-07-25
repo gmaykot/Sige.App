@@ -187,7 +187,7 @@ export class RelatorioMedicaoComponent implements OnInit {
     this.valores = this.calculoEconomiaService.calcular(this.relatorioMedicao);
     this.resultadoAnalitico = this.calculoEconomiaService.calcularAnalitico(this.relatorioMedicao);
     const valorUnitario = this.relatorioMedicao.valorCompraCurtoPrazo > 0 ? this.relatorioMedicao.valorCompraCurtoPrazo : this.relatorioMedicao.valorVendaCurtoPrazo;
-    const quantidade = this.valores.comprarCurtoPrazo ?? this.valores.venderCurtoPrazo;
+    const quantidade = this.valores.comprarCurtoPrazo && this.valores.comprarCurtoPrazo > 0 ? this.valores.comprarCurtoPrazo : this.valores.venderCurtoPrazo;
     const venda: IFaturamentoMedicao = this.valores.dentroTake ? null :{
       faturamento: `Curto Prazo (${this.valores.comprarCurtoPrazo > 0 ? 'Compra' : 'Venda'})`,
       quantidade: quantidade,
