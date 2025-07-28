@@ -2,6 +2,8 @@
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Dto.Default;
+using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
+using SIGE.Core.Models.Dto.Gerencial;
 using SIGE.Core.Models.Dto.Gerencial.Concessionaria;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 
@@ -32,6 +34,15 @@ namespace SIGE.Core.Mapper
                 .ForMember(dst => dst.DescConcessionaria, map => map.MapFrom(src => src.Concessionaria.Nome));
 
             CreateMap<ImpostoConcessionariaDto, ImpostoConcessionariaModel>().ReverseMap();
+
+            CreateMap<TarifaCalculadaDto, TarifaAplicacaoDto>()
+                .ForMember(dst => dst.KWPonta, map => map.MapFrom(src => src.KWPonta))
+                .ForMember(dst => dst.KWForaPonta, map => map.MapFrom(src => src.KWForaPonta))
+                .ForMember(dst => dst.KWhPontaTUSD, map => map.MapFrom(src => src.KWhPontaTUSD))
+                .ForMember(dst => dst.KWhForaPontaTUSD, map => map.MapFrom(src => src.KWhForaPontaTUSD))
+                .ForMember(dst => dst.KWhPontaTE, map => map.MapFrom(src => src.KWhPontaTE))
+                .ForMember(dst => dst.KWhForaPontaTE, map => map.MapFrom(src => src.KWhForaPontaTE))
+                .ForMember(dst => dst.ReatKWhPFTE, map => map.MapFrom(src => src.ReatKWhPFTE)).ReverseMap();
         }
     }
 }

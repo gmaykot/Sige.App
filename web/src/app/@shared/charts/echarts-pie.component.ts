@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
-import { STATUS_FASE } from '../../@core/enum/filtro-medicao';
 
 @Component({
   selector: 'ngx-echarts-pie',
@@ -8,16 +7,13 @@ import { STATUS_FASE } from '../../@core/enum/filtro-medicao';
     <div echarts [options]="options" class="echart"></div>
   `,
 })
-export class EchartsPieComponent implements AfterViewInit, OnDestroy, OnInit {
+export class EchartsPieComponent implements AfterViewInit, OnDestroy {
   @Input() descricao: string = '';
   @Input() dataSource: any[] = [];
   options: any = {};
   themeSubscription: any;
 
   constructor(private theme: NbThemeService) {
-  }
-
-  ngOnInit(): void {
   }
 
   ngAfterViewInit() {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Email;
 using SIGE.Core.Models.Dto.Geral.Medicao;
@@ -21,7 +20,7 @@ namespace SIGE.Services.Schedule
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly RequestContext _requestContext = requestContext;
 
-        public async void DoWorkAsync()
+        public async Task DoWorkAsync()
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var request = httpContext?.Request;

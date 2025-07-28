@@ -4,7 +4,7 @@ import { IResponseInterface } from "../../../@core/data/response.interface";
 import { FormBuilder } from "@angular/forms";
 import { IValorConcessionaria } from "../../../@core/data/valores-concessionarias";
 import { ValorConcessionariaService } from "../../../@core/services/gerencial/valor-concessionaria.service";
-import { ConcessionariaService } from "../../../@core/services/gerencial/concessionaria.service";
+import { ConcessionariaService } from "../concessionaria/concessionaria.service";
 import { settingsValorConcessionaria } from "../../../@shared/table-config/valor.concessionaria.config";
 import { NbDialogService } from "@nebular/theme";
 import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";

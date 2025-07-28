@@ -2,9 +2,8 @@
 using SIGE.Core.Models.Dto.Default;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
-using SIGE.Core.Models.Sistema.Gerencial;
-using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.Models.Dto.Gerencial.Empresa;
+using SIGE.Core.Models.Sistema.Gerencial.Empresa;
 
 namespace SIGE.Core.Mapper
 {
@@ -23,7 +22,14 @@ namespace SIGE.Core.Mapper
 
             CreateMap<AgenteMedicaoDto, AgenteMedicaoModel>().ReverseMap();
 
-            CreateMap<PontoMedicaoDto, PontoMedicaoModel>().ReverseMap();
+            CreateMap<PontoMedicaoDto, PontoMedicaoModel>();
+
+            CreateMap<PontoMedicaoModel, PontoMedicaoDto>()
+                .ForMember(dst => dst.DescAgenteMedicao,
+                    map => map.MapFrom(src => src.AgenteMedicao != null ? src.AgenteMedicao.Nome : string.Empty))
+                .ForMember(dst => dst.DescConcessionaria,
+                    map => map.MapFrom(src => src.Concessionaria != null ? src.Concessionaria.Nome : string.Empty));
+
             CreateMap<PontoMedicaoModel, DropDownDto>()
                 .ForMember(dst => dst.Id, map => map.MapFrom(src => src.Id))
                 .ForMember(dst => dst.Descricao, map => map.MapFrom(src => $"{src.Nome} ({src.Codigo})"));

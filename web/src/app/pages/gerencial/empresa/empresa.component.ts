@@ -1,28 +1,31 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { Validators, FormBuilder } from "@angular/forms";
+import { NbTabsetComponent, NbIconConfig, NbDialogService, NbLayoutScrollService } from "@nebular/theme";
 import { LocalDataSource } from "ng2-smart-table";
-import { FormBuilder, Validators } from "@angular/forms";
-import { UF } from "../../../@core/data/estados";
-import { EmpresaService } from "../../../@core/services/gerencial/empresa.service";
-import { IEmpresa } from "../../../@core/data/empresa";
-import { IResponseInterface } from "../../../@core/data/response.interface";
-import { NbDialogService, NbIconConfig, NbLayoutScrollService } from "@nebular/theme";
-import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
 import { IAgenteMedicao } from "../../../@core/data/agente-medicao";
-import { IPontoMedicao } from "../../../@core/data/ponto-medicao";
-import { AgenteMedicaoComponent } from "../../../@shared/custom-component/agente-medicao.component";
-import { PontoMedicaoComponent } from "../../../@shared/custom-component/ponto-medicao.component";
-import { MedicaoService } from "../../../@core/services/geral/medicao.service";
-import { AgenteMedicaoService } from "../../../@core/services/gerencial/agente-medicao.service";
-import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-medicao.service";
-import { EmpresaConfigSettings } from "./empresa.config.settings";
-import { IContato } from "../../../@core/data/contato";
-import { ContatoComponent } from "../../../@shared/custom-component/contato.component";
-import { ContatoService } from "../../../@core/services/gerencial/contato.service";
-import { CepService } from "../../../@core/services/util/cep.service";
 import { ICep } from "../../../@core/data/cep";
-import { AlertService } from "../../../@core/services/util/alert.service";
+import { IContato } from "../../../@core/data/contato";
 import { IDropDown } from "../../../@core/data/drop-down";
+import { IEmpresa } from "../../../@core/data/empresa";
+import { UF } from "../../../@core/data/estados";
+import { IPontoMedicao } from "../../../@core/data/ponto-medicao";
+import { IResponseInterface } from "../../../@core/data/response.interface";
+import { ETipoErroResponse } from "../../../@core/enum/tipo-erro-response";
+import { ContatoService } from "../../../@core/services/gerencial/contato.service";
+import { AlertService } from "../../../@core/services/util/alert.service";
+import { CepService } from "../../../@core/services/util/cep.service";
 import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
+import { AgenteMedicaoComponent } from "../../../@shared/custom-component/agente-medicao.component";
+import { ContatoComponent } from "../../../@shared/custom-component/contato.component";
+import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
+import { PontoMedicaoComponent } from "../../../@shared/custom-component/ponto-medicao.component";
+import { MedicaoService } from "../../geral/medicao/medicao.service";
+import { ConcessionariaService } from "../concessionaria/concessionaria.service";
+import { AgenteMedicaoService } from "./agente-medicao.service";
+import { EmpresaConfigSettings } from "./empresa.config.settings";
+import { EmpresaService } from "./empresa.service";
+import { PontoMedicaoService } from "./ponto-medicao.service";
+
 
 @Component({
   selector: "ngx-empresa",
@@ -30,11 +33,14 @@ import { SessionStorageService } from "../../../@core/services/util/session-stor
   styleUrls: ["./empresa.component.scss"],
 })
 export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
+  @ViewChild('tabset') tabset: NbTabsetComponent;
+
   disabledIconConfig: NbIconConfig = { icon: 'trash-2-outline', pack: 'eva' };
   cceeIconConfig: NbIconConfig = { icon: 'globe-2-outline', pack: 'eva' };
   agentes: Array<IAgenteMedicao> = [];
   pontos: Array<IPontoMedicao> = [];
   contatos = [];
+  concessionarias = [];
   empresasMatriz: IDropDown[] = [];
   
   public loading = true;
@@ -49,6 +55,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     ativo: false,
     tipoFilial: false,
     cnpj: ["", Validators.required],
+    inscricaoEstadual: "",
     nome: ["", Validators.required],
     nomeFantasia: ["", Validators.required],
     dadosCtaUc: "",
@@ -75,6 +82,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     private dialogService: NbDialogService,
     private contatoService: ContatoService,
     private medicaoService: MedicaoService,
+    private concessionariaService: ConcessionariaService,
     private agenteMedicaoService: AgenteMedicaoService,
     private pontoMedicaoService: PontoMedicaoService,
     private alertService: AlertService,
@@ -82,15 +90,27 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
   ) {
     super();
     this.estados = UF;
-    this.getEmpresas();
-
   }
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
+    await this.getConcessionarias();
+    await this.getEmpresas();
   }
  
   public isFilial(){
     return this.control.value.tipoFilial;
+  }
+
+  async getConcessionarias() {
+    this.loading = true;
+    await this.concessionariaService
+      .getDropDown()
+      .then((response: IResponseInterface<IDropDown[]>) => {
+        if (response.success) {
+          this.concessionarias = response.data;
+        }                
+        this.loading = false;
+      });
   }
 
   async getAgentesMedicao(empresaId){
@@ -139,7 +159,17 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     return empresa;
   }
 
-  onSelect(event): void {
+  onSelectAgente(event): void {    
+    this.agentesChecked[0] = event.data;
+    this.onAgenteEdit();
+  }
+
+  onSelectPonto(event): void {    
+    this.pontosChecked[0] = event.data;
+    this.onPontoEdit();
+  }
+
+  onSelect(event): void {    
     this.limparFormulario();
     const emp = event.data as IEmpresa;
     this.cepSelected = emp.cep;
@@ -150,6 +180,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
       tipoFilial: emp.empresaMatrizId != null && emp.empresaMatrizId != '',
       ativo: emp.ativo,
       cnpj: emp.cnpj,
+      inscricaoEstadual: emp.inscricaoEstadual,
       nome: emp.nome,
       nomeFantasia: emp.nomeFantasia,
       dadosCtaUc: emp.dadosCtaUc,
@@ -164,11 +195,11 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
       responsavelGestor: emp.responsavelGestor
     });
     this.getAgentesMedicao(emp.id);
-    this.edit = true;
-    this.selected = true;
     this.contatos = emp.contatos ? emp.contatos : [];
     this.sourceContato.load(this.contatos);
     this.scroolService.scrollTo(0,0);
+    this.edit = true;
+    this.selected = true;
   }
 
   async onCepSelect(): Promise<void> {
@@ -183,6 +214,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
           tipoFilial: emp.empresaMatrizId != null && emp.empresaMatrizId != '',
           ativo: emp.ativo,
           cnpj: emp.cnpj,
+          inscricaoEstadual: emp.inscricaoEstadual,
           nome: emp.nome,
           nomeFantasia: emp.nomeFantasia,
           dadosCtaUc: emp.dadosCtaUc,
@@ -292,7 +324,7 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
 
   async onPontoConfirm() {
     this.dialogService
-    .open(PontoMedicaoComponent, { context: { ponto: {} as IPontoMedicao, agentes: await this.sourceAgenteMedicao.getAll() } })
+    .open(PontoMedicaoComponent, { context: { ponto: {} as IPontoMedicao, agentes: await this.sourceAgenteMedicao.getAll(), concessionarias: this.concessionarias } })
     .onClose.subscribe(async (ponto) => {
         if (ponto) {
           this.pontoMedicaoService.post(ponto).then(async (res: IResponseInterface<IPontoMedicao>) =>
@@ -311,11 +343,15 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     if(this.agentesChecked.length > 0){
       this.dialogService
       .open(AgenteMedicaoComponent, { context: { agente: this.agentesChecked[0]} })
-      .onClose.subscribe(async (agente) => {
-        if (agente) {   
-          this.agenteMedicaoService.put(agente).then()
-          this.agentes = this.agentes.filter(a => a.id != agente.id);
-          this.agentes.push(agente);
+      .onClose.subscribe(async (agenteEditado) => {
+        if (agenteEditado) {   
+          this.agenteMedicaoService.put(agenteEditado).then()
+          const index = this.agentes.findIndex(p => p.id === agenteEditado.id);
+          if (index !== -1) {
+            this.agentes[index] = agenteEditado;
+          } else {
+            this.agentes.push(agenteEditado);
+          }   
           this.sourceAgenteMedicao.load(this.agentes);          
           this.alertService.showSuccess("Agente alterado com sucesso.");
         }
@@ -332,12 +368,16 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
   async onPontoEdit() {
     if (this.pontosChecked.length > 0){
       this.dialogService
-      .open(PontoMedicaoComponent, { context: { ponto: this.pontosChecked[0], agentes: await this.sourceAgenteMedicao.getAll()}, })
-      .onClose.subscribe(async (ponto) => {
-        if (ponto) {   
-          this.pontoMedicaoService.put(ponto).then()
-          this.pontos = this.pontos.filter(a => a.id != ponto.id);
-          this.pontos.push(ponto);
+      .open(PontoMedicaoComponent, { context: { ponto: this.pontosChecked[0], agentes: await this.sourceAgenteMedicao.getAll(), concessionarias: this.concessionarias }, })
+      .onClose.subscribe(async (pontoEditado) => {
+        if (pontoEditado) {   
+          await this.pontoMedicaoService.put(pontoEditado);
+          const index = this.pontos.findIndex(p => p.id === pontoEditado.id);
+          if (index !== -1) {
+            this.pontos[index] = pontoEditado;
+          } else {
+            this.pontos.push(pontoEditado);
+          }          
           this.sourcePontoMedicao.load(this.pontos);          
           this.alertService.showSuccess("Ponto alterado com sucesso.");
         }
@@ -346,49 +386,128 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit{
     }
   } 
 
-  async onAgenteDelete(){
-    if (this.agentesChecked.length > 0){
-      this.dialogService
-      .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir os agentes de medição selecionados?'} })
-      .onClose.subscribe(async (excluir) => {
-        if (excluir){
-          var erroExcluir = false;
-          this.agentesChecked.forEach(agente => {
-            this.agenteMedicaoService.delete(agente.id).then(async (res: IResponseInterface<any>) => {
-              if (res.success){
-                this.agentes = this.agentes.filter(a => a.id != agente.id);
-                this.sourceAgenteMedicao.load(this.agentes);         
-                this.agentesChecked = [];        
-                this.alertService.showSuccess("Agente excluído com sucesso.");
-              } else 
-              {
-                erroExcluir = true;
-                res.errors.map((x) => this.alertService.showError(`Agente ${agente.nome} - ${x.value}`));
-              }
-            });            
-          });
+  async onAgenteDelete() {
+    if (this.agentesChecked.length === 0) return;
+  
+    const confirm = await this.dialogService
+      .open(CustomDeleteConfirmationComponent, {
+        context: {
+          mesage: `Deseja realmente excluir os ${this.agentesChecked.length} agentes de medição selecionados?`,
+        },
+      })
+      .onClose.toPromise();
+  
+    if (!confirm) return;
+  
+    for (const agente of this.agentesChecked) {
+      const res = await this.agenteMedicaoService.delete(agente.id);
+  
+      if (res.success) {
+        this.removeAgenteDaLista(agente);
+        this.alertService.showSuccess(`Agente ${agente.nome} excluído com sucesso.`);
+      } else {
+        const cascadeError = res.errors.find(
+          (x) => x.key === ETipoErroResponse.DeleteCascadeError.toString()
+        );
+  
+        if (cascadeError && SessionStorageService.isSuperUsuario()) {
+          const confirmarExclusaoLogica = await this.dialogService
+            .open(CustomDeleteConfirmationComponent, {
+              context: {
+                mesage: `ATENÇÃO!!! Deseja realmente excluir logicamente o registro? ${cascadeError.value}`,
+              },
+            })
+            .onClose.toPromise();
+  
+          if (confirmarExclusaoLogica) {
+            agente.dataExclusao = new Date().toISOString();
+            const putRes = await this.agenteMedicaoService.put(agente);
+  
+            if (putRes.success) {
+              this.removeAgenteDaLista(agente);
+              this.alertService.showSuccess(`Agente ${agente.nome} excluído com sucesso.`);
+            } else {
+              putRes.errors.forEach((x) =>
+                this.alertService.showError(`Agente ${agente.nome} - ${x.value}`)
+              );
+            }
+          }
+        } else {
+          res.errors.forEach((x) =>
+            this.alertService.showError(`Agente ${agente.nome} - ${x.value}`)
+          );
         }
-      });          
+      }
     }
+  }
+  
+  private removeAgenteDaLista(agente: IAgenteMedicao) {
+    this.agentes = this.agentes.filter(a => a.id !== agente.id);
+    this.sourceAgenteMedicao.load(this.agentes);
+    this.agentesChecked = [];    
+  }
+  
+  private removePontoDaLista(ponto: IPontoMedicao) {
+    this.pontos = this.pontos.filter((a) => a.id !== ponto.id);
+    this.sourcePontoMedicao.load(this.pontos);
+    this.pontosChecked = [];
   }
 
-  async onPontoDelete(){
-    if (this.pontosChecked.length > 0){
-      this.dialogService
-      .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir os pontos de medição selecionados?'} })
-      .onClose.subscribe(async (excluir) => {
-        if (excluir){
-          this.pontosChecked.forEach(ponto => {
-            this.pontos = this.pontos.filter(a => a.id != ponto.id);
-            this.pontoMedicaoService.delete(ponto.id).then()
-          });
-          this.sourcePontoMedicao.load(this.pontos);         
-          this.pontosChecked = [];  
-          this.alertService.showSuccess("Ponto excluído com sucesso.");
+  async onPontoDelete() {
+    if (this.pontosChecked.length === 0) return;
+  
+    const confirm = await this.dialogService
+      .open(CustomDeleteConfirmationComponent, {
+        context: {
+          mesage: `Deseja realmente excluir os ${this.pontosChecked.length} pontos de medição selecionados?`,
+        },
+      })
+      .onClose.toPromise();
+  
+    if (!confirm) return;
+  
+    for (const ponto of this.pontosChecked) {
+      const res = await this.pontoMedicaoService.delete(ponto.id);
+  
+      if (res.success) {
+        this.removePontoDaLista(ponto);
+        this.alertService.showSuccess(`Ponto ${ponto.nome} excluído com sucesso.`);
+      } else {
+        const cascadeError = res.errors.find(
+          (x) => x.key === ETipoErroResponse.DeleteCascadeError.toString()
+        );
+  
+        if (cascadeError && SessionStorageService.isSuperUsuario()) {
+          const confirmarExclusaoLogica = await this.dialogService
+            .open(CustomDeleteConfirmationComponent, {
+              context: {
+                mesage: `ATENÇÃO!!! Deseja realmente excluir logicamente o registro? ${cascadeError.value}`,
+              },
+            })
+            .onClose.toPromise();
+  
+          if (confirmarExclusaoLogica) {
+            ponto.dataExclusao = new Date().toISOString();
+            const putRes = await this.pontoMedicaoService.put(ponto);
+  
+            if (putRes.success) {
+              this.removePontoDaLista(ponto);
+              this.alertService.showSuccess(`Ponto ${ponto.nome} excluído com sucesso.`);
+            } else {
+              putRes.errors.forEach((x) =>
+                this.alertService.showError(`Ponto ${ponto.nome} - ${ponto.codigo}: ${x.value}`)
+              );
+            }
+          }
+        } else {
+          res.errors.forEach((x) =>
+            this.alertService.showError(`Ponto ${ponto.nome} - ${ponto.codigo}: ${x.value}`)
+          );
         }
-      });          
-    }
+      }
+    }    
   }
+  
 
   onContatoConfirm(){
     const empresa = this.getEmpresa();

@@ -3,7 +3,7 @@ import { settingsRelatorioMedicao, settingsResultadoAnalitico, settingsResultado
 import { LocalDataSource } from 'ng2-smart-table';
 import { DateService } from '../../../@core/services/util/date.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { RelatorioMedicaoService } from '../../../@core/services/geral/relatorio-medicao.service';
+import { RelatorioMedicaoService } from './relatorio-medicao.service';
 import { ContatoService } from '../../../@core/services/gerencial/contato.service';
 import { DatePipe } from '@angular/common';
 import { NbDialogService, NbGlobalPhysicalPosition } from '@nebular/theme';
@@ -15,13 +15,15 @@ import { FASES_MEDICAO } from '../../../@core/enum/filtro-medicao';
 import { IContatoEmail, IEmailData } from '../../../@core/data/email-data';
 import { EnvioEmailComponent } from '../../../@shared/custom-component/envio-email/envio-email.component';
 import { IContato } from '../../../@core/data/contato';
-import { RelatorioMedicaoPdfService } from './relatorio-medicao-pdf.service';
 import { AlertService } from '../../../@core/services/util/alert.service';
-import { IRelatorioMedicao, IRelatorioMedicaoList, IRelatorioMedicaoRequest, IValoresMedicao, IValoresMedicaoAnalitico } from '../../../@core/data/relatorio-medicao';
+import { IFaturamentoMedicao, IRelatorioMedicao, IRelatorioMedicaoList, IValoresMedicao, IValoresMedicaoAnalitico } from '../../../@core/data/relatorio-medicao';
 import { ValidacaoMedicaoComponent } from '../../../@shared/custom-component/validacao-medicao/validacao-medicao/validacao-medicao.component';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
-import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
+import { AjudaOperacaoComponent } from '../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component';
+import { RelatorioMedicaoPdfService } from './relatorio-medicao-pdf.service';
+import { MedicaoService } from '../medicao/medicao.service';
+import { MedicaoCurtoPrazoComponent } from '../../../@shared/custom-component/medicao-curto-prazo/medicao-curto-prazo.component';
 
 @Component({
   selector: 'ngx-relatorio-medicao',
@@ -180,12 +182,29 @@ export class RelatorioMedicaoComponent implements OnInit {
     }
     this.loading = false;
   }
-
+  
   atualizaValoresEconomia(){
     this.valores = this.calculoEconomiaService.calcular(this.relatorioMedicao);
-    this.sourceResultado.load([this.valores.resultadoFaturamento]);
-    
     this.resultadoAnalitico = this.calculoEconomiaService.calcularAnalitico(this.relatorioMedicao);
+    const valorUnitario = this.relatorioMedicao.valorCompraCurtoPrazo > 0 ? this.relatorioMedicao.valorCompraCurtoPrazo : this.relatorioMedicao.valorVendaCurtoPrazo;
+    const quantidade = this.valores.comprarCurtoPrazo && this.valores.comprarCurtoPrazo > 0 ? this.valores.comprarCurtoPrazo : this.valores.venderCurtoPrazo;
+    const venda: IFaturamentoMedicao = this.valores.dentroTake ? null :{
+      faturamento: `Curto Prazo (${this.valores.comprarCurtoPrazo > 0 ? 'Compra' : 'Venda'})`,
+      quantidade: quantidade,
+      unidade: "MWh",
+      valorUnitario: valorUnitario,
+      valorICMS: valorUnitario*quantidade * (this.relatorioMedicao.icms/100),
+      valorProduto: valorUnitario*quantidade,
+      valorNota: this.calculoEconomiaService.curtoPrazoUnitario(quantidade, valorUnitario, this.relatorioMedicao.icms, true)
+    };
+    const data = venda != null ? [this.valores.resultadoFaturamento, venda].map(row => ({
+      ...row,
+      hideCol7: row.faturamento === 'Longo Prazo'
+    })) : [this.valores.resultadoFaturamento];
+    
+    this.settingsResultado.actions.delete = data.length !== 1;
+
+    this.sourceResultado.load(data);    
     this.sourceResultadoAnalitico.load(this.resultadoAnalitico);
         
     if (this.valores.comprarCurtoPrazo > 0)
@@ -200,7 +219,7 @@ export class RelatorioMedicaoComponent implements OnInit {
   }
 
   private async getRelatorios() {
-    var relatorio: IRelatorioMedicaoRequest = {
+    var relatorio: any = {
     };
     await this.relatorioMedicaoService
       .getRelatorios(relatorio)
@@ -335,5 +354,46 @@ export class RelatorioMedicaoComponent implements OnInit {
       reader.onloadend = () => resolve(reader.result);
       reader.readAsDataURL(blob);
     });
+  }
+
+  onHelp() {
+    this.dialogService.open(AjudaOperacaoComponent, { context: { tipoAjuda: 'relatorio-medicao' } });
+  }
+
+  async onDeleteConfirm($event) {
+    this.dialogService
+      .open(MedicaoCurtoPrazoComponent, { context: { medicao: $event.data, icms: this.relatorioMedicao.icms } })
+      .onClose.subscribe(async (medicao) => {
+        const data = await this.sourceResultado.getAll();
+        const index = data.findIndex(item => item.faturamento === medicao.faturamento);
+      
+        if (index >= 0) {
+          data[index] = {
+            ...data[index],
+            ...medicao
+          };
+        }
+
+        if (medicao?.faturamento?.includes('Compra')) {
+          this.relatorioMedicao.valorCompraCurtoPrazo = medicao.valorUnitario;
+        } else {
+          this.relatorioMedicao.valorVendaCurtoPrazo = medicao.valorUnitario;
+        }
+
+        this.relatorioMedicaoService.put(this.relatorioMedicao)
+          .then((data: any) => {
+            if (data?.success) {
+              this.alertService.showSuccess('Medição atualizada com sucesso.');
+            } else {
+              this.alertService.showError(data?.message || 'Erro ao atualizar medição.');
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            this.alertService.showError('Erro inesperado ao atualizar medição.');
+          });
+
+        this.sourceResultado.load(data);
+      });
   }
 }

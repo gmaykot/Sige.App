@@ -2,7 +2,7 @@
 {
     public static class EmailExtensions
     {
-        public static string GetEmailTemplate(string recipientName, string month, string phoneNumber, string emailAddress, string empresa)
+        public static string GetEmailTemplate(string recipientName, string month, string phoneNumber, string emailAddress, string empresa, string pixelUrl, string urlBase)
         {
             string template = @"
                 <!DOCTYPE html>
@@ -50,7 +50,8 @@
                 <body>
                   <div class=""container"">
                     <header>
-                      <img src=""https://sigeonline.icu/assets/images/logo.png"" alt=""Coenel - DE"">
+                      <img src=""{5}"" width=""1"" height=""1"" style=""display:none;"" />
+                      <img src=""https://app.coenel-de.com.br/assets/images/logo.png"" alt=""Coenel - DE"">
                       <h2>Relatório de Medição</h2>
                     </header>
                     <div class=""content"">
@@ -60,13 +61,13 @@
                       <p>Atenciosamente,<br>Equipe Coenel</p>
                     </div>
                     <footer>
-                      <p>© 2024 Coenel-DE – Assessoria em Energia Elétrica. Todos os direitos reservados.</p>
+                      <p>© 2025 Coenel-DE – Assessoria em Energia Elétrica. Todos os direitos reservados.</p>
                     </footer>
                   </div>
                 </body>
                 </html>
             ";
-            template = string.Format(template, recipientName, month, phoneNumber, emailAddress, empresa);
+            template = string.Format(template, recipientName, month, phoneNumber, emailAddress, empresa, pixelUrl);
 
             return template;
         }

@@ -52,6 +52,7 @@ namespace SIGE.Configuration
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                options.UseLazyLoadingProxies(false);
             });
             return services;
         }

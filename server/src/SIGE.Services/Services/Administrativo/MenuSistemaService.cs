@@ -10,7 +10,7 @@ using SIGE.Services.Interfaces.Administrativo;
 
 namespace SIGE.Services.Services.Administrativo
 {
-    public class MenuSistemaService(AppDbContext appDbContext, IMapper mapper) : IMenuSistemaService
+    public class MenuSistemaService(AppDbContext appDbContext, IMapper mapper) : BaseService<MenuSistemaDto, MenuSistemaModel>(appDbContext, mapper), IMenuSistemaService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
@@ -110,11 +110,6 @@ namespace SIGE.Services.Services.Administrativo
             _ = await _appDbContext.SaveChangesAsync();
 
             return new Response().SetOk().SetData(_mapper.Map<MenuSistemaDto>(res)).SetMessage("Menu cadastrado com sucesso.");
-        }
-
-        public Task<Response> Obter(Guid Id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

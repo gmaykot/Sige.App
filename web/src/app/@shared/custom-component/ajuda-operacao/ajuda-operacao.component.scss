@@ -1,0 +1,19 @@
+@import '/src/app/@theme/styles/sige.custom.scss';
+
+nb-card {
+    min-height: 30rem;
+    max-width: 50%;
+    margin: auto;
+    overflow: auto;
+}
+
+.strong {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #1865b8;
+}
+
+.footer-direita {
+    display: flex;
+    justify-content: flex-end;
+  }

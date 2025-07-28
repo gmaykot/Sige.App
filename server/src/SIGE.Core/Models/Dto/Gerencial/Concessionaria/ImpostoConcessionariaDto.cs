@@ -7,6 +7,6 @@
         public string? DescConcessionaria { get; set; }
         public required double ValorPis { get; set; }
         public required double ValorCofins { get; set; }
-        public required DateTime MesReferencia { get; set; }
+        public required DateOnly MesReferencia { get; set; }
     }
 }

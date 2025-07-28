@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { NbDialogRef } from '@nebular/theme';
 
 @Component({
@@ -9,6 +9,7 @@ import { NbDialogRef } from '@nebular/theme';
 })
 export class ValidacaoMedicaoComponent implements OnInit {
   @Input() observacao: string = '';
+  @Input() tipoRelatorio: string = 'Medição';
   @Input() validado: boolean = null;
   
   public control = this.formBuilder.group({

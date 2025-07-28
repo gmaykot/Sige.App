@@ -1,17 +1,24 @@
-<label for="inputLastName" class="label">{{label}}*</label>
-<div class="autocomplete">
-    <!-- Campo de entrada com Nebular -->
-    <input *ngIf="editLabel" nbInput fullWidth [value]="editLabel | uppercase" readonly autocomplete="off" style="margin-top: -10px;" class="no-border no-background"/>
+<form [formGroup]="control">
+<div class="form-group">
+    <label for="inputFirstName" class="label">{{label}}*</label>
+    <input
+      fullWidth
+      formControlName="items"
+      nbInput
+      type="text"
+      [placeholder]="placeholder"
+      [nbAutocomplete]="autoControl"
+      [required]="required"
+      [class.ng-invalid]="control.get('items')?.invalid && (control.get('items')?.touched || control.get('items')?.dirty)"
+      [class.ng-valid]="control.get('items')?.valid"/>
 
-    <!-- Campo de entrada com Nebular -->
-    <input *ngIf="!editLabel" nbInput fullWidth [formControl]="searchControl" placeholder="Nome da Empresa..." autocomplete="off" />
-
-    <!-- Lista de sugestões -->
-    <nb-card *ngIf="filteredItems.length" class="suggestions">
-        <nb-card-body>
-            <div *ngFor="let item of filteredItems" (click)="selectItem(item)" class="suggestion-item">
-                {{ item.descricao }}
-            </div>
-        </nb-card-body>
-    </nb-card>
-</div>
+      <nb-autocomplete #autoControl>
+        <nb-option
+          *ngFor="let option of filteredControlOptions$ | async"
+          [value]="option"
+          (click)="onOptionSelected(option)">
+          {{ option }}
+        </nb-option>
+      </nb-autocomplete>
+  </div>
+</form>

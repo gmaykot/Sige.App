@@ -7,7 +7,7 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label for="inputFirstName" class="label">Mês Referência*</label>
-                        <input nbInput fullWidth mask="M0/0000" placeholder="__/____" [dropSpecialCharacters]="false" fieldSize="small" formControlName="mesReferencia">              
+                        <input [ngClass]="control.get('id')?.value !== null ? 'no-border no-background' : ''" [readonly]="control.get('id').value !== null" nbInput fullWidth mask="M0/0000" placeholder="__/____" [dropSpecialCharacters]="false" fieldSize="small" formControlName="mesReferencia">              
                     </div>
                 </div>          
             </div>

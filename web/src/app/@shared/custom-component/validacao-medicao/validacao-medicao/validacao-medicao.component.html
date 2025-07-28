@@ -1,11 +1,11 @@
 <form [formGroup]="control">
     <nb-card accent="warning">
-        <nb-card-header>Validar Relatório de Medição</nb-card-header>
+        <nb-card-header>Validar Relatório de {{ tipoRelatorio }}</nb-card-header>
         <nb-card-body>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <div class="subtitle">O Relatório de Medição foi validado?</div><br>
+                        <div class="subtitle">O Relatório de {{ tipoRelatorio }} foi validado?</div><br>
                         <nb-select fullWidth placeholder="Selecione" formControlName="validado">
                             <nb-option [value]="null">&nbsp;</nb-option>
                             <nb-option [value]="true">SIM</nb-option>

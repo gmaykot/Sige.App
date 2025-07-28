@@ -6,13 +6,20 @@ namespace SIGE.Core.SQLFactory
     {
         public static string EmpresasPorContrato(Guid contratoId)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append("SELECT empresa.Id ");
-            builder.Append("FROM Contratos contrato ");
-            builder.Append("INNER JOIN ContratoEmpresas contratoEmpresa ON contratoEmpresa.ContratoId = contrato.Id ");
-            builder.Append("INNER JOIN Empresas empresa on empresa.Id = contratoEmpresa.EmpresaId ");
-            builder.Append(string.Format("WHERE contrato.Id = '{0}' ", contratoId));
-            return builder.ToString();
+            StringBuilder builder = new();
+
+            builder.AppendLine("SELECT empresa.Id");
+            builder.AppendLine("FROM Contratos contrato");
+            builder.AppendLine("INNER JOIN ContratoEmpresas contratoEmpresa ON contratoEmpresa.ContratoId = contrato.Id");
+            builder.AppendLine("INNER JOIN Empresas empresa ON empresa.Id = contratoEmpresa.EmpresaId");
+            builder.AppendLine("WHERE contrato.Id = '@ContratoId'");
+            builder.AppendLine("    AND contrato.DataExclusao IS NULL");
+
+            string query = builder.ToString()
+                .Replace("@ContratoId", contratoId.ToString());
+
+            return query;
+
         }
     }
 }

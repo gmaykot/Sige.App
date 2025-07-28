@@ -1,4 +1,3 @@
-import { DatePipe } from "@angular/common";
 import { IFaturamentoCoenel } from "../../../@core/data/geral/faturamento-coenel";
 import { CheckboxComponent } from "../../../@shared/custom-component/checkbox-component";
 import { DefaultComponent } from "../../../@shared/custom-component/default/default-component";
@@ -67,7 +66,8 @@ export class FaturamentoCoenelConfigSettings extends DefaultComponent<IFaturamen
             },
             qtdeSalarios: {
                 title: "Qtde. Salários",
-                type: "string"
+                type: "string",
+                valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 1 }).format(value) },
             },
             porcentagem: {
                 title: "Porcentagem (%)",

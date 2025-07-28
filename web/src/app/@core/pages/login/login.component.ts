@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { NB_AUTH_OPTIONS, NbAuthResult, NbAuthService, getDeepFromObject } from '@nebular/auth';
+import { NB_AUTH_OPTIONS, NbAuthService, getDeepFromObject } from '@nebular/auth';
 import { OAuth2Service } from '../../services/util/oauth2.service';
-import { MenuUsuarioService } from '../../services/administrativo/menu-usuario.service';
 import { SessionSige } from '../../enum/session.const';
+import { MenuUsuarioService } from '../../../pages/administrativo/usuario/menu-usuario.service';
 
 @Component({
   selector: 'ngx-login',
@@ -40,7 +40,6 @@ export class NgxLoginComponent {
     await this.oauth2Service.login(this.user)
       .then((response: any) => {
         if (response.success === true) {
-          console.log(response);
           setTimeout(async () => {
             sessionStorage.setItem(SessionSige.AUTH_TOKEN, response.data.auth.token);
             sessionStorage.setItem(SessionSige.AUTH_REFRESH_TOKEN, response.data.auth.refresToken);

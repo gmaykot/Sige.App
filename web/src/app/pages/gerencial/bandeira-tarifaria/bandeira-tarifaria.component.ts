@@ -1,18 +1,16 @@
-import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { NbDialogService, NbLayoutScrollService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
 import { AlertService } from '../../../@core/services/util/alert.service';
-import { DateService } from '../../../@core/services/util/date.service';
 import { BandeiraTarifariaConfigSettings } from './bandeira-tarifaria.config.settings';
-import { BandeiraTarifariaService } from '../../../@core/services/gerencial/bandeira-tarifaria.service';
+import { BandeiraTarifariaService } from './bandeira-tarifaria.service';
 import { IBandeiraTarifaria } from '../../../@core/data/bandeira-tarifaria';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { IBandeiraTarifariaVigente } from '../../../@core/data/bandeira-tarifaria-vigente';
-import { BandeiraTarifariaVigenteService } from '../../../@core/services/gerencial/bandeira-tarifaria-vigente.service';
+import { BandeiraTarifariaVigenteService } from './bandeira-tarifaria-vigente.service';
 import { BandeiraTarifariaVigenteComponent } from '../../../@shared/custom-component/bandeira-tarifaria-vigente/bandeira-tarifaria-vigente.component';
 
 @Component({
@@ -37,8 +35,7 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
     valorBandeiraVermelha1: [0, Validators.required],
     valorBandeiraVermelha2: [0, Validators.required],
     ativo: true
-  });  
-
+  });
 
   constructor(
     private formBuilder: FormBuilder,
@@ -141,18 +138,27 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
   private async post(bandeira: IBandeiraTarifaria) {
     await this.service.post(bandeira).then(async (res: IResponseInterface<IBandeiraTarifaria>) =>
     {
-      this.onSelect(res);
-      await this.getBandeiras();
-      this.alertService.showSuccess("Bandeira cadastrada com sucesso.");
+      if (res.success){
+        this.onSelect(res);
+        await this.getBandeiras();
+        this.alertService.showSuccess("Bandeira cadastrada com sucesso.");
+      } else {
+        res.errors.map((x) => this.alertService.showError(`${x.value}`));
+      }
     }).catch(() => {
       this.alertService.showError("Não foi possível cadastrar a bandeira neste momento.");
     });
   }
 
   private async put(bandeira: IBandeiraTarifaria) {
-    await this.service.put(bandeira).then(async () => {
-      await this.getBandeiras();
-      this.alertService.showSuccess("Bandeira alterada com sucesso.");
+    await this.service.put(bandeira).then(async (res: IResponseInterface<IBandeiraTarifaria>) => {
+      if (res.success){
+        this.onSelect(res);
+        await this.getBandeiras();
+        this.alertService.showSuccess("Bandeira alterada com sucesso.");
+      } else {
+        res.errors.map((x) => this.alertService.showError(`${x.value}`));
+      }
     }).catch(() => {
       this.alertService.showError("Não foi possível alterar a bandeira neste momento.");
     });
@@ -223,7 +229,6 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
       .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir as bandeiras selecionadas?'} })
       .onClose.subscribe(async (excluir) => {
         if (excluir){
-          var erroExcluir = false;
           this.bandeirasChecked.forEach(bandeira => {
             this.bandeiraVigenteService.delete(bandeira.id).then(async (res: IResponseInterface<any>) => {
               if (res.success){
@@ -232,7 +237,6 @@ export class BandeiraTarifariaComponent extends BandeiraTarifariaConfigSettings 
                 this.alertService.showSuccess("Bandeira excluída com sucesso.");
               } else 
               {
-                erroExcluir = true;
                 res.errors.map((x) => this.alertService.showError(`Bandeira ${bandeira.bandeira} - ${x.value}`));
               }
             });            

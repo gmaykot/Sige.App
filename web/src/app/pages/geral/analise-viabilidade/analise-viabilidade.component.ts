@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { IConcessionaria } from '../../../@core/data/concessionarias';
-import { ConcessionariaService } from '../../../@core/services/gerencial/concessionaria.service';
+import { ConcessionariaService } from '../../gerencial/concessionaria/concessionaria.service';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { IEmpresa } from '../../../@core/data/empresa';
-import { EmpresaService } from '../../../@core/services/gerencial/empresa.service';
 import { settingsAnaliseViabilidade, settingsAnaliseViabilidadeResponse } from '../../../@shared/table-config/analise.viabilidade.config';
 import { LocalDataSource } from 'ng2-smart-table';
 import { IFaturaEnergia } from '../../../@core/data/fatura.energia';
-import { MockFatura } from '../../../@core/mock/mock-fatura-energia';
 import { IAnaliseViabilidade } from '../../../@core/data/analise-viabilidade';
-import { AnailseViabilidadeService } from '../../../@core/services/geral/analise-viabilidade.service';
+import { EmpresaService } from '../../gerencial/empresa/empresa.service';
+import { AnailseViabilidadeService } from './analise-viabilidade.service';
 
 @Component({
   selector: 'ngx-analise-viabilidade',
@@ -68,13 +67,13 @@ export class AnaliseViabilidadeComponent implements OnInit{
 
   iniciaTabela()
   {
-    this.faturasEnergia = MockFatura;
+    //this.faturasEnergia = MockFatura;
     this.source.load(this.faturasEnergia);
-    let media = this.faturasEnergia.find(fat => fat.id === 1);
-    this.passo2.controls.demPta.setValue(media.demandaPta);
-    this.passo2.controls.demFPta.setValue(media.demandaFpta);
-    this.passo2.controls.kWhPta.setValue(media.kwhPta);
-    this.passo2.controls.kWhFPta.setValue(media.kwhFpta);
+    //let media = this.faturasEnergia.find(fat => fat.id === 1);
+    //this.passo2.controls.demPta.setValue(media.demandaPta);
+    //this.passo2.controls.demFPta.setValue(media.demandaFpta);
+    //this.passo2.controls.kWhPta.setValue(media.kwhPta);
+    //this.passo2.controls.kWhFPta.setValue(media.kwhFpta);
   }
 
   async getConcessionarias()
@@ -89,12 +88,7 @@ export class AnaliseViabilidadeComponent implements OnInit{
   }
 
   onCreate(event): void {
-    let val = (event.newData as IFaturaEnergia);
     event.confirm.resolve();
-    let total = this.faturasEnergia.find(fat => fat.id === 0);
-    let media = this.faturasEnergia.find(fat => fat.id === 1);
-    total.kwhFpta += Number(val.kwhFpta);
-    media.kwhFpta = total.kwhFpta/(this.faturasEnergia.length-1);
   }
 
   async onClickAnalisar(): Promise<void> {

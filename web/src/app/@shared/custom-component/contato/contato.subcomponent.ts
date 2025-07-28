@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, EventEmitter, Output, Optional } from "@angular/core";
+import { Component, OnInit, Input, EventEmitter, Output, Optional, OnChanges, SimpleChanges } from "@angular/core";
 import { NbDialogRef, NbDialogService } from "@nebular/theme";
-import { ContatosSettings } from "./contato.subcomponent.settings";
 import { LocalDataSource } from "ng2-smart-table";
 import { IContato } from "../../../@core/data/contato";
 import { IResponseInterface } from "../../../@core/data/response.interface";
@@ -8,13 +7,14 @@ import { ContatoComponent } from "../contato.component";
 import { ContatoService } from "../../../@core/services/gerencial/contato.service";
 import { CustomDeleteConfirmationComponent } from "../custom-delete-confirmation.component";
 import { HttpErrorResponse } from "@angular/common/http";
+import { SmartTableConfigService } from "../../../@core/services/util/smart-table-config.service";
 
 @Component({
   selector: "ngx-subcontato-component",
   templateUrl: "./contato.subcomponent.html",
   styleUrls: ["./contato.subcomponent.scss"],
 })
-export class ListaContatoComponent extends ContatosSettings implements OnInit {
+export class ListaContatoComponent implements OnInit, OnChanges {
   @Input() contatos: Array<IContato> = [];
   @Input() fornecedorId?: string;
   @Input() empresaId?: string;
@@ -23,96 +23,107 @@ export class ListaContatoComponent extends ContatosSettings implements OnInit {
   
   public source: LocalDataSource = new LocalDataSource();
   public loading: boolean = false;
+  public settings: any;
 
   constructor(
     @Optional() protected dialogRef: NbDialogRef<ContatoComponent>,
     private dialogService: NbDialogService,
     private contatoService: ContatoService,
+    private smartService: SmartTableConfigService
   ) {
-    super();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['contatos']) {
+      this.source.load(this.contatos);
+    }    
   }
 
   ngOnInit(): void {
+    this.settings = this.smartService.generateTableSettingsFromObject(IContato.SourceInstance(), {
+      exibirStatus: true,
+      permitirDelete: true,
+    }, this.contatoService);
+
     this.source.load(this.contatos);
   }
 
   onClear(): void {
-    this.checked = [];
     this.loading = false;
   }
 
-  onCreate(): void
-  {
+  onCreate(): void {
     this.onClear();
+  
+    const context = {
+      contato: {
+        fornecedorId: this.fornecedorId,
+        empresaId: this.empresaId
+      } as IContato
+    };
+  
     this.dialogService
-    .open(ContatoComponent, { context: { contato: { fornecedorId: this.fornecedorId, empresaId: this.empresaId } as IContato }, })
-    .onClose.subscribe(async (ret: IContato) => {
-      if (ret) {
-        await this.contatoService.post(ret).then(async (res: IResponseInterface<IContato>) =>
-        {
-          this.source.append(ret);
-          this.alertEvent.emit({ message: "Contrato cadastrado com sucesso.", type: 'success' });
-          this.refreshEvent.emit(true);
-        }).catch(async (res: HttpErrorResponse ) =>
-            {
-                this.alertEvent.emit(res.message);
-                this.refreshEvent.emit(false);      
-            });
-      } else 
-      {
-        this.alertEvent.emit({ message: "Erro ao cadastrar contato.", type: 'danger' });
-        this.refreshEvent.emit(false);      
-      }
-    });
-  }
-
-  onEdit(): void 
-  {
-    if (this.checked && this.checked.length > 0)
-        {
-          var contato = this.checked.pop();
-            this.dialogService
-            .open(ContatoComponent, { context: { contato: contato }, })
-            .onClose.subscribe(async (ret: IContato) => {
-              if (ret) {
-                await this.contatoService.put(ret).then(async (res: IResponseInterface<IContato>) =>
-                {
-                  this.source.update(contato, res);
-                  this.alertEvent.emit({ message: "Contrato atualizado com sucesso.", type: 'success' });
-                  this.refreshEvent.emit(true);
-                }).catch(async (res: IResponseInterface<any>) =>
-                    {
-                        this.alertEvent.emit(res.errors?.map((x) => `- ${x.value}`).join("<br>"));
-                        this.refreshEvent.emit(false);      
-                    });
-              } else 
-              {
-                this.alertEvent.emit({ message: "Erro ao cadastrar contato.", type: 'danger' });
-                this.refreshEvent.emit(false);      
-              }
-              this.onClear();
-            });
+      .open(ContatoComponent, { context })
+      .onClose.subscribe(async (ret: { contato: IContato; delete: boolean }) => {
+        if (!ret?.contato) {
+          this.refreshEvent.emit(null);
+          return;
         }
+  
+        try {
+          if (ret.delete) {
+            await this.contatoService.delete(ret.contato.id);
+            this.source.remove(ret.contato);
+            this.alertEvent.emit({ message: "Contato excluído com sucesso.", type: 'success' });
+          } else {
+            await this.contatoService.post(ret.contato);
+            this.source.append(ret.contato);
+            this.alertEvent.emit({ message: `Contato ${ret.contato.id ? 'atualizado' : 'cadastrado'} com sucesso.`, type: 'success' });
+          }
+  
+          this.refreshEvent.emit(this.contatoService?.constructor?.name);
+        } catch (error) {
+          const message = error instanceof HttpErrorResponse ? error.message : 'Erro inesperado';
+          this.alertEvent.emit(message);
+          this.refreshEvent.emit(null);
+        }
+      });
   }
 
-  onDelete(): void 
-  {
-    if (this.checked && this.checked.length > 0)
-    {
-        this.dialogService
-        .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja excluir os contatos selecionados?'} })
-        .onClose.subscribe(async (excluir) => {
-          if (excluir) {
-            this.checked.forEach(async contato => {
-              await this.contatoService.delete(contato.id).then()
-              {              
-                this.source.remove(contato);
-              };
-            });
-            this.alertEvent.emit({ message: "Contrato excluído com sucesso.", type: 'success' });
+  onEdit(event: any): void {
+    if (!event?.data) return;
+  
+    const contato = event.data;
+  
+    this.dialogService
+      .open(ContatoComponent, { context: { contato } })
+      .onClose.subscribe(async (ret: { contato: IContato; delete: boolean }) => {
+        if (!ret?.contato) {
+          this.refreshEvent.emit(null);
+          this.onClear();
+          return;
+        }
+  
+        try {
+          if (ret.delete) {
+            await this.contatoService.delete(ret.contato.id);
+            this.source.remove(ret.contato);
+            this.alertEvent.emit({ message: "Contato excluído com sucesso.", type: 'success' });
+          } else {
+            const response = await this.contatoService.put(ret.contato);
+            this.source.update(contato, response);
+            this.alertEvent.emit({ message: "Contato atualizado com sucesso.", type: 'success' });
           }
-        });
+
+          this.refreshEvent.emit(this.contatoService?.constructor?.name);
+        } catch (error: any) {
+          const message = error?.errors?.map((x: any) => `- ${x.value}`).join("<br>") || 'Erro ao atualizar contato.';
+          this.alertEvent.emit(message);
+          this.refreshEvent.emit(null);
+        }
+  
         this.onClear();
-    }
+      });
   }
+  
 }

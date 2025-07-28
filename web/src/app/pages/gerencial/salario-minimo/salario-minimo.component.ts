@@ -1,29 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { ISalarioMinimo } from '../../../@core/data/gerencial/salario-minimo';
+import { Component, Injector, OnInit } from '@angular/core';
 import { DefaultComponent } from '../../../@shared/custom-component/default/default-component';
-import { salarioMinimoSettings } from '../../../@shared/table-config/gerencial/salario-minimo.config';
-import { NbLayoutScrollService, NbDialogService } from '@nebular/theme';
 import { Classes } from '../../../@core/enum/classes.const';
-import { SalarioMinimoService } from '../../../@core/services/gerencial/salario-minimo.service';
-import { AlertService } from '../../../@core/services/util/alert.service';
-import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
+import { SalarioMinimoService } from './salario-minimo.service';
+import { SalarioMinimoEntity } from './salario-minimo.interface';
+import { SmartTableConfigService } from '../../../@core/services/util/smart-table-config.service';
 
 @Component({
   selector: 'ngx-salario-minimo',
   templateUrl: './salario-minimo.component.html',
   styleUrls: ['./salario-minimo.component.scss']
 })
-export class SalarioMinimoComponent extends DefaultComponent<ISalarioMinimo> implements OnInit {
-  settings = salarioMinimoSettings;  
-
+export class SalarioMinimoComponent extends DefaultComponent<SalarioMinimoEntity> implements OnInit {
   constructor(
     protected service: SalarioMinimoService,
-    protected formBuilderService: FormBuilderService,
-    protected alertService: AlertService,
-    protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService
+    private smartService: SmartTableConfigService,
+    protected injector: Injector
   ) 
   {
-    super(Classes.SALARIO_MINIMO, formBuilderService, service, alertService, scroolService, dialogService);
+    super(injector, service, Classes.SALARIO_MINIMO, true);
+  }
+
+  ngOnInit(): Promise<void> {
+    this.settings = this.smartService.generateTableSettingsFromObject(SalarioMinimoEntity.SourceInstance(), {
+      exibirStatus: true,
+      permitirDelete: true,
+    });
+    return super.ngOnInit();
   }
 }

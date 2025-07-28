@@ -8,6 +8,7 @@ namespace SIGE.Core.Models.Dto.Gerencial.Empresa
         public Guid? GestorId { get; set; }
         public Guid? EmpresaMatrizId { get; set; }
         public required string CNPJ { get; set; }
+        public string? InscricaoEstadual { get; set; }
         public required string Nome { get; set; }
         public required string NomeFantasia { get; set; }
         public string? DadosCtaUc { get; set; }

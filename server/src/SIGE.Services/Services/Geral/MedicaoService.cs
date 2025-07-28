@@ -96,7 +96,7 @@ namespace SIGE.Services.Services.Geral
                     MesReferencia = req.Periodo,
                     DataMedicao = DataSige.HojeDO(),
                     PontoMedicaoId = med.PontoMedicaoId.ToGuid(),
-                    Icms = 17,
+                    Icms = consumoRecente?.Icms ?? 17,
                 };
 
                 var res = await _integracaoCceeService.ListarMedicoesPorPonto(ccee);
@@ -204,7 +204,7 @@ namespace SIGE.Services.Services.Geral
         public async Task<Response> ObterAgentes(Guid empresaId)
         {
             var ret = new Response();
-            var res = await _appDbContext.AgentesMedicao.Include(a => a.PontosMedicao).Where(a => a.EmpresaId.Equals(empresaId)).ToListAsync();
+            var res = await _appDbContext.AgentesMedicao.Include(a => a.PontosMedicao).ThenInclude(p => p.Concessionaria).Where(a => a.EmpresaId.Equals(empresaId)).ToListAsync();
             if (res == null)
                 return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Não existem agentes para a empresa com o Id {empresaId}.");
 

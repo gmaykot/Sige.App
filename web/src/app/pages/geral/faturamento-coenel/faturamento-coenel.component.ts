@@ -1,18 +1,17 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Injector, OnInit, ViewChild } from "@angular/core";
 import { FaturamentoCoenelConfigSettings } from "./faturamento-coenel.config";
 import { Classes } from "../../../@core/enum/classes.const";
-import { NbLayoutScrollService, NbDialogService } from "@nebular/theme";
-import { FaturamentoCoenelService } from "../../../@core/services/geral/faturamento-coenel.service";
-import { AlertService } from "../../../@core/services/util/alert.service";
-import { FormBuilderService } from "../../../@core/services/util/form-builder.service";
-import { EmpresaService } from "../../../@core/services/gerencial/empresa.service";
+import { NbTabsetComponent } from "@nebular/theme";
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { IDropDown } from "../../../@core/data/drop-down";
-import { Observable } from "rxjs";
-import { PontoMedicaoService } from "../../../@core/services/gerencial/ponto-medicao.service";
+
 import { LocalDataSource } from "ng2-smart-table";
 import { IFaturamentoCoenel } from "../../../@core/data/geral/faturamento-coenel";
 import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
+import { AjudaOperacaoComponent } from "../../../@shared/custom-component/ajuda-operacao/ajuda-operacao.component";
+import { FaturamentoCoenelService } from "./faturamento-coenel.service";
+import { EmpresaService } from "../../gerencial/empresa/empresa.service";
+import { PontoMedicaoService } from "../../gerencial/empresa/ponto-medicao.service";
 
 @Component({
   selector: 'ngx-faturamento-coenel',
@@ -20,6 +19,8 @@ import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-compo
   styleUrls: ['./faturamento-coenel.component.scss']
 })
 export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings implements OnInit {
+  @ViewChild(NbTabsetComponent) tabset!: NbTabsetComponent;
+
   public empresas: Array<IDropDown> = []
   public pontosMedicao: Array<IDropDown> = []
   public sourceHistoricos: LocalDataSource = new LocalDataSource();
@@ -29,24 +30,21 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
 
   constructor(
     protected service: FaturamentoCoenelService,
-    protected formBuilderService: FormBuilderService,
-    protected alertService: AlertService,
-    protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService,
     private empresaService: EmpresaService,
-    private pontoMedicaoService: PontoMedicaoService
+    private pontoMedicaoService: PontoMedicaoService,
+    protected injector: Injector
   ) 
   {
-    super(Classes.FATURAMENTO_COENEL, formBuilderService, service, alertService, scroolService, dialogService);
+    super(injector, service, Classes.FATURAMENTO_COENEL, true);
   }
 
   async onSubmitCustom() {
     if (!this.selected)
       this.control.patchValue({ pontoMedicaoId: this.control.get('pontoMedicaoId').value.id }, { emitEvent: false });
-
-    super.onSubmit();
+    await super.onSubmit();    
     this.editLabel = this.tempLabel;
     this.control.patchValue({ descPontoMedicao: this.tempPontoLabel }, { emitEvent: false });
+    await this.loadSourceHistorico(this.control.get('pontoMedicaoId').value);
   }
 
   onSearch(event: IDropDown) {
@@ -86,19 +84,31 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
     .getByPontoMedicao(pontoMedicaoId)
     .then((response: IResponseInterface<IFaturamentoCoenel[]>) => {
       if (response.success) {
+        console.log(response.data);
         this.sourceHistoricos.load(response.data);
       }
     });    
   }
 
+  async onDeleteCustom() {
+    await super.onDelete();
+    await super.loadSource()
+  }
+
   async onEdit() {
     this.editLabel = null;
-    super.onEdit();
+    super.onEdit();    
+    await super.loadSource();
+  }
+
+  onHelp() {
+    this.dialogService.open(AjudaOperacaoComponent, { context: { tipoAjuda: 'faturamento-coenel' } });
   }
 
   onItemSelected(selectedItem: IDropDown) {
     this.control.get('pontoMedicaoId').setValue(null);
     if (selectedItem) {
+      this.selected = false;
       this.tempLabel = selectedItem.descricao;
       this.getPontosMedicao(selectedItem.id);    
     }
@@ -120,7 +130,6 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
       .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir os históricos selecionados?'} })
       .onClose.subscribe(async (excluir) => {
         if (excluir){
-          var erroExcluir = false;
           this.historicosChecked.forEach(historico => {
             this.service.delete(historico.id).then(async (res: IResponseInterface<any>) => {
               if (res.success){
@@ -129,7 +138,6 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
                 this.alertService.showSuccess("Histórico excluído com sucesso.");
               } else 
               {
-                erroExcluir = true;
                 res.errors.map((x) => this.alertService.showError(`Histórico ${historico.id} - ${x.value}`));
               }
             });            
@@ -137,5 +145,20 @@ export class FaturamentoCoenelComponent extends FaturamentoCoenelConfigSettings 
         }
       });          
     }
+  }
+
+  async onHistoricoConfirm() {
+    this.control.patchValue({
+      id: null,
+      pontoMedicaoId: this.control.get('pontoMedicaoId').value,
+      descPontoMedicao: this.tempPontoLabel,
+      vigenciaInicial: null,
+      vigenciaFinal: null,
+      valorFixo: null,
+      qtdeSalarios: null,
+      porcentagem: null      
+    });
+    this.scrollService.scrollTo(0,0);  
+    this.tabset?.selectTab(this.tabset.tabs.toArray()[0]);
   }
 }

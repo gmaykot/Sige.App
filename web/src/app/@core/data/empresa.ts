@@ -7,6 +7,7 @@ export interface IEmpresa {
     empresaMatrizId: string,
     ativo: boolean,
     cnpj: string,
+    inscricaoEstadual: string,
     nome: string,
     nomeFantasia: string,
     dadosCtaUc: string,

@@ -57,6 +57,15 @@ namespace SIGE.Controller.Geral
         public async Task<IActionResult> Obter() =>
             Ok(await _service.Obter());
 
+        [HttpGet("source")]
+        [SwaggerOperation(Description = "Obtém a lista com todos os dados.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ObterSource() =>
+            Ok(await _service.ObterSource());
+
         [HttpGet("ponto-medicao/{id}")]
         [SwaggerOperation(Description = "Obtém um com todos os dados por ponto medição.")]
         [ProducesResponseType(typeof(Response), 200)]

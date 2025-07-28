@@ -43,4 +43,21 @@ $shadow-green: #00977e;
         text-align: center;
     }
   }
+
+  :host {
+    ::ng-deep .ng2-smart-row.ocultar-coluna-7 td:nth-child(7) {
+      font-size: 0 !important;
+      line-height: 0 !important;
+      color: transparent !important;
+      height: 0 !important;
+      overflow: hidden !important;
+      pointer-events: none;
+      background: none !important;
+      border: 1px solid var(--smart-table-separator);
+    }
   
+    /* Remove qualquer conteúdo interno (como <a>, <button>, etc.) */
+    ::ng-deep .ng2-smart-row.ocultar-coluna-7 td:nth-child(7) * {
+      display: none !important;
+    }
+  }

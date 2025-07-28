@@ -4,5 +4,13 @@ export interface IPontoMedicao {
     codigo: string,
     agenteMedicao: string,
     agenteMedicaoId?: string,
-    ativo: boolean
+    segmento?: string,
+    tipoEnergia?: string,
+    conexao?: string,
+    concessionariaId?: string,
+    descConcessionaria?: string,
+    acumulacaoLiquida: boolean,
+    incideICMS: boolean,
+    ativo: boolean,
+    dataExclusao?: string
 }

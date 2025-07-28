@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
 using SIGE.Core.Models.Dto.Geral.RelatorioMedicao;
 using SIGE.Core.Models.Requests;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
@@ -35,14 +34,14 @@ namespace SIGE.Services.Services.Geral
             if (res != null && res.Count != 0)
                 return ret.SetOk().SetData(res.DistinctBy(m => m.DescGrupo).OrderByDescending(m => m.MesReferencia));
 
-            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de economia no período.");
+            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de medição no período.");
         }
 
         public async Task<Response> Obter(Guid contratoId, DateTime mesReferencia)
         {
             var ret = new Response();
 
-            var rel = await _appDbContext.RelatoriosMedicao.FirstOrDefaultAsync(r => r.ContratoId.Equals(contratoId) && r.MesReferencia.Equals(mesReferencia));
+            var rel = await _appDbContext.RelatoriosMedicao.IgnoreAutoIncludes().FirstOrDefaultAsync(r => r.ContratoId.Equals(contratoId) && r.MesReferencia.Equals(mesReferencia));
             var res = await _appDbContext.Database.SqlQueryRaw<RelatorioMedicaoDto>(RelatorioMedicaoFactory.ValoresRelatoriosMedicao(contratoId, mesReferencia, null)).FirstOrDefaultAsync();
             if (res == null)
                 return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Verifique a medição do mês de referência e os valores contratuais cadastrados.");
@@ -55,6 +54,18 @@ namespace SIGE.Services.Services.Geral
             empresas.ForEach(empresaId =>
             {
                 var valores = _appDbContext.Database.SqlQueryRaw<ValorAnaliticoMedicaoDto>(RelatorioMedicaoFactory.ValoresRelatoriosMedicao(contratoId, mesReferencia, empresaId)).FirstOrDefault();
+                if (valores.Icms == 0 && valores.ValorIcms != 0)
+                {
+                    valores.Icms = valores.ValorIcms;
+                }
+                res.Icms = valores.Icms;
+
+                if (valores.Proinfa == 0 && valores.ValorProinfa != 0)
+                {
+                    valores.Proinfa = valores.ValorProinfa;
+                }
+                res.Proinfa = valores.Proinfa;
+
                 res.ValoresAnaliticos.Add(valores);
             });
 
@@ -71,65 +82,11 @@ namespace SIGE.Services.Services.Geral
             {
                 res.Id = rel.Id;
                 _mapper.Map(res, rel);
-            }                
+            }
 
             _appDbContext.SaveChanges();
 
             return ret.SetOk().SetData(res);
-        }
-
-        public async Task<Response> ObterFinal(Guid contratoId, DateTime mesReferencia)
-        {
-            var ret = new Response();
-            var relatorio = new RelatorioFinalDto
-            {
-                Cabecalho = new CabecalhoRelatorioFinalDto
-                {
-                    Titulo = "QUADRO COMPARATIVO MENSAL MERCADO CATIVO X LIVRE",
-                    SubTitulo = "ROTA INDÚSTRIA GRÁFICA LTDA",
-                    Unidade = "Estrela",
-                    SubMercado = "Sul",
-                    Conexao = "A4",
-                    Concessao = "RGE Sul",
-                    DataAnalise = DataSige.Hoje(),
-                    MesReferencia = "Outubro/24",
-                    NumerorDiasMes = 31,
-                    PeriodoHoroSazonal = "Bandeira Verde"
-                },
-                Grupos = [
-                    new GrupoRelatorioFinalDto {
-                        Ordem = 0,
-                        Titulo = "MERCADO CATIVO - A4 - TOTAL",
-                        ColunaQuantidade = "Montante",
-                        ColunaValor = "Tarifa",
-                        ColunaTotal = "Total",
-                        SubGrupos = [
-                            new SubGrupoRelatorioFinalDto {
-                                Lancamentos = [
-                                    new LancamentoRelatorioFinalDto {
-                                        Descricao = "demanda contratada - ponta",
-                                    },
-                                    new LancamentoRelatorioFinalDto {
-                                        Descricao = "demanda contratada - fora de ponta",
-                                        Quantidade = 500,
-                                        TipoQuantidade = ETipoQuantidade.KW,
-                                    }
-                                ],
-                                Total = new LancamentoRelatorioFinalDto {
-                                    Descricao = "Total geral mercado cativo (impostos inclusos)",
-                                    Quantidade = 84792,
-                                    TipoQuantidade = ETipoQuantidade.KWH,
-                                    Valor = 0.8339,
-                                    TipoValor = ETipoValor.RS_KWH,
-                                    Total = 70709.43
-                                }
-                            }
-                        ],
-                    }
-                ]
-            };
-
-            return ret.SetOk().SetData(relatorio);
         }
     }
 }

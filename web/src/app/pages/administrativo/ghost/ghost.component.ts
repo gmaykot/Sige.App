@@ -3,7 +3,6 @@ import { FormBuilder } from '@angular/forms';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
 import { CacheService } from '../../../@core/services/administrativo/cache.service';
-import { IResponseInterface } from '../../../@core/data/response.interface';
 
 @Component({
   selector: 'ngx-ghost',

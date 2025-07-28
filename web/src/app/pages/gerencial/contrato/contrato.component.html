@@ -39,14 +39,14 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                       <div class="form-group">
                         <label for="inputFirstName" class="label">Take Mínimo (%)*</label>
                         <input type="number" nbInput fullWidth id="inputFirstName" placeholder=""
                           formControlName="takeMinimo">
                       </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                       <div class="form-group">
                         <label for="inputFirstName" class="label">Take Máximo (%)*</label>
                         <input type="number" nbInput fullWidth id="inputFirstName" placeholder=""
@@ -61,22 +61,6 @@
                         </nb-select>
                       </div>
                     </div>
-                    <div class="col-md-2">
-                      <div class="form-group">
-                        <label for="inputLastName" class="label">Segmento*</label>
-                        <nb-select fullWidth placeholder="Selecione" formControlName="segmento">
-                          <nb-option *ngFor="let sg of segmento" value="{{sg.id}}">{{sg.desc}}</nb-option>
-                        </nb-select>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label for="inputLastName" class="label">Tipo de Energia*</label>
-                        <nb-select fullWidth placeholder="Selecione" formControlName="tipoEnergia">
-                          <nb-option *ngFor="let ene of tipoEnergia" value="{{ene.id}}">{{ene.desc}}</nb-option>
-                        </nb-select>
-                      </div>
-                    </div>                    
                   </div>
                   <div class="row">
                     <div class="col-md-6">
@@ -89,17 +73,6 @@
                       </div>
                     </div>
                     <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="inputLastName" class="label">Concessionária*</label>
-                        <nb-select fullWidth placeholder="Selecione" formControlName="concessionariaId">
-                          <nb-option *ngFor="let con of concessionarias"
-                            value="{{con.id}}">{{con.descricao}}</nb-option>
-                        </nb-select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
                       <div class="form-group">
                         <label for="inputFirstName" class="label">Descrição Grupo de Empresas*</label>
                         <input type="text" nbInput fullWidth id="inputFirstName" placeholder=""

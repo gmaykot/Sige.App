@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'ngx-date-filter-component',
@@ -6,7 +6,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
     <input type="date" (change)="ngOnChanges($event)" class="form-control" />
   `,
 })
-export class DateFilterComponent {
+export class DateFilterComponent implements OnChanges{
   @Output() filter = new EventEmitter<any>();
 
   ngOnChanges (event: any) {
