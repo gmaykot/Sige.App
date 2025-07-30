@@ -1,5 +1,4 @@
 ﻿using SIGE.Core.Models.Defaults;
-using SIGE.Core.Models.Sistema.Geral;
 
 namespace SIGE.Core.Models.Sistema.Gerencial.Empresa {
     public class AgenteMedicaoModel : BaseModel {
@@ -10,7 +9,6 @@ namespace SIGE.Core.Models.Sistema.Gerencial.Empresa {
         public EmpresaModel? Empresa { get; set; }
 
         public virtual IEnumerable<PontoMedicaoModel>? PontosMedicao { get; set; }
-        public virtual IEnumerable<DescontoTusdModel>? DescontosTusd { get; set; }
 
     }
 }

@@ -12,19 +12,15 @@ using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 
-namespace SIGE.Services.Services
-{
-    public class GerenciamentoMensalService(AppDbContext appDbContext, IMapper mapper) : IGerenciamentoMensalService
-    {
+namespace SIGE.Services.Services {
+    public class GerenciamentoMensalService(AppDbContext appDbContext, IMapper mapper) : IGerenciamentoMensalService {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Response> ObterDadodsMensais(DateTime mesReferencia, Guid? empresaId = null)
-        {
+        public async Task<Response> ObterDadodsMensais(DateTime mesReferencia, Guid? empresaId = null) {
             var ret = new Response();
 
-            var gerenciamento = new GerenciamentoMensalDto
-            {
+            var gerenciamento = new GerenciamentoMensalDto {
                 MesReferencia = mesReferencia,
                 BandeiraVigente = await ObterBandeiraVigente(mesReferencia),
                 PisCofins = await ObterPisCofins(mesReferencia),
@@ -35,8 +31,7 @@ namespace SIGE.Services.Services
             return ret.SetOk().SetData(gerenciamento);
         }
 
-        public async Task<List<ProinfaIcmsMensalDto>> ObterProinfaIcms(DateTime mesReferencia, Guid? empresaId)
-        {
+        public async Task<List<ProinfaIcmsMensalDto>> ObterProinfaIcms(DateTime mesReferencia, Guid? empresaId) {
             var parameters = new MySqlParameter[]
             {
                 new("@MesReferencia", MySqlDbType.Date) { Value = mesReferencia },
@@ -53,8 +48,7 @@ namespace SIGE.Services.Services
             return retorno;
         }
 
-        public async Task<List<PisCofinsMensalDto>> ObterPisCofins(DateTime mesReferencia)
-        {
+        public async Task<List<PisCofinsMensalDto>> ObterPisCofins(DateTime mesReferencia) {
             return await _appDbContext.Database
                 .SqlQueryRaw<PisCofinsMensalDto>(GerenciamentoMensalFactory.ListaPisCofins(), mesReferencia)
                 .ToListAsync();
@@ -65,8 +59,7 @@ namespace SIGE.Services.Services
                 .SqlQueryRaw<DescontoTUSDDto>(GerenciamentoMensalFactory.ListaDescontoTusd(), mesReferencia)
                 .ToListAsync();
 
-        public async Task<BandeiraTarifariaVigenteDto?> ObterBandeiraVigente(DateTime mesReferencia)
-        {
+        public async Task<BandeiraTarifariaVigenteDto?> ObterBandeiraVigente(DateTime mesReferencia) {
             var parameters = new MySqlParameter[]
             {
                 new("@MesReferencia", MySqlDbType.Date) { Value = mesReferencia },
@@ -81,16 +74,14 @@ namespace SIGE.Services.Services
         }
 
 
-        public async Task<Response> IncluirBandeiraVigente(BandeiraTarifariaVigenteDto req)
-        {
+        public async Task<Response> IncluirBandeiraVigente(BandeiraTarifariaVigenteDto req) {
             var ret = new Response();
 
             var bandeira = await _appDbContext.BandeiraTarifariaVigente.FirstOrDefaultAsync(b => b.Id == req.Id);
-            bandeira ??= new BandeiraTarifariaVigenteModel
-                {
-                    BandeiraTarifariaId = req.BandeiraTarifariaId,
-                    MesReferencia = req.MesReferencia.Value
-                };
+            bandeira ??= new BandeiraTarifariaVigenteModel {
+                BandeiraTarifariaId = req.BandeiraTarifariaId,
+                MesReferencia = req.MesReferencia.Value
+            };
 
             bandeira.Bandeira = req.Bandeira.Value;
             _ = _appDbContext.Update(bandeira);
@@ -99,13 +90,11 @@ namespace SIGE.Services.Services
             return ret.SetOk();
         }
 
-        public async Task<Response> IncluirPisCofins(PisCofinsMensalDto req)
-        {
+        public async Task<Response> IncluirPisCofins(PisCofinsMensalDto req) {
             var ret = new Response();
 
             var bandeira = await _appDbContext.ImpostosConcessionarias.FirstOrDefaultAsync(b => b.Id == req.Id);
-            bandeira ??= new ImpostoConcessionariaModel
-            {
+            bandeira ??= new ImpostoConcessionariaModel {
                 ConcessionariaId = req.ConcessionariaId,
                 MesReferencia = req.MesReferencia.Value,
                 ValorPis = req.Pis ?? 0,
@@ -121,17 +110,14 @@ namespace SIGE.Services.Services
             return ret.SetOk();
         }
 
-        private async Task<List<ProinfaIcmsMensalDto>> IncluirIcmsLote(List<ProinfaIcmsMensalDto> req, DateTime mesReferencia, double icmsBase = 17)
-        {
-            foreach (var r in req)
-            {
-                if (r.Id == null)
-                {
+        private async Task<List<ProinfaIcmsMensalDto>> IncluirIcmsLote(List<ProinfaIcmsMensalDto> req, DateTime mesReferencia, double icmsBase = 17) {
+            foreach (var r in req) {
+                if (r.Id == null) {
                     r.Icms = icmsBase;
-                    var valor = new ValorMensalPontoMedicaoModel
-                    {
+                    var valor = new ValorMensalPontoMedicaoModel {
                         Proinfa = r.Proinfa ?? 0,
                         Icms = r.Icms ?? 0,
+                        ValorDescontoRETUSD = r.ValorDescontoRETUSD ?? 0,
                         PontoMedicaoId = r.PontoMedicaoId,
                         MesReferencia = DateOnly.FromDateTime(mesReferencia)
                     };
@@ -143,21 +129,21 @@ namespace SIGE.Services.Services
             return req;
         }
 
-        public async Task<Response> IncluirProinfaIcms(ProinfaIcmsMensalDto req)
-        {
+        public async Task<Response> IncluirProinfaIcms(ProinfaIcmsMensalDto req) {
             var ret = new Response();
 
             var valor = await _appDbContext.ValoresMensaisPontoMedicao.FirstOrDefaultAsync(b => b.Id == req.Id);
-            valor ??= new ValorMensalPontoMedicaoModel
-            {
+            valor ??= new ValorMensalPontoMedicaoModel {
                 Proinfa = req.Proinfa ?? 0,
                 Icms = req.Icms ?? 0,
+                ValorDescontoRETUSD = req.ValorDescontoRETUSD ?? 0,
                 PontoMedicaoId = req.PontoMedicaoId,
                 MesReferencia = req.MesReferencia
             };
 
             valor.Proinfa = req.Proinfa ?? 0;
             valor.Icms = req.Icms ?? 0;
+            valor.ValorDescontoRETUSD = req.ValorDescontoRETUSD ?? 0;
 
             _ = _appDbContext.Update(valor);
             _ = await _appDbContext.SaveChangesAsync();
@@ -165,21 +151,18 @@ namespace SIGE.Services.Services
             return ret.SetOk();
         }
 
-        public async Task<Response> IncluirDescontoTusd(DescontoTUSDDto req)
-        {
+        public async Task<Response> IncluirDescontoTusd(DescontoTUSDDto req) {
             var ret = new Response();
 
             var desconto = await _appDbContext.DescontosTusd.FirstOrDefaultAsync(b => b.Id == req.Id);
-            desconto ??= new DescontoTusdModel
-            {
+            desconto ??= new DescontoTusdModel {
                 MesReferencia = req.MesReferencia,
-                AgenteMedicaoId = req.AgenteMedicaoId,
+                FornecedorId = req.FornecedorId,
                 ValorDescontoTUSD = req.ValorDescontoTUSD ?? 0,
-                ValorDescontoRETUSD = req.ValorDescontoRETUSD ?? 0,
+                TipoEnergia = req.TipoEnergia
             };
 
-            desconto.ValorDescontoTUSD = req.ValorDescontoTUSD?? 0;
-            desconto.ValorDescontoRETUSD = req.ValorDescontoRETUSD ?? 0;
+            desconto.ValorDescontoTUSD = req.ValorDescontoTUSD ?? 0;
 
             _ = _appDbContext.Update(desconto);
             _ = await _appDbContext.SaveChangesAsync();

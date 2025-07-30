@@ -57,35 +57,36 @@ namespace SIGE.DataAccess.Context
         public DbSet<AgenteMedicaoModel> AgentesMedicao { get; set; }
         public DbSet<BandeiraTarifariaModel> BandeirasTarifarias { get; set; }
         public DbSet<BandeiraTarifariaVigenteModel> BandeiraTarifariaVigente { get; set; }
-        public DbSet<ContatoModel> Contatos { get; set; }
         public DbSet<ConcessionariaModel> Concessionarias { get; set; }
+        public DbSet<ConsumoMensalModel> ConsumosMensais { get; set; }
+        public DbSet<ContatoModel> Contatos { get; set; }
         public DbSet<ContratoEmpresaModel> ContratoEmpresas { get; set; }
         public DbSet<ContratoModel> Contratos { get; set; }
-        public DbSet<ConsumoMensalModel> ConsumosMensais { get; set; }
         public DbSet<CredencialCceeModel> CredenciaisCcee { get; set; }
+        public DbSet<DescontoTusdModel> DescontosTusd { get; set; }
+        public DbSet<EnergiaAcumuladaModel> EnergiasAcumuladas { get; set; }
         public DbSet<EmpresaModel> Empresas { get; set; }
         public DbSet<FaturamentoCoenelModel> FaturamentosCoenel { get; set; }
+        public DbSet<FaturaEnergiaModel> FaturasEnergia { get; set; }
         public DbSet<FornecedorModel> Fornecedores { get; set; }
         public DbSet<GestorModel> Gestores { get; set; }
         public DbSet<ImpostoConcessionariaModel> ImpostosConcessionarias { get; set; }
+        public DbSet<LancamentoAdicionalModel> LancamentosAdicionais { get; set; }
+        public DbSet<LogEnvioEmail> LogsEnvioEmails { get; set; }
         public DbSet<LogModel> Logs { get; set; }
+        public DbSet<MedicoesModel> Medicoes { get; set; }
         public DbSet<MenuSistemaModel> MenusSistema { get; set; }
         public DbSet<MenuUsuarioModel> MenusUsuarios { get; set; }
-        public DbSet<MedicoesModel> Medicoes { get; set; }
         public DbSet<PontoMedicaoModel> PontosMedicao { get; set; }
+        public DbSet<RelatorioEconomiaModel> RelatoriosEconomia { get; set; }
         public DbSet<RelatorioMedicaoModel> RelatoriosMedicao { get; set; }
         public DbSet<SalarioMinimoModel> SalariosMinimos { get; set; }
         public DbSet<TarifaAplicacaoModel> TarifasAplicacao { get; set; }
+        public DbSet<TokenModel> Tokens { get; set; }
         public DbSet<UsuarioModel> Usuarios { get; set; }
         public DbSet<ValorAnualContratoModel> ValoresAnuaisContrato { get; set; }
         public DbSet<ValorConcessionariaModel> ValoresConcessionaria { get; set; }
         public DbSet<ValorMensalContratoModel> ValoresMensaisContrato { get; set; }
-        public DbSet<FaturaEnergiaModel> FaturasEnergia { get; set; }
-        public DbSet<LancamentoAdicionalModel> LancamentosAdicionais { get; set; }
-        public DbSet<TokenModel> Tokens { get; set; }
-        public DbSet<EnergiaAcumuladaModel> EnergiasAcumuladas { get; set; }
-        public DbSet<LogEnvioEmail> LogsEnvioEmails { get; set; }
         public DbSet<ValorMensalPontoMedicaoModel> ValoresMensaisPontoMedicao { get; set; }
-        public DbSet<DescontoTusdModel> DescontosTusd { get; set; }
     }
 }

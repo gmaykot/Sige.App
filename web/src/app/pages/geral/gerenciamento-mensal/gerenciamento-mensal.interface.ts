@@ -12,7 +12,8 @@ export interface IProinfaIcmsMensal {
     mesReferencia: string,
     descPontoMedicao: string,
     proinfa: number,
-    icms: number
+    icms: number,
+    valorDescontoRETUSD: number
 }
 
 export interface IBandeiraTarifariaVigente {
@@ -25,9 +26,9 @@ export interface IBandeiraTarifariaVigente {
 export interface IDescontoTusdMensal {
     id: string,
     mesReferencia: string,
-    descAgenteMedicao: string,
-    agenteMedicaoId: string,
-    codigoPerfil: string,
+    descFornecedor: string,
+    fornecedorId: string,
+    tipoEnergia: string,
     valorDescontoTUSD: number,
     valorDescontoRETUSD: number
 }

@@ -1,11 +1,8 @@
 ﻿using System.Text;
 
-namespace SIGE.Core.SQLFactory
-{
-    public static class GerenciamentoMensalFactory
-    {
-        public static string ListaValoresMensaisPontosMedicao()
-        {
+namespace SIGE.Core.SQLFactory {
+    public static class GerenciamentoMensalFactory {
+        public static string ListaValoresMensaisPontosMedicao() {
             StringBuilder sql = new();
 
             sql.AppendLine("SELECT");
@@ -13,6 +10,7 @@ namespace SIGE.Core.SQLFactory
             sql.AppendLine("    valor.Proinfa,");
             sql.AppendLine("    valor.Icms,");
             sql.AppendLine("    valor.MesReferencia,");
+            sql.AppendLine("    valor.ValorDescontoRETUSD,");
             sql.AppendLine("    ponto.Nome AS 'DescPontoMedicao',");
             sql.AppendLine("    ponto.Id AS 'PontoMedicaoId',");
             sql.AppendLine("    empresa.NomeFantasia AS 'DescEmpresa'");
@@ -34,8 +32,7 @@ namespace SIGE.Core.SQLFactory
             return query;
         }
 
-        public static string ListaPisCofins()
-        {
+        public static string ListaPisCofins() {
             StringBuilder sql = new();
 
             sql.AppendLine("SELECT");
@@ -55,12 +52,11 @@ namespace SIGE.Core.SQLFactory
             sql.AppendLine("    concessionaria.Nome;");
 
             string query = sql.ToString();
-            
+
             return query;
         }
 
-        public static string ObterBandeiraMesReferencia()
-        {
+        public static string ObterBandeiraMesReferencia() {
             StringBuilder sql = new();
 
             sql.AppendLine("SELECT");
@@ -82,58 +78,60 @@ namespace SIGE.Core.SQLFactory
             return query;
         }
 
-        public static string ListaDescontoTusd()
-        {
-            StringBuilder sql = new();
+        public static string ListaDescontoTusd() {
+            var sql = new StringBuilder();
 
             sql.AppendLine("SELECT");
-            sql.AppendLine("    desconto.Id AS 'Id',");
-            sql.AppendLine("    desconto.MesReferencia AS 'MesReferencia',");
-            sql.AppendLine("    agente.Id AS 'AgenteMedicaoId',");
-            sql.AppendLine("    agente.Nome AS 'DescAgenteMedicao',");
-            sql.AppendLine("    agente.CodigoPerfilAgente AS 'CodPerfil',");
-            sql.AppendLine("    desconto.ValorDescontoTUSD AS 'ValorDescontoTUSD',");
-            sql.AppendLine("    desconto.ValorDescontoRETUSD AS 'ValorDescontoRETUSD',");
-            sql.AppendLine("    COUNT(agente.EmpresaId) AS 'EmpresasVinculadas'");
+            sql.AppendLine("  desconto.Id,");
+            sql.AppendLine("  desconto.MesReferencia,");
+            sql.AppendLine("  forn.Id AS FornecedorId,");
+            sql.AppendLine("  forn.Nome AS DescFornecedor,");
+            sql.AppendLine("  energia AS TipoEnergia,");
+            sql.AppendLine("  desconto.ValorDescontoTUSD,");
+            sql.AppendLine("  0.0 as ValorDescontoRETUSD");
             sql.AppendLine("FROM");
-            sql.AppendLine("    AgentesMedicao agente");
-            sql.AppendLine("LEFT JOIN DescontosTusd desconto ON desconto.AgenteMedicaoId = agente.Id AND desconto.MesReferencia = {0}");
-            sql.AppendLine("WHERE");
-            sql.AppendLine("    agente.Ativo IS true");
-            sql.AppendLine("    AND agente.DataExclusao IS null");
-            sql.AppendLine("GROUP BY");
-            sql.AppendLine("    agente.CodigoPerfilAgente");
-            sql.AppendLine("ORDER BY");
-            sql.AppendLine("    agente.Nome;");
+            sql.AppendLine("  Fornecedores forn");
+            sql.AppendLine("LEFT JOIN (");
+            sql.AppendLine("  select 0 as energia");
+            sql.AppendLine("  union all select 1");
+            sql.AppendLine("  union all select 2");
+            sql.AppendLine("  union all select 3");
+            sql.AppendLine(") energia on 1 = 1");
+            sql.AppendLine("LEFT JOIN DescontosTusd desconto on desconto.FornecedorId = forn.Id AND desconto.TipoEnergia = energia AND desconto.MesReferencia = {0}");
+            sql.AppendLine("ORDER BY  forn.Nome, energia;");
 
             string query = sql.ToString();
 
             return query;
         }
 
-        public static string ObterDescontoTusd()
-        {
+        public static string ObterDescontoTusd() {
             var sb = new StringBuilder();
             sb.AppendLine("SELECT ");
-            sb.AppendLine("    desconto.Id AS 'Id',");
-            sb.AppendLine("    desconto.MesReferencia AS 'MesReferencia',");
-            sb.AppendLine("    agente.Id AS 'AgenteMedicaoId',");
-            sb.AppendLine("    agente.Nome AS 'DescAgenteMedicao',");
-            sb.AppendLine("    agente.CodigoPerfilAgente AS 'CodPerfil',");
-            sb.AppendLine("    desconto.ValorDescontoTUSD AS 'ValorDescontoTUSD',");
-            sb.AppendLine("    desconto.ValorDescontoRETUSD AS 'ValorDescontoRETUSD',");
-            sb.AppendLine("    COUNT(agente.EmpresaId) AS 'EmpresasVinculadas'");
-            sb.AppendLine("FROM DescontosTusd AS desconto");
-            sb.AppendLine("INNER JOIN AgentesMedicao AS agente ");
-            sb.AppendLine("    ON agente.Id = desconto.AgenteMedicaoId");
-            sb.AppendLine("INNER JOIN PontosMedicao AS ponto ");
-            sb.AppendLine("    ON ponto.AgenteMedicaoId = desconto.AgenteMedicaoId");
-            sb.AppendLine("WHERE ponto.Id = @PontoMedicaoId and desconto.MesReferencia = @MesReferencia");
-            sb.AppendLine("    AND desconto.DataExclusao IS null");
-            sb.AppendLine("GROUP BY desconto.MesReferencia, ponto.Id;");
+            sb.AppendLine("  desconto.Id,");
+            sb.AppendLine("  desconto.MesReferencia,");
+            sb.AppendLine("  forn.Id AS FornecedorId,");
+            sb.AppendLine("  forn.Nome AS DescFornecedor,");
+            sb.AppendLine("  COALESCE(desconto.ValorDescontoTUSD, 0) AS ValorDescontoTUSD,");
+            sb.AppendLine("  COALESCE(valores.ValorDescontoRETUSD, 0) AS ValorDescontoRETUSD,");
+            sb.AppendLine("  COALESCE(desconto.TipoEnergia, 99) AS TipoEnergia");
+            sb.AppendLine("FROM PontosMedicao ponto");
+            sb.AppendLine("INNER JOIN AgentesMedicao agente ON agente.id = ponto.AgenteMedicaoId");
+            sb.AppendLine("INNER JOIN Empresas emp ON emp.id = agente.EmpresaId");
+            sb.AppendLine("INNER JOIN ContratoEmpresas contEmp ON contEmp.EmpresaId = emp.id");
+            sb.AppendLine("INNER JOIN Contratos cont ON cont.id = contEmp.ContratoId");
+            sb.AppendLine("INNER JOIN Fornecedores forn ON forn.id = cont.FornecedorId");
+            sb.AppendLine("LEFT JOIN DescontosTusd desconto ");
+            sb.AppendLine("       ON desconto.FornecedorId = forn.id ");
+            sb.AppendLine("      AND ponto.TipoEnergia = desconto.TipoEnergia");
+            sb.AppendLine("      AND desconto.MesReferencia = @MesReferencia");
+            sb.AppendLine("LEFT JOIN ValoresMensaisPontoMedicao valores ");
+            sb.AppendLine("       ON valores.PontoMedicaoId = ponto.id");
+            sb.AppendLine("      AND valores.MesReferencia = @MesReferencia");
+            sb.AppendLine("WHERE ponto.Id = @PontoMedicaoId");
+            sb.AppendLine("GROUP BY ponto.Id");
 
             string query = sb.ToString();
-
             return query;
         }
     }

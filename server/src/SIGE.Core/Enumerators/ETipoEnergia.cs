@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel;
 
-namespace SIGE.Core.Enumerators
-{
-    public enum ETipoEnergia
-    {
+namespace SIGE.Core.Enumerators {
+    public enum ETipoEnergia {
         [Description("I0 (LP)")]
         I0_LP,
         [Description("I1 (LP)")]
@@ -12,5 +10,7 @@ namespace SIGE.Core.Enumerators
         I5_LP,
         [Description("Convencional (LP)")]
         CONVENCIONAL_LP,
+
+        NA = 99,
     }
 }

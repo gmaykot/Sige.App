@@ -245,48 +245,48 @@ export class RelatorioEconomiaPdfService {
     /* LOGO & TITULO CABEÇALHO ---------------------------------------------------------------- */
     this.pdfConfig.addImagem(doc, {
       src: "assets/images/logo.png",
-      marginLeft: margins.marginLeft-10,
-      marginTop: margins.marginTop,
+      marginLeft: margins.marginLeft-13,
+      marginTop: margins.marginTop+13,
       width: 130,
       height: 57,
     });
 
-    const ajusteMargim = 20;
+    const ajusteMargim = 25;
     let margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY;
-        /* COMPARATIVO GRÁFICO */
-        if (graficoImagem && relatorio?.grafico?.titulo) {
-          const graficoMarginTop = this.pdfConfig.adicionarTextoEmPosicao(doc, {
-            texto: relatorio?.grafico?.titulo,
-            x: 354,
-            y: 130,
-            tema: "rotulo",
-            propriedadesPersonalizadas: {
-              fontSize: 6.5,
-            },
-          });      
-    
-          this.pdfConfig.addImagem(doc, {
-            src: graficoImagem,
-            marginLeft: 312,
-            marginTop: 136,
-            width: 255,
-            height: 95,
-          });
-    
-          // Atualizar a posição vertical para elementos subsequentes
-          margintTopTabelaDinamico = graficoMarginTop.finalY + graficoPdfHeight; // Adicionando espaço extra
-        }
-
-      this.pdfConfig.adicionarTextoEmPosicao(doc, {
-        texto: HelperPdfService.getLocalRodape(),
-        x: doc.internal.pageSize.getWidth() - 172,
-        y: 830,
-        tema: "cabecalho",
+     /* COMPARATIVO GRÁFICO */
+     if (graficoImagem && relatorio?.grafico?.titulo) {
+      const graficoMarginTop = this.pdfConfig.adicionarTextoEmPosicao(doc, {
+        texto: relatorio?.grafico?.titulo,
+        x: 354,
+        y: 109,
+        tema: "rotulo",
         propriedadesPersonalizadas: {
-          fontStyle: "normal",
-          fontSize: 8,
+          fontSize: 6.5,
         },
+      });      
+
+      this.pdfConfig.addImagem(doc, {
+        src: graficoImagem,
+        marginLeft: 312,
+        marginTop: 115,
+        width: 255,
+        height: 95,
       });
+
+      // Atualizar a posição vertical para elementos subsequentes
+      margintTopTabelaDinamico = graficoMarginTop.finalY + graficoPdfHeight; // Adicionando espaço extra
+    }
+
+  this.pdfConfig.adicionarTextoEmPosicao(doc, {
+    texto: HelperPdfService.getLocalRodape(),
+    x: doc.internal.pageSize.getWidth() - 172,
+    y: 830,
+    tema: "cabecalho",
+    propriedadesPersonalizadas: {
+      fontStyle: "normal",
+      fontSize: 8,
+    },
+  });
       
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Unidade',
@@ -355,7 +355,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Endereço',
       x: margins.marginLeft + 130 + 10,
-      y: margins.marginTop + 55 / 2 + 35 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 31 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontSize: 6,
@@ -365,7 +365,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: cabecalho.endereco ?? '-',
       x: margins.marginLeft + 130 + 10,
-      y: margins.marginTop + 55 / 2 + 45 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 41 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
@@ -376,7 +376,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Município',
       x: margins.marginLeft + 370,
-      y: margins.marginTop + 55 / 2 + 35 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 31 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontSize: 6,
@@ -386,7 +386,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: cabecalho.municipio ?? '-',
       x: margins.marginLeft + 370,
-      y: margins.marginTop + 55 / 2 + 45 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 41 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
@@ -397,7 +397,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'UF',
       x: margins.marginLeft + 500,
-      y: margins.marginTop + 55 / 2 + 37 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 31 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontSize: 6,
@@ -407,7 +407,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: cabecalho.uf ?? '-',
       x: margins.marginLeft + 500,
-      y: margins.marginTop + 55 / 2 + 47 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 41 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
@@ -418,7 +418,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Concessão',
       x: margins.marginLeft + 130 + 10,
-      y: margins.marginTop + 55 / 2 + 57 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 50 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontSize: 6,
@@ -428,7 +428,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: cabecalho.concessao ?? '-',
       x: margins.marginLeft + 130 + 10,
-      y: margins.marginTop + 55 / 2 + 67 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 60 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
@@ -439,7 +439,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Submercado',
       x: margins.marginLeft + 220,
-      y: margins.marginTop + 55 / 2 + 57 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 50 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontSize: 6,
@@ -449,7 +449,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: cabecalho.subMercado ?? '-',
       x: margins.marginLeft + 220,
-      y: margins.marginTop + 55 / 2 + 67 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 60 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
@@ -460,7 +460,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Conexão',
       x: margins.marginLeft + 300,
-      y: margins.marginTop + 55 / 2 + 57 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 50 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontSize: 6,
@@ -470,7 +470,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: TIPO_CONEXAO[cabecalho.conexao]?.desc ?? '-',
       x: margins.marginLeft + 300,
-      y: margins.marginTop + 55 / 2 + 67 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 60 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
@@ -481,7 +481,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: 'Bandeira Tarifária',
       x: margins.marginLeft + 400,
-      y: margins.marginTop + 55 / 2 + 57 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 50 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontSize: 6,
@@ -491,7 +491,7 @@ export class RelatorioEconomiaPdfService {
     this.pdfConfig.adicionarTextoEmPosicao(doc, {
       texto: BANDEIRAS[cabecalho.bandeira]?.desc ?? '-',
       x: margins.marginLeft + 400,
-      y: margins.marginTop + 55 / 2 + 67 - ajusteMargim,
+      y: margins.marginTop + 55 / 2 + 60 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
@@ -502,15 +502,15 @@ export class RelatorioEconomiaPdfService {
 
     this.pdfConfig.adicionarTextoHorizontal(doc, {
       textoCentro: `Quadro Comparativo Mensal Mercado Cativo x Livre ${cabecalho.mesReferencia ?? ''}`,
-      marginTop: margins.marginTop + 100,
+      marginTop: margins.marginTop + 108 - ajusteMargim,
       tema: "cabecalho",
       propriedadesPersonalizadas: {
         fontStyle: "bold",
-        fontSize: 12,
+        fontSize: 11,
       },
     });
 
-    const imageBottomY = margins.marginTop + 57 + 20;
+    const imageBottomY = margins.marginTop + 57 + 20 - 10;
 
     /* SEÇÃO DADOS EMPRESA ---------------------------------------------------------------------------- */
     const secaoEmpresaMarginTop = criarTituloSecao(
@@ -548,8 +548,9 @@ export class RelatorioEconomiaPdfService {
     };
 
     this.pdfConfig.criarTabela(doc, dadosEmpresaTabela2);
-    margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY + 15;
+    margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY + 4;
 
+    
     /* SEÇÃO COMPARATIVO CATIVO X LIVRE --------------------------------------------------------------- */
     const hasComparativoData = comparativo?.lancamentos?.length > 0;
     const secaoComparativoMarginTop = criarTituloSecao(
@@ -682,6 +683,21 @@ export class RelatorioEconomiaPdfService {
     }); 
 
     margintTopTabelaDinamico = (doc as any)?.lastAutoTable?.finalY + 12;
+    const fillColor = '#ff99cc'; // '#f6dada';
+
+
+    if (graficoImagem && relatorio?.grafico?.titulo) {
+      this.pdfConfig.adicionarTextoEmPosicao(doc, {
+        texto: "Tarifa Fornecimento - Resolução ANEEL nº 3.372, 19/08/2024",
+        x: 380,
+        y: margintTopTabelaDinamico + margins.sectionMarginTop - 6,
+        tema: "rotulo",
+        propriedadesPersonalizadas: {
+          fontSize: 6,
+          fontStyle: "italic",
+        },
+      });
+    }
 
     /* SEÇÃO MERCADO CATIVO E LIVRE ----------------------------------------------------------------------------- */
     const criarLinhaLancamento = (lancamento: ILancamentoRelatorioFinal) => {
@@ -738,14 +754,21 @@ export class RelatorioEconomiaPdfService {
         ];
       }
 
+      const titulos = [
+        'sub-total de compra de energia elétrica',
+        'sub-total de valores referente a distribuidora',
+        'total geral mercado livre'
+      ];
+      
       if (lancamento.totalizador) {
         return [
           {
-            content: lancamento.descricao,
+            content: lancamento.descricao + titulos.includes(lancamento.descricao.toLowerCase().trim()),
             styles: {
               halign: "left",
               fontStyle: "bold",
-              fillColor: "#F5F5F5",
+              ...(titulos.includes(lancamento.descricao.toLowerCase().trim()) ? { fillColor: 	fillColor } : {}),
+              textColor: "#333333",
             },
             colSpan: 3,
           },
@@ -753,7 +776,7 @@ export class RelatorioEconomiaPdfService {
             content: formatarTotal(lancamento.total),
             styles: {
               fontStyle: "bold",
-              fillColor: "#F5F5F5",
+              ...(titulos.includes(lancamento.descricao.toLowerCase().trim()) ? { fillColor: 	fillColor } : {}),
               halign: "center",
               textColor: valorNegativo ? "#ff0000" : "#333333",
             },
@@ -764,8 +787,10 @@ export class RelatorioEconomiaPdfService {
       if (lancamento.subTotalizador) {
         return [
           {
-            content: lancamento.descricao,
+            content: lancamento.descricao + titulos.includes(lancamento.descricao.toLowerCase().trim()),
             styles: {
+              ...(titulos.includes(lancamento.descricao.toLowerCase().trim()) ? { fillColor: 	fillColor } : {}),
+              textColor: "#333333",
               halign: "left",
               fontStyle: lancamento.descricao.startsWith("Subvenção")
                 ? "italic"
@@ -776,6 +801,7 @@ export class RelatorioEconomiaPdfService {
           {
             content: valorFormatado,
             styles: {
+              ...(titulos.includes(lancamento.descricao.toLowerCase().trim()) ? { fillColor: 	fillColor } : {}),
               halign: "center",
               textColor: valorNegativo ? "#ff0000" : "#333333",
             },
@@ -805,6 +831,7 @@ export class RelatorioEconomiaPdfService {
         {
           content: valorFormatado,
           styles: {
+            ...(titulos.includes(lancamento.descricao.toLowerCase().trim()) ? { fillColor: 	fillColor } : {}),
             halign: "center",
             textColor: valorNegativo ? "#ff0000" : "#333333",
           },
@@ -844,11 +871,21 @@ export class RelatorioEconomiaPdfService {
                 {
                   content: subGrupo.total.descricao,
                   colSpan: 3,
-                  styles: { halign: "left", fontStyle: "bold" },
+                  styles: { 
+                    halign: "left", 
+                    fontStyle: "bold",
+                    fillColor: 	fillColor,
+                    textColor: "#333333",
+                  },
                 },
                 {
                   content: totalFormatado,
-                  styles: { halign: "center", fontStyle: "bold" },
+                  styles: { 
+                    halign: "center", 
+                    fontStyle: "bold",
+                    fillColor: 	fillColor,
+                    textColor: "#333333",
+                  },
                 },
               ]);
             }
@@ -892,7 +929,7 @@ export class RelatorioEconomiaPdfService {
     margintTopTabelaDinamico = processarGruposRelatorio();
     return doc;
   }
-
+  
   getCorBandeira(id: number): string {
     switch (id) {
       case 0: return '#FFC107'; // Amarela
