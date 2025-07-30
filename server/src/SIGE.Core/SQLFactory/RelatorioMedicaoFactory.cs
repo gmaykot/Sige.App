@@ -32,8 +32,6 @@ namespace SIGE.Core.SQLFactory {
             StringBuilder builder = new();
 
             builder.AppendLine("SELECT");
-            builder.AppendLine("    total.ValorIcms,");
-            builder.AppendLine("    total.ValorProinfa,");
             builder.AppendLine("    total.TipoEnergia AS 'TipoEnergia',");
             builder.AppendLine("    CONCAT(empresa.Logradouro, ', ', empresa.Bairro, ', ', empresa.Cidade, '/', empresa.Estado) AS 'DescEndereco',");
             builder.AppendLine("    empresa.Cnpj AS 'NumCnpj',");
@@ -79,10 +77,8 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("        DATE_FORMAT(medicao.Periodo, '%Y-%m-01') AS 'MesReferencia',");
             builder.AppendLine("        ponto.TipoEnergia AS 'TipoEnergia',");
             builder.AppendLine("        SUM(medicao.ConsumoAtivo) AS 'ConsumoAtivo',");
-            builder.AppendLine("        SUM(DISTINCT consumo.Proinfa) AS 'Proinfa',");
-            builder.AppendLine("        SUM(DISTINCT valor.Proinfa) AS 'ValorProinfa',");
-            builder.AppendLine("        SUM(DISTINCT consumo.Icms) AS 'Icms',");
-            builder.AppendLine("        SUM(DISTINCT valor.Icms) AS 'ValorIcms'");
+            builder.AppendLine("        SUM(DISTINCT valor.Proinfa) AS 'Proinfa',");
+            builder.AppendLine("        SUM(DISTINCT valor.Icms) AS 'Icms'");
             builder.AppendLine("    FROM Medicoes medicao");
             builder.AppendLine("    INNER JOIN ConsumosMensais consumo ON consumo.Id = medicao.ConsumoMensalId");
             builder.AppendLine("    INNER JOIN PontosMedicao ponto ON ponto.Id = consumo.PontoMedicaoId");

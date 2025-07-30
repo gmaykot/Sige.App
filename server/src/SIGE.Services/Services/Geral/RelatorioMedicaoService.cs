@@ -9,15 +9,12 @@ using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
 
-namespace SIGE.Services.Services.Geral
-{
-    public class RelatorioMedicaoService(AppDbContext appDbContext, IMapper mapper) : IRelatorioMedicaoService
-    {
+namespace SIGE.Services.Services.Geral {
+    public class RelatorioMedicaoService(AppDbContext appDbContext, IMapper mapper) : IRelatorioMedicaoService {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Response> Alterar(RelatorioMedicaoDto req)
-        {
+        public async Task<Response> Alterar(RelatorioMedicaoDto req) {
             var ret = new Response();
             var res = await _appDbContext.RelatoriosMedicao.FindAsync(req.Id);
             _mapper.Map(req, res);
@@ -27,8 +24,7 @@ namespace SIGE.Services.Services.Geral
             return ret.SetOk();
         }
 
-        public async Task<Response> ListarRelatorios(RelatorioMedicaoRequest req)
-        {
+        public async Task<Response> ListarRelatorios(RelatorioMedicaoRequest req) {
             var ret = new Response();
             var res = await _appDbContext.Database.SqlQueryRaw<RelatorioMedicaoListDto>(RelatorioMedicaoFactory.ListaRelatoriosMedicao(req)).ToListAsync();
             if (res != null && res.Count != 0)
@@ -37,8 +33,7 @@ namespace SIGE.Services.Services.Geral
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem relatório de medição no período.");
         }
 
-        public async Task<Response> Obter(Guid contratoId, DateTime mesReferencia)
-        {
+        public async Task<Response> Obter(Guid contratoId, DateTime mesReferencia) {
             var ret = new Response();
 
             var rel = await _appDbContext.RelatoriosMedicao.IgnoreAutoIncludes().FirstOrDefaultAsync(r => r.ContratoId.Equals(contratoId) && r.MesReferencia.Equals(mesReferencia));
@@ -51,19 +46,9 @@ namespace SIGE.Services.Services.Geral
 
             var empresas = await _appDbContext.Database.SqlQueryRaw<Guid>(ContratosFactory.EmpresasPorContrato(contratoId)).ToListAsync();
 
-            empresas.ForEach(empresaId =>
-            {
+            empresas.ForEach(empresaId => {
                 var valores = _appDbContext.Database.SqlQueryRaw<ValorAnaliticoMedicaoDto>(RelatorioMedicaoFactory.ValoresRelatoriosMedicao(contratoId, mesReferencia, empresaId)).FirstOrDefault();
-                if (valores.Icms == 0 && valores.ValorIcms != 0)
-                {
-                    valores.Icms = valores.ValorIcms;
-                }
                 res.Icms = valores.Icms;
-
-                if (valores.Proinfa == 0 && valores.ValorProinfa != 0)
-                {
-                    valores.Proinfa = valores.ValorProinfa;
-                }
                 res.Proinfa = valores.Proinfa;
 
                 res.ValoresAnaliticos.Add(valores);
@@ -72,14 +57,12 @@ namespace SIGE.Services.Services.Geral
             res.MesReferencia = mesReferencia;
             res.DataEmissao = DataSige.Hoje();
 
-            if (rel == null)
-            {
+            if (rel == null) {
                 res.Id = Guid.Empty;
                 res.Fase = EFaseMedicao.RELATORIO_MEDICAO;
                 await _appDbContext.RelatoriosMedicao.AddAsync(_mapper.Map<RelatorioMedicaoModel>(res));
             }
-            else
-            {
+            else {
                 res.Id = rel.Id;
                 _mapper.Map(res, rel);
             }
