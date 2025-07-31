@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
@@ -8,14 +7,14 @@ using SIGE.Core.Models.Dto.GerenciamentoMensal;
 using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
+using SIGE.Core.Models.Sistema.Gerencial.GerenciamentoMensal;
 using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services {
-    public class GerenciamentoMensalService(AppDbContext appDbContext, IMapper mapper) : IGerenciamentoMensalService {
+    public class GerenciamentoMensalService(AppDbContext appDbContext) : IGerenciamentoMensalService {
         private readonly AppDbContext _appDbContext = appDbContext;
-        private readonly IMapper _mapper = mapper;
 
         public async Task<Response> ObterDadodsMensais(DateTime mesReferencia, Guid? empresaId = null) {
             var ret = new Response();
@@ -25,7 +24,8 @@ namespace SIGE.Services.Services {
                 BandeiraVigente = await ObterBandeiraVigente(mesReferencia),
                 PisCofins = await ObterPisCofins(mesReferencia),
                 ProinfaIcms = await ObterProinfaIcms(mesReferencia, empresaId),
-                DescontoTUSD = await ObterDescontoTusd(mesReferencia)
+                DescontoTUSD = await ObterDescontoTusd(mesReferencia),
+                EncargosCCEE = await ObterEncargosCCEE(mesReferencia)
             };
 
             return ret.SetOk().SetData(gerenciamento);
@@ -66,13 +66,69 @@ namespace SIGE.Services.Services {
                 new("@VigenciaInicialFiltro", MySqlDbType.Date) { Value = mesReferencia.GetPrimeiraHoraMes() },
                 new("@VigenciaFinalFiltro", MySqlDbType.Date) { Value = mesReferencia.GetUltimaHoraMes() }
             };
-            var a = await _appDbContext.Database
+            var bandeira = await _appDbContext.Database
                         .SqlQueryRaw<BandeiraTarifariaVigenteDto>(GerenciamentoMensalFactory.ObterBandeiraMesReferencia(), parameters)
                         .ToListAsync();
 
-            return a.FirstOrDefault();
+            return bandeira.FirstOrDefault();
         }
 
+        public async Task<List<GerenciamentoEncargosCCEEDto>> ObterEncargosCCEE(DateTime mesReferencia) {
+            var parameters = new MySqlParameter[]
+            {
+                new("@MesReferencia", MySqlDbType.Date) { Value = mesReferencia },
+            };
+            var listaEncargos = await _appDbContext.Database
+                        .SqlQueryRaw<EncargosCCEEDto>(GerenciamentoMensalFactory.ObterEncargosCCEE(), parameters)
+                        .ToListAsync();
+
+            var processado = listaEncargos.Select(e => {
+                var referenciaCorrigida = mesReferencia.AddMonths(-e.MesMenos);
+                var mesFormatado = referenciaCorrigida.ToString("MM/yy") ?? "";
+                return new EncargosCCEEDto {
+                    Id = e.Id,
+                    PontoMedicaoId = e.PontoMedicaoId,
+                    TipoEncargoId = e.TipoEncargoId,
+                    DescEmpresa = e.DescEmpresa,
+                    DescPontoMedicao = e.DescPontoMedicao,
+                    MesReferencia = e.MesReferencia,
+                    DesTipoEncargo = e.DesTipoEncargo?.Replace("{M}", mesFormatado),
+                    Valor = e.Valor,
+                    Tipo = e.Tipo
+                };
+            });
+
+            var agrupado = processado
+             .GroupBy(e => e.PontoMedicaoId)
+             .Select(g => new GerenciamentoEncargosCCEEDto {
+                 PontoMedicaoId = g.Key,
+                 DescEmpresa = g.FirstOrDefault()?.DescEmpresa,
+                 DescPontoMedicao = g.FirstOrDefault()?.DescPontoMedicao,
+                 MesReferencia = g.FirstOrDefault()?.MesReferencia,
+                 EncargosCCEE = [.. g]
+             })
+             .ToList();
+
+            return agrupado;
+        }
+
+        public async Task<Response> IncluirEncargoCCEE(EncargosCCEEDto req) {
+            var ret = new Response();
+
+            var encargo = await _appDbContext.EncargosCCEE.FirstOrDefaultAsync(b => b.Id == req.Id);
+            encargo ??= new EncargosCCEEModel {
+                PontoMedicaoId = req.PontoMedicaoId.Value,
+                MesReferencia = req.MesReferencia.Value,
+                Valor = req.Valor,
+                TipoEncargosCCEEId = req.TipoEncargoId.Value
+            };
+
+            encargo.Valor = req.Valor;
+            _ = _appDbContext.Update(encargo);
+            _ = await _appDbContext.SaveChangesAsync();
+
+            return ret.SetOk();
+        }
 
         public async Task<Response> IncluirBandeiraVigente(BandeiraTarifariaVigenteDto req) {
             var ret = new Response();

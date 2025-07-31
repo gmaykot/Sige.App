@@ -1,4 +1,4 @@
-import { descontoTusd, encargosCcee, impostosSettings } from "../../../@shared/table-config/geral/lancamentos-mensais.config";
+import { descontoTusd, encargosCcee, impostosSettings, lancamentosEncargosCcee } from "../../../@shared/table-config/geral/lancamentos-mensais.config";
 import { proinfaSettings } from "../../../@shared/table-config/geral/lancamentos-mensais.config";
 
 export class GerenciamentoMensalConfigSettings {
@@ -6,4 +6,5 @@ export class GerenciamentoMensalConfigSettings {
     public proinfaSettings = proinfaSettings;
     public descontoTusdSettings = descontoTusd;
     public encargosCceeSettings = encargosCcee;
+    public lancamentosEncargosCceeSettings = lancamentosEncargosCcee;
 }

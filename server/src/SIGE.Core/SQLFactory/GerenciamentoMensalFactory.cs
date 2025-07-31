@@ -134,5 +134,34 @@ namespace SIGE.Core.SQLFactory {
             string query = sb.ToString();
             return query;
         }
+
+        public static string ObterEncargosCCEE() {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("SELECT");
+            sb.AppendLine("    encargo.Id,");
+            sb.AppendLine("    ponto.Id AS PontoMedicaoId,");
+            sb.AppendLine("    tipo.Id AS TipoEncargoId,");
+            sb.AppendLine("    emp.Nome AS DescEmpresa,");
+            sb.AppendLine("    ponto.Nome AS DescPontoMedicao,");
+            sb.AppendLine("    encargo.MesReferencia,");
+            sb.AppendLine("    tipo.Descricao AS DesTipoEncargo,");
+            sb.AppendLine("    COALESCE(encargo.Valor, 0) AS Valor,");
+            sb.AppendLine("    tipo.Tipo,");
+            sb.AppendLine("    tipo.MesMenos");
+            sb.AppendLine("FROM PontosMedicao ponto");
+            sb.AppendLine("INNER JOIN AgentesMedicao agente ON agente.Id = ponto.AgenteMedicaoId");
+            sb.AppendLine("INNER JOIN Empresas emp ON emp.Id = agente.EmpresaId");
+            sb.AppendLine("INNER JOIN TipoEncargosCCEE tipo ON tipo.Ativo = 1");
+            sb.AppendLine("LEFT JOIN EncargosCCEE encargo");
+            sb.AppendLine("    ON encargo.PontoMedicaoId = ponto.Id");
+            sb.AppendLine("    AND encargo.TipoEncargosCCEEId = tipo.Id");
+            sb.AppendLine("    AND encargo.MesReferencia = @MesReferencia");
+            sb.AppendLine("ORDER BY emp.Nome, ponto.Nome, tipo.Descricao;");
+
+            string query = sb.ToString();
+
+            return query;
+        }
     }
 }

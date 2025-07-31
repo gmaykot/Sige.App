@@ -168,43 +168,32 @@
                                 </div>
                             </div>                      
                         </nb-tab>    
-                        <nb-tab tabTitle="ENCARGOS CCEE" [disabled]="true">
+                        <nb-tab tabTitle="ENCARGOS CCEE">
                             <div class="card-row">
                                 <div class="card-col">
                                     <nb-card>
                                     <nb-card-body>
-                                            <div class="row" [hidden]="!descontoTusdSelected" formGroupName="descontosTusd">
-                                                <div class="col-sm-3">
-                                                    <div class="form-group">
-                                                        <label for="inputEmail" class="label">Agente de Medição</label><br />
-                                                        <input type="text" nbInput fullWidth formControlName="descAgenteMedicao" readonly class="no-background">
-                                                    </div>
+                                        <div class="row" style="margin-bottom: 1rem; margin-left: 0.5rem;">
+                                            <div [hidden]="!encargosCceeSelected" class="col-sm-12 h7">
+                                                {{pontoEncargoSelected}}
+                                            </div>
+                                        </div>
+                                            <div class="row" [hidden]="!encargosCceeSelected" formGroupName="encargosCcee">
+                                                <div class="col-sm-12">
+                                                <ng2-smart-table [settings]="lancamentosEncargosCceeSettings" [source]="sourceLancamentosEncargosCcee" (editConfirm)="onEditLancamentosEncargosCcee($event)">
+                                                </ng2-smart-table>    
                                                 </div>
-                                                <div class="col-sm-2">
-                                                    <div class="form-group">
-                                                        <label for="inputEmail" class="label">Código Perfil</label><br />
-                                                        <input type="text" nbInput fullWidth formControlName="codPerfil" readonly class="no-background">
-                                                    </div>
-                                                </div>                                                
-                                                <div class="col-sm-2">
-                                                    <div class="form-group">
-                                                        <label for="inputLastName" class="label">TUSD (%)</label>
-                                                        <input type="number" nbInput fullWidth formControlName="valorDescontoTUSD">
-                                                    </div>
-                                                </div>           
-                                                <div class="col-sm-2">
-                                                    <div class="form-group">
-                                                        <label for="inputLastName" class="label">RETUSD (R$)</label>
-                                                        <input type="number" nbInput fullWidth formControlName="valorDescontoRETUSD">
-                                                    </div>
-                                                </div>           
                                                 <div class="col-sm-3">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitDescontoTusd()">{{control.get('descontosTusd')?.value === undefined ? 'Alterar' : 'Alterar'}}</button>
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseDescontoTusd()">Sair</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitEncargosCcee()">{{control.get('descontosTusd')?.value === undefined ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem; margin-left: 0.5rem;" (click)="onCloseEncargosCcee()">Sair</button>
                                                 </div>
                                             </div>
-                                            <ng2-smart-table [settings]="descontoTusdSettings" [source]="sourceDescontoTusd" (deleteConfirm)="onSelectDescontoTusd($event)">
-                                            </ng2-smart-table>
+                                            <div class="row" style="margin-top: 1.7rem;">
+                                                <div class="col-sm-12">
+                                                    <ng2-smart-table [settings]="encargosCceeSettings" [source]="sourceEncargosCcee" (deleteConfirm)="onSelectEncargosCcee($event)">
+                                                    </ng2-smart-table>
+                                                </div>
+                                            </div>
                                         </nb-card-body>
                                     </nb-card>
                                 </div>

@@ -3,6 +3,7 @@ using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Sistema.Geral;
 using SIGE.Core.Models.Sistema.Geral.Medicao;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
+using SIGE.Core.Models.Sistema.Gerencial.GerenciamentoMensal;
 
 namespace SIGE.Core.Models.Sistema.Gerencial.Empresa {
     public class PontoMedicaoModel : BaseModel {
@@ -23,5 +24,6 @@ namespace SIGE.Core.Models.Sistema.Gerencial.Empresa {
 
         public IEnumerable<ConsumoMensalModel>? ConsumosMensal { get; set; }
         public IEnumerable<ValorMensalPontoMedicaoModel>? ValoresMensaisPontoMedicao { get; set; }
+        public virtual IEnumerable<EncargosCCEEModel>? EncargosCCEE { get; set; }
     }
 }

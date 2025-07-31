@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Converter;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Sistema;
@@ -13,16 +14,13 @@ using SIGE.Core.Models.Sistema.Gerencial.BandeiraTarifaria;
 using SIGE.Core.Models.Sistema.Gerencial.Concessionaria;
 using SIGE.Core.Models.Sistema.Gerencial.Contrato;
 using SIGE.Core.Models.Sistema.Gerencial.Empresa;
-using System.Linq.Expressions;
+using SIGE.Core.Models.Sistema.Gerencial.GerenciamentoMensal;
 
-namespace SIGE.DataAccess.Context
-{
-    public class AppDbContext : DbContext
-    {
+namespace SIGE.DataAccess.Context {
+    public class AppDbContext : DbContext {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<MenuUsuarioModel>().Property(p => p.TipoPerfil).HasConversion(new ETipoPerfilConverter());
             modelBuilder.Entity<EmpresaModel>().Property(c => c.Estado).HasConversion(new ETipoEstadoConverter());
@@ -32,10 +30,8 @@ namespace SIGE.DataAccess.Context
             modelBuilder.ApplyConfigurationsFromAssembly(assembly);
 
             // Aplica filtro global para entidades com IExclusaoLogica
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                if (typeof(BaseModel).IsAssignableFrom(entityType.ClrType))
-                {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes()) {
+                if (typeof(BaseModel).IsAssignableFrom(entityType.ClrType)) {
                     var parameter = Expression.Parameter(entityType.ClrType, "e");
                     var propertyMethod = Expression.Property(parameter, nameof(BaseModel.DataExclusao));
                     var nullConstant = Expression.Constant(null, typeof(DateTime?));
@@ -46,10 +42,9 @@ namespace SIGE.DataAccess.Context
                 }
             }
         }
-        
+
         // Método para obter um DbSet genérico
-        public DbSet<T> Set<T>() where T : class
-        {
+        public DbSet<T> Set<T>() where T : class {
             return base.Set<T>();
         }
 
@@ -64,6 +59,7 @@ namespace SIGE.DataAccess.Context
         public DbSet<ContratoModel> Contratos { get; set; }
         public DbSet<CredencialCceeModel> CredenciaisCcee { get; set; }
         public DbSet<DescontoTusdModel> DescontosTusd { get; set; }
+        public DbSet<EncargosCCEEModel> EncargosCCEE { get; set; }
         public DbSet<EnergiaAcumuladaModel> EnergiasAcumuladas { get; set; }
         public DbSet<EmpresaModel> Empresas { get; set; }
         public DbSet<FaturamentoCoenelModel> FaturamentosCoenel { get; set; }
@@ -82,6 +78,7 @@ namespace SIGE.DataAccess.Context
         public DbSet<RelatorioMedicaoModel> RelatoriosMedicao { get; set; }
         public DbSet<SalarioMinimoModel> SalariosMinimos { get; set; }
         public DbSet<TarifaAplicacaoModel> TarifasAplicacao { get; set; }
+        public DbSet<TipoEncargosCCEEModel> TipoEncargosCCEE { get; set; }
         public DbSet<TokenModel> Tokens { get; set; }
         public DbSet<UsuarioModel> Usuarios { get; set; }
         public DbSet<ValorAnualContratoModel> ValoresAnuaisContrato { get; set; }
