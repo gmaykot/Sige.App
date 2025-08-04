@@ -88,13 +88,13 @@
                                 </div>
                             </div>                      
                         </nb-tab>                        
-                        <nb-tab tabTitle="PROINFA / ICMS">
+                        <nb-tab tabTitle="PROINFA / ICMS / RETUSD">
                             <div class="card-row">
                                 <div class="card-col">
                                     <nb-card>
                                     <nb-card-body>
                                             <div class="row" [hidden]="!proinfaIcmsSelected" formGroupName="proinfaIcms">
-                                                <div class="col-sm-5">
+                                                <div class="col-sm-6">
                                                     <div class="form-group">
                                                         <label for="inputEmail" class="label">Ponto de Medição</label><br />
                                                         <input type="text" nbInput fullWidth formControlName="descPontoMedicao" readonly class="no-background">
@@ -112,11 +112,19 @@
                                                         <input type="number" nbInput fullWidth formControlName="icms">
                                                     </div>
                                                 </div>           
-                                                <div class="col-sm-3">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitProinfaIcms()">{{control.get('proinfaIcms')?.value === undefined ? 'Alterar' : 'Alterar'}}</button>
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseProinfaIcms()">Sair</button>
-                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label for="inputLastName" class="label">Desconto RETUSD (R$)</label>
+                                                        <input type="number" nbInput fullWidth formControlName="valorDescontoRETUSD">
+                                                    </div>
+                                                </div>           
                                             </div>
+                                            <div class="row" [hidden]="!proinfaIcmsSelected" formGroupName="proinfaIcms">
+                                                <div class="col-sm-3">
+                                                    <button type="submit" nbButton status="warning" (click)="onSubmitProinfaIcms()">{{control.get('proinfaIcms')?.value === undefined ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="onCloseProinfaIcms()">Sair</button>
+                                                </div>
+                                            </div>                                            
                                             <ng2-smart-table [settings]="proinfaSettings" [source]="sourceProinfaIcms" (deleteConfirm)="onSelectProinfaIcms($event)">
                                             </ng2-smart-table>
                                         </nb-card-body>
@@ -124,38 +132,32 @@
                                 </div>
                             </div>                      
                         </nb-tab>
-                        <nb-tab tabTitle="TUSD / RETUSD">
+                        <nb-tab tabTitle="VALOR TUSD">
                             <div class="card-row">
                                 <div class="card-col">
                                     <nb-card>
                                     <nb-card-body>
                                             <div class="row" [hidden]="!descontoTusdSelected" formGroupName="descontosTusd">
-                                                <div class="col-sm-3">
+                                                <div class="col-sm-5">
                                                     <div class="form-group">
-                                                        <label for="inputEmail" class="label">Agente de Medição</label><br />
-                                                        <input type="text" nbInput fullWidth formControlName="descAgenteMedicao" readonly class="no-background">
+                                                        <label for="inputEmail" class="label">Fornecedor</label><br />
+                                                        <input type="text" nbInput fullWidth formControlName="descFornecedor" readonly class="no-background">
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
-                                                        <label for="inputEmail" class="label">Código Perfil</label><br />
-                                                        <input type="text" nbInput fullWidth formControlName="codPerfil" readonly class="no-background">
+                                                        <label for="inputLastName" class="label">Tipo de Energia</label>
+                                                        <input type="text" nbInput fullWidth formControlName="descTipoEnergia" readonly class="no-background">
                                                     </div>
-                                                </div>                                                
+                                                </div>           
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
-                                                        <label for="inputLastName" class="label">TUSD (%)</label>
+                                                        <label for="inputLastName" class="label">Desconto TUSD (%)</label>
                                                         <input type="number" nbInput fullWidth formControlName="valorDescontoTUSD">
                                                     </div>
                                                 </div>           
-                                                <div class="col-sm-2">
-                                                    <div class="form-group">
-                                                        <label for="inputLastName" class="label">RETUSD (R$)</label>
-                                                        <input type="number" nbInput fullWidth formControlName="valorDescontoRETUSD">
-                                                    </div>
-                                                </div>           
                                                 <div class="col-sm-3">
-                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitDescontoTusd()">{{control.get('descontosTusd')?.value === undefined ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitDescontoTusd()">{{control.get('descontosTusd')?.value === undefined ? 'Salvar' : 'Alterar'}}</button>
                                                     <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem;" (click)="onCloseDescontoTusd()">Sair</button>
                                                 </div>
                                             </div>
@@ -165,7 +167,38 @@
                                     </nb-card>
                                 </div>
                             </div>                      
-                        </nb-tab>                        
+                        </nb-tab>    
+                        <nb-tab tabTitle="ENCARGOS CCEE">
+                            <div class="card-row">
+                                <div class="card-col">
+                                    <nb-card>
+                                    <nb-card-body>
+                                        <div class="row" style="margin-bottom: 1rem; margin-left: 0.5rem;">
+                                            <div [hidden]="!encargosCceeSelected" class="col-sm-12 h7">
+                                                {{pontoEncargoSelected}}
+                                            </div>
+                                        </div>
+                                            <div class="row" [hidden]="!encargosCceeSelected" formGroupName="encargosCcee">
+                                                <div class="col-sm-12">
+                                                <ng2-smart-table [settings]="lancamentosEncargosCceeSettings" [source]="sourceLancamentosEncargosCcee" (editConfirm)="onEditLancamentosEncargosCcee($event)">
+                                                </ng2-smart-table>    
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem;" status="warning" (click)="onSubmitEncargosCcee()">{{control.get('descontosTusd')?.value === undefined ? 'Alterar' : 'Alterar'}}</button>
+                                                    <button type="submit" nbButton style="margin-top: 1.7rem; margin-left: 0.5rem; margin-left: 0.5rem;" (click)="onCloseEncargosCcee()">Sair</button>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top: 1.7rem;">
+                                                <div class="col-sm-12">
+                                                    <ng2-smart-table [settings]="encargosCceeSettings" [source]="sourceEncargosCcee" (deleteConfirm)="onSelectEncargosCcee($event)">
+                                                    </ng2-smart-table>
+                                                </div>
+                                            </div>
+                                        </nb-card-body>
+                                    </nb-card>
+                                </div>
+                            </div>                      
+                        </nb-tab>                                                
                     </nb-tabset>
                 </nb-card-body>
             </nb-card>

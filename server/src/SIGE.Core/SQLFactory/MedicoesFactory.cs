@@ -1,17 +1,14 @@
-﻿using SIGE.Core.Models.Dto.Geral.Medicao;
-using System.Text;
+﻿using System.Text;
+using SIGE.Core.Models.Dto.Geral.Medicao;
 
-namespace SIGE.Core.SQLFactory
-{
-    public static class MedicoesFactory
-    {
-        public static string ListaMedicoes(MedicaoDto req)
-        {
+namespace SIGE.Core.SQLFactory {
+    public static class MedicoesFactory {
+        public static string ListaMedicoes(MedicaoDto req) {
             StringBuilder builder = new();
 
             builder.AppendLine("SELECT");
-            builder.AppendLine("    consumo.Icms,");
-            builder.AppendLine("    consumo.Proinfa,");
+            builder.AppendLine("    COALESCE(valores.Icms, 0) AS Icms,");
+            builder.AppendLine("    COALESCE(valores.Proinfa, 0) AS Proinfa,");
             builder.AppendLine("    consumo.Id AS 'Id',");
             builder.AppendLine("    ponto.Id AS 'PontoMedicaoId',");
             builder.AppendLine("    empresa.Id AS 'EmpresaId',");
@@ -31,6 +28,7 @@ namespace SIGE.Core.SQLFactory
             builder.AppendLine("INNER JOIN AgentesMedicao agente ON agente.EmpresaId = empresa.Id");
             builder.AppendLine("INNER JOIN PontosMedicao ponto ON ponto.AgenteMedicaoId = agente.Id");
             builder.AppendLine("LEFT OUTER JOIN ConsumosMensais consumo ON consumo.PontoMedicaoId = ponto.Id");
+            builder.AppendLine("LEFT OUTER JOIN ValoresMensaisPontoMedicao valores ON valores.PontoMedicaoId = ponto.Id AND valores.MesReferencia = '@Periodo'");
             builder.AppendLine("WHERE");
             builder.AppendLine("    empresa.Ativo = true");
             builder.AppendLine("    AND contrato.Ativo = true");
@@ -53,8 +51,7 @@ namespace SIGE.Core.SQLFactory
             return query;
         }
 
-        public static string ListaMedicoesPorContrato(Guid contratoId, DateTime periodoMedicao)
-        {
+        public static string ListaMedicoesPorContrato(Guid contratoId, DateTime periodoMedicao) {
             StringBuilder builder = new();
 
             builder.AppendLine("SELECT");

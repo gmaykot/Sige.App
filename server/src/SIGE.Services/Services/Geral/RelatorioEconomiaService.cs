@@ -643,5 +643,8 @@ namespace SIGE.Services.Services.Geral {
             };
         }
 
+        public Task<Response> Alterar(RelatorioEconomiaDto req) {
+            throw new NotImplementedException();
+        }
     }
 }

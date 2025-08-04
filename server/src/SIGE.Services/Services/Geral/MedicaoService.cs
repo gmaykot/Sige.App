@@ -16,17 +16,14 @@ using SIGE.Services.Custom;
 using SIGE.Services.Interfaces.Externo;
 using SIGE.Services.Interfaces.Geral;
 
-namespace SIGE.Services.Services.Geral
-{
-    public class MedicaoService(AppDbContext appDbContext, IMapper mapper, IIntegracaoCceeService integracaoCceeService, ICustomLoggerService loggerService) : IMedicaoService
-    {
+namespace SIGE.Services.Services.Geral {
+    public class MedicaoService(AppDbContext appDbContext, IMapper mapper, IIntegracaoCceeService integracaoCceeService, ICustomLoggerService loggerService) : IMedicaoService {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
         private readonly IIntegracaoCceeService _integracaoCceeService = integracaoCceeService;
         private readonly ICustomLoggerService _loggerService = loggerService;
 
-        public async Task<Response> CalcularMedicao(MedicaoDto req)
-        {
+        public async Task<Response> CalcularMedicao(MedicaoDto req) {
             var ret = new Response();
             var res = await _appDbContext.Contratos.AsNoTracking().Include(c => c.ContratoEmpresas).Include(c => c.Fornecedor).FirstOrDefaultAsync(c => c.Status.Equals(EStatusContrato.ATIVO));
             if (res == null)
@@ -35,8 +32,7 @@ namespace SIGE.Services.Services.Geral
             var cont = _mapper.Map<ContratoDto>(res);
             cont.DescFornecedor = res.Fornecedor.Nome;
 
-            var resMed = new ResultadoMedicaoDto()
-            {
+            var resMed = new ResultadoMedicaoDto() {
                 DataMedicao = DataSige.Hoje(),
                 EmpresaId = req.EmpresaId.ThrowIfNull(),
                 Contrato = cont,
@@ -45,38 +41,31 @@ namespace SIGE.Services.Services.Geral
             return ret.SetOk().SetData(resMed);
         }
 
-        public async Task<Response> ListarMedicoes(MedicaoDto req)
-        {
+        public async Task<Response> ListarMedicoes(MedicaoDto req) {
             var ret = new Response();
             var res = await _appDbContext.Database.SqlQueryRaw<MedicaoDto>(MedicoesFactory.ListaMedicoes(req)).ToListAsync();
-            if (res != null && res.Count != 0)
-            {
+            if (res != null && res.Count != 0) {
                 return ret.SetOk().SetData(res.DistinctBy(m => m.PontoMedicaoId).OrderBy(m => m.DescEmpresa).ThenBy(m => m.DescPontoMedicao));
             }
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem medições no período.");
         }
 
-        public async Task<Response> ListaMedicoesPorContrato(Guid contratoId, DateTime periodoMedicao)
-        {
+        public async Task<Response> ListaMedicoesPorContrato(Guid contratoId, DateTime periodoMedicao) {
             var ret = new Response();
             var res = await _appDbContext.Database.SqlQueryRaw<ListaMedicoesPorContratoDto>(MedicoesFactory.ListaMedicoesPorContrato(contratoId, periodoMedicao)).ToListAsync();
-            if (res != null && res.Count != 0)
-            {
+            if (res != null && res.Count != 0) {
                 return ret.SetOk().SetData(res);
             }
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Sem medições no período.");
         }
 
-        public async Task<Response> ColetarMedicoes(ColetaMedicaoDto req)
-        {
+        public async Task<Response> ColetarMedicoes(ColetaMedicaoDto req) {
             var ret = new Response();
             await _loggerService.LogAsync(LogLevel.Information, $"Solicitação de coleta geral para {req.Periodo}");
-            foreach (var med in req.Medicoes.DistinctBy(m => m.Id))
-            {
-                var ccee = new IntegracaoCceeBaseDto()
-                {
+            foreach (var med in req.Medicoes.DistinctBy(m => m.Id)) {
+                var ccee = new IntegracaoCceeBaseDto() {
                     Periodo = req.Periodo,
                     EmpresaId = med.EmpresaId.ToGuid(),
                     CodAgente = med.CodAgente,
@@ -85,39 +74,32 @@ namespace SIGE.Services.Services.Geral
 
                 var consumoRecente = await _appDbContext.ConsumosMensais.Include(c => c.Medicoes).FirstOrDefaultAsync(c => c.MesReferencia.Equals(req.Periodo) && c.PontoMedicaoId == med.PontoMedicaoId);
 
-                if (consumoRecente != null)
-                {
+                if (consumoRecente != null) {
                     _ = _appDbContext.ConsumosMensais.Remove(consumoRecente);
                     _ = await _appDbContext.SaveChangesAsync();
                 }
 
-                var consumo = new ConsumoMensalModel
-                {
+                var consumo = new ConsumoMensalModel {
                     MesReferencia = req.Periodo,
                     DataMedicao = DataSige.HojeDO(),
                     PontoMedicaoId = med.PontoMedicaoId.ToGuid(),
-                    Icms = consumoRecente?.Icms ?? 17,
                 };
 
                 var res = await _integracaoCceeService.ListarMedicoesPorPonto(ccee);
 
-                if (res.Success)
-                {
+                if (res.Success) {
                     var integracaoCCEE = (IntegracaoCceeDto)res.Data;
                     var listaMedidas = integracaoCCEE.ListaMedidas.OrderBy(o => o.PeriodoFinal).ToList();
                     consumo.StatusMedicao = VerificaStatusMedicao(listaMedidas.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()), req.Periodo, consumoRecente);
 
-                    if (!integracaoCCEE.ListaMedidas.IsNullOrEmpty())
-                    {
+                    if (!integracaoCCEE.ListaMedidas.IsNullOrEmpty()) {
                         listaMedidas.ForEach(m => m.Periodo = DateTime.ParseExact(m.PeriodoFinal, "yyyy-MM-ddTHHmmss-0300", null));
                         consumo.Medicoes = _mapper.Map<IEnumerable<MedicoesModel>>(listaMedidas);
                     }
                 }
-                else
-                {
+                else {
                     consumo.StatusMedicao = EStatusMedicao.ERRO_LEITURA;
-                    foreach (var e in res.Errors)
-                    {
+                    foreach (var e in res.Errors) {
                         ret.AddError(e.Key, e.Value);
                     }
                     ret.AddError("LeituraCCEE", "Não foi possível a leitura dos dados junto a CCEE");
@@ -130,16 +112,13 @@ namespace SIGE.Services.Services.Geral
 
                 _ = await _appDbContext.SaveChangesAsync();
 
-                var resCcee = new IntegracaoCceeDto
-                {
+                var resCcee = new IntegracaoCceeDto {
                     Periodo = req.Periodo,
-                    medicao = new MedicaoDto
-                    {
+                    medicao = new MedicaoDto {
                         StatusMedicao = consumo.StatusMedicao,
                     },
                     ListaMedidas = consumo.Medicoes == null ? new List<IntegracaoCceeMedidasDto>() : consumo.Medicoes.Where(m => m.SubTipo.Equals("L")).Select(m =>
-                        new IntegracaoCceeMedidasDto
-                        {
+                        new IntegracaoCceeMedidasDto {
                             PontoMedicao = med.PontoMedicao,
                             Periodo = m.Periodo,
                             SubTipo = m.SubTipo,
@@ -149,8 +128,7 @@ namespace SIGE.Services.Services.Geral
                     )
                 };
                 if (resCcee.ListaMedidas.Any())
-                    resCcee.Totais = new IntegracaoCceeTotaisDto()
-                    {
+                    resCcee.Totais = new IntegracaoCceeTotaisDto() {
                         MediaConsumoAtivo = resCcee.ListaMedidas.Average(m => m.ConsumoAtivo),
                         SomaConsumoAtivo = resCcee.ListaMedidas.Sum(m => m.ConsumoAtivo),
                     };
@@ -162,8 +140,7 @@ namespace SIGE.Services.Services.Geral
             return ret.SetOk().SetMessage("Consumos coletados com sucesso.");
         }
 
-        private EStatusMedicao VerificaStatusMedicao(IEnumerable<IntegracaoCceeMedidasDto>? lista, DateOnly mesReferencia, ConsumoMensalModel consumoRecente)
-        {
+        private EStatusMedicao VerificaStatusMedicao(IEnumerable<IntegracaoCceeMedidasDto>? lista, DateOnly mesReferencia, ConsumoMensalModel consumoRecente) {
             if (consumoRecente == null)
                 return EStatusMedicao.COMPLETA;
 
@@ -176,10 +153,8 @@ namespace SIGE.Services.Services.Geral
             int diasNoMes = DateTime.DaysInMonth(mesReferencia.Year, mesReferencia.Month);
 
             var todasDatas = new List<DateTime>();
-            for (int dia = 1; dia <= diasNoMes; dia++)
-            {
-                for (int hora = 0; hora < 24; hora++)
-                {
+            for (int dia = 1; dia <= diasNoMes; dia++) {
+                for (int hora = 0; hora < 24; hora++) {
                     todasDatas.Add(new DateTime(mesReferencia.Year, mesReferencia.Month, dia, hora, 0, 0));
                 }
             }
@@ -189,11 +164,9 @@ namespace SIGE.Services.Services.Geral
                             DateTime.ParseExact(x.PeriodoFinal, "yyyy-MM-ddTHHmmss-0300", null).Year == mesReferencia.Year && x.ConsumoAtivo != 0)
                 .ToList();
 
-            foreach (var data in todasDatas)
-            {
+            foreach (var data in todasDatas) {
                 if (!listaFiltrada.Any(x => DateTime.ParseExact(x.PeriodoFinal, "yyyy-MM-ddTHHmmss-0300", null).Date == data.Date &&
-                                            DateTime.ParseExact(x.PeriodoFinal, "yyyy-MM-ddTHHmmss-0300", null).Hour == data.Hour))
-                {
+                                            DateTime.ParseExact(x.PeriodoFinal, "yyyy-MM-ddTHHmmss-0300", null).Hour == data.Hour)) {
                     return EStatusMedicao.INCOMPLETA;
                 }
             }
@@ -201,8 +174,7 @@ namespace SIGE.Services.Services.Geral
             return EStatusMedicao.COMPLETA;
         }
 
-        public async Task<Response> ObterAgentes(Guid empresaId)
-        {
+        public async Task<Response> ObterAgentes(Guid empresaId) {
             var ret = new Response();
             var res = await _appDbContext.AgentesMedicao.Include(a => a.PontosMedicao).ThenInclude(p => p.Concessionaria).Where(a => a.EmpresaId.Equals(empresaId)).ToListAsync();
             if (res == null)
@@ -211,8 +183,7 @@ namespace SIGE.Services.Services.Geral
             return ret.SetOk().SetData(_mapper.Map<IEnumerable<AgenteMedicaoDto>>(res));
         }
 
-        public async Task<Response> ObterPontos(Guid agenteId)
-        {
+        public async Task<Response> ObterPontos(Guid agenteId) {
             var ret = new Response();
             var res = await _appDbContext.PontosMedicao.Where(a => a.AgenteMedicaoId.Equals(agenteId)).ToListAsync();
             if (res == null)
@@ -221,8 +192,7 @@ namespace SIGE.Services.Services.Geral
             return ret.SetOk().SetData(_mapper.Map<IEnumerable<PontoMedicaoDto>>(res));
         }
 
-        public async Task<Response> ObterMedicoes(MedicaoDto req)
-        {
+        public async Task<Response> ObterMedicoes(MedicaoDto req) {
             var ret = new Response();
 
             var res = await _appDbContext.ConsumosMensais.Include(c => c.PontoMedicao).Include(c => c.Medicoes).FirstOrDefaultAsync(c => c.MesReferencia.Equals(req.Periodo) && c.PontoMedicaoId == req.PontoMedicaoId);
@@ -231,25 +201,20 @@ namespace SIGE.Services.Services.Geral
 
             var medicoes = _mapper.Map<IEnumerable<IntegracaoCceeMedidasDto>>(res.Medicoes);
 
-            var resCcee = new IntegracaoCceeDto
-            {
+            var resCcee = new IntegracaoCceeDto {
                 PontoMedicao = req.PontoMedicao,
                 EmpresaId = req.EmpresaId.ToGuid(),
                 Periodo = req.Periodo.Value,
                 ListaMedidas = medicoes.Where(m => m.SubTipo.Equals("L")).OrderBy(m => m.PontoMedicao).ThenBy(m => m.PeriodoFinal),
-                medicao = new MedicaoDto
-                {
+                medicao = new MedicaoDto {
                     StatusMedicao = req.StatusMedicao,
                 },
             };
             var listaDistinct = medicoes.GroupBy(m => m.Periodo.GetDiaMes()).ToList();
-            if (resCcee.ListaMedidas.Any())
-            {
+            if (resCcee.ListaMedidas.Any()) {
                 var listaValoresGrafico = new List<ValoresGraficoDto>();
-                listaDistinct.ForEach(medida =>
-                {
-                    listaValoresGrafico.Add(new ValoresGraficoDto()
-                    {
+                listaDistinct.ForEach(medida => {
+                    listaValoresGrafico.Add(new ValoresGraficoDto() {
                         Dia = medida.Key.Split("-")[0],
                         TotalConsumoHCC = medida.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()).Sum(m => m.ConsumoAtivo),
                         TotalConsumoHIF = medida.Where(m => m.SubTipo.Equals("L") && m.Status.Equals("HIF")).Sum(m => m.ConsumoAtivo),
@@ -258,8 +223,7 @@ namespace SIGE.Services.Services.Geral
                 resCcee.ListaValoresGrafico = listaValoresGrafico;
             }
             if (resCcee.ListaMedidas.Any())
-                resCcee.Totais = new IntegracaoCceeTotaisDto()
-                {
+                resCcee.Totais = new IntegracaoCceeTotaisDto() {
                     DiasConsumoHCC = resCcee.ListaMedidas.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()).Select(m => m.Periodo.Day).Distinct().Count(),
                     DiasConsumoHIF = resCcee.ListaMedidas.Where(m => m.SubTipo.Equals("L") && m.Status.Equals("HIF")).Select(m => m.Periodo.Day).Distinct().Count(),
                     TotalConsumoHCC = resCcee.ListaMedidas.Where(m => m.SubTipo.Equals("L") && m.StatusValidoMedicao()).Sum(m => m.ConsumoAtivo),
@@ -269,15 +233,12 @@ namespace SIGE.Services.Services.Geral
             return ret.SetOk().SetData(resCcee).SetMessage("Integração efetuada com sucesso.");
         }
 
-        public async Task<Response> IncluirValores(MedicaoValoresDto req)
-        {
+        public async Task<Response> IncluirValores(MedicaoValoresDto req) {
             var ret = new Response();
             var res = await _appDbContext.ConsumosMensais.FindAsync(req.Id);
             if (res == null)
                 return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Não existe consumo registrado.");
 
-            res.Icms = req.Icms;
-            res.Proinfa = req.Proinfa;
             res.StatusMedicao = EStatusMedicao.COMPLETA;
 
             _appDbContext.Update(res);

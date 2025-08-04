@@ -8,6 +8,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { GerenciamentoMensalConfigSettings } from './gerenciamento-mensal.config';
 import { IResponseInterface } from '../../../@core/data/response.interface';
 import { FormBuilder } from '@angular/forms';
+import { TIPO_ENERGIA } from '../../../@core/enum/status-contrato';
 
 @Component({
   selector: 'ngx-gerenciamento-mensal',
@@ -20,10 +21,14 @@ public loading: any = false;
 public pisCofinsSelected: any = false;
 public proinfaIcmsSelected: any = false;
 public descontoTusdSelected: any = false;
+public encargosCceeSelected: any = false;
 public sourcePisCofins: LocalDataSource = new LocalDataSource();
 public sourceProinfaIcms: LocalDataSource = new LocalDataSource();
 public sourceDescontoTusd: LocalDataSource = new LocalDataSource();
+public sourceEncargosCcee: LocalDataSource = new LocalDataSource();
+public sourceLancamentosEncargosCcee: LocalDataSource = new LocalDataSource();
 public bandeiraVigente: any;
+public pontoEncargoSelected: any;
 public control = this.formBuilder.group({
   // Campos no nível raiz (Informações Gerais)
   mesReferencia: [null],
@@ -44,19 +49,26 @@ public control = this.formBuilder.group({
   // Proinfa/ICMS
   proinfaIcms: this.formBuilder.group({
     id: [null],
-    pontoMedicaoId: [null],
     descPontoMedicao: [null],
+    pontoMedicaoId: [null],
+    valorDescontoRETUSD: [null],
     proinfa: [null],
     icms: [null],
   }),
   // Descontos TUSD
   descontosTusd: this.formBuilder.group({
     id: [null],
-    agenteMedicaoId: [null],
-    descAgenteMedicao: [null],
-    codPerfil: [null],
+    fornecedorId: [null],
+    descFornecedor: [null],
+    tipoEnergia: [null],
+    descTipoEnergia: [null],
     valorDescontoTUSD: [null],
-    valorDescontoRETUSD: [null]
+  }),
+  // Encargos CCEE
+  encargosCcee: this.formBuilder.group({
+    id: [null],
+    descEmpresa: [null],
+    descPontoMedicao: [null],
   })
 });
 
@@ -89,6 +101,7 @@ public mesReferencia: string = '';
         this.sourcePisCofins.load(response.data.pisCofins ?? []);
         this.sourceProinfaIcms.load(response.data.proinfaIcms ?? []);
         this.sourceDescontoTusd.load(response.data.descontoTUSD ?? []);
+        this.sourceEncargosCcee.load(response.data.encargosCCEE ?? []);
         this.bandeiraVigente = response.data.bandeiraVigente.bandeira;
         this.control.patchValue({
           bandeira: response.data.bandeiraVigente,
@@ -124,6 +137,28 @@ public mesReferencia: string = '';
     this.control.patchValue({
       descontosTusd: event.data
     });
+    this.control.patchValue({
+      descontosTusd: {
+        ...event.data,
+        descTipoEnergia: TIPO_ENERGIA.find(item => item.id === event.data.tipoEnergia)?.desc
+      }
+    });
+  }
+
+  onSelectEncargosCcee(event: any) {
+    this.encargosCceeSelected = true; 
+    this.pontoEncargoSelected = event.data.descPontoMedicao;
+    this.sourceLancamentosEncargosCcee.load(event.data.encargosCCEE ?? []);
+    this.control.patchValue({
+      encargosCcee: event.data
+    });
+    this.control.patchValue({
+      encargosCcee: {
+        ...event.data,
+        descTipoEncargo: TIPO_ENERGIA.find(item => item.id === event.data.tipoEncargo)?.desc
+      }
+    });
+    this.scroolService.scrollTo(0,0);  
   }
 
   onSelectPisCofins(event: any) {
@@ -161,6 +196,14 @@ public mesReferencia: string = '';
     });
   }
 
+  resetFormEncargosCcee() {
+    this.encargosCceeSelected = false;
+    this.control.patchValue({
+      encargosCcee: null
+    });
+    this.pontoEncargoSelected = null;
+  }
+
   async onSubmitPisCofins() {
     this.loading = true;
     var pisCofins = {
@@ -192,7 +235,7 @@ public mesReferencia: string = '';
     this.loading = true;
     var proinfaIcms = {
       id: this.control.value.proinfaIcms?.id,
-      descPontoMedicao: this.control.value.proinfaIcms?.descPontoMedicao,
+      valorDescontoRETUSD: this.control.value.proinfaIcms?.valorDescontoRETUSD,
       pontoMedicaoId: this.control.value.proinfaIcms?.pontoMedicaoId,
       proinfa: this.control.value.proinfaIcms?.proinfa,
       icms: this.control.value.proinfaIcms?.icms,
@@ -221,11 +264,10 @@ public mesReferencia: string = '';
     this.loading = true;    
     var descontoTusd = {
       id: this.control.value.descontosTusd?.id,
-      descAgenteMedicao: this.control.value.descontosTusd?.descAgenteMedicao,
-      agenteMedicaoId: this.control.value.descontosTusd?.agenteMedicaoId,
-      codPerfil: this.control.value.descontosTusd?.codPerfil,
+      descFornecedor: this.control.value.descontosTusd?.descFornecedor,
+      fornecedorId: this.control.value.descontosTusd?.fornecedorId,
+      tipoEnergia: this.control.value.descontosTusd?.tipoEnergia,
       valorDescontoTUSD: this.control.value.descontosTusd?.valorDescontoTUSD,
-      valorDescontoRETUSD: this.control.value.descontosTusd?.valorDescontoRETUSD,
       mesReferencia: this.mesReferencia
     }
     
@@ -245,14 +287,36 @@ public mesReferencia: string = '';
     });
   }
 
+  onEditLancamentosEncargosCcee(event: any) {
+    const novoValor = event.newData;
+
+    this.loading = true;
+    var encargosCcee = {
+      id: this.control.value.encargosCcee?.id,
+      valor: event.data.valor,
+      mesReferencia: this.mesReferencia
+    }
+    event.confirm.resolve(novoValor);
+    this.loading = false;
+  }
+
   onCloseDescontoTusd() {
     this.descontoTusdSelected = false;
     this.resetFormDescontoTusd();
   }
 
+  onCloseEncargosCcee() {
+    this.encargosCceeSelected = false;
+    this.resetFormEncargosCcee();
+  }
+
   onCloseProinfaIcms() {
     this.proinfaIcmsSelected = false;
     this.resetFormProinfaIcms();
+  }
+
+  onSubmitEncargosCcee() {
+    console.log(this.control.value.encargosCcee);
   }
 
   async onSubmitBandeiraVigente() {

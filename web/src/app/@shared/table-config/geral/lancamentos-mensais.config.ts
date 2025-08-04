@@ -1,3 +1,5 @@
+import { TIPO_ENERGIA, TIPO_LANCAMENTO } from "../../../@core/enum/status-contrato";
+
 export const impostosSettings = {
     add: {
       addButtonContent: '<i class="nb-plus"></i>',
@@ -81,6 +83,12 @@ export const impostosSettings = {
         type: "string",
         filter: false,
         valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
+      },
+      valorDescontoRETUSD: {
+        title: "Desconto RETUSD (R$)",
+        type: "string",
+        filter: false,
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
       }
     },
     actions: {
@@ -113,31 +121,30 @@ export const impostosSettings = {
       confirmDelete: true,
     },
     columns: {
-      descAgenteMedicao: {
-        title: "Agente de Medição",
+      descFornecedor: {
+        title: "Fornecedor",
         type: "string",
       },
-      codPerfil: {
-        title: "Código Perfil",
+      tipoEnergia: {
+        title: "Tipo de Energia",
         type: "string",
-      },
-      empresasVinculadas: {
-        title: "Empresas Vinculadas",
-        type: "string",
-        filter: false,
+        filter: {
+          type: 'list',
+          config: {
+            selectText: 'Todos',
+            list: TIPO_ENERGIA.map(item => ({ value: item.id, title: item.desc }))
+          }
+        },
+        valuePrepareFunction: (value) => {
+          return value != null ? TIPO_ENERGIA.find(item => item.id === value)?.desc : value;
+        }
       },
       valorDescontoTUSD: {
         title: "Desconto TUSD (%)",
         type: "string",
         filter: false,
         valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
-      },
-      valorDescontoRETUSD: {
-        title: "Desconto RETUSD (R$)",
-        type: "string",
-        filter: false,
-        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
-      },
+      }
     },
     actions: {
       add: false,
@@ -149,5 +156,105 @@ export const impostosSettings = {
     noDataMessage: "Nenhum registro encontrado.",
     pager: {
       perPage: 20
+    }
+  };
+
+  export const encargosCcee = {
+    add: {
+      addButtonContent: '<i class="nb-plus"></i>',
+      createButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    },
+    edit: {
+      editButtonContent: '<i class="nb-gear"></i>',
+      saveButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+      confirmSave: true,
+    },
+    delete: {
+      deleteButtonContent: '<i class="nb-edit"></i>',
+      confirmDelete: true,
+    },
+    columns: {
+      descEmpresa: {
+        title: "Empresa",
+        type: "string",
+      },
+      descPontoMedicao: {
+        title: "Ponto de Medição",
+        type: "string",
+      },
+      id: {
+        title: "Preenchido",
+        type: "string",
+        valuePrepareFunction: (value) => {
+          return value ? "SIM" : "NÃO";
+        }
+      }
+    },
+    actions: {
+      add: false,
+      edit: false,
+      delete: true,
+      position: "right",
+      columnTitle: "",
+    },
+    noDataMessage: "Nenhum registro encontrado.",
+    pager: {
+      perPage: 20
+    }
+  };
+
+  export const lancamentosEncargosCcee = {
+    mode: 'inline',
+    add: {
+      addButtonContent: '<i class="nb-plus"></i>',
+      createButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+    },
+    edit: {
+      editButtonContent: '<i class="nb-edit"></i>',
+      saveButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+      confirmSave: true,
+    },
+    delete: {
+      deleteButtonContent: '<i class="nb-edit"></i>',
+      confirmDelete: true,
+    },
+    columns: {
+      desTipoEncargo: {
+        title: "Descrição do Encargo",
+        type: "string",
+        filter: false,
+        editable: false,
+      },
+      tipo: {
+        title: "Tipo do Encargo",
+        type: "string",
+        filter: false,
+        editable: false,
+        valuePrepareFunction: (value) => {
+          return value != null ? TIPO_LANCAMENTO.find(item => item.id === value)?.desc ?? "" : "";
+        }
+      },      
+      valor: {
+        title: "Valor (R$)",
+        type: "string",
+        filter: false,
+        editable: true,
+        valuePrepareFunction: (value) => { return value ? Intl.NumberFormat('pt-BR', { maximumFractionDigits: 8, minimumFractionDigits: 2 }).format(value) : '-' },
+      }
+    },
+    actions: {
+      add: false,
+      edit: true,
+      delete: false,
+      position: "right",
+      columnTitle: "",
+    },
+    noDataMessage: "Nenhum registro encontrado.",
+    pager: {
+      perPage: 10
     }
   };
