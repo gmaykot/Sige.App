@@ -97,12 +97,8 @@ namespace SIGE.Core.Extensions {
             };
         }
 
-        public static int ToInt(this Enum value) {
-            return Convert.ToInt32(value);
-        }
-
-        public static string ToCharString(this Enum value) {
-            return ((char)value.ToInt()).ToString();
+        public static string ToIntString(this Enum value) {
+            return Convert.ToInt32(value).ToString();
         }
     }
 }
