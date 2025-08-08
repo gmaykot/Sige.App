@@ -33,7 +33,7 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("LEFT OUTER JOIN ValoresMensaisPontoMedicao valores ON valores.PontoMedicaoId = ponto.Id AND valores.MesReferencia = '@Periodo'");
             builder.AppendLine("WHERE");
             builder.AppendLine("    empresa.Ativo = true");
-            builder.AppendLine("    empresa.Tipo = @TipoEmpresa");
+            builder.AppendLine("    AND empresa.Tipo = @TipoEmpresa");
             builder.AppendLine("    AND contrato.Ativo = true");
             builder.AppendLine("    AND contrato.Status = 0");
             builder.AppendLine("    AND contrato.DataExclusao IS NULL");
@@ -46,7 +46,7 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("ORDER BY empresa.NomeFantasia, agente.CodigoPerfilAgente, ponto.Codigo, consumo.MesReferencia DESC");
             string query = builder.ToString()
                 .Replace("@EmpresaId", req.EmpresaId?.ToString() ?? "NULL")
-                .Replace("@TipoEmpresa", ETipoEmpresa.ATACADISTA.ToCharString())
+                .Replace("@TipoEmpresa", ETipoEmpresa.ATACADISTA.ToIntString())
                 .Replace("@DataMedicao", req.DataMedicao?.ToString("yyyy-MM-dd") ?? "NULL")
                 .Replace("@Periodo", req.Periodo?.ToString("yyyy-MM-01") ?? "NULL")
                 .Replace("@StatusMedicao", req.StatusMedicao != null ? ((int)req.StatusMedicao).ToString() : "NULL");
@@ -86,7 +86,7 @@ namespace SIGE.Core.SQLFactory {
 
             string query = builder.ToString()
                 .Replace("@ContratoId", contratoId.ToString())
-                .Replace("@TipoEmpresa", ETipoEmpresa.ATACADISTA.ToCharString())
+                .Replace("@TipoEmpresa", ETipoEmpresa.ATACADISTA.ToIntString())
                 .Replace("@PeriodoMedicao", periodoMedicao.ToString("yyyy-MM-01"));
 
             return query;
