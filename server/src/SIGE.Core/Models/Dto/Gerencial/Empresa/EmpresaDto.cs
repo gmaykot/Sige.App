@@ -1,9 +1,8 @@
-﻿using SIGE.Core.Models.Dto.Gerencial.Contrato;
+﻿using SIGE.Core.Enumerators;
+using SIGE.Core.Models.Dto.Gerencial.Contrato;
 
-namespace SIGE.Core.Models.Dto.Gerencial.Empresa
-{
-    public class EmpresaDto
-    {
+namespace SIGE.Core.Models.Dto.Gerencial.Empresa {
+    public class EmpresaDto {
         public Guid Id { get; set; }
         public Guid? GestorId { get; set; }
         public Guid? EmpresaMatrizId { get; set; }
@@ -21,6 +20,7 @@ namespace SIGE.Core.Models.Dto.Gerencial.Empresa
         public string? SubMercado { get; set; }
         public string? Conexao { get; set; }
         public required string Estado { get; set; }
+        public ETipoEmpresa Tipo { get; set; }
         public IEnumerable<AgenteMedicaoDto>? AgentesMedicao { get; set; }
         public IEnumerable<ContatoDto>? Contatos { get; set; }
         public IEnumerable<ContratoEmpresaDto>? ContratosEmpresa { get; set; }

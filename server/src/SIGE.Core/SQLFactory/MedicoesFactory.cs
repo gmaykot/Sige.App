@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Dto.Geral.Medicao;
 
 namespace SIGE.Core.SQLFactory {
@@ -31,6 +32,7 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("LEFT OUTER JOIN ValoresMensaisPontoMedicao valores ON valores.PontoMedicaoId = ponto.Id AND valores.MesReferencia = '@Periodo'");
             builder.AppendLine("WHERE");
             builder.AppendLine("    empresa.Ativo = true");
+            builder.AppendLine("    empresa.Tipo = @TipoEmpresa");
             builder.AppendLine("    AND contrato.Ativo = true");
             builder.AppendLine("    AND contrato.Status = 0");
             builder.AppendLine("    AND contrato.DataExclusao IS NULL");
@@ -44,6 +46,7 @@ namespace SIGE.Core.SQLFactory {
 
             string query = builder.ToString()
                 .Replace("@EmpresaId", req.EmpresaId?.ToString() ?? "NULL")
+                .Replace("@TipoEmpresa", ETipoEmpresa.ATACADISTA.ToString())
                 .Replace("@DataMedicao", req.DataMedicao?.ToString("yyyy-MM-dd") ?? "NULL")
                 .Replace("@Periodo", req.Periodo?.ToString("yyyy-MM-01") ?? "NULL")
                 .Replace("@StatusMedicao", req.StatusMedicao != null ? ((int)req.StatusMedicao).ToString() : "NULL");
@@ -77,11 +80,13 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("    AND contrato.DataExclusao IS NULL");
             builder.AppendLine("    AND contrato.Id = '@ContratoId'");
             builder.AppendLine("    AND DATE_FORMAT(consumo.MesReferencia, '%Y-%m-01') = '@PeriodoMedicao'");
+            builder.AppendLine("    AND empresa.tipo in (@TipoEmpresa)");
             builder.AppendLine("GROUP BY medicao.Id");
             builder.AppendLine("ORDER BY empresa.NomeFantasia, medicao.Periodo");
 
             string query = builder.ToString()
                 .Replace("@ContratoId", contratoId.ToString())
+                .Replace("@TipoEmpresa", ETipoEmpresa.ATACADISTA.ToString())
                 .Replace("@PeriodoMedicao", periodoMedicao.ToString("yyyy-MM-01"));
 
             return query;

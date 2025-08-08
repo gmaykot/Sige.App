@@ -1,10 +1,17 @@
-import { UF } from "../../@core/data/estados";
+import { TIPO_EMPRESA, UF } from "../../@core/data/estados";
 
-const estadoToList = Object.values(UF).map(value => {
+const estadoToList = Object.values(UF).map((value) => {
   return { value: value.sigla, title: value.sigla };
 });
 
-const ativoToList = [{ value: 'true', title: 'SIM' }, { value: 'false', title: 'NÃO' }];
+const tipoToList = Object.values(TIPO_EMPRESA).map((value) => {
+  return { value: value.id, title: value.desc };
+});
+
+const ativoToList = [
+  { value: "true", title: "SIM" },
+  { value: "false", title: "NÃO" },
+];
 
 export const settingsEmpresa = {
   add: {
@@ -20,7 +27,7 @@ export const settingsEmpresa = {
   },
   delete: {
     deleteButtonContent: '<i class="nb-edit"></i>',
-    confirmDelete: true
+    confirmDelete: true,
   },
   columns: {
     nomeFantasia: {
@@ -34,7 +41,7 @@ export const settingsEmpresa = {
     cnpj: {
       title: "CNPJ",
       type: "string",
-      class: "cnpj"
+      class: "cnpj",
     },
     cidade: {
       title: "Cidade",
@@ -44,39 +51,58 @@ export const settingsEmpresa = {
       title: "Estado",
       type: "string",
       class: "estado",
-      valuePrepareFunction: (value) => { return UF.find(f => f.sigla == value).sigla},
+      valuePrepareFunction: (value) => {
+        return UF.find((f) => f.sigla == value).sigla;
+      },
       filter: {
-        type: 'list',
+        type: "list",
         config: {
-          selectText: 'Selecione...',
+          selectText: "Selecione...",
           list: estadoToList,
         },
-      },    
+      },
+    },
+    tipo: {
+      title: "Tipo",
+      type: "string",
+      class: "estado",
+      valuePrepareFunction: (value) => {
+        return TIPO_EMPRESA.find((f) => f.id == value).desc;
+      },
+      filter: {
+        type: "list",
+        config: {
+          selectText: "Selecione...",
+          list: tipoToList,
+        },
+      },
     },
     ativo: {
       title: "Ativa",
       type: "string",
       class: "estado",
-      valuePrepareFunction: (value) => { return value == true ? 'SIM' : 'NÃO'},
+      valuePrepareFunction: (value) => {
+        return value == true ? "SIM" : "NÃO";
+      },
       filter: {
-        type: 'list',
+        type: "list",
         config: {
-          selectText: 'Selecione...',
+          selectText: "Selecione...",
           list: ativoToList,
         },
-      },  
-    }
+      },
+    },
   },
   actions: {
     add: false,
-    edit: false,  
+    edit: false,
     delete: true,
     position: "right",
     columnTitle: "",
   },
   pager: {
     display: true,
-    perPage: 20
+    perPage: 20,
   },
-  noDataMessage: 'Nenhum registro encontrado.'
+  noDataMessage: "Nenhum registro encontrado.",
 };

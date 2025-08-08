@@ -72,7 +72,7 @@ namespace SIGE.Services.Services.Geral {
                     PontoMedicao = med.PontoMedicao
                 };
 
-                var consumoRecente = await _appDbContext.ConsumosMensais.Include(c => c.Medicoes).FirstOrDefaultAsync(c => c.MesReferencia.Equals(req.Periodo) && c.PontoMedicaoId == med.PontoMedicaoId);
+                var consumoRecente = await _appDbContext.ConsumosMensais.Include(c => c.Medicoes).FirstOrDefaultAsync(c => c.MesReferencia.Equals(req.Periodo.GetPrimeiroDiaMes()) && c.PontoMedicaoId == med.PontoMedicaoId);
 
                 if (consumoRecente != null) {
                     _ = _appDbContext.ConsumosMensais.Remove(consumoRecente);
@@ -80,7 +80,7 @@ namespace SIGE.Services.Services.Geral {
                 }
 
                 var consumo = new ConsumoMensalModel {
-                    MesReferencia = req.Periodo,
+                    MesReferencia = req.Periodo.GetPrimeiroDiaMes(),
                     DataMedicao = DataSige.HojeDO(),
                     PontoMedicaoId = med.PontoMedicaoId.ToGuid(),
                 };
