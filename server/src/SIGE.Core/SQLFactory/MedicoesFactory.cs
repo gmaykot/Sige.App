@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using SIGE.Core.Enumerators;
+using SIGE.Core.Extensions;
 using SIGE.Core.Models.Dto.Geral.Medicao;
 
 namespace SIGE.Core.SQLFactory {
@@ -43,10 +44,9 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("    AND (@StatusMedicao IS NULL OR consumo.StatusMedicao = @StatusMedicao)");
 
             builder.AppendLine("ORDER BY empresa.NomeFantasia, agente.CodigoPerfilAgente, ponto.Codigo, consumo.MesReferencia DESC");
-
             string query = builder.ToString()
                 .Replace("@EmpresaId", req.EmpresaId?.ToString() ?? "NULL")
-                .Replace("@TipoEmpresa", ETipoEmpresa.ATACADISTA.ToString())
+                .Replace("@TipoEmpresa", ETipoEmpresa.ATACADISTA.ToCharString())
                 .Replace("@DataMedicao", req.DataMedicao?.ToString("yyyy-MM-dd") ?? "NULL")
                 .Replace("@Periodo", req.Periodo?.ToString("yyyy-MM-01") ?? "NULL")
                 .Replace("@StatusMedicao", req.StatusMedicao != null ? ((int)req.StatusMedicao).ToString() : "NULL");
@@ -86,7 +86,7 @@ namespace SIGE.Core.SQLFactory {
 
             string query = builder.ToString()
                 .Replace("@ContratoId", contratoId.ToString())
-                .Replace("@TipoEmpresa", ETipoEmpresa.ATACADISTA.ToString())
+                .Replace("@TipoEmpresa", ETipoEmpresa.ATACADISTA.ToCharString())
                 .Replace("@PeriodoMedicao", periodoMedicao.ToString("yyyy-MM-01"));
 
             return query;
