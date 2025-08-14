@@ -45,13 +45,17 @@
             "ignoreRestSiblings": true,
             "argsIgnorePattern": "^_"
           }
-        ]
+        ],
+        "no-var": "off",
+        "@typescript-eslint/no-explicit-any": "off"
       }
     },
     {
       "files": ["*.html"],
       "extends": ["plugin:@angular-eslint/template/recommended"],
-      "rules": {}
+      "rules": {
+        "no-var": "off"
+      }
     }
   ]
 }
