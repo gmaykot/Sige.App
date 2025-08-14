@@ -62,7 +62,8 @@ namespace SIGE.Services.Services.Geral {
                                 && t.DataUltimoReajuste <= dataReferencia)
                             .OrderByDescending(t => t.DataUltimoReajuste).ToListAsync());
 
-                var tarifa = tarifas.Count == 1 ? tarifas.FirstOrDefault() : CalcularTarifaProporcional(tarifas, mesReferencia);
+                //var tarifa = tarifas.Count == 1 ? tarifas.FirstOrDefault() : CalcularTarifaProporcional(tarifas, mesReferencia);
+                var tarifa = tarifas.FirstOrDefault();
 
                 if (tarifa == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Tarifa de Aplicação não encontrada.");
