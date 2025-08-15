@@ -167,20 +167,20 @@ namespace SIGE.Services.Services {
         }
 
         private async Task<List<ProinfaIcmsMensalDto>> IncluirIcmsLote(List<ProinfaIcmsMensalDto> req, DateTime mesReferencia, double icmsBase = 17) {
-            foreach (var r in req) {
-                if (r.Id == null) {
-                    r.Icms = icmsBase;
-                    var valor = new ValorMensalPontoMedicaoModel {
-                        Proinfa = r.Proinfa ?? 0,
-                        Icms = r.Icms ?? 0,
-                        ValorDescontoRETUSD = r.ValorDescontoRETUSD ?? 0,
-                        PontoMedicaoId = r.PontoMedicaoId,
-                        MesReferencia = DateOnly.FromDateTime(mesReferencia)
-                    };
-                    await _appDbContext.AddAsync(valor);
-                }
+            var lote = req.Where(r => r.Id == null);
+            foreach (var r in lote) {
+                r.Icms = icmsBase;
+                var valor = new ValorMensalPontoMedicaoModel {
+                    Proinfa = r.Proinfa ?? 0,
+                    Icms = r.Icms ?? 0,
+                    ValorDescontoRETUSD = r.ValorDescontoRETUSD ?? 0,
+                    PontoMedicaoId = r.PontoMedicaoId,
+                    MesReferencia = DateOnly.FromDateTime(mesReferencia)
+                };
+                await _appDbContext.AddAsync(valor);
             }
-            await _appDbContext.SaveChangesAsync();
+            if (lote.Any())
+                await _appDbContext.SaveChangesAsync();
 
             return req;
         }
