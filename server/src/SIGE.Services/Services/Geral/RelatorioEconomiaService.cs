@@ -194,7 +194,7 @@ namespace SIGE.Services.Services.Geral {
 
         private GrupoRelatorioFinalDto GrupoCativoMapper(int ordem, FaturaEnergiaDto fatura, TarifaCalculadaDto tarifaCalculada, ETipoConexao conexao, ParametrosRelatorioEconomiaDto paramRelatorio) {
             List<LancamentoRelatorioFinalDto> ret = [];
-            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.NaturezaMercado == ETipoNaturezaMercado.CATIVO_LIVRE)) {
+            foreach (var lanc in fatura.LancamentosAdicionais.Where(l => l.NaturezaMercado == ETipoNaturezaMercado.CATIVO_LIVRE || l.NaturezaMercado == ETipoNaturezaMercado.CATIVO)) {
                 ret.Add(new LancamentoRelatorioFinalDto {
                     Descricao = lanc.Descricao,
                     Total = lanc.Tipo.Equals(ETipoLancamento.DEBITO) ? lanc.Valor : lanc.Valor * -1
