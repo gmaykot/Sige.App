@@ -92,8 +92,8 @@ namespace SIGE.Services.Services.Geral {
                 if (paramRelatorio?.BandeiraVigenteId == null)
                     ret.AddError(ETipoErro.INFORMATIVO, "Dados de Bandeira Tarifária Vigente não encontrados.");
 
-                if (paramRelatorio?.ConsumoId == null)
-                    ret.AddError(ETipoErro.INFORMATIVO, "Dados de Consumo Mensal não encontrados.");
+                if (paramRelatorio?.ValorMensalId == null)
+                    ret.AddError(ETipoErro.INFORMATIVO, "Dados de Valor Mensal não encontrados.");
 
                 if (ret.Errors.Count() > 0)
                     return ret.SetBadRequest();
