@@ -262,11 +262,18 @@ export class RelatorioMedicaoPdfService {
         tituloConsumo
       );
 
-      const totalCurtoPrazo = this.decimalPipe.transform(
-        valores.comprarCurtoPrazo ?? 0,
-        "2.3-3",
-        "pt"
-      );
+      const totalCurtoPrazo =
+        resultadoAnalitico[0].qtdeComprarCurtoPrazo > 0
+          ? this.decimalPipe.transform(
+              resultadoAnalitico[0].qtdeComprarCurtoPrazo,
+              "2.3-3",
+              "pt"
+            )
+          : this.decimalPipe.transform(
+              resultadoAnalitico[0].qtdeVenderCurtoPrazo,
+              "2.3-3",
+              "pt"
+            );
 
       const consumoPdfData: { [key: string]: PdfTextoType[] } = {
         medido: [
@@ -765,12 +772,20 @@ export class RelatorioMedicaoPdfService {
     venderOuComprar: string;
   } {
     const venderOuComprar =
-      resultadoAnalitico[0].comprarCurtoPrazo > 0 ? "Comprar" : "Vender";
+      resultadoAnalitico[0].qtdeComprarCurtoPrazo > 0 ? "Comprar" : "Vender";
 
     const comprarVenderPrazo = (values): string => {
-      return resultadoAnalitico[0].comprarCurtoPrazo > 0
-        ? this.decimalPipe.transform(values.comprarCurtoPrazo, "1.3-3", "pt")
-        : this.decimalPipe.transform(values.venderCurtoPrazo, "1.3-3", "pt");
+      return resultadoAnalitico[0].qtdeComprarCurtoPrazo > 0
+        ? this.decimalPipe.transform(
+            resultadoAnalitico[0].qtdeComprarCurtoPrazo,
+            "1.3-3",
+            "pt"
+          )
+        : this.decimalPipe.transform(
+            resultadoAnalitico[0].qtdeVenderCurtoPrazo,
+            "1.3-3",
+            "pt"
+          );
     };
 
     const comprarVenderReal = (values): string => {
