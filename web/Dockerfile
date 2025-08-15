@@ -5,7 +5,7 @@ WORKDIR /app
 # Copia lock e package para aproveitar cache
 COPY package*.json ./
 
-# Aceita peer deps legados para contornar o conflito da @mat-datetimepicker com Angular 15
+# Aceita peer deps legados para contornar o conflito com Angular 15
 ENV npm_config_legacy_peer_deps=true
 RUN npm ci --legacy-peer-deps
 
@@ -16,11 +16,12 @@ RUN npm run build -- --configuration=production
 # Etapa 2: Nginx para servir SPA
 FROM nginx:1.27-alpine
 
-# Remove default e aplica nossa config
+# Remove default e aplica nossa config (sem brotli)
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copia os artefatos do Angular
+# >>> ajuste <app-name> conforme seu angular.json (outputPath)
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
