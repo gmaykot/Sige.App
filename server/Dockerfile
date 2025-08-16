@@ -9,7 +9,7 @@ COPY ./src/SIGE/SIGE.csproj ./SIGE/
 COPY ./src/SIGE.Core/SIGE.Core.csproj ./SIGE.Core/
 COPY ./src/SIGE.Services/SIGE.Services.csproj ./SIGE.Services/
 COPY ./src/SIGE.Calculos/SIGE.Calculos.csproj ./SIGE.Calculos/
-COPY ./src/SIGE.Database/SIGE.Database.csproj ./SIGE.Database/
+COPY ./src/SIGE.Database/SIGE.DataAccess.csproj ./SIGE.Database/
 
 RUN dotnet restore ./SIGE/SIGE.csproj
 
