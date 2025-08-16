@@ -37,8 +37,8 @@ namespace SIGE.Core.SQLFactory {
             builder.AppendLine("    empresa.Cnpj AS 'NumCnpj',");
             builder.AppendLine("    empresa.NomeFantasia AS 'DescEmpresa',");
             builder.AppendLine("    empresa.Id AS 'EmpresaId',");
-            builder.AppendLine("    total.Icms,");
-            builder.AppendLine("    total.Proinfa,");
+            builder.AppendLine("    IFNULL(total.Icms, 17) AS 'Icms',");
+            builder.AppendLine("    IFNULL(total.Proinfa, 0) AS 'Proinfa',");
             builder.AppendLine("    fornecedor.Id AS 'FornecedorId',");
             builder.AppendLine("    contrato.DataBase AS 'DataBase',");
             builder.AppendLine("    IFNULL(contrato.TakeMinimo,0) AS 'TakeMinimo',");
