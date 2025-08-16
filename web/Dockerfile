@@ -5,6 +5,10 @@ COPY package*.json ./
 ENV npm_config_legacy_peer_deps=true
 RUN npm ci --legacy-peer-deps
 COPY . .
+
+# substitui placeholder pelo valor da env do Coolify
+RUN sed -i "s|\${BASE_API_URL}|${BASE_API_URL}|g" src/environments/environment.prod.ts
+
 RUN npm run build -- --configuration=production
 
 # Nginx
