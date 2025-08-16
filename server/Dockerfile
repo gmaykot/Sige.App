@@ -11,13 +11,13 @@ COPY ./src/SIGE.Services/SIGE.Services.csproj ./SIGE.Services/
 COPY ./src/SIGE.Calculos/SIGE.Calculos.csproj ./SIGE.Calculos/
 COPY ./src/SIGE.Database/SIGE.DataAccess.csproj ./SIGE.Database/
 
-RUN dotnet restore ./SIGE/SIGE.csproj
+RUN dotnet restore -r linux-x64 ./SIGE/SIGE.csproj
 
 # Copia todo o restante do código
 COPY . .
 
 # Publica o projeto principal (SIGE)
-RUN dotnet publish ./SIGE/SIGE.csproj -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish ./SIGE/SIGE.csproj -c Release --no-restore -o /app/publish /p:UseAppHost=false
 
 # =========================
 # STAGE 2 — Runtime
@@ -27,8 +27,6 @@ WORKDIR /app
 
 # Variáveis básicas
 ENV DOTNET_EnableDiagnostics=0
-#ENV ASPNETCORE_ENVIRONMENT=Production
-#ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 
 # Cria usuário não-root
 RUN adduser --disabled-password --home /app appuser && chown -R appuser /app
