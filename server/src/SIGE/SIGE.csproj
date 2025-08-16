@@ -5,6 +5,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <!-- força exe (só para eliminar dúvidas) -->
+    <OutputType>Exe</OutputType>
+
+    <!-- se alguém desligou itens implícitos via Directory.Build.props, reativa aqui -->
+    <EnableDefaultItems>true</EnableDefaultItems>
   </PropertyGroup>
 
   <ItemGroup>
