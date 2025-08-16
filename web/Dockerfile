@@ -6,6 +6,8 @@ ENV npm_config_legacy_peer_deps=true
 RUN npm ci --legacy-peer-deps
 COPY . .
 
+ARG BASE_API_URL
+ENV BASE_API_URL=${BASE_API_URL}
 # substitui placeholder pelo valor da env do Coolify
 RUN sed -i "s|\${BASE_API_URL}|${BASE_API_URL}|g" src/environments/environment.prod.ts
 
