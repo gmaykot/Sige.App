@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Requests;
 using SIGE.Services.Interfaces.Administrativo;
-using System.Net;
 
-namespace SIGE.Configuration
-{
-    public class CustomAuthorizationFilter(RequestContext requestContext, IOAuth2Service service) : IAsyncAuthorizationFilter
-    {
+namespace SIGE.Configuration {
+    public class CustomAuthorizationFilter(RequestContext requestContext, IOAuth2Service service) : IAsyncAuthorizationFilter {
         private readonly RequestContext _requestContext = requestContext;
         private readonly IOAuth2Service _service = service;
 
@@ -27,45 +25,45 @@ namespace SIGE.Configuration
                 filterContext.Result = new BadRequestObjectResult(body);
         }
 
-        public async Task OnAuthorizationAsync(AuthorizationFilterContext filterContext)
-        {
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext filterContext) {
             ArgumentNullException.ThrowIfNull(filterContext);
-                
+
             if (filterContext.HttpContext?.GetEndpoint() == null)
                 return;
 
             if (filterContext.ActionDescriptor.EndpointMetadata
                     .Any(em => em.GetType() == typeof(AllowAnonymousAttribute)))
-                return;            
+                return;
 
-            if (!filterContext.HttpContext.Request.Headers.ContainsKey("Authorization"))
-            {
+            if (!filterContext.HttpContext.Request.Headers.ContainsKey("Authorization")) {
                 SetAuthorizationBody<BadRequestObjectResult>(filterContext, HttpStatusCode.BadRequest, string.Empty, "Token inexistente na requisição.");
                 return;
             }
 
-            if (!ExtractToken(filterContext.HttpContext, out var token))
-            {
+            if (!ExtractToken(filterContext.HttpContext, out var token)) {
                 SetAuthorizationBody<UnauthorizedObjectResult>(filterContext, HttpStatusCode.Unauthorized, string.Empty, "O token fornecido é inválido.");
                 return;
             }
 
             var introspect = await _service.Introspect(token);
-            if (introspect == null || !introspect.Ativo) 
-            {
+            if (introspect == null || !introspect.Ativo) {
                 SetAuthorizationBody<UnauthorizedObjectResult>(filterContext, HttpStatusCode.Unauthorized, string.Empty, "O token fornecido é inválido.");
                 return;
             }
 
             _requestContext.GestorId = introspect.GestorId;
             _requestContext.UsuarioId = introspect.UsuarioId;
+
+            if (filterContext.HttpContext?.Items != null) {
+                filterContext.HttpContext.Items["UsuarioId"] = _requestContext.UsuarioId;
+            }
+
             _requestContext.Authorization = token;
 
             await Task.CompletedTask;
         }
 
-        public bool ExtractToken(HttpContext context, out Guid result)
-        {
+        public bool ExtractToken(HttpContext context, out Guid result) {
             var token = context.Request.Headers.Authorization.ToString().Split(" ").Last();
             result = Guid.Empty;
 

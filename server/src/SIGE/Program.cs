@@ -1,20 +1,63 @@
+ï»¿using System.Diagnostics;
+using Serilog;
+using Serilog.Context;
+using Serilog.Events;
 using SIGE.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar serviços
+// Configurar serviÃ§os
 ConfigureServices(builder);
 
+var seqUrl = Environment.GetEnvironmentVariable("SEQ_URL")
+             ?? "http://72.60.11.13:5341/"; // ajuste pro seu host
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) // menos ruÃ­do
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.Seq(seqUrl)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 var app = builder.Build();
+
+app.UseSerilogRequestLogging(opts => {
+    opts.GetLevel = (ctx, elapsed, ex) => ex != null ? LogEventLevel.Error : LogEventLevel.Information;
+
+    opts.EnrichDiagnosticContext = (diag, http) => {
+        diag.Set("TraceId", Activity.Current?.Id ?? http.TraceIdentifier);
+        diag.Set("Path", http.Request.Path);
+        diag.Set("Method", http.Request.Method);
+        diag.Set("UserAgent", http.Request.Headers.UserAgent.ToString());
+        diag.Set("ClientIP", http.Connection.RemoteIpAddress?.ToString());
+
+        // Mesmo cÃ¡lculo do middleware (garante no evento de request)
+        var userId =
+            http.User?.FindFirst("usuario_id")?.Value ??
+            http.User?.FindFirst("sub")?.Value ??
+            (http.Items.TryGetValue("UsuarioId", out var v) ? v?.ToString() : null);
+
+        if (!string.IsNullOrEmpty(userId))
+            diag.Set("UsuarioId", userId);
+
+        // status HTTP normal
+        diag.Set("StatusCode", http.Response.StatusCode);
+
+        // se vocÃª guarda o "status" do payload no Items:
+        if (http.Items.TryGetValue("PayloadStatus", out var s))
+            diag.Set("PayloadStatus", s);
+    };
+});
 
 // Configurar middlewares
 ConfigureMiddlewares(app);
 
-// Executar aplicação
+// Executar aplicaÃ§Ã£o
 app.Run();
 
-void ConfigureServices(WebApplicationBuilder builder)
-{
+void ConfigureServices(WebApplicationBuilder builder) {
     builder.Services.AddMemoryCache();
     builder.Services.AddMyCors();
     builder.Services.AddMyRequestLocalizationOptions();
@@ -27,8 +70,7 @@ void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddMyCompression();
 }
 
-void ConfigureMiddlewares(WebApplication app)
-{
+void ConfigureMiddlewares(WebApplication app) {
     app.UseMyExceptionHandler(app.Environment);
     app.UseMyMiddlewares(app.Environment);
     app.UseMyCors();
@@ -41,23 +83,32 @@ void ConfigureMiddlewares(WebApplication app)
     app.UseResponseCompression();
 
     ConfigureEnvironmentSpecific(app);
+
+
+    app.Use(async (ctx, next) => {
+        var userId =
+            ctx.User?.FindFirst("usuario_id")?.Value ??
+            ctx.User?.FindFirst("sub")?.Value ??
+            (ctx.Items.TryGetValue("UsuarioId", out var v) && v is string strValue ? strValue : null);
+
+        using (LogContext.PushProperty("UsuarioId", userId ?? "anonimo")) {
+            await next();
+        }
+    });
 }
 
-void ConfigureEnvironmentSpecific(WebApplication app)
-{
+void ConfigureEnvironmentSpecific(WebApplication app) {
     var urls = app.Configuration.GetSection("Urls").Get<Dictionary<string, string>>();
 
-    if (urls != null && urls.TryGetValue(app.Environment.EnvironmentName, out var environmentUrl))
-    {
-        app.Logger.LogInformation("Configurando URL: {Url}", environmentUrl);
+    if (urls != null && urls.TryGetValue(app.Environment.EnvironmentName, out var environmentUrl)) {
+        Log.Information("Configurando URL: {Url}", environmentUrl);
         app.Urls.Add(environmentUrl);
     }
 
-    if (app.Environment.IsProduction())
-    {
-        app.Logger.LogInformation("Aplicação rodando em produção.");
-    } else
-    {
-        app.Logger.LogInformation("Aplicação rodando em homologação.");
+    if (app.Environment.IsProduction()) {
+        Log.Information("AplicaÃ§Ã£o rodando em produÃ§Ã£o.");
+    }
+    else {
+        Log.Information("AplicaÃ§Ã£o rodando em homologaÃ§Ã£o.");
     }
 }

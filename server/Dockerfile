@@ -4,20 +4,27 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copia os csproj primeiro (cache eficiente)
-COPY ./src/SIGE/SIGE.csproj ./SIGE/
-COPY ./src/SIGE.Core/SIGE.Core.csproj ./SIGE.Core/
-COPY ./src/SIGE.Services/SIGE.Services.csproj ./SIGE.Services/
-COPY ./src/SIGE.Calculos/SIGE.Calculos.csproj ./SIGE.Calculos/
-COPY ./src/SIGE.Database/SIGE.DataAccess.csproj ./SIGE.Database/
+# Copia apenas a solution e os csproj para aproveitar cache no restore
+COPY ./SIGE.sln ./
+COPY ./src/SIGE/*.csproj ./src/SIGE/
+COPY ./src/SIGE.Core/*.csproj ./src/SIGE.Core/
+COPY ./src/SIGE.Services/*.csproj ./src/SIGE.Services/
+COPY ./src/SIGE.Calculos/*.csproj ./src/SIGE.Calculos/
+COPY ./src/SIGE.Database/*.csproj ./src/SIGE.Database/
 
-RUN dotnet restore -r linux-x64 ./SIGE/SIGE.csproj
+# Restore na solution (resolve todas as dependências)
+RUN dotnet restore SIGE.sln -r linux-x64
 
-# Copia todo o restante do código
+# Copia o restante do código
 COPY . .
 
-# Publica o projeto principal (SIGE)
-RUN dotnet publish ./SIGE/SIGE.csproj -c Release --no-restore -o /app/publish /p:UseAppHost=false
+# Publica apenas o projeto principal (ajuste o caminho se necessário)
+RUN dotnet publish ./src/SIGE/SIGE.csproj \
+    -c Release \
+    -r linux-x64 \
+    --no-restore \
+    -o /app/publish \
+    /p:UseAppHost=false
 
 # =========================
 # STAGE 2 — Runtime
@@ -25,19 +32,27 @@ RUN dotnet publish ./SIGE/SIGE.csproj -c Release --no-restore -o /app/publish /p
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-# Variáveis básicas
-ENV DOTNET_EnableDiagnostics=0
+# (Opcional) Instala curl pro healthcheck
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Cria usuário não-root
-RUN adduser --disabled-password --home /app appuser && chown -R appuser /app
+RUN adduser --disabled-password --home /app appuser \
+    && chown -R appuser /app
 USER appuser
 
+# Copia os artefatos publicados
 COPY --from=build /app/publish ./
 
+# Porta "padrão" para quem roda local; no Coolify a PORT é injetada
+ENV PORT=5000
 EXPOSE 5000
 
-# Opcional: healthcheck (se tiver endpoint /health no seu app)
+# Healthcheck (se existir /health)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=20s --retries=3 \
-  CMD wget -qO- http://localhost:5000/health || exit 1
+  CMD curl -fsS "http://127.0.0.1:${PORT}/health" || exit 1
 
-ENTRYPOINT ["dotnet", "SIGE.dll"]
+# Importante: respeita a variável $PORT (Coolify/Render/etc)
+ENTRYPOINT ["sh", "-c", "exec dotnet SIGE.dll --urls http://0.0.0.0:${PORT:-5000}"]
