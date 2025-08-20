@@ -94,6 +94,14 @@ app.Use(async (ctx, next) => {
     using (LogContext.PushProperty("UsuarioId", userId ?? "anonimo")) {
         await next();
     }
+
+    var usuario =
+       ctx.User?.FindFirst("usuario_login")?.Value ??
+       (ctx.Items.TryGetValue("UsuarioLogin", out var vu) && vu is string strValueUser ? strValueUser : null);
+
+    using (LogContext.PushProperty("UsuarioLogin", usuario ?? "anonimo")) {
+        await next();
+    }
 });
 
 // 5) Não adicione URLs manualmente em produção (evita conflito com --urls do Dockerfile)
