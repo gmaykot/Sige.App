@@ -104,11 +104,11 @@ namespace SIGE.Services.Services.Geral {
                 var valores = calculo.Calcular(relMedicoes, paramRelatorio.IncideICMS);
                 var valorAnalitico = calculo.CalcularAnalitico(relMedicoes, paramRelatorio.IncideICMS).Where(c => c.NumCnpj == res.CNPJ).FirstOrDefault();
 
-                tarifaCalculada.ICMS = paramRelatorio.Icms;
-                tarifaCalculada.Cofins = paramRelatorio.ValorCofins;
-                tarifaCalculada.Proinfa = paramRelatorio.Proinfa;
-                tarifaCalculada.PIS = paramRelatorio.ValorPis;
-                tarifaCalculada.BandeiraAdicional = paramRelatorio.ValorBandeiraAplicado;
+                tarifaCalculada.ICMS = paramRelatorio.Icms ?? 0;
+                tarifaCalculada.Cofins = paramRelatorio.ValorCofins ?? 0;
+                tarifaCalculada.Proinfa = paramRelatorio.Proinfa ?? 0;
+                tarifaCalculada.PIS = paramRelatorio.ValorPis ?? 0;
+                tarifaCalculada.BandeiraAdicional = paramRelatorio.ValorBandeiraAplicado ?? 0;
                 tarifaCalculada.TotalPercentualTUSD = relMedicoes.TipoEnergia.GetValorTipoEnergia();
                 tarifaCalculada.PercentualTUSD = fatura.ValorDescontoTUSD;
                 res.Bandeira = paramRelatorio.Bandeira;
