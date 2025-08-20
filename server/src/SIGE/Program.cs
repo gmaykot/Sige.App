@@ -10,8 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Configurar serviços
 ConfigureServices(builder);
 
-var seqUrl = Environment.GetEnvironmentVariable("SEQ_URL")
-             ?? "http://62.72.8.4:5341/";
+var seqUrl = Environment.GetEnvironmentVariable("SEQ_URL");
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
