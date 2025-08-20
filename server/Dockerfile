@@ -56,4 +56,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
 
 # ENTRYPOINT com expansão de ${PORT} (funciona no Coolify)
 # Se PORT existir, usa; senão cai para 5000 (mesmo da EXPOSE/ASPNETCORE_URLS).
-ENTRYPOINT sh -c 'exec dotnet SIGE.dll --urls "http://0.0.0.0:${PORT:-5000}"'
+ENTRYPOINT sh -c 'unset ASPNETCORE_HTTPS_PORTS; exec dotnet SIGE.dll --urls "http://0.0.0.0:${PORT:-5000}"'
