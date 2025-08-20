@@ -10,7 +10,7 @@ COPY src/SIGE/SIGE.csproj src/SIGE/
 COPY src/SIGE.Core/SIGE.Core.csproj src/SIGE.Core/
 COPY src/SIGE.Services/SIGE.Services.csproj src/SIGE.Services/
 COPY src/SIGE.Calculos/SIGE.Calculos.csproj src/SIGE.Calculos/
-COPY src/SIGE.Database/SIGE.Database.csproj src/SIGE.Database/
+COPY src/SIGE.Database/SIGE.DataAccess.csproj src/SIGE.Database/
 
 # Restore sem RID (evita incompatibilidades desnecessárias)
 RUN dotnet restore SIGE.sln
