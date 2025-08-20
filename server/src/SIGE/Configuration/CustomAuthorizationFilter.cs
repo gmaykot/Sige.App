@@ -55,7 +55,8 @@ namespace SIGE.Configuration {
             _requestContext.UsuarioId = introspect.UsuarioId;
 
             if (filterContext.HttpContext?.Items != null) {
-                filterContext.HttpContext.Items["UsuarioId"] = _requestContext.UsuarioId;
+                filterContext.HttpContext.Items["UsuarioId"] = introspect.UsuarioId;
+                filterContext.HttpContext.Items["UsuarioLogin"] = introspect.Usuario;
             }
 
             _requestContext.Authorization = token;
