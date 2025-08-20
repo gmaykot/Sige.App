@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.HttpOverrides; // << add
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
@@ -13,7 +14,7 @@ var seqUrl = Environment.GetEnvironmentVariable("SEQ_URL")
              ?? "http://72.60.11.13:5341/"; // ajuste pro seu host
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning) // menos ruído
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.Seq(seqUrl)
@@ -23,9 +24,9 @@ builder.Host.UseSerilog();
 
 var app = builder.Build();
 
+// 1) Logs de request (ok manter aqui)
 app.UseSerilogRequestLogging(opts => {
     opts.GetLevel = (ctx, elapsed, ex) => ex != null ? LogEventLevel.Error : LogEventLevel.Information;
-
     opts.EnrichDiagnosticContext = (diag, http) => {
         diag.Set("TraceId", Activity.Current?.Id ?? http.TraceIdentifier);
         diag.Set("Path", http.Request.Path);
@@ -33,7 +34,6 @@ app.UseSerilogRequestLogging(opts => {
         diag.Set("UserAgent", http.Request.Headers.UserAgent.ToString());
         diag.Set("ClientIP", http.Connection.RemoteIpAddress?.ToString());
 
-        // Mesmo cálculo do middleware (garante no evento de request)
         var userId =
             http.User?.FindFirst("usuario_id")?.Value ??
             http.User?.FindFirst("sub")?.Value ??
@@ -42,19 +42,63 @@ app.UseSerilogRequestLogging(opts => {
         if (!string.IsNullOrEmpty(userId))
             diag.Set("UsuarioId", userId);
 
-        // status HTTP normal
         diag.Set("StatusCode", http.Response.StatusCode);
 
-        // se você guarda o "status" do payload no Items:
         if (http.Items.TryGetValue("PayloadStatus", out var s))
             diag.Set("PayloadStatus", s);
     };
 });
 
-// Configurar middlewares
-ConfigureMiddlewares(app);
+// 2) Proxy awareness (Traefik/Coolify)
+app.UseForwardedHeaders(new ForwardedHeadersOptions {
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    // Traefik geralmente fica fora das redes "conhecidas" por padrão:
+    // Se necessário, libere as restrições:
+    ,
+    RequireHeaderSymmetry = false
+});
+app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<ForwardedHeadersOptions>>()
+    .Value.KnownNetworks.Clear();
+app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<ForwardedHeadersOptions>>()
+    .Value.KnownProxies.Clear();
 
-// Executar aplicação
+// 3) Middlewares na ordem recomendada
+app.UseMyExceptionHandler(app.Environment);
+app.UseMyMiddlewares(app.Environment);
+app.UseMyCors();
+
+// ⚠️ Em container não habilite HSTS/HTTPS nativos do Kestrel.
+// UseHttpsRedirection pode ficar, porque com ForwardedHeaders o Scheme será "https" atrás do Traefik
+// e não haverá loop. Se preferir, condicione:
+if (!app.Environment.IsDevelopment()) {
+    // app.UseHsts(); // desabilitado dentro do container
+    app.UseHttpsRedirection();
+}
+
+app.UseRouting();
+app.UseMyRequestLocalization();
+
+// Coloque compressão ANTES dos endpoints para pegar as respostas
+app.UseResponseCompression();
+
+app.UseMySwagger(app.Configuration);
+app.UseMyEndpoints();
+
+// 4) Escopo de log com UsuarioId
+app.Use(async (ctx, next) => {
+    var userId =
+        ctx.User?.FindFirst("usuario_id")?.Value ??
+        ctx.User?.FindFirst("sub")?.Value ??
+        (ctx.Items.TryGetValue("UsuarioId", out var v) && v is string strValue ? strValue : null);
+
+    using (LogContext.PushProperty("UsuarioId", userId ?? "anonimo")) {
+        await next();
+    }
+});
+
+// 5) Não adicione URLs manualmente em produção (evita conflito com --urls do Dockerfile)
+ConfigureEnvironmentSpecific(app);
+
 app.Run();
 
 void ConfigureServices(WebApplicationBuilder builder) {
@@ -70,45 +114,20 @@ void ConfigureServices(WebApplicationBuilder builder) {
     builder.Services.AddMyCompression();
 }
 
-void ConfigureMiddlewares(WebApplication app) {
-    app.UseMyExceptionHandler(app.Environment);
-    app.UseMyMiddlewares(app.Environment);
-    app.UseMyCors();
-    app.UseHsts();
-    app.UseHttpsRedirection();
-    app.UseRouting();
-    app.UseMyRequestLocalization();
-    app.UseMySwagger(app.Configuration);
-    app.UseMyEndpoints();
-    app.UseResponseCompression();
-
-    ConfigureEnvironmentSpecific(app);
-
-
-    app.Use(async (ctx, next) => {
-        var userId =
-            ctx.User?.FindFirst("usuario_id")?.Value ??
-            ctx.User?.FindFirst("sub")?.Value ??
-            (ctx.Items.TryGetValue("UsuarioId", out var v) && v is string strValue ? strValue : null);
-
-        using (LogContext.PushProperty("UsuarioId", userId ?? "anonimo")) {
-            await next();
-        }
-    });
-}
+void ConfigureMiddlewares(WebApplication app) { /* ← deixei vazio, a ordem ficou toda acima */ }
 
 void ConfigureEnvironmentSpecific(WebApplication app) {
-    var urls = app.Configuration.GetSection("Urls").Get<Dictionary<string, string>>();
-
-    if (urls != null && urls.TryGetValue(app.Environment.EnvironmentName, out var environmentUrl)) {
-        Log.Information("Configurando URL: {Url}", environmentUrl);
-        app.Urls.Add(environmentUrl);
+    // Só use URLs do appsettings em Dev, para não interferir no container
+    if (app.Environment.IsDevelopment()) {
+        var urls = app.Configuration.GetSection("Urls").Get<Dictionary<string, string>>();
+        if (urls != null && urls.TryGetValue(app.Environment.EnvironmentName, out var environmentUrl)) {
+            Log.Information("Configurando URL (Dev): {Url}", environmentUrl);
+            app.Urls.Add(environmentUrl);
+        }
     }
 
-    if (app.Environment.IsProduction()) {
-        Log.Information("Aplicação rodando em produção.");
-    }
-    else {
+    if (app.Environment.IsProduction())
+        Log.Information("Aplicação rodando em produção por trás de proxy (Traefik).");
+    else
         Log.Information("Aplicação rodando em homologação.");
-    }
 }
