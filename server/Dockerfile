@@ -51,8 +51,8 @@ ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 EXPOSE 5000
 
 # Healthcheck: tenta /health, senão /
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
-  CMD sh -c 'curl -fsS "http://127.0.0.1:${PORT}/health" || curl -fsS "http://127.0.0.1:${PORT}/" || exit 1'
+#HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=5 \
+#  CMD sh -c 'curl -fsS "http://127.0.0.1:${PORT}/health" || curl -fsS "http://127.0.0.1:${PORT}/" || exit 1'
 
 # ENTRYPOINT com expansão de ${PORT} (funciona no Coolify)
 # Se PORT existir, usa; senão cai para 5000 (mesmo da EXPOSE/ASPNETCORE_URLS).
