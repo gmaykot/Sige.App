@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'relatorio-medicao', component: RelatorioMedicaoComponent },
   { path: 'faturamento-coenel', component: FaturamentoCoenelComponent },
   { path: 'fatura-energia', component: FaturaEnergiaComponent },
-  { path: 'gerenciamento-mensal', component: GerenciamentoMensalComponent, canActivate: [SAGuard] },
+  { path: 'gerenciamento-mensal', component: GerenciamentoMensalComponent },
 ];
 
 @NgModule({
