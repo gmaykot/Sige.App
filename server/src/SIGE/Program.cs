@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.HttpOverrides; // << add
+using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
@@ -51,10 +51,7 @@ app.UseSerilogRequestLogging(opts => {
 
 // 2) Proxy awareness (Traefik/Coolify)
 app.UseForwardedHeaders(new ForwardedHeadersOptions {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-    // Traefik geralmente fica fora das redes "conhecidas" por padrão:
-    // Se necessário, libere as restrições:
-    ,
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
     RequireHeaderSymmetry = false
 });
 app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<ForwardedHeadersOptions>>()
@@ -67,11 +64,7 @@ app.UseMyExceptionHandler(app.Environment);
 app.UseMyMiddlewares(app.Environment);
 app.UseMyCors();
 
-// ⚠️ Em container não habilite HSTS/HTTPS nativos do Kestrel.
-// UseHttpsRedirection pode ficar, porque com ForwardedHeaders o Scheme será "https" atrás do Traefik
-// e não haverá loop. Se preferir, condicione:
 if (!app.Environment.IsDevelopment()) {
-    // app.UseHsts(); // desabilitado dentro do container
     app.UseHttpsRedirection();
 }
 
@@ -122,7 +115,7 @@ void ConfigureServices(WebApplicationBuilder builder) {
     builder.Services.AddMyCompression();
 }
 
-void ConfigureMiddlewares(WebApplication app) { /* ← deixei vazio, a ordem ficou toda acima */ }
+void ConfigureMiddlewares(WebApplication app) { }
 
 void ConfigureEnvironmentSpecific(WebApplication app) {
     // Só use URLs do appsettings em Dev, para não interferir no container
