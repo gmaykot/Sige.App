@@ -63,7 +63,7 @@ namespace SIGE.Services.Services.Externo {
                         }
                     }
                     catch (Exception ex) {
-                        Log.Fatal("::: ERRO ListarMedicoes: Message => {0}, InnerException => {1}, xmlEnvelope => {2}, exception => {3}", ex.Message, ex.InnerException?.Message, xmlEnvelope, ex.ToString());
+                        Log.Fatal("::: ERRO ListarMedicoes: Message => {0}, InnerException => {1}, xmlEnvelope => {2}, Exception => {3}", ex.Message, ex.InnerException?.Message, xmlEnvelope, ex.ToString());
                         return ret.SetInternalServerError().AddError(ETipoErro.ERRO, "Erro ao executar a integração com a Ccee")
                                                            .AddError("Message", ex.Message)
                                                            .AddError("InnerException", ex.InnerException.Message);
@@ -126,7 +126,7 @@ namespace SIGE.Services.Services.Externo {
                 }
             }
             catch (Exception ex) {
-                Log.Fatal("::: ERRO ListarMedicoesPorPonto: Message => {0}, InnerException => {1}, xmlEnvelope => {2}", ex.Message, ex.InnerException?.Message, xmlEnvelope);
+                Log.Fatal("::: ERRO ListarMedicoes: Message => {0}, InnerException => {1}, xmlEnvelope => {2}, Exception => {3}", ex.Message, ex.InnerException?.Message, xmlEnvelope, ex.ToString());
                 return ret.SetInternalServerError().AddError(ETipoErro.ERRO, "Erro ao executar a integração com a Ccee")
                                                     .AddError("Message", ex.Message)
                                                     .AddError("InnerException", ex.InnerException.Message);
