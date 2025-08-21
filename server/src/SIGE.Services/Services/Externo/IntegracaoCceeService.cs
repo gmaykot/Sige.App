@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Serilog;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
@@ -57,8 +58,12 @@ namespace SIGE.Services.Services.Externo {
 
                             medicoes.AddRange(_mapper.Map<IEnumerable<IntegracaoCceeMedidasDto>>(resXml.ListaMedidas.OrderBy(n => n.PeriodoFinal).ToList()));
                         }
+                        else {
+                            Log.Error("::: ERRO ListarMedicoes: RequestMessage => {0}, ReasonPhrase => {1}, xmlEnvelope => {2}", res.RequestMessage.ToString(), res.ReasonPhrase, xmlEnvelope);
+                        }
                     }
                     catch (Exception ex) {
+                        Log.Error("::: ERRO ListarMedicoes: Message => {0}, InnerException => {1}, xmlEnvelope => {2}", ex.Message, ex.InnerException?.Message, xmlEnvelope);
                         return ret.SetInternalServerError().AddError(ETipoErro.ERRO, "Erro ao executar a integração com a Ccee")
                                                            .AddError("Message", ex.Message)
                                                            .AddError("InnerException", ex.InnerException.Message);
