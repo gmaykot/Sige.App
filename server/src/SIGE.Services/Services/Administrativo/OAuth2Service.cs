@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serilog;
 using SIGE.Core.Cache;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
@@ -79,6 +80,7 @@ namespace SIGE.Services.Services.Administrativo {
                 Usuario = new UsuarioOAuth2Dto { UsuarioId = usuario.Id, Apelido = usuario.Apelido, SysAdm = usuario.SysAdm }
             };
 
+            Log.Information("::: Usuário {Usuario} ({UsuarioId}) logado com sucesso.", usuario.Apelido, usuario.Id);
             return ret.SetOk().SetData(oauth2).SetMessage("Login efetuado com sucesso.");
         }
 
