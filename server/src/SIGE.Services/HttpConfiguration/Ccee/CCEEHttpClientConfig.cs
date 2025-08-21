@@ -25,7 +25,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee {
                         var certificatePem = new X509Certificate2(certBytes, option.CertificatePass);
 
                         if (certificatePem != null) {
-                            Log.Information("::: SUCCESS: Certificate Injected");
+                            Log.Information("::: SUCCESS: Certificate Injected => {0}:{1}", certificatePem.FriendlyName, certificatePem.SerialNumber);
                             handler.ClientCertificates.Add(certificatePem);
                         }
 
