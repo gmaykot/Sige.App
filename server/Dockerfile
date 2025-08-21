@@ -30,6 +30,12 @@ RUN dotnet publish src/SIGE/SIGE.csproj \
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
+# Atualiza trust store e timezone (útil para validação de cadeias com CRL/OCSP e horário)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates tzdata && \
+    update-ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
 # Copia os artefatos publicados
 COPY --from=build /app/publish ./
 
