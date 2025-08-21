@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -25,7 +26,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee {
                         var certificatePem = new X509Certificate2(certBytes, option.CertificatePass);
 
                         if (certificatePem != null) {
-                            Log.Information("::: SUCCESS: Certificate Injected => {0}:{1}", certificatePem.FriendlyName, certificatePem.SerialNumber);
+                            Log.Information("::: SUCCESS: Certificate Injected => {0}", JsonSerializer.Serialize(certificatePem));
                             handler.ClientCertificates.Add(certificatePem);
                         }
 
