@@ -36,6 +36,10 @@ RUN apt-get update && \
     update-ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
+# força OpenSSL a aceitar ciphers de SECLEVEL=1
+RUN printf '\nopenssl_conf = default_conf\n\n[default_conf]\nssl_conf = ssl_sect\n\n[ssl_sect]\nsystem_default = system_default_sect\n\n[system_default_sect]\nCipherString = DEFAULT@SECLEVEL=1\n' \
+    >> /etc/ssl/openssl.cnf
+	
 # Copia os artefatos publicados
 COPY --from=build /app/publish ./
 
