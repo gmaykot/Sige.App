@@ -11,10 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder);
 
 var seqUrl = Environment.GetEnvironmentVariable("SEQ_URL");
+var appEnv = Environment.GetEnvironmentVariable("APP_ENV") ?? "DEV";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
+    .Enrich.WithProperty("Environment", appEnv)
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.Seq(seqUrl)
@@ -34,9 +35,14 @@ app.UseSerilogRequestLogging(opts => {
         diag.Set("UserAgent", http.Request.Headers.UserAgent.ToString());
         diag.Set("ClientIP", http.Connection.RemoteIpAddress?.ToString());
 
+        var user = http.User?.FindFirst("usuario_login")?.Value ??
+                   (http.Items.TryGetValue("UsuarioLogin", out var u) ? u?.ToString() : null);
+
+        if (!string.IsNullOrEmpty(user))
+            diag.Set("Usuario", user);
+
         var userId =
             http.User?.FindFirst("usuario_id")?.Value ??
-            http.User?.FindFirst("sub")?.Value ??
             (http.Items.TryGetValue("UsuarioId", out var v) ? v?.ToString() : null);
 
         if (!string.IsNullOrEmpty(userId))
