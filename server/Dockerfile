@@ -30,6 +30,31 @@ RUN dotnet publish src/SIGE/SIGE.csproj \
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
+# 1) Pacotes necessários (openssl + CA + tz)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates tzdata openssl && \
+    update-ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# 2) Cria um arquivo de configuração "overlay" que inclui o padrão
+#    e força o mesmo esquema do seu servidor: SECLEVEL=0
+RUN printf '%s\n' \
+  '.include /etc/ssl/openssl.cnf' \
+  '' \
+  'openssl_conf = openssl_init' \
+  '' \
+  '[openssl_init]' \
+  'ssl_conf = ssl_configuration' \
+  '' \
+  '[ssl_configuration]' \
+  'system_default = tls_system_default' \
+  '' \
+  '[tls_system_default]' \
+  'CipherString = DEFAULT@SECLEVEL=0' \
+  > /etc/ssl/openssl-low.cnf
+
+# 3) Aponta o OpenSSL para usar o overlay por padrão no container
+ENV OPENSSL_CONF=/etc/ssl/openssl-low.cnf	
 # Copia os artefatos publicados
 COPY --from=build /app/publish ./
 
