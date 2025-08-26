@@ -314,6 +314,18 @@ export class GerenciamentoMensalComponent
     const novoValor = event.newData;
 
     this.loading = true;
+    // Converte valores numéricos que podem vir com vírgula ou ponto para double
+    Object.keys(novoValor).forEach((key) => {
+      if (
+        typeof novoValor[key] === "string" &&
+        novoValor[key].match(/^[\d.,]+$/)
+      ) {
+        // Remove pontos (milhares) e troca vírgula por ponto (decimal)
+        const sanitized = novoValor[key].replace(/\./g, "").replace(",", ".");
+        novoValor[key] = parseFloat(sanitized);
+      }
+    });
+
     event.confirm.resolve(novoValor);
     this.loading = false;
   }
