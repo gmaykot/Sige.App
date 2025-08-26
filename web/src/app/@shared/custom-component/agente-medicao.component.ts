@@ -22,6 +22,14 @@ import { FormBuilder } from '@angular/forms';
     <div class="row">       
         <div class="col-sm-12">
         <div class="form-group">
+            <label for="inputFirstName" class="label">Código de Agente*</label>
+            <input type="text" nbInput fullWidth id="inputFirstName" formControlName="codigoAgente">
+        </div>
+        </div>
+    </div>
+    <div class="row">       
+        <div class="col-sm-12">
+        <div class="form-group">
             <label for="inputFirstName" class="label">Código de Perfil*</label>
             <input type="text" nbInput fullWidth id="inputFirstName" formControlName="codigoPerfilAgente">
         </div>
@@ -51,6 +59,7 @@ export class AgenteMedicaoComponent implements OnInit {
     id: '',
     empresaId: '',
     nome: '',
+    codigoAgente: '',
     codigoPerfilAgente: '',
     ativo: true,
   });
@@ -68,6 +77,7 @@ export class AgenteMedicaoComponent implements OnInit {
       id: this.agente.id,
       empresaId: this.agente.empresaId,
       nome: this.agente.nome,
+      codigoAgente: this.agente.codigoAgente,
       codigoPerfilAgente: this.agente.codigoPerfilAgente,
       ativo: this.agente.ativo,
     });

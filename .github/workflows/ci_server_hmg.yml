@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - hmg
+      - gmic/correcoes
     paths:
       - 'server/**'      
   workflow_dispatch:

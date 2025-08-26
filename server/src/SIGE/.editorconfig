@@ -1,4 +1,4 @@
 ﻿[*.cs]
 
-# CS8604: Possível argumento de referência nula.
-dotnet_diagnostic.CS8604.severity = silent
+# IDE0320: Tornar a função anônima estática
+csharp_prefer_static_anonymous_function = false

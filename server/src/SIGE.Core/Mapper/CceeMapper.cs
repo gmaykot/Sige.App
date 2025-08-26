@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using SIGE.Core.Models.Dto.Administrativo.Ccee;
+using SIGE.Core.Models.Sistema.Externo;
 
-namespace SIGE.Core.Mapper
-{
-    public class CceeMapper : Profile
-    {
-        public CceeMapper()
-        {
+namespace SIGE.Core.Mapper {
+    public class CceeMapper : Profile {
+        public CceeMapper() {
             CreateMap<IntegracaoCceeXmlDto, IntegracaoCceeDto>().ReverseMap();
             CreateMap<IntegracaoCceeMedidaXMlsDto, IntegracaoCceeMedidasDto>().ReverseMap();
+            CreateMap<CredencialCceeDto, CredencialCceeModel>().ReverseMap();
         }
     }
 }

@@ -5,6 +5,11 @@ import { DateFilterComponent } from "../custom-component/filters/date-filter.com
 const faseToList = Object.values(FASES_MEDICAO).map(value => {
   return { value: value.id, title: value.desc };
 });
+
+const rowClassFunction = (row: any) => {
+  return row.data.hideCol7 ? 'ocultar-coluna-7' : '';
+};
+
 export const settingsRelatorioMedicao =  {
   add: {
     addButtonContent: '<i class="nb-plus"></i>',
@@ -83,20 +88,25 @@ export const settingsRelatorioMedicao =  {
 };
 
 export const settingsResultadoEconomia =  { 
+  rowClassFunction: rowClassFunction,
+  delete: {
+    deleteButtonContent: '<i class="nb-edit"></i>',
+    confirmDelete: true,
+  },
   columns: {
     faturamento: {
       title: "Faturamento",
-      type: "string",
+      type: "string"
     },
     quantidade: {
       title: "Qtde (MWh)",
       type: "number",
-      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 3, minimumFractionDigits: 3 }).format(value)}
+      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 3, minimumFractionDigits: 3 }).format(value)},
     },
     valorUnitario: {
       title: "Valor UN",
       type: "number",
-      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}
+      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)},
     },
     valorICMS: {
       title: "Valor ICMS",
@@ -106,18 +116,18 @@ export const settingsResultadoEconomia =  {
     valorProduto: {
       title: "Total Produto",
       type: "number",
-      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}   
+      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}   ,
     },
     valorNota: {
       title: "Total Nota",
       type: "number",
-      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)}
+      valuePrepareFunction: (value) => { return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(value)},
     },
   },
   actions: {
     add: false,
     edit: false,
-    delete: false,
+    delete: true,
     position: "right",
     columnTitle: "",
   },
@@ -189,4 +199,47 @@ export const settingsResultadoAnalitico =  {
   },
   hideSubHeader: true,
   noDataMessage: 'Nenhum registro encontrado.'
+};
+
+export const settingsRelatorioEconomia = {
+  delete: {
+    deleteButtonContent: '<i class="nb-compose"></i>',
+    confirmDelete: true,
+  },   
+  actions: {
+    add: false,
+    edit: false,
+    delete: true,
+    position: "right",
+    columnTitle: "",
+  },
+  columns: {
+    descPontoMedicao: {
+      title: "Ponto de Medição",
+      type: "string",
+    },
+    descConcessionaria: {
+      title: "Concessionária",
+      type: "string",
+    },
+    mesReferencia: {
+      title: "Mês de Referência",
+      type: "string",
+      valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'MM/yyyy')},
+    },
+    dataVencimento: {
+      title: "Data de Vencimento",
+      type: "string",
+      valuePrepareFunction: (value) => { return new DatePipe('pt-BR').transform(value, 'dd/MM/yyyy')},
+    },
+    validado: {
+      title: "Validado",
+      type: "string",
+      valuePrepareFunction: (value) => {
+        return value == true ? 'SIM' : 'NÃO';
+      },
+    },
+  },
+  hideSubHeader: true,
+  noDataMessage: "Nenhum registro encontrado.",
 };

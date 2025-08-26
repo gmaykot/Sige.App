@@ -2,7 +2,7 @@
 
 export const environment = {
   production: false,
-  base_api_url: 'http://localhost:5263',
-  base_cep_url: 'https://viacep.com.br/ws/{cep}/json/',  
-  gestor: 'COENEL-DE'
+  base_api_url: "http://localhost:5000",
+  base_cep_url: "https://viacep.com.br/ws/{cep}/json/",
+  gestor: "COENEL-DE",
 };

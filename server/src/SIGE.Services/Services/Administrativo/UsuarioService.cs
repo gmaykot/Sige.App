@@ -1,18 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
+using SIGE.Core.Models.Dto.Administrativo.Usuario;
+using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.DataAccess.Context;
-using Microsoft.EntityFrameworkCore;
+using SIGE.Services.Interfaces.Administrativo;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using SIGE.Services.Interfaces.Administrativo;
-using SIGE.Core.Models.Sistema.Administrativo;
-using SIGE.Core.Models.Dto.Administrativo.Usuario;
 
 namespace SIGE.Services.Services.Administrativo
 {
-    public class UsuarioService(AppDbContext appDbContext, IMapper mapper) : IUsuarioService
+    public class UsuarioService(AppDbContext appDbContext, IMapper mapper) : BaseService<UsuarioDto, UsuarioModel>(appDbContext, mapper), IUsuarioService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
@@ -139,11 +139,6 @@ namespace SIGE.Services.Services.Administrativo
                 return ret.SetOk().SetData(_mapper.Map<IEnumerable<UsuarioDto>>(res));
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existe usuário ativo.");
-        }
-
-        public Task<Response> ObterDropDown()
-        {
-            throw new NotImplementedException();
         }
     }
 }

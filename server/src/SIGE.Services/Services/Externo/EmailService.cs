@@ -2,13 +2,18 @@
 using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Email;
 using SIGE.Core.Models.Dto.Geral.Medicao;
+using SIGE.Core.Models.Requests;
+using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.Core.Options;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Externo;
@@ -17,11 +22,13 @@ using System.Text;
 
 namespace SIGE.Services.Services.Externo
 {
-    public class EmailService(IOptions<EmailSettingsOption> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService) : IEmailService
+    public class EmailService(IOptions<EmailSettingsOption> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService, IHttpContextAccessor httpContextAccessor, RequestContext requestContext) : IEmailService
     {
         private readonly EmailSettingsOption _opt = mailSettingsOptions.Value;
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMedicaoService _medicaoService = medicaoService;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly RequestContext _requestContext = requestContext;
 
         public async Task<Response> SendEmail(EmailDataDto req)
         {
@@ -40,9 +47,13 @@ namespace SIGE.Services.Services.Externo
 
                     req.ContatosCCO?.ForEach(c => mensagem.Cc.Add(new MailboxAddress(c.NomeContato, c.EmailContato)));
 
+                    var request = _httpContextAccessor.HttpContext?.Request;
+                    var baseUrl = $"{request?.Scheme}://{request?.Host}";
+                    var pixelUrl = $"{baseUrl}/email/open/{req.RelatorioMedicaoId}";
+
                     var builder = new BodyBuilder
                     {
-                        HtmlBody = EmailExtensions.GetEmailTemplate(req.Contato.NomeContato, req.MesReferencia, _opt.ContactPhone, _opt.ContactMail, req.DescEmpresa)
+                        HtmlBody = EmailExtensions.GetEmailTemplate(req.Contato.NomeContato, req.MesReferencia, _opt.ContactPhone, _opt.ContactMail, req.DescEmpresa, pixelUrl, baseUrl)
                     };
 
                     if (req.Relatorios != null)
@@ -83,12 +94,34 @@ namespace SIGE.Services.Services.Externo
 
                     mensagem.Body = builder.ToMessageBody();
 
-                    using var mailClient = new SmtpClient();
-                    await mailClient.ConnectAsync(_opt.Server, _opt.Port, SecureSocketOptions.Auto);
-                    await mailClient.AuthenticateAsync(_opt.UserName, _opt.Password);
-                    await mailClient.SendAsync(mensagem);
+                    var logEmail = await _appDbContext.LogsEnvioEmails.FirstOrDefaultAsync(l => l.RelatorioMedicaoId == req.RelatorioMedicaoId) ?? new LogEnvioEmail
+                    {
+                        Email = req.Contato.EmailContato,
+                        CcoEmail = req.ContatosCCO.Count != 0 ? string.Join(",", req.ContatosCCO.Select(c => c.EmailContato)) : null,
+                        RelatorioMedicaoId = req.RelatorioMedicaoId,
+                        UsuarioEnvioId = _requestContext.UsuarioId
+                    };
 
-                    if (_opt.Imap != null)
+                    try
+                    {
+                        using var mailClient = new SmtpClient();
+                        await mailClient.ConnectAsync(_opt.Server, _opt.Port, SecureSocketOptions.Auto);
+                        await mailClient.AuthenticateAsync(_opt.UserName, _opt.Password);
+                        logEmail.Response = await mailClient.SendAsync(mensagem);
+                    }
+                    catch (Exception e)
+                    {
+                        logEmail.InnerException = e.InnerException?.Message ?? e.Message;
+                    }
+
+                    if (logEmail?.Id != null)
+                        _= _appDbContext.LogsEnvioEmails.Update(logEmail);
+                    else
+                        _= await _appDbContext.LogsEnvioEmails.AddAsync(logEmail);
+                    
+                    _ = await _appDbContext.SaveChangesAsync();
+
+                    if (!_opt.Imap.IsNullOrEmpty())
                     {
                         using var imapClient = new ImapClient();
 
@@ -114,7 +147,7 @@ namespace SIGE.Services.Services.Externo
                 {
                     relatorio.Fase = EFaseMedicao.ENVIO_EMAIL;
                     _appDbContext.RelatoriosMedicao.Update(relatorio);
-                    _ = await _appDbContext.SaveChangesAsync();
+                    _= await _appDbContext.SaveChangesAsync();
                 }
 
                 return ret.SetOk();
@@ -161,6 +194,58 @@ namespace SIGE.Services.Services.Externo
             {
                 return ret.SetInternalServerError().AddError("Message", ex.Message).AddError("InnerException", ex.InnerException?.Message);
             }
+        }
+
+        public async Task<Response> OpenEmail(Guid req)
+        {
+            var ret = new Response();
+
+            var logEmail = await _appDbContext.LogsEnvioEmails.FirstOrDefaultAsync(l => l.RelatorioMedicaoId == req);
+            if (logEmail != null)
+            {
+                logEmail.Aberto = true;
+                logEmail.DataAbertura = DataSige.Hoje();
+                _= _appDbContext.LogsEnvioEmails.Update(logEmail);
+                _ = await _appDbContext.SaveChangesAsync();
+            }
+
+            return ret.SetOk();
+        }
+
+        public async Task<Response> ObterHistorico()
+        {
+            var ret = new Response();
+            var res = await _appDbContext.LogsEnvioEmails.Include(l => l.UsuarioEnvio).Include(l => l.RelatorioMedicao).ThenInclude(r => r.Contrato).OrderByDescending(l => l.RelatorioMedicao.MesReferencia).ToListAsync();
+            if (res != null)
+            {
+                var resultado = res
+                    .GroupBy(a => a.RelatorioMedicao.MesReferencia)
+                    .Select(g => new
+                    {
+                        data = new
+                        {
+                            mesReferencia = g.Key.ToString("MM/yyyy"),
+                            tipo = "group",
+                            qtdItens = g.Count()
+                        },
+                        children = g.Select(a => new
+                        {
+                            data = new
+                            {
+                                grupoEmpresa = a.RelatorioMedicao.Contrato.DscGrupo,
+                                usuario = a.UsuarioEnvio.Apelido,
+                                dataEnvio = a.DataRegistro.ToString("dd/MM/yyyy HH:mm"),
+                                dataAbertura = a.DataAbertura?.ToString("dd/MM/yyyy HH:mm"),
+                                aberto = a.Aberto ? "SIM" : "NÃO",
+                                observacao = a.Response ?? a.InnerException,
+                            }
+                        }).ToList()
+                    })
+                    .ToList();
+                return ret.SetOk().SetData(resultado);
+            }
+
+            return ret.SetNotFound();
         }
     }
 }

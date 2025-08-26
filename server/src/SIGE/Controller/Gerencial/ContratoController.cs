@@ -1,26 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Gerencial.Contrato;
+using SIGE.Core.Models.Sistema.Gerencial.Contrato;
 using SIGE.Services.Interfaces.Gerencial;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SIGE.Controller.Gerencial
 {
-    [ApiController]
     [Route("contrato")]
-    public class ContratoController(IContratoService contratoService) : ControllerBase
+    public class ContratoController(IContratoService service) : BaseController<ContratoDto, ContratoModel>(service)
     {
-        private readonly IContratoService _contratoService = contratoService;
-
-        [HttpPost()]
-        [SwaggerOperation(Description = "Efetua a inclusão de um contrato sistema.")]
-        [ProducesResponseType(typeof(Response), 200)]
-        [ProducesResponseType(typeof(Response), 400)]
-        [ProducesResponseType(typeof(Response), 401)]
-        [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Incluir([FromBody] ContratoDto req) =>
-            Ok(await _contratoService.Incluir(req));
-
         [HttpPost("empresa-grupo")]
         [SwaggerOperation(Description = "Efetua a inclusão de uma empresa no grupo de contrato.")]
         [ProducesResponseType(typeof(Response), 200)]
@@ -28,7 +18,7 @@ namespace SIGE.Controller.Gerencial
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> IncluirEmpresaGrupo([FromBody] ContratoEmpresaDto req) =>
-            Ok(await _contratoService.IncluirEmpresaGrupo(req));
+            Ok(await service.IncluirEmpresaGrupo(req));
 
         [HttpDelete("empresa-grupo/{id}")]
         [SwaggerOperation(Description = "Efetua a remoção de uma empresa no grupo de contrato.")]
@@ -37,51 +27,23 @@ namespace SIGE.Controller.Gerencial
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> ExcluirEmpresaGrupo([FromRoute] Guid id) =>
-            Ok(await _contratoService.ExcluirEmpresaGrupo(id));
+            Ok(await service.ExcluirEmpresaGrupo(id));
 
-        [HttpPut()]
-        [SwaggerOperation(Description = "Efetua a inclusão de um contrato sistema.")]
+        [HttpGet]
+        [SwaggerOperation(Description = "Obtém a lista com todos os registros.")]
         [ProducesResponseType(typeof(Response), 200)]
         [ProducesResponseType(typeof(Response), 400)]
         [ProducesResponseType(typeof(Response), 401)]
         [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Alterar([FromBody] ContratoDto req) =>
-            Ok(await _contratoService.Alterar(req));
-
-        [HttpGet("{id}")]
-        [SwaggerOperation(Description = "Obtém um contrato com todos os dados.")]
-        [ProducesResponseType(typeof(Response), 200)]
-        [ProducesResponseType(typeof(Response), 400)]
-        [ProducesResponseType(typeof(Response), 401)]
-        [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Obter([FromRoute] Guid Id) =>
-            Ok(await _contratoService.Obter(Id));
-
-        [HttpDelete("{id}")]
-        [SwaggerOperation(Description = "Exclui o contrato do sistema.")]
-        [ProducesResponseType(typeof(Response), 200)]
-        [ProducesResponseType(typeof(Response), 400)]
-        [ProducesResponseType(typeof(Response), 401)]
-        [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Excluir([FromRoute] Guid Id) =>
-            Ok(await _contratoService.Excluir(Id));
-
-        [HttpGet()]
-        [SwaggerOperation(Description = "Obtém a lista com todos os dados.")]
-        [ProducesResponseType(typeof(Response), 200)]
-        [ProducesResponseType(typeof(Response), 400)]
-        [ProducesResponseType(typeof(Response), 401)]
-        [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> Obter() =>
-            Ok(await _contratoService.Obter());
-
-        [HttpGet("drop-down")]
-        [SwaggerOperation(Description = "Obtém a lista apenas com os campos 'Id' e 'Descrição'")]
-        [ProducesResponseType(typeof(Response), 200)]
-        [ProducesResponseType(typeof(Response), 400)]
-        [ProducesResponseType(typeof(Response), 401)]
-        [ProducesResponseType(typeof(Response), 500)]
-        public async Task<IActionResult> ObterDropDown() =>
-            Ok(await _contratoService.ObterDropDown());
+        public override async Task<IActionResult> Obter()
+        {
+            var response = await _service.Obter(
+                filtro: null,
+                orderBy: o => o.OrderBy(e => e.DscGrupo),
+                include: i => i.Include(c => c.Fornecedor)
+                .Include(c => c.ContratoEmpresas).ThenInclude(c => c.Empresa)
+                .Include(c => c.ValoresAnuaisContrato).ThenInclude(c => c.ValoresMensaisContrato));
+            return Ok(response);
+        }
     }
 }

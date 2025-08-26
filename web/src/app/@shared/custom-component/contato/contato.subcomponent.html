@@ -1,23 +1,9 @@
-<nb-card accent="warning" size="small" [nbSpinner]="loading" nbSpinnerStatus="info">
-    <nb-card-header>
-        <div class="row">
-            <div class="col-sm-5">
-                Lista de Contatos
-            </div>
-            <div class="float-right">
-                <div class="form-group">
-                    <nb-actions size="small">
-                        <nb-action icon="plus-outline" (click)="onCreate()" *ngIf="!fornecedorId && !empresaId" disabled="{{!fornecedorId && !empresaId}}" nbTooltip="Para cadastrar um Contato o Fornecedor deve ser cadastrado previamente."></nb-action>
-                        <nb-action icon="plus-outline" (click)="onCreate()" *ngIf="fornecedorId || empresaId"></nb-action>
-                        <nb-action icon="edit-2-outline" (click)="onEdit()" disabled="{{checked.length !== 1}}"></nb-action>
-                        <nb-action [icon]="deleteIcon" (click)="onDelete()" disabled="{{checked.length === 0}}"></nb-action>
-                    </nb-actions>
-                </div>
-            </div>
-        </div>
-    </nb-card-header>
+<nb-card style="border: 0rem;" [nbSpinner]="loading" nbSpinnerStatus="info">                 
     <nb-card-body>
-        <ng2-smart-table [settings]="settings" [source]="source">
+        <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onEdit($event)">
         </ng2-smart-table>
     </nb-card-body>
-</nb-card>
+    <nb-card-footer>
+      <button type="submit" nbButton status="info" (click)="onCreate()">Cadastrar</button>
+    </nb-card-footer>                  
+  </nb-card>    

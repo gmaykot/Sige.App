@@ -12,7 +12,7 @@ using SIGE.Services.Interfaces.Administrativo;
 
 namespace SIGE.Services.Services.Administrativo
 {
-    public class MenuUsuarioService(AppDbContext appDbContext, IMapper mapper, ICacheManager cacheManager, IOptions<CacheOption> cacheOption) : IMenuUsuarioService
+    public class MenuUsuarioService(AppDbContext appDbContext, IMapper mapper, ICacheManager cacheManager, IOptions<CacheOption> cacheOption) : BaseService<MenuUsuarioDto, MenuUsuarioModel>(appDbContext, mapper), IMenuUsuarioService
     {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
@@ -94,7 +94,7 @@ namespace SIGE.Services.Services.Administrativo
             if (menusUsuario.Length > 0)
             {
                 var res = await _appDbContext.MenusUsuarios.Where(m => m.UsuarioId == menusUsuario.First().UsuarioId).ToListAsync();
-                foreach( var menu in menusUsuario)
+                foreach (var menu in menusUsuario)
                 {
                     if (res.FirstOrDefault(r => r.MenuSistemaId == menu.MenuSistemaId) == null)
                     {
@@ -109,11 +109,6 @@ namespace SIGE.Services.Services.Administrativo
 
             return ret.SetNotFound()
                 .AddError(ETipoErro.INFORMATIVO, $"Não existe registro a ser incluído.");
-        }
-
-        public Task<Response> ObterDropDown()
-        {
-            throw new NotImplementedException();
         }
     }
 }

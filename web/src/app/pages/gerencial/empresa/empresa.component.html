@@ -1,9 +1,9 @@
 <form [formGroup]="control">
-  <div class="card-row" *ngIf="edit" [nbSpinner]="loading">
+  <div class="card-row" [hidden]="!edit" [nbSpinner]="loading">
     <div class="card-col">
       <nb-card>
         <nb-card-body>
-          <nb-tabset>
+          <nb-tabset #tabset>
             <nb-tab tabTitle="Cadastro de Empresa">
               <nb-card class="no-border">
               <input hidden id="id" type="text" formControlName="id">
@@ -24,26 +24,34 @@
                     </div>
                   </div>
                 </div>
-                  <div class="row">
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                        <label for="inputFirstName" class="label">CPF/CNPJ*</label>
-                        <input type="text" [mask]="control.get('cnpj').value?.length !== 11 ? '00.000.000/0000-00' : '000.000.000-009'" nbInput fullWidth id="inputFirstName" placeholder="00.000.000/0000-00" formControlName="cnpj">
-                      </div>
-                    </div>          
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                        <label for="inputFirstName" class="label">Nome*</label>
-                        <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="nome">
-                      </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="inputFirstName" class="label">CPF/CNPJ*</label>
+                      <input type="text" [mask]="control.get('cnpj').value?.length !== 11 ? '00.000.000/0000-00' : '000.000.000-009'" nbInput fullWidth id="inputFirstName" placeholder="00.000.000/0000-00" formControlName="cnpj">
                     </div>
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                        <label for="inputFirstName" class="label">Nome Fantasia*</label>
-                        <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="nomeFantasia">
-                      </div>
+                  </div>          
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="inputFirstName" class="label">Inscrição Estadual</label>
+                      <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="inscricaoEstadual">
                     </div>
                   </div>
+                </div>
+                <div class="row">     
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="inputFirstName" class="label">Nome*</label>
+                      <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="nome">
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="inputFirstName" class="label">Nome Fantasia*</label>
+                      <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="nomeFantasia">
+                    </div>
+                  </div>
+                </div>                
                   <div class="row" *ngIf="false">
                     <div class="col-sm-3">
                       <div class="form-group">
@@ -107,12 +115,21 @@
                     </div>                                              
                   </div>    
                   <div class="row">
-                    <div class="col-sm-10">
+                    <div class="col-sm-8">
                       <div class="form-group">
                         <label for="inputEmail" class="label">Responsável Coenel</label><br>
                         <input type="text" nbInput fullWidth id="inputFirstName" placeholder="" formControlName="responsavelGestor">
                       </div>
                     </div>
+                    <div class="col-sm-2">
+                      <div class="form-group">
+                        <label for="inputEmail" class="label">*Tipo</label><br>
+                        <nb-select fullWidth placeholder="Selecione" formControlName="tipo">
+                          <nb-option [value]="0">Atacadista</nb-option>
+                          <nb-option [value]="1">Varejista</nb-option>
+                        </nb-select>
+                      </div>
+                    </div>                     
                     <div class="col-sm-2">
                       <div class="form-group">
                         <label for="inputEmail" class="label">*Ativa</label><br>
@@ -131,7 +148,7 @@
               </nb-card-footer>
             </nb-card>              
             </nb-tab>
-            <nb-tab tabTitle="Grupo de Contatos" *ngIf="selected">
+            <nb-tab tabTitle="Grupo de Contatos" [hidden]="!selected">
               <nb-card class="no-border">
                 <nb-card-body>
                   <ng2-smart-table [settings]="settingsContato" [source]="sourceContato" (deleteConfirm)="onSelect($event)">
@@ -144,11 +161,11 @@
                 </nb-card-footer>                 
               </nb-card>              
             </nb-tab>
-            <nb-tab tabTitle="Agentes de Medição" *ngIf="selected">
+            <nb-tab tabTitle="Agentes de Medição" [hidden]="!selected">
               <nb-card class="no-border">
                 <nb-card-body>
                   <div class="form-group">
-                    <ng2-smart-table [settings]="settingsAgentes" [source]="sourceAgenteMedicao" (deleteConfirm)="onSelect($event)">
+                    <ng2-smart-table [settings]="settingsAgentes" [source]="sourceAgenteMedicao" (deleteConfirm)="onSelectAgente($event)">
                     </ng2-smart-table>  
                   </div>
                 </nb-card-body>
@@ -159,11 +176,11 @@
                 </nb-card-footer>                   
               </nb-card>                  
             </nb-tab>
-            <nb-tab tabTitle="Pontos de Medição" *ngIf="selected && sourceAgenteMedicao.count() > 0">
+            <nb-tab tabTitle="Pontos de Medição" [hidden]="!selected || sourceAgenteMedicao.count() === 0">
               <nb-card class="no-border">                
                 <nb-card-body>
                     <div class="form-group">
-                      <ng2-smart-table [settings]="settingsPontos" [source]="sourcePontoMedicao" (deleteConfirm)="onSelect($event)">
+                      <ng2-smart-table [settings]="settingsPontos" [source]="sourcePontoMedicao" (deleteConfirm)="onSelectPonto($event)">
                       </ng2-smart-table>  
                     </div>
                 </nb-card-body>

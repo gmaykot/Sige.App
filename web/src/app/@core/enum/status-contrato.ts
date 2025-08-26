@@ -15,8 +15,31 @@ export const TIPO_ENERGIA =
     { id: 3, desc: 'CONVENCIONAL - LP'}, 
 ]
 
+export const TIPO_LANCAMENTO = 
+[
+    { id: 0, desc: 'Débito'}, 
+    { id: 1, desc: 'Crédito'},
+]
+
 export const SEGMENTO = 
 [
-    { id: 1, desc: 'AZUL'}, 
     { id: 0, desc: 'VERDE'},
+    { id: 1, desc: 'AZUL'}
 ]
+
+export const NATUREZA_MERCADO = 
+[
+    { id: 0, desc: 'CATIVO'},
+    { id: 1, desc: 'LIVRE'},
+    { id: 2, desc: 'CATIVO/LIVRE'},
+    { id: 3, desc: 'LIVRE - CONSUMO'}
+]
+
+export const TIPO_CONEXAO = [
+    { id: 0, desc: "A1 (≥ 230 kV)" },
+    { id: 1, desc: "A2 (88 - 138 kV)" },
+    { id: 2, desc: "A3 (69 kV)" },
+    { id: 3, desc: "A3a (30 - 44 kV)" },
+    { id: 4, desc: "A4 (2.3 - 25 kV)" },
+    { id: 5, desc: "AS (Subterrâneo)" },
+];

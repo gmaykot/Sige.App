@@ -18,6 +18,8 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioMedicao
         public DateTime? DataBase { get; set; }
         public DateTime? DataVigenciaInicial { get; set; }
         public DateTime? DataVigenciaFinal { get; set; }
+        public decimal? ValorCompraCurtoPrazo { get; set; }
+        public decimal? ValorVendaCurtoPrazo { get; set; }
         public decimal? EnergiaContratada { get; set; }
         public decimal? ValorUnitarioKwh { get; set; }
         public decimal? HorasMes { get; set; }

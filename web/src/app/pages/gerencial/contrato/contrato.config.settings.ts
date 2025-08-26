@@ -1,5 +1,4 @@
 import { NbIconConfig } from "@nebular/theme";
-import { RadioButtonComponent } from "../../../@shared/custom-component/radiobutton-component";
 import { settingsContrato } from "../../../@shared/table-config/contrato.config";
 import { CheckboxComponent } from "../../../@shared/custom-component/checkbox-component";
 import { IValorAnual } from "../../../@core/data/valor-anual";

@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { SEGMENTO } from '../../enum/status-contrato';
+import { EnergiaAcumuladaControl } from '../../../pages/gerencial/energia-acumulada/energia-acumulada.service';
+import { TarifaAplicacaoControl } from '../../../pages/gerencial/tarifa-aplicacao/tarifa-aplicacao.service';
+import { SalarioMinimoControl } from '../../../pages/gerencial/salario-minimo/salario-minimo.service';
+import { FornecedorControl } from '../../../pages/gerencial/fornecedor/fornecedor.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +34,6 @@ export class FormBuilderService {
 
     // Obtém os valores padrões com base no nome da interface
     const defaultValues = defaultValuesMap[typeName];
-
     if (!defaultValues) {
       throw new Error(`Valores padrão para o tipo ${typeName} não foram encontrados.`);
     }
@@ -43,27 +45,7 @@ export class FormBuilderService {
   }
 }
 
-type DefaultValues<T> = {
-  [K in keyof T]: any;
-};
-
-const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
-  TarifaAplicacao: {
-    id: ['', null],
-    descConcessionaria: ['', null],
-    concessionariaId: ['', [Validators.required]],
-    numeroResolucao: ['', [Validators.required]],
-    subGrupo: [0, [Validators.required]],
-    segmento: [0, [Validators.required]],
-    dataUltimoReajuste: [null, [Validators.required]],
-    kwPonta: [0, [Validators.required]],
-    kwForaPonta: [0, [Validators.required]],
-    kWhPontaTUSD: [0, [Validators.required]],
-    kWhForaPontaTUSD: [0, [Validators.required]],
-    kWhPontaTE: [0, [Validators.required]],
-    kWhForaPontaTE: [0, [Validators.required]],
-    reatKWhPFTE: [0, [Validators.required]]
-  },
+const defaultValuesMap: { [key: string]: DefaultValues<any> } = {  
   Usuario: {
     id: ['', null],
     nome: ['', [Validators.required]],
@@ -72,8 +54,8 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     tipoPerfil: ['', [Validators.required]],
     senha: ['', [Validators.required]],
     contraSenha: ['', [Validators.required]],
+    menusUsuario: [[], null],
     ativo: [true, null],
-    menusUsuario: [[], null]
   },
   Concessionaria: {
     id: ['', null],
@@ -88,7 +70,8 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     descConcessionaria: ['', null],
     mesReferencia: ['', [Validators.required]],
     valorPis: [0, [Validators.required]],
-    valorCofins: [0, [Validators.required]]
+    valorCofins: [0, [Validators.required]],
+    ativo: [true, null]
   },
   FaturamentoCoenel: {
     id: ['', null],
@@ -99,18 +82,23 @@ const defaultValuesMap: { [key: string]: DefaultValues<any> } = {
     vigenciaFinal: ['', null],
     valorFixo: [0, [Validators.required]],
     qtdeSalarios: [0, [Validators.required]],
-    porcentagem: [0, [Validators.required]]
-  },
-  SalarioMinimo: {
-    id: ['', null],
-    vigenciaInicial: ['', [Validators.required]],
-    vigenciaFinal: ['', null],
-    valor: [0, [Validators.required]]
+    porcentagem: [0, [Validators.required]],
+    ativo: [true, null]
   },
   BandeiraTarifariaVigente: {
     id: ['', null],
     bandeiraTarifariaId: ['', [Validators.required]],
     mesReferencia: ['', [Validators.required]],
     bandeira: [0, [Validators.required]],
-  }
+    ativo: [true, null]
+  },
+  LancamentosMensais: {
+    id: ['', null],
+    pontoMedicaoId: ['', [Validators.required]],
+    ativo: [true, null]
+  },
+  EnergiaAcumulada: EnergiaAcumuladaControl,
+  TarifaAplicacao: TarifaAplicacaoControl,
+  SalarioMinimo: SalarioMinimoControl,
+  Fornecedor: FornecedorControl
 };

@@ -6,7 +6,6 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { IIntegracaoCCEE, IIntegracaoCCEETotais, IValoresGrafico } from '../../../@core/data/integracao-ccee.response';
 import { IColetaMedicao, IMedicao } from '../../../@core/data/medicao';
 import { IResponseInterface } from '../../../@core/data/response.interface';
-import { MedicaoService } from '../../../@core/services/geral/medicao.service';
 import { CustomDeleteConfirmationComponent } from '../../../@shared/custom-component/custom-delete-confirmation.component';
 import { settingsMedicao } from '../../../@shared/table-config/medicoes.config';
 import { MedicaoConfigSettings } from '../medicao/medicao.config.settings';
@@ -17,6 +16,8 @@ import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 import { HistoricoMedicaoComponent } from '../../../@shared/custom-component/historico-medicao.component';
 import { IMedicaoValores } from '../../../@core/data/resultado-medicao';
 import { SessionStorageService } from '../../../@core/services/util/session-storage.service';
+import { EditMedicaoComponent } from '../../../@shared/custom-component/edit-medicao/edit-medicao.component';
+import { MedicaoService } from './medicao.service';
 
 @Component({
   selector: "ngx-medicao",
@@ -66,6 +67,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   async ngOnInit() {
     await this.getMedicoes("", null, "", "");
     this.habilitaOperacoes = SessionStorageService.habilitaOperacoes();
+    this.settingsMedicao.actions.delete = SessionStorageService.isSuperUsuario();    
   }
 
   getMeses()
@@ -106,6 +108,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
   }
 
   async onColect(medicao, periodo) {
+    this.scroolService.scrollTo(0,0);
     var coletaMedicao: IColetaMedicao =
     {
       medicoes: medicao ? [ medicao ] : this.medicoesChecked,
@@ -122,9 +125,12 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
       const loteAtual = coletaMedicao.medicoes.slice(i, i + tamanhoDoLote);
       lotes.push(loteAtual);
     }
+    this.percentual = 2;
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
     var erro = false;
     for (let i = 0; i < lotes.length; i += 1) {
-      this.percentual = ((i + 1) / lotes.length) * 100;
+      this.percentual = Math.min(Math.round(((i + 1) / lotes.length) * 100), 90);
       var coleta: IColetaMedicao =
       {
         medicoes: lotes[i],
@@ -140,7 +146,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
           this.sourceMedicaoIcompletas.load(response.data.listaMedidas.filter(m => m.consumoAtivo === 0 && (m.status === 'HCC' || m.status === 'HE')));
           if (this.medicaoSelected) {
             this.medicaoSelected.statusMedicao = response.data.medicao.statusMedicao;
-          }
+            await this.selecionarColeta({data: this.medicaoSelected});
+          }          
         } else {
           if (medicao)
             response.errors.map((x) => this.alertService.showError(`${x.key} - ${x.value}`));
@@ -240,8 +247,8 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
         this.sourceMedicao.load([]);  
         this.sourceMedicaoIcompletas.load([]);
         this.controlEdit = this.formBuilder.group({
-          id: this.medicaoSelected.id,
-          icms: this.medicaoSelected.icms,
+          id: this.medicaoSelected?.id,
+          icms: this.medicaoSelected?.icms,
           proinfa: this.medicaoSelected.proinfa
         });        
         await this.medicaoService
@@ -262,7 +269,7 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
 
     async coletarNovamente()
     {
-      await this.onColect(this.medicaoSelected, this.medicaoSelected.periodo);
+      await this.onColect(this.medicaoSelected, this.medicaoSelected.periodo);      
     }
 
     async limparFormulario() {
@@ -315,6 +322,23 @@ export class MedicaoComponent extends MedicaoConfigSettings implements OnInit {
           await this.selecionarColeta({data: medicao});
         }
       });          
+    }
+
+    async onDeleteConfirm($event) {
+      this.dialogService
+        .open(EditMedicaoComponent, { context: { medicao: $event.data } })
+        .onClose.subscribe(async (excluir) => {
+          // if (excluir) {
+          //   await this.valorConcessionariaService
+          //     .delete(this.getValor().id)
+          //     .then();
+          //   {
+          //     this.limparFormulario();
+          //     this.setSuccessMesage("Valor excluído com sucesso.");
+          //     await this.getValoresConcessionarias();
+          //   }
+          // }
+        });
     }
 }
 

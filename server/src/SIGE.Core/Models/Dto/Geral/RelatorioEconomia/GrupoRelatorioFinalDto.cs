@@ -7,7 +7,7 @@
         public string ColunaQuantidade { get; set; } = "Montante";
         public string ColunaValor { get; set; } = "Tarifa";
         public string ColunaTotal { get; set; } = "Valor";
-        public IEnumerable<SubGrupoRelatorioFinalDto>? SubGrupos { get; set; }
+        public List<SubGrupoRelatorioFinalDto>? SubGrupos { get; set; }
         public LancamentoRelatorioFinalDto? Total { get; set; }
     }
 }

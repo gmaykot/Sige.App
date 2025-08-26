@@ -1,16 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import { ConcessionariaService } from "../../../@core/services/gerencial/concessionaria.service";
-import { NbDialogService, NbLayoutScrollService } from "@nebular/theme";
-import { AlertService } from "../../../@core/services/util/alert.service";
-import { Classes } from "../../../@core/enum/classes.const";
-import { FormBuilderService } from "../../../@core/services/util/form-builder.service";
-import { ImpostoConcessionariaService } from "../../../@core/services/gerencial/imposto-concessionaria.service";
-import { ImpostoConcessionariaComponent } from "../../../@shared/custom-component/imposto-concessionaria/imposto-concessionaria.component";
+import { Component, OnInit, Injector } from "@angular/core";
+import { LocalDataSource } from "ng2-smart-table";
 import { IImpostoConcessionaria } from "../../../@core/data/imposto-concessionaria";
 import { IResponseInterface } from "../../../@core/data/response.interface";
-import { LocalDataSource } from "ng2-smart-table";
-import { ConcessionariaConfigSettings } from "./concessionaria.config.settings";
+import { Classes } from "../../../@core/enum/classes.const";
 import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
+import { ImpostoConcessionariaComponent } from "../../../@shared/custom-component/imposto-concessionaria/imposto-concessionaria.component";
+import { ConcessionariaConfigSettings } from "./concessionaria.config.settings";
+import { ConcessionariaService } from "./concessionaria.service";
+import { ImpostoConcessionariaService } from "./imposto-concessionaria.service";
+
 
 @Component({
   selector: "ngx-concessionaria",
@@ -22,14 +20,11 @@ export class ConcessionariaComponent extends ConcessionariaConfigSettings implem
 
   constructor(
     protected service: ConcessionariaService,
-    protected formBuilderService: FormBuilderService,
-    protected alertService: AlertService,
-    protected scroolService: NbLayoutScrollService,
-    protected dialogService: NbDialogService,
-    private impostoService: ImpostoConcessionariaService
+    private impostoService: ImpostoConcessionariaService,
+    protected injector: Injector
   ) 
   {
-    super(Classes.CONCESSIONARIA, formBuilderService, service, alertService, scroolService, dialogService);
+    super(injector, service, Classes.CONCESSIONARIA);
   }
 
   async ngOnInit() {
@@ -106,7 +101,6 @@ export class ConcessionariaComponent extends ConcessionariaConfigSettings implem
       .open(CustomDeleteConfirmationComponent, { context: { mesage: 'Deseja realmente excluir os impostos selecionados?'} })
       .onClose.subscribe(async (excluir) => {
         if (excluir){
-          var erroExcluir = false;
           this.impostosChecked.forEach(imposto => {
             this.impostoService.delete(imposto.id).then(async (res: IResponseInterface<any>) => {
               if (res.success){
@@ -115,7 +109,6 @@ export class ConcessionariaComponent extends ConcessionariaConfigSettings implem
                 this.alertService.showSuccess("Imposto excluído com sucesso.");
               } else 
               {
-                erroExcluir = true;
                 res.errors.map((x) => this.alertService.showError(`Imposto ${imposto.nome} - ${x.value}`));
               }
             });            

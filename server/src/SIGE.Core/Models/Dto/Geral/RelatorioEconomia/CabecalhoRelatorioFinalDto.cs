@@ -1,16 +1,33 @@
-﻿namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia
-{
-    public class CabecalhoRelatorioFinalDto
-    {
-        public required string Titulo { get; set; }
-        public required string SubTitulo { get; set; }
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using SIGE.Core.Enumerators;
+
+namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia {
+    public class CabecalhoRelatorioFinalDto {
+        [NotMapped]
+        public string? Titulo { get; set; }
+        public Guid? ContratoId { get; set; }
+        [NotMapped]
+        public string? SubTitulo { get; set; }
+        [NotMapped]
+        public string? TarifaFornecimento { get; set; }
+        public ETipoSegmento? Segmento { get; set; }
         public required string Unidade { get; set; }
         public required string SubMercado { get; set; }
-        public required string Conexao { get; set; }
+        public required ETipoConexao Conexao { get; set; }
+        public ETipoBandeira? Bandeira { get; set; }
         public required string Concessao { get; set; }
-        public required DateTime DataAnalise { get; set; }
-        public required string MesReferencia { get; set; }
-        public required int NumerorDiasMes { get; set; }
-        public required string PeriodoHoroSazonal { get; set; }
+        public string? CNPJ { get; set; }
+        public string? InscricaoEstadual { get; set; }
+        public string? Endereco { get; set; }
+        public string? Municipio { get; set; }
+        public string? UF { get; set; }
+        [NotMapped]
+        public DateTime? DataAnalise { get; set; }
+        [NotMapped]
+        public string? MesReferencia { get; set; }
+        [NotMapped]
+        public int? NumerorDiasMes { get; set; }
+        [NotMapped]
+        public string? PeriodoHoroSazonal { get; set; }
     }
 }

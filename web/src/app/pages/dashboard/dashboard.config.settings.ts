@@ -1,4 +1,3 @@
-import { style } from "@angular/animations";
 import { DeleteActionLinkComponent } from "../../@shared/custom-component/delete-action-link/delete-action-link.component";
 
 export interface CardSettings {
@@ -15,11 +14,18 @@ export class DashboardConfigSettings {
         type: "primary",
         link: "/pages/medicao",
       };
-      economiaCard: CardSettings = {
+      medicaoCard: CardSettings = {
         title: "Relatório de Medição",
         iconClass: "nb-compose",
         type: "primary",
         link: "/pages/relatorio-medicao",
+      };
+
+      economiaCard: CardSettings = {
+        title: "Relatório de Economia",
+        iconClass: "nb-compose",
+        type: "primary",
+        link: "/pages/relatorio-economia",
       };
     
       contratoCard: CardSettings = {

@@ -1,0 +1,10 @@
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+    <nb-card-header> 
+      <ngx-table-header [title]="title" [showActions]="showActions" [showHelp]="showHelp" (editCustom)="onEditCustom($event)" (helpCustom)="onHelpCustom($event)"></ngx-table-header>
+    </nb-card-header>
+  
+    <nb-card-body>
+      <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)">
+      </ng2-smart-table>
+    </nb-card-body>
+</nb-card>

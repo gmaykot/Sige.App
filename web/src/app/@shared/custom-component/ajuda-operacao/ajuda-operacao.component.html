@@ -1,0 +1,183 @@
+<ng-container *ngIf="templateAjuda">
+    <ng-container [ngTemplateOutlet]="templateAjuda"></ng-container>
+  </ng-container>
+  
+  <ng-template #ajudaRelatorioEconomia>
+    <nb-card size="small">
+      <nb-card-header><h6>Relatório de Economia</h6></nb-card-header>
+      <nb-card-body>
+        <div class="faturamento-info">
+          <p>
+            A funcionalidade de <strong>Relatório de Economia</strong> apresenta um quadro comparativo entre os custos de energia no
+            <strong>Mercado Livre</strong> e os custos projetados caso a empresa ainda estivesse no <strong>Mercado Cativo</strong>.
+            Este relatório é direcionado a empresas que migraram para o mercado livre de energia, permitindo uma análise clara da economia obtida.
+          </p>
+        
+          <p>
+            A análise é baseada no consumo real registrado no mercado livre, e a partir disso, o sistema realiza uma simulação de quanto seria
+            o custo equivalente no mercado cativo. Como resultado, o relatório exibe:
+          </p>
+          <ul>
+            <li><strong>Percentual de Economia</strong> – diferença percentual entre os dois modelos de contratação de energia.</li>
+            <li><strong>Percentual de Economia considerando o Faturamento Coenel</strong> – resultado final após aplicação da política de cobrança definida na funcionalidade de Faturamento Coenel.</li>
+          </ul>
+        
+          <p>
+            Este relatório é gerado em formato <strong>PDF</strong>, apresentando todos os dados comparativos de forma clara e organizada, pronto para ser enviado ao cliente ou utilizado internamente.
+          </p>
+        
+          <p>Pré-requisitos:</p>
+          <ol>
+            <li>
+              <strong>PIS/COFINS</strong><br>
+              Os valores de PIS/COFINS devem estar configurados no cadastro da
+              <strong class="strong" (click)="abrirNovaAba('/pages/concessionarias')">Concessionária</strong>.
+            </li>
+            <li>
+              <strong>Salário Mínimo</strong><br>
+              Informado na tela de <strong class="strong" (click)="abrirNovaAba('/pages/salario-minimo')">Salário Mínimo</strong>.
+            </li>
+            <li>
+              <strong>Tarifas de Aplicação</strong><br>
+              Devem estar registradas na tela de <strong class="strong" (click)="abrirNovaAba('/pages/tarifas-aplicacao')">Tarifas de Aplicação</strong>.
+            </li>
+            <li>
+              <strong>Energia Acumulada</strong><br>
+              Essencial para a simulação no mercado cativo. Pode ser configurada na tela de
+              <strong class="strong" (click)="abrirNovaAba('/pages/energia-acumulada')">Energia Acumulada</strong>.
+            </li>
+            <li>
+              <strong>Bandeira Tarifária</strong><br>
+              Define a bandeira vigente usada na projeção. Configurada em
+              <strong class="strong" (click)="abrirNovaAba('/pages/bandeira-tarifaria')">Bandeiras Tarifárias</strong>.
+            </li>
+            <li>
+              <strong>Faturamento Coenel</strong><br>
+              Necessário para o cálculo do percentual de economia com faturamento. Deve ser definido na tela
+              <strong class="strong" (click)="abrirNovaAba('/pages/faturamento-coenel')">Faturamento Coenel</strong>.
+            </li>
+          </ol>
+        </div>
+        
+      </nb-card-body>
+      <nb-card-footer class="footer-direita">
+        <button nbButton status="basic" (click)="onClose()">Fechar Ajuda</button>
+      </nb-card-footer>
+    </nb-card>
+</ng-template>
+
+<ng-template #ajudaOperacao>
+  <nb-card size="small">
+    <nb-card-header><h6>Ajuda Operação</h6></nb-card-header>
+    <nb-card-body>
+      <p>A funcionalidade de <strong>Ajuda Operação</strong> será utilizada para descrever para o usuário como funciona a operação.</p>
+    </nb-card-body>
+    <nb-card-footer class="footer-direita">
+      <button nbButton status="basic" (click)="onClose()">Fechar Ajuda</button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+  
+  <ng-template #ajudaFaturamento>
+    <nb-card size="small">
+      <nb-card-header><h6>Faturamento Coenel</h6></nb-card-header>
+      <nb-card-body>
+        <div class="faturamento-info">
+            <p>
+              A funcionalidade de <strong>Faturamento Coenel</strong> define como será calculado o valor a ser cobrado ao cliente. Essas informações são utilizadas diretamente na geração do <strong>Relatório de Economia</strong>, impactando o resultado final apresentado ao cliente.
+            </p>
+          
+            <p>Existem três formas de faturamento disponíveis:</p>
+            <ol>
+              <li>
+                <strong>Valor Fixo:</strong><br>
+                Um valor determinado é descontado diretamente, conforme o valor cadastrado no sistema.
+              </li>
+              <li>
+                <strong>Quantidade de Salários:</strong><br>
+                O sistema multiplica a quantidade de salários definida pelo valor do salário vigente cadastrado, resultando no total a ser faturado.
+              </li>
+              <li>
+                <strong>Porcentagem sobre Economia:</strong><br>
+                Uma porcentagem é aplicada sobre o valor da economia calculada no relatório, definindo assim o valor de faturamento.
+              </li>
+            </ol>
+          
+            <p>Essa flexibilidade permite adaptar a cobrança conforme o modelo comercial acordado com cada cliente.</p>
+
+            <p>Pré-requisitos:</p>
+            <ol>
+              <li>
+                <strong>Empresa Cadastrada</strong><br>
+                O cadastro da empresa pode ser feito no cadastro de <strong class="strong" (click)="abrirNovaAba('/pages/empresas')">Empresas</strong>.
+              </li>
+              <li>
+                <strong>Ponto de Medição Cadastrado</strong><br>
+                O ponto de medição precisa estar previamente cadastrado no sistema. Esse cadastro pode ser realizado diretamente na aba "Pontos de Medição", dentro do cadastro da <strong class="strong" (click)="abrirNovaAba('/pages/empresas')">Empresas</strong>.
+              </li>
+            </ol>
+          </div>
+        </nb-card-body>
+      <nb-card-footer class="footer-direita">
+        <button nbButton status="basic" (click)="onClose()">Fechar Ajuda</button>
+      </nb-card-footer>
+    </nb-card>
+  </ng-template>
+  
+  <ng-template #ajudaRelatorio>
+    <nb-card size="small">
+      <nb-card-header><h6>Relatório de Medição</h6></nb-card-header>
+      <nb-card-body>
+        <div class="faturamento-info">
+            <p>
+              A funcionalidade de <strong>Relatório de Medição</strong> é responsável por apresentar os cálculos dos valores que serão utilizados no
+              <strong>Relatório de Economia</strong>. Para isso, utiliza informações previamente coletadas na funcionalidade de
+              <strong>Coletar Medições</strong> e no <strong>Cadastro de Contrato</strong>.
+            </p>
+          
+            <p>Esta tela realiza o cálculo de diversos dados importantes, tais como:</p>
+            <ul>
+              <li><strong>Consumo</strong> – consumo registrado para o período.</li>
+              <li><strong>Take</strong> – volume de energia contratada a ser comparado com o consumo real.</li>
+              <li><strong>Valores a serem faturados</strong> – cálculo do valor com base nos contratos e medições.</li>
+            </ul>
+          
+            <p>
+              Os dados são agrupados por <strong>Grupo de Empresas</strong>, e não por ponto de medição individual,
+              fornecendo uma visão consolidada com totalizadores por grupo.
+            </p>
+          
+            <p>Além de exibir essas informações em tela, a funcionalidade permite:</p>
+            <ul>
+              <li>Gerar o <strong>Relatório em PDF</strong>.</li>
+              <li><strong>Enviar o relatório por e-mail</strong> para os clientes.</li>
+              <li><strong>Exportar os dados</strong> das medições em formato CSV.</li>
+            </ul>
+          
+            <p>
+              Essa funcionalidade é essencial, pois serve como <strong>pré-requisito</strong> para a geração do
+              <strong>Relatório de Economia</strong>.
+            </p>
+          
+            <p>Pré-requisitos:</p>
+            <ol>
+              <li>
+                <strong>Coletas de Medições realizadas</strong><br>
+                As medições devem ser previamente coletadas através da funcionalidade
+                <strong class="strong" (click)="abrirNovaAba('/pages/medicao')">Coletar Medições</strong>.
+              </li>
+              <li>
+                <strong>Contrato de Energia cadastrado</strong><br>
+                O contrato deve estar cadastrado corretamente para que os cálculos de faturamento e comparação sejam executados.
+                Esse cadastro é feito na aba
+                <strong class="strong" (click)="abrirNovaAba('/pages/contratos')">Contratos</strong>.
+              </li>
+            </ol>
+          </div>
+          
+      </nb-card-body>
+      <nb-card-footer class="footer-direita">
+        <button nbButton status="basic" (click)="onClose()">Fechar Ajuda</button>
+      </nb-card-footer>
+    </nb-card>
+  </ng-template>

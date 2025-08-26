@@ -1,0 +1,49 @@
+<form [formGroup]="control">
+    <nb-card accent="warning">
+        <nb-card-header>Alteração de Medição: {{ medicao.periodo | date: 'dd/MM/yyyy - HH:mm' }}</nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="subtitle">Empresa</div>
+                        <input type="text" class="no-border no-background" readonly nbInput fullWidth required id="inputFirstName" formControlName="descEmpresa">
+                    </div>
+                </div>
+            </div>            
+            <div class="row" style="margin-top: -1rem;">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="subtitle">Ponto de Medição</div>
+                        <input type="text" class="no-border no-background" readonly nbInput fullWidth required id="inputFirstName" formControlName="descPontoMedicao">
+                    </div>
+                </div>
+            </div>            
+            <div class="row" style="margin-top: -1rem;">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="subtitle">Status</div>
+                        <select formControlName="status" class="form-control" required>
+                            <option value="HCC">HCC</option>
+                            <option value="HIF">HIF</option>
+                          </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 0rem;">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <div class="subtitle">Total Consumido (kWh)</div>
+                        <input type="number" nbInput fullWidth required id="inputFirstName" formControlName="consumoAtivo">
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="text-center">
+                <button nbButton status="info" (click)="submit()" [disabled]="!control.valid">Confirmar</button>
+                <button nbButton status="danger" style="margin-left: 0.5rem;" (click)="delete()">Excluir</button>
+                <button nbButton status="basic" style="margin-left: 0.5rem;" (click)="cancel()">Cancelar</button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</form>

@@ -2,11 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IBandeiraTarifariaVigente } from '../../../@core/data/bandeira-tarifaria-vigente';
 import { DefaultDialogComponent } from '../default/default-dialog-component';
 import { BANDEIRAS } from "../../../@core/enum/const-dropbox";
-import { BandeiraTarifariaVigenteService } from '../../../@core/services/gerencial/bandeira-tarifaria-vigente.service';
 import { NbDialogRef } from '@nebular/theme';
 import { Classes } from '../../../@core/enum/classes.const';
 import { AlertService } from '../../../@core/services/util/alert.service';
 import { FormBuilderService } from '../../../@core/services/util/form-builder.service';
+import { BandeiraTarifariaVigenteService } from '../../../pages/gerencial/bandeira-tarifaria/bandeira-tarifaria-vigente.service';
 
 @Component({
   selector: 'ngx-bandeira-tarifaria-vigente',

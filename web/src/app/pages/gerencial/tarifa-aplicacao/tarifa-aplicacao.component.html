@@ -19,9 +19,9 @@
                         </div>
                         <div class="col-sm-2">
                             <div class="form-group">
-                            <label for="inputFirstName" class="label">Sub-Grupo*</label><br>
+                            <label for="inputFirstName" class="label">Conexão*</label><br>
                             <nb-select fullWidth formControlName="subGrupo">
-                                <nb-option *ngFor="let obj of subgrupos" [value]="obj.id">{{obj.desc}}</nb-option>
+                                <nb-option *ngFor="let obj of conexoes" [value]="obj.id">{{obj.desc}}</nb-option>
                             </nb-select>
                             </div>
                         </div>
@@ -36,7 +36,8 @@
                         <div class="col-sm-2">
                             <div class="form-group">
                             <label for="inputEmail" class="label">Último Reajuste*</label>
-                            <app-date-input formControlName="dataUltimoReajuste" full="true"></app-date-input>
+                            <input nbInput fullWidth mask="d0/M0/0000" placeholder="__/__/____"
+                            [dropSpecialCharacters]="false" formControlName="dataUltimoReajuste">
                             </div>
                         </div>
                         
@@ -92,10 +93,19 @@
                                     <input type="number" nbInput fullWidth formControlName="reatKWhPFTE">
                                 </div>
                             </div>   
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="inputEmail" class="label">*Ativa</label><br>
+                                    <nb-select fullWidth placeholder="Selecione" formControlName="ativo">
+                                      <nb-option [value]="true">SIM</nb-option>
+                                      <nb-option [value]="false">NÃO</nb-option>
+                                    </nb-select>
+                                  </div>
+                            </div>   
                         </div>     
                         </nb-card-body>
                         <nb-card-footer>
-                            <button type="submit" nbButton status="info"  (click)="onSubmitCustom()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
+                            <button type="submit" nbButton status="info"  (click)="onSubmit()" [disabled]="!control.valid" *ngIf="habilitaOperacoes">{{selected ? 'Alterar' : 'Cadastrar'}}</button>
                             <button type="submit" *ngIf="selected && habilitaOperacoes" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDelete()">Excluir</button>
                             <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="clearForm()">Voltar</button> 
                           </nb-card-footer>                         
@@ -107,7 +117,6 @@
     </div>
 </div>
 </form>
-
 <div class="card-row" [nbSpinner]="loading">
     <div class="card-col">
       <nb-card>
@@ -127,7 +136,7 @@
         </nb-card-header>
   
         <nb-card-body>
-          <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelectCustom($event)">
+          <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onLoad($event)">
           </ng2-smart-table>
         </nb-card-body>
       </nb-card>

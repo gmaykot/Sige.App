@@ -1,16 +1,16 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { NbThemeService } from "@nebular/theme";
-import { takeWhile } from "rxjs/operators";
-import { LocalDataSource } from "ng2-smart-table";
-import { DashboardService } from "../../@core/services/administrativo/dashboard.service";
 import { Router } from "@angular/router";
+import { NbThemeService } from "@nebular/theme";
+import { LocalDataSource } from "ng2-smart-table";
+import { takeWhile } from "rxjs";
 import { IChecklist } from "../../@core/data/administrativo/checklist";
-import { IResponseInterface } from "../../@core/data/response.interface";
+import { IConsumoMeses } from "../../@core/data/administrativo/consumo-meses";
 import { IContratosFinalizados } from "../../@core/data/administrativo/contratos-finalizados";
 import { IStatusMedicao } from "../../@core/data/administrativo/status-medicao";
-import { IConsumoMeses } from "../../@core/data/administrativo/consumo-meses";
-import { CardSettings, DashboardConfigSettings } from "./dashboard.config.settings";
+import { IResponseInterface } from "../../@core/data/response.interface";
 import { STATUS_MEDICAO } from "../../@core/enum/filtro-medicao";
+import { DashboardConfigSettings, CardSettings } from "./dashboard.config.settings";
+import { DashboardService } from "./dashboard.service";
 
 @Component({
   selector: "ngx-dashboard",
@@ -33,6 +33,7 @@ export class DashboardComponent extends DashboardConfigSettings implements OnDes
     this.faturamentoCard,
     this.viabilidadeCard,
     this.economiaCard,    
+    this.medicaoCard,    
     this.contratoCard
   ];
 

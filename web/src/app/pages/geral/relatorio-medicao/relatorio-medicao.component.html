@@ -1,7 +1,18 @@
 <div class="row" *ngIf="!selected">
     <div class="col-md-12">
         <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
-            <nb-card-header>Relatório de Medição</nb-card-header>
+            <nb-card-header>
+                <div class="row">
+                    <div class="table-header">
+                        Relatório de Medição
+                    </div>
+                    <div>
+                        <nb-actions size="small">
+                          <nb-action icon="question-mark-circle-outline" (click)="onHelp()" class="warning" ></nb-action>
+                        </nb-actions>
+                    </div> 
+                </div>
+            </nb-card-header>
             <nb-card-body>
                 <div class="row">
                     <div class="col-sm-2">
@@ -15,12 +26,19 @@
                         </div>
                     </div>
                 </div>
-                <br />
-                <label class="h7">Relatórios Emitidos</label><br />
-                <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
-                </ng2-smart-table>
             </nb-card-body>
         </nb-card>
+        <nb-card [nbSpinner]="loading" nbSpinnerStatus="info">
+            <nb-card-header>Relatórios Emitidos</nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onSelect($event)">
+                        </ng2-smart-table>
+                    </div>
+                </div>
+            </nb-card-body>
+        </nb-card>        
     </div>
 </div>
 <form [formGroup]="control" *ngIf="selected">
@@ -166,7 +184,8 @@
                             <nb-card style="border: 0rem;">
                                 <nb-card-body>
                                     <ng2-smart-table [settings]="settingsResultado"
-                                    [source]="sourceResultado"></ng2-smart-table>
+                                    [source]="sourceResultado"
+                                    (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
                                     <br><br>
                                     <div class="row">
                                         <div class="col-md-12">

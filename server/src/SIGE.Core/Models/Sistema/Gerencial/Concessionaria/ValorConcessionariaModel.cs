@@ -8,7 +8,7 @@ namespace SIGE.Core.Models.Sistema.Gerencial.Concessionaria
         public Guid ConcessionariaId { get; set; }
         public virtual ConcessionariaModel? Concessionaria { get; set; }
         public required string NumeroResolucao { get; set; }
-        public required ESubGrupo SubGrupo { get; set; }
+        public required ETipoConexao SubGrupo { get; set; }
         public DateTime DataUltimoReajuste { get; set; }
 
         #region Valores THS Verde

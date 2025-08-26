@@ -29,6 +29,16 @@
                                         <input type="number" nbInput fullWidth formControlName="valor">
                                     </div>
                                 </div>
+                                <div class="col-sm-2">
+                                  <div class="form-group">
+                                    <label for="inputEmail" class="label">*Ativo</label><br>
+                                    <nb-select fullWidth placeholder="Selecione" formControlName="ativo">
+                                      <nb-option [value]="true">SIM</nb-option>
+                                      <nb-option [value]="false">NÃO</nb-option>
+                                    </nb-select>
+                                  </div>
+                                </div>          
+            
                             </div>     
                             </nb-card-body>
                             <nb-card-footer>
