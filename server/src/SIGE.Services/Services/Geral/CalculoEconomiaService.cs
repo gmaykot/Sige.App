@@ -98,17 +98,17 @@ namespace SIGE.Services.Services.Geral {
         }
 
         private decimal CalculaValorProduto() {
-            return CustomTruncate(FaturarLongoPrazo() * (_relatorio.ValorUnitarioKwh ?? 0));
+            return CustomTruncate(FaturarLongoPrazo() * (_relatorio.ValorUnitarioKwh ?? 0), 3);
         }
 
         private decimal CalculaTakeMinimo() {
             return CustomTruncate((_relatorio.EnergiaContratada ?? 0) -
-                   ((_relatorio.EnergiaContratada ?? 0) * ((_relatorio.TakeMinimo ?? 0) / 100m)));
+                   ((_relatorio.EnergiaContratada ?? 0) * ((_relatorio.TakeMinimo ?? 0) / 100m)), 3);
         }
 
         private decimal CalculaTakeMaximo() {
             return CustomTruncate((_relatorio.EnergiaContratada ?? 0) +
-                   ((_relatorio.EnergiaContratada ?? 0) * ((_relatorio.TakeMaximo ?? 0) / 100m)));
+                   ((_relatorio.EnergiaContratada ?? 0) * ((_relatorio.TakeMaximo ?? 0) / 100m)), 3);
         }
 
         private decimal CalculaTakeMaximoSemTruncar() {
@@ -165,11 +165,11 @@ namespace SIGE.Services.Services.Geral {
 
         private void CalculaConsumoTotal() {
             var total = (_relatorio.TotalMedido ?? 0) / 1000.0m;
-            _consumoTotal = CustomTruncate(total * _multiplicadorPerda - (_relatorio.Proinfa ?? 0));
+            _consumoTotal = CustomTruncate(total * _multiplicadorPerda - (_relatorio.Proinfa ?? 0), 3);
         }
 
         public decimal CalculaConsumoTotalUnitario(decimal totalMedidoKWh, decimal proinfa) {
-            return CustomTruncate(totalMedidoKWh / 1000.0m * _multiplicadorPerda - proinfa);
+            return CustomTruncate(totalMedidoKWh / 1000.0m * _multiplicadorPerda - proinfa, 3);
         }
     }
 }
