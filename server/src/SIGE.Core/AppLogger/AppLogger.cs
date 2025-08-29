@@ -10,7 +10,7 @@ namespace SIGE.Core.AppLogger {
         public void LoginSuccess(string usuario, bool success = true, string motivo = "") {
             var logger = _log.ForContext("EventName", LogEvents.Login);
 
-            if (string.IsNullOrEmpty(usuario))
+            if (!string.IsNullOrEmpty(usuario))
                 _log.ForContext("Motivo", motivo);
 
             if (success) {
