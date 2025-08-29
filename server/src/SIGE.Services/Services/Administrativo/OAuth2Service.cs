@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Serilog;
+using SIGE.Core.AppLogger;
 using SIGE.Core.Cache;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
@@ -18,13 +18,14 @@ using SIGE.Services.Custom;
 using SIGE.Services.Interfaces.Administrativo;
 
 namespace SIGE.Services.Services.Administrativo {
-    public class OAuth2Service(ICustomLoggerService loggerService, AppDbContext appDbContext, IMapper mapper, RequestContext requestContext, ICacheManager cacheManager, IOptions<CacheOption> cacheOption) : IOAuth2Service {
+    public class OAuth2Service(ICustomLoggerService loggerService, AppDbContext appDbContext, IMapper mapper, RequestContext requestContext, ICacheManager cacheManager, IOptions<CacheOption> cacheOption, IAppLogger appLogger) : IOAuth2Service {
         private readonly ICustomLoggerService _loggerService = loggerService;
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
         private readonly RequestContext _requestContext = requestContext;
         private readonly ICacheManager _cacheManager = cacheManager;
         private readonly CacheAuthOption _cacheOption = cacheOption.Value.Auth;
+        private readonly IAppLogger _appLogger = appLogger;
 
         public async Task<TokenDto> Introspect(Guid req) {
             var token = await _appDbContext.Tokens.Include(t => t.Usuario).FirstOrDefaultAsync(t => t.Id.Equals(req));
@@ -48,14 +49,20 @@ namespace SIGE.Services.Services.Administrativo {
 
             var usuario = await _appDbContext.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Email.Equals(req.Email) && u.DataExclusao == null);
 
-            if (usuario == null)
+            if (usuario == null) {
+                _appLogger.LoginSuccess(req.Email, "", false, "Usuário não encontrado.");
                 return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Usuário não encontrado.");
+            }
 
-            if (!usuario.Ativo)
+            if (!usuario.Ativo) {
+                _appLogger.LoginSuccess(usuario.Apelido, usuario.Id.ToString(), false, "Usuário não está ativo no sistema.");
                 return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Usuário não está ativo no sistema.");
+            }
 
-            if (!req.Password.VerifyPasswordHash(usuario.PasswordHash, usuario.PasswordSalt))
+            if (!req.Password.VerifyPasswordHash(usuario.PasswordHash, usuario.PasswordSalt)) {
+                _appLogger.LoginSuccess(usuario.Apelido, usuario.Id.ToString(), false, "A senha digitada não está correta.");
                 return ret.SetUnauthorized().AddError(ETipoErro.ERRO, "A senha digitada não está correta.");
+            }
 
             var token = await _appDbContext.Tokens.FirstOrDefaultAsync(t => t.UsuarioId.Equals(usuario.Id));
             if (token == null) {
@@ -80,7 +87,8 @@ namespace SIGE.Services.Services.Administrativo {
                 Usuario = new UsuarioOAuth2Dto { UsuarioId = usuario.Id, Apelido = usuario.Apelido, SysAdm = usuario.SysAdm }
             };
 
-            Log.Information("::: Usuário {Usuario} ({UsuarioId}) logado com sucesso.", usuario.Apelido, usuario.Id);
+            _appLogger.LoginSuccess(usuario.Apelido, usuario.Id.ToString());
+
             return ret.SetOk().SetData(oauth2).SetMessage("Login efetuado com sucesso.");
         }
 
