@@ -66,5 +66,15 @@ namespace SIGE.Services.Services.Geral {
 
             return await ExecutarSourceSingle<DescontoTUSDDto>(GerenciamentoMensalFactory.ObterDescontoTusd(), parameters);
         }
+
+        public async Task<Response> ObteLancamentosAdicionais(DateTime mesReferencia, Guid pontoMedicaoId) {
+            var ret = new Response();
+            var res = await _appDbContext.LancamentosAdicionais.Include(l => l.FaturaEnergia).Where(l => l.FaturaEnergia.MesReferencia.Year == mesReferencia.Year && l.FaturaEnergia.MesReferencia.Month == mesReferencia.Month && l.FaturaEnergia.PontoMedicaoId == pontoMedicaoId).ToListAsync();
+            if (res != null && res.Count != 0)
+
+                return ret.SetOk().SetData(_mapper.Map<IEnumerable<LancamentoAdicionalDto>>(res.OrderByDescending(f => f.Descricao)));
+
+            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Não existem lançamentos no período.");
+        }
     }
 }

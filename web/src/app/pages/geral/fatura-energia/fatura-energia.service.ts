@@ -1,10 +1,10 @@
-
 import { Injectable } from "@angular/core";
 import { IFaturaEnergia } from "../../../@core/data/fatura.energia";
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { DefaultService } from "../../../@core/services/default-service";
 import { HttpService } from "../../../@core/services/util/http.service";
 import { IDescontoTusdMensal } from "../../../pages/geral/gerenciamento-mensal/gerenciamento-mensal.interface";
+import { ILancamentoAdicional } from "../../../@core/data/lancamento-adicional";
 
 @Injectable({ providedIn: "root" })
 export class FaturaEnergiaService extends DefaultService<IFaturaEnergia> {
@@ -12,11 +12,36 @@ export class FaturaEnergiaService extends DefaultService<IFaturaEnergia> {
     super(http, "fatura-energia");
   }
 
-  public async obterFaturas(mesReferencia: string, pontoMedicaoId?: string): Promise<IResponseInterface<IFaturaEnergia[]>> {
-      return await this.http.get<IResponseInterface<IFaturaEnergia[]>>(`/${this.urlBase}/faturas/${mesReferencia ?? new Date().toISOString().split("T")[0]}/${pontoMedicaoId ?? ''}`);
+  public async obterFaturas(
+    mesReferencia: string,
+    pontoMedicaoId?: string
+  ): Promise<IResponseInterface<IFaturaEnergia[]>> {
+    return await this.http.get<IResponseInterface<IFaturaEnergia[]>>(
+      `/${this.urlBase}/faturas/${
+        mesReferencia ?? new Date().toISOString().split("T")[0]
+      }/${pontoMedicaoId ?? ""}`
+    );
   }
 
-  public async obterFaturaDescontos(mesReferencia: string, pontoMedicaoId?: string): Promise<IResponseInterface<IDescontoTusdMensal>> {
-    return await this.http.get<IResponseInterface<IDescontoTusdMensal>>(`/${this.urlBase}/descontos/${mesReferencia ?? new Date().toISOString().split("T")[0]}/${pontoMedicaoId ?? ''}`);
-}
+  public async obterFaturaDescontos(
+    mesReferencia: string,
+    pontoMedicaoId?: string
+  ): Promise<IResponseInterface<IDescontoTusdMensal>> {
+    return await this.http.get<IResponseInterface<IDescontoTusdMensal>>(
+      `/${this.urlBase}/descontos/${
+        mesReferencia ?? new Date().toISOString().split("T")[0]
+      }/${pontoMedicaoId ?? ""}`
+    );
+  }
+
+  public async obterLancamentosAdicionais(
+    mesReferencia: string,
+    pontoMedicaoId?: string
+  ): Promise<IResponseInterface<ILancamentoAdicional[]>> {
+    return await this.http.get<IResponseInterface<ILancamentoAdicional[]>>(
+      `/${this.urlBase}/lancamentos/${
+        mesReferencia ?? new Date().toISOString().split("T")[0]
+      }/${pontoMedicaoId ?? ""}`
+    );
+  }
 }
