@@ -10,15 +10,15 @@ namespace SIGE.Core.AppLogger {
         public void LoginSuccess(string usuario, bool success = true, string motivo = "") {
             var logger = _log.ForContext("EventName", LogEvents.Login);
 
-            if (!string.IsNullOrEmpty(usuario))
+            if (!string.IsNullOrEmpty(motivo))
                 logger = _log.ForContext("Motivo", motivo);
 
             if (success) {
                 logger.Information("{Icon} Usuário {Usuario} logado com sucesso.",
-                    LogIcons.Login, usuario);
+                    LogIcons.Success, usuario);
             }
             else {
-                logger.Warning("{Icon} Tentativa de login falhou para {Usuario}.", LogIcons.Error, usuario);
+                logger.Error("{Icon} Tentativa de login falhou para {Usuario}.", LogIcons.Error, usuario);
             }
         }
 
