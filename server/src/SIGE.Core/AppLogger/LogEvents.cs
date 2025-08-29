@@ -8,6 +8,7 @@
         public const string Db = "🗄️";
         public const string Success = "✅";
         public const string Warning = "⚠️";
+        public const string Information = "❗";
         public const string Error = "❌";
         public const string Alert = "🚨";
     }

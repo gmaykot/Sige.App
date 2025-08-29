@@ -11,7 +11,7 @@ namespace SIGE.Core.AppLogger {
             var logger = _log.ForContext("EventName", LogEvents.Login);
 
             if (!string.IsNullOrEmpty(usuario))
-                _log.ForContext("Motivo", motivo);
+                logger = _log.ForContext("Motivo", motivo);
 
             if (success) {
                 logger.Information("{Icon} Usuário {Usuario} logado com sucesso.",
@@ -42,24 +42,27 @@ namespace SIGE.Core.AppLogger {
         }
 
         public void LogError(string message, Guid? objectId = null) {
+            var logger = _log;
             if (objectId.HasValue)
-                _log.ForContext("ObjectId", objectId.Value);
+                logger = _log.ForContext("ObjectId", objectId.Value);
 
-            _log.Error(message);
+            logger.Information("{Icon} {Message}", LogIcons.Error, message);
         }
 
         public void LogWarning(string message, Guid? objectId = null) {
+            var logger = _log;
             if (objectId.HasValue)
-                _log.ForContext("ObjectId", objectId.Value);
+                logger = _log.ForContext("ObjectId", objectId.Value);
 
-            _log.Warning(message);
+            logger.Information("{Icon} {Message}", LogIcons.Warning, message);
         }
 
         public void LogInformation(string message, Guid? objectId = null) {
+            var logger = _log;
             if (objectId.HasValue)
-                _log.ForContext("ObjectId", objectId.Value);
+                logger = _log.ForContext("ObjectId", objectId.Value);
 
-            _log.Information(message);
+            logger.Information("{Icon} {Message}", LogIcons.Information, message);
         }
     }
 }
