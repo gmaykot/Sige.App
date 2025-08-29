@@ -19,7 +19,7 @@ namespace SIGE.Services.Services.Geral {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
         private readonly IRelatorioMedicaoService _relatorioMedicaoService = relatorioMedicaoService;
-        private readonly IAppLogger _appLogger;
+        private readonly IAppLogger _appLogger = appLogger;
 
         public async Task<Response> ListarRelatorios(DateOnly? mesReferencia) {
             if (mesReferencia == null)

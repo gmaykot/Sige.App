@@ -50,17 +50,17 @@ namespace SIGE.Services.Services.Administrativo {
             var usuario = await _appDbContext.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Email.Equals(req.Email) && u.DataExclusao == null);
 
             if (usuario == null) {
-                _appLogger.LoginSuccess(req.Email, "", false, "Usuário não encontrado.");
+                _appLogger.LoginSuccess(req.Email, false, "Usuário não encontrado.");
                 return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, "Usuário não encontrado.");
             }
 
             if (!usuario.Ativo) {
-                _appLogger.LoginSuccess(usuario.Apelido, usuario.Id.ToString(), false, "Usuário não está ativo no sistema.");
+                _appLogger.LoginSuccess(usuario.Apelido, false, "Usuário não está ativo no sistema.");
                 return ret.SetBadRequest().AddError(ETipoErro.ATENCAO, "Usuário não está ativo no sistema.");
             }
 
             if (!req.Password.VerifyPasswordHash(usuario.PasswordHash, usuario.PasswordSalt)) {
-                _appLogger.LoginSuccess(usuario.Apelido, usuario.Id.ToString(), false, "A senha digitada não está correta.");
+                _appLogger.LoginSuccess(usuario.Apelido, false, "A senha digitada não está correta.");
                 return ret.SetUnauthorized().AddError(ETipoErro.ERRO, "A senha digitada não está correta.");
             }
 
@@ -87,7 +87,7 @@ namespace SIGE.Services.Services.Administrativo {
                 Usuario = new UsuarioOAuth2Dto { UsuarioId = usuario.Id, Apelido = usuario.Apelido, SysAdm = usuario.SysAdm }
             };
 
-            _appLogger.LoginSuccess(usuario.Apelido, usuario.Id.ToString());
+            _appLogger.LoginSuccess(usuario.Apelido);
 
             return ret.SetOk().SetData(oauth2).SetMessage("Login efetuado com sucesso.");
         }
