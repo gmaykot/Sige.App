@@ -15,6 +15,7 @@ var appEnv = Environment.GetEnvironmentVariable("APP_ENV") ?? "DEV";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", appEnv.Equals("PRD") ? LogEventLevel.Error : LogEventLevel.Warning)
     .Enrich.WithProperty("Environment", appEnv)
     .Enrich.FromLogContext()
     .WriteTo.Console()

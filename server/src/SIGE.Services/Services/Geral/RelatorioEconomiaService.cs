@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
+using SIGE.Core.AppLogger;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
@@ -14,10 +15,11 @@ using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
 
 namespace SIGE.Services.Services.Geral {
-    public class RelatorioEconomiaService(AppDbContext appDbContext, IMapper mapper, IRelatorioMedicaoService relatorioMedicaoService) : IRelatorioEconomiaService {
+    public class RelatorioEconomiaService(AppDbContext appDbContext, IMapper mapper, IRelatorioMedicaoService relatorioMedicaoService, IAppLogger appLogger) : IRelatorioEconomiaService {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
         private readonly IRelatorioMedicaoService _relatorioMedicaoService = relatorioMedicaoService;
+        private readonly IAppLogger _appLogger = appLogger;
 
         public async Task<Response> ListarRelatorios(DateOnly? mesReferencia) {
             if (mesReferencia == null)
@@ -35,6 +37,7 @@ namespace SIGE.Services.Services.Geral {
         }
 
         public async Task<Response> ObterFinal(Guid pontoMedicaoId, DateOnly mesReferencia) {
+            _appLogger.LogInformation($"Emissão do Relatório de Economia de {mesReferencia:MM/yyyy}", pontoMedicaoId);
             var ret = new Response();
             var res = await _appDbContext.Database.SqlQueryRaw<CabecalhoRelatorioFinalDto>(RelatorioEconomiaFactory.RelatorioFinal(pontoMedicaoId, mesReferencia)).FirstOrDefaultAsync();
             if (res != null) {

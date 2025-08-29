@@ -72,5 +72,14 @@ namespace SIGE.Controller.Geral {
         [ProducesResponseType(typeof(Response), 500)]
         public async Task<IActionResult> ObterDescontosTusdRetusd([FromRoute] DateTime mesReferencia, Guid pontoMedicaoId) =>
             Ok(await _service.ObterDescontosTusdRetusd(mesReferencia, pontoMedicaoId));
+
+        [HttpGet("lancamentos/{mesReferencia}/{pontoMedicaoId}")]
+        [SwaggerOperation(Description = "Obtém a lista com todos os dados.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ObteLancamentosAdicionais([FromRoute] DateTime mesReferencia, Guid pontoMedicaoId) =>
+            Ok(await _service.ObteLancamentosAdicionais(mesReferencia, pontoMedicaoId));
     }
 }
