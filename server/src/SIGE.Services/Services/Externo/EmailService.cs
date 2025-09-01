@@ -1,4 +1,5 @@
-﻿using MailKit;
+﻿using System.Text;
+using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -18,25 +19,19 @@ using SIGE.Core.Options;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Externo;
 using SIGE.Services.Interfaces.Geral;
-using System.Text;
 
-namespace SIGE.Services.Services.Externo
-{
-    public class EmailService(IOptions<EmailSettingsOption> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService, IHttpContextAccessor httpContextAccessor, RequestContext requestContext) : IEmailService
-    {
+namespace SIGE.Services.Services.Externo {
+    public class EmailService(IOptions<EmailSettingsOption> mailSettingsOptions, AppDbContext appDbContext, IMedicaoService medicaoService, IHttpContextAccessor httpContextAccessor, RequestContext requestContext) : IEmailService {
         private readonly EmailSettingsOption _opt = mailSettingsOptions.Value;
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMedicaoService _medicaoService = medicaoService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly RequestContext _requestContext = requestContext;
 
-        public async Task<Response> SendEmail(EmailDataDto req)
-        {
+        public async Task<Response> SendEmail(EmailDataDto req) {
             var ret = new Response();
-            try
-            {
-                using (var mensagem = new MimeMessage())
-                {
+            try {
+                using (var mensagem = new MimeMessage()) {
                     mensagem.Subject = string.Format("Relatório de Medição - {0} - {1}", req.MesReferencia, req.DescEmpresa);
                     mensagem.InReplyTo = _opt.ContactMail;
 
@@ -51,15 +46,12 @@ namespace SIGE.Services.Services.Externo
                     var baseUrl = $"{request?.Scheme}://{request?.Host}";
                     var pixelUrl = $"{baseUrl}/email/open/{req.RelatorioMedicaoId}";
 
-                    var builder = new BodyBuilder
-                    {
+                    var builder = new BodyBuilder {
                         HtmlBody = EmailExtensions.GetEmailTemplate(req.Contato.NomeContato, req.MesReferencia, _opt.ContactPhone, _opt.ContactMail, req.DescEmpresa, pixelUrl, baseUrl)
                     };
 
-                    if (req.Relatorios != null)
-                    {
-                        req.Relatorios.ForEach(async r =>
-                        {
+                    if (req.Relatorios != null) {
+                        req.Relatorios.ForEach(async r => {
                             byte[] byteArray = Convert.FromBase64String(r.Split("base64,")[1]);
                             builder.Attachments.Add(string.Format("relatorio_medicao_{0}_{1}.pdf", req.DescMesReferencia, req.DescEmpresa).ToLower(), byteArray);
                         });
@@ -69,14 +61,12 @@ namespace SIGE.Services.Services.Externo
 
                         var res = await _medicaoService.ListaMedicoesPorContrato(req.ContratoId.ToGuid(), req.MesReferencia.GetPeriodo());
 
-                        if (res.Success)
-                        {
+                        if (res.Success) {
                             var medicoes = (IEnumerable<ListaMedicoesPorContratoDto>)res.Data;
-                            foreach (var medida in medicoes)
-                            {
+                            foreach (var medida in medicoes) {
                                 StringBuilder builderRow = new StringBuilder();
                                 builderRow.Append(medida.DescEmpresa.ToUpper()); builderRow.Append(';');
-                                builderRow.Append(medida.DiaMedicaoo); builderRow.Append(';');
+                                builderRow.Append(medida.DiaMedicao); builderRow.Append(';');
                                 builderRow.Append(medida.DescAgenteMedicao); builderRow.Append(';');
                                 builderRow.Append(medida.DescPontoMedicao); builderRow.Append(';');
                                 builderRow.Append(medida.SubTipo); builderRow.Append(';');
@@ -94,35 +84,31 @@ namespace SIGE.Services.Services.Externo
 
                     mensagem.Body = builder.ToMessageBody();
 
-                    var logEmail = await _appDbContext.LogsEnvioEmails.FirstOrDefaultAsync(l => l.RelatorioMedicaoId == req.RelatorioMedicaoId) ?? new LogEnvioEmail
-                    {
+                    var logEmail = await _appDbContext.LogsEnvioEmails.FirstOrDefaultAsync(l => l.RelatorioMedicaoId == req.RelatorioMedicaoId) ?? new LogEnvioEmail {
                         Email = req.Contato.EmailContato,
                         CcoEmail = req.ContatosCCO.Count != 0 ? string.Join(",", req.ContatosCCO.Select(c => c.EmailContato)) : null,
                         RelatorioMedicaoId = req.RelatorioMedicaoId,
                         UsuarioEnvioId = _requestContext.UsuarioId
                     };
 
-                    try
-                    {
+                    try {
                         using var mailClient = new SmtpClient();
                         await mailClient.ConnectAsync(_opt.Server, _opt.Port, SecureSocketOptions.Auto);
                         await mailClient.AuthenticateAsync(_opt.UserName, _opt.Password);
                         logEmail.Response = await mailClient.SendAsync(mensagem);
                     }
-                    catch (Exception e)
-                    {
+                    catch (Exception e) {
                         logEmail.InnerException = e.InnerException?.Message ?? e.Message;
                     }
 
                     if (logEmail?.Id != null)
-                        _= _appDbContext.LogsEnvioEmails.Update(logEmail);
+                        _ = _appDbContext.LogsEnvioEmails.Update(logEmail);
                     else
-                        _= await _appDbContext.LogsEnvioEmails.AddAsync(logEmail);
-                    
+                        _ = await _appDbContext.LogsEnvioEmails.AddAsync(logEmail);
+
                     _ = await _appDbContext.SaveChangesAsync();
 
-                    if (!_opt.Imap.IsNullOrEmpty())
-                    {
+                    if (!_opt.Imap.IsNullOrEmpty()) {
                         using var imapClient = new ImapClient();
 
                         // Conecte ao servidor IMAP
@@ -138,33 +124,28 @@ namespace SIGE.Services.Services.Externo
 
                         imapClient.Disconnect(true);
                     }
-                    
+
                 }
 
 
                 var relatorio = await _appDbContext.RelatoriosMedicao.FindAsync(req.RelatorioMedicaoId);
-                if (relatorio != null)
-                {
+                if (relatorio != null) {
                     relatorio.Fase = EFaseMedicao.ENVIO_EMAIL;
                     _appDbContext.RelatoriosMedicao.Update(relatorio);
-                    _= await _appDbContext.SaveChangesAsync();
+                    _ = await _appDbContext.SaveChangesAsync();
                 }
 
                 return ret.SetOk();
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 return ret.SetInternalServerError().AddError("Message", ex.Message).AddError("InnerException", ex.InnerException?.Message);
             }
         }
 
-        public async Task<Response> SendFullEmail(EmailFullDataDto req)
-        {
+        public async Task<Response> SendFullEmail(EmailFullDataDto req) {
             var ret = new Response();
-            try
-            {
-                using (var mensagem = new MimeMessage())
-                {
+            try {
+                using (var mensagem = new MimeMessage()) {
                     mensagem.Subject = req.Assunto;
                     mensagem.InReplyTo = _opt.SenderEmail;
 
@@ -175,8 +156,7 @@ namespace SIGE.Services.Services.Externo
 
                     req.ContatosCCO?.ForEach(c => mensagem.Bcc.Add(new MailboxAddress(c.NomeContato, c.EmailContato)));
 
-                    var builder = new BodyBuilder
-                    {
+                    var builder = new BodyBuilder {
                         TextBody = req.Body
                     };
 
@@ -190,48 +170,39 @@ namespace SIGE.Services.Services.Externo
 
                 return ret.SetOk();
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 return ret.SetInternalServerError().AddError("Message", ex.Message).AddError("InnerException", ex.InnerException?.Message);
             }
         }
 
-        public async Task<Response> OpenEmail(Guid req)
-        {
+        public async Task<Response> OpenEmail(Guid req) {
             var ret = new Response();
 
             var logEmail = await _appDbContext.LogsEnvioEmails.FirstOrDefaultAsync(l => l.RelatorioMedicaoId == req);
-            if (logEmail != null)
-            {
+            if (logEmail != null) {
                 logEmail.Aberto = true;
                 logEmail.DataAbertura = DataSige.Hoje();
-                _= _appDbContext.LogsEnvioEmails.Update(logEmail);
+                _ = _appDbContext.LogsEnvioEmails.Update(logEmail);
                 _ = await _appDbContext.SaveChangesAsync();
             }
 
             return ret.SetOk();
         }
 
-        public async Task<Response> ObterHistorico()
-        {
+        public async Task<Response> ObterHistorico() {
             var ret = new Response();
             var res = await _appDbContext.LogsEnvioEmails.Include(l => l.UsuarioEnvio).Include(l => l.RelatorioMedicao).ThenInclude(r => r.Contrato).OrderByDescending(l => l.RelatorioMedicao.MesReferencia).ToListAsync();
-            if (res != null)
-            {
+            if (res != null) {
                 var resultado = res
                     .GroupBy(a => a.RelatorioMedicao.MesReferencia)
-                    .Select(g => new
-                    {
-                        data = new
-                        {
+                    .Select(g => new {
+                        data = new {
                             mesReferencia = g.Key.ToString("MM/yyyy"),
                             tipo = "group",
                             qtdItens = g.Count()
                         },
-                        children = g.Select(a => new
-                        {
-                            data = new
-                            {
+                        children = g.Select(a => new {
+                            data = new {
                                 grupoEmpresa = a.RelatorioMedicao.Contrato.DscGrupo,
                                 usuario = a.UsuarioEnvio.Apelido,
                                 dataEnvio = a.DataRegistro.ToString("dd/MM/yyyy HH:mm"),
