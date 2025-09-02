@@ -61,9 +61,9 @@ namespace SIGE.Services.Services {
             return new Response().SetOk().SetMessage("Registro excluído com sucesso.");
         }
 
-        /// <summary>
-        /// Inclui um novo registro.
-        /// </summary>
+        /// <summary>  
+        /// Inclui um novo registro.  
+        /// </summary>  
         public virtual async Task<Response> Incluir(T req) {
             var idProperty = typeof(T).GetProperty("Id");
 
@@ -73,7 +73,7 @@ namespace SIGE.Services.Services {
 
             var id = idProperty.GetValue(req);
 
-            if (id != null)
+            if (id != null && id is Guid guidId && guidId != Guid.Empty)
                 return await Alterar(req);
 
             var entity = _mapper.Map<M>(req);
