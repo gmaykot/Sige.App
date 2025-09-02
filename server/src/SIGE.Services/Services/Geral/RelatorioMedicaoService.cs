@@ -48,10 +48,12 @@ namespace SIGE.Services.Services.Geral {
 
             empresas.ForEach(empresaId => {
                 var valores = _appDbContext.Database.SqlQueryRaw<ValorAnaliticoMedicaoDto>(RelatorioMedicaoFactory.ValoresRelatoriosMedicao(contratoId, mesReferencia, empresaId)).FirstOrDefault();
-                res.Icms = valores.Icms;
-                res.Proinfa = valores.Proinfa;
+                if (valores != null) {
+                    res.Icms = valores.Icms;
+                    res.Proinfa = valores.Proinfa;
 
-                res.ValoresAnaliticos.Add(valores);
+                    res.ValoresAnaliticos.Add(valores);
+                }
             });
 
             res.MesReferencia = mesReferencia;
