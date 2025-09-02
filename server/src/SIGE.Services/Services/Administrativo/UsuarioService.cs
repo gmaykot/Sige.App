@@ -1,36 +1,32 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography;
+using System.Text;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SIGE.Core.AppLogger;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Usuario;
 using SIGE.Core.Models.Sistema.Administrativo;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Administrativo;
-using System.Security.Cryptography;
-using System.Text;
 
-namespace SIGE.Services.Services.Administrativo
-{
-    public class UsuarioService(AppDbContext appDbContext, IMapper mapper) : BaseService<UsuarioDto, UsuarioModel>(appDbContext, mapper), IUsuarioService
-    {
+namespace SIGE.Services.Services.Administrativo {
+    public class UsuarioService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger) : BaseService<UsuarioDto, UsuarioModel>(appDbContext, mapper, appLogger), IUsuarioService {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Response> Alterar(UsuarioDto req)
-        {
+        public async Task<Response> Alterar(UsuarioDto req) {
             var usuario = await _appDbContext.Usuarios.FindAsync(req.Id);
             var passwordHash = usuario.PasswordHash;
             var passwordSalt = usuario.PasswordSalt;
 
             _mapper.Map(req, usuario);
-            if (req.Senha.IsNullOrEmpty())
-            {
+            if (req.Senha.IsNullOrEmpty()) {
                 usuario.PasswordSalt = passwordSalt;
                 usuario.PasswordHash = passwordHash;
             }
-            else
-            {
+            else {
                 var hmac = new HMACSHA512();
                 usuario.PasswordSalt = hmac.Key;
                 usuario.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(req.Senha));
@@ -41,42 +37,36 @@ namespace SIGE.Services.Services.Administrativo
             return new Response().SetOk().SetMessage("Dados alterados com sucesso.");
         }
 
-        private static bool ValidarSenha(string senhaInput, byte[] hashArmazenado, byte[] saltArmazenado)
-        {
+        private static bool ValidarSenha(string senhaInput, byte[] hashArmazenado, byte[] saltArmazenado) {
             using var hmac = new HMACSHA512(saltArmazenado);
             var hashSenha = hmac.ComputeHash(Encoding.UTF8.GetBytes(senhaInput));
 
             // Comparar byte a byte
-            for (int i = 0; i < hashSenha.Length; i++)
-            {
+            for (int i = 0; i < hashSenha.Length; i++) {
                 if (hashSenha[i] != hashArmazenado[i])
                     return false;
             }
             return true;
         }
 
-        public async Task<Response> AlterarSenha(UsuarioSenhaDto req)
-        {
+        public async Task<Response> AlterarSenha(UsuarioSenhaDto req) {
             var ret = new Response();
             var usuario = await _appDbContext.Usuarios.FindAsync(req.Id);
             var hmac = new HMACSHA512(usuario.PasswordSalt);
-            if (ValidarSenha(req.SenhaAntiga, usuario.PasswordHash, usuario.PasswordSalt))
-            {
+            if (ValidarSenha(req.SenhaAntiga, usuario.PasswordHash, usuario.PasswordSalt)) {
                 usuario.PasswordSalt = hmac.Key;
                 usuario.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(req.NovaSenha));
 
                 _ = await _appDbContext.SaveChangesAsync();
             }
-            else
-            {
+            else {
                 return ret.SetBadRequest().AddError("Negócio", "O campo Senha Antiga não confere com a senha atual do usuário.");
             }
 
             return ret.SetOk().SetMessage("Senha alterada com sucesso.");
         }
 
-        public async Task<Response> Excluir(Guid Id)
-        {
+        public async Task<Response> Excluir(Guid Id) {
             var ret = await _appDbContext.Usuarios.Include(e => e.MenusUsuario).FirstOrDefaultAsync(e => e.Id.Equals(Id));
 
             _appDbContext.Usuarios.Remove(ret);
@@ -85,12 +75,10 @@ namespace SIGE.Services.Services.Administrativo
             return new Response().SetOk().SetMessage("Dados excluídos com sucesso.");
         }
 
-        public async Task<Response> Incluir(UsuarioDto req)
-        {
+        public async Task<Response> Incluir(UsuarioDto req) {
             var ret = new Response();
             var res = await _appDbContext.Usuarios.Include(u => u.MenusUsuario).FirstOrDefaultAsync(e => e.Email.Equals("coenel"));
-            if (res != null)
-            {
+            if (res != null) {
                 var hmac = new HMACSHA512();
                 var user = _mapper.Map<UsuarioModel>(req);
                 user.GestorId = res.GestorId;
@@ -102,10 +90,8 @@ namespace SIGE.Services.Services.Administrativo
 
                 var menusUsuario = new List<MenuUsuarioModel>();
                 var menus = await _appDbContext.MenusSistema.Where(m => m.Ativo).ToListAsync();
-                menus.ForEach(m =>
-                {
-                    menusUsuario.Add(new MenuUsuarioModel
-                    {
+                menus.ForEach(m => {
+                    menusUsuario.Add(new MenuUsuarioModel {
                         MenuSistemaId = m.Id,
                         TipoPerfil = req.TipoPerfil,
                         UsuarioId = user.Id
@@ -121,8 +107,7 @@ namespace SIGE.Services.Services.Administrativo
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Não existe usuário base");
         }
 
-        public async Task<Response> Obter(Guid Id)
-        {
+        public async Task<Response> Obter(Guid Id) {
             var ret = new Response();
             var res = await _appDbContext.Usuarios.FirstOrDefaultAsync(e => e.Id.Equals(Id));
             if (res != null)
@@ -131,8 +116,7 @@ namespace SIGE.Services.Services.Administrativo
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Não existe usuário com o id {Id}.");
         }
 
-        public async Task<Response> Obter()
-        {
+        public async Task<Response> Obter() {
             var ret = new Response();
             var res = await _appDbContext.Usuarios.ToListAsync();
             if (res.Count > 0)

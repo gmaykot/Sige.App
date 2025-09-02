@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MySqlConnector;
+using SIGE.Core.AppLogger;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Gerencial;
@@ -11,7 +12,7 @@ using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 
 namespace SIGE.Services.Services.Gerencial {
-    public class FornecedorService(AppDbContext appDbContext, IMapper mapper) : BaseService<FornecedorDto, FornecedorModel>(appDbContext, mapper) {
+    public class FornecedorService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger) : BaseService<FornecedorDto, FornecedorModel>(appDbContext, mapper, appLogger) {
         public override async Task<Response> Alterar(FornecedorDto req) {
             var fornecedor = await _appDbContext.Fornecedores.FindAsync(req.Id);
 

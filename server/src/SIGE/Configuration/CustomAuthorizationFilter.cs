@@ -53,6 +53,7 @@ namespace SIGE.Configuration {
 
             _requestContext.GestorId = introspect.GestorId;
             _requestContext.UsuarioId = introspect.UsuarioId;
+            _requestContext.Usuario = introspect.Usuario;
 
             if (filterContext.HttpContext?.Items != null) {
                 filterContext.HttpContext.Items["UsuarioId"] = introspect.UsuarioId;

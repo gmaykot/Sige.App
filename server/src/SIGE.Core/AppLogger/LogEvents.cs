@@ -1,16 +1,18 @@
 ﻿namespace SIGE.Core.AppLogger {
     public static class LogIcons {
-        public const string Startup = "🚀";
-        public const string Login = "👤";
-        public const string Auth = "🔑";
-        public const string Docs = "📄";
-        public const string Http = "🌐";
-        public const string Db = "🗄️";
-        public const string Success = "✅";
-        public const string Warning = "⚠️";
-        public const string Information = "❗";
-        public const string Error = "❌";
         public const string Alert = "🚨";
+        public const string Auth = "🔑";
+        public const string Db = "🗄️";
+        public const string Delete = "🗑️";
+        public const string Docs = "📄";
+        public const string Error = "❌";
+        public const string Http = "🌐";
+        public const string Information = "❗";
+        public const string Login = "👤";
+        public const string Startup = "🚀";
+        public const string Success = "✅";
+        public const string Update = "🔄";
+        public const string Warning = "⚠️";
     }
 
     public static class LogEvents {

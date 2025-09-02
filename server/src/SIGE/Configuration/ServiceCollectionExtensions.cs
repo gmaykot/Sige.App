@@ -36,7 +36,7 @@ namespace SIGE.Configuration {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<ICustomLoggerService, CustomLoggerService>();
             services.TryAddSingleton<ICacheManager, CacheManager>();
-            services.AddSingleton<IAppLogger, AppLogger>();
+            services.TryAddScoped<IAppLogger, AppLogger>();
             services.TryAddScoped<RequestContext>();
 
             return services;

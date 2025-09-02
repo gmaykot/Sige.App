@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SIGE.Core.AppLogger;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
@@ -11,12 +12,9 @@ using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Gerencial;
 
-namespace SIGE.Services.Services.Gerencial
-{
-    public class PontoMedicaoService(AppDbContext appDbContext, IMapper mapper) : BaseService<PontoMedicaoDto, PontoMedicaoModel>(appDbContext, mapper), IPontoMedicaoService
-    {
-        public override async Task<Response> Excluir(Guid Id)
-        {
+namespace SIGE.Services.Services.Gerencial {
+    public class PontoMedicaoService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger) : BaseService<PontoMedicaoDto, PontoMedicaoModel>(appDbContext, mapper, appLogger), IPontoMedicaoService {
+        public override async Task<Response> Excluir(Guid Id) {
             var ret = await _appDbContext.PontosMedicao.Include(p => p.ConsumosMensal).FirstOrDefaultAsync(p => p.Id.Equals(Id));
             if (!ret.ConsumosMensal.IsNullOrEmpty())
                 return new Response().SetServiceUnavailable().AddError(ETipoErroResponse.DeleteCascadeError.GetValueString(), "Existem medições vinculadas que impossibilitam a exclusão.");
@@ -24,11 +22,12 @@ namespace SIGE.Services.Services.Gerencial
             _appDbContext.PontosMedicao.Remove(ret);
             _ = await _appDbContext.SaveChangesAsync();
 
+            _appLogger.LogDeleteObject($"Ponto de Medição {ret.Nome}", Id);
+
             return new Response().SetOk().SetMessage("Dados excluídos com sucesso.");
         }
 
-        async public Task<Response> ObterDropDownComSegmento()
-        {
+        async public Task<Response> ObterDropDownComSegmento() {
             var ret = new Response();
             var res = await _appDbContext.Database.SqlQueryRaw<DropDownDto>(PontosMedicaoFactory.ObterDropDownComSegmento()).ToListAsync(); ;
             if (res.Count > 0)
