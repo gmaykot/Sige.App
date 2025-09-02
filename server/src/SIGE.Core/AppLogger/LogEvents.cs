@@ -11,6 +11,7 @@
         public const string Information = "❗";
         public const string Error = "❌";
         public const string Alert = "🚨";
+        public const string Delete = "🗑️";
     }
 
     public static class LogEvents {

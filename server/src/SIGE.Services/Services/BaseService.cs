@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
+using SIGE.Core.AppLogger;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Default;
@@ -9,9 +10,10 @@ using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces;
 
 namespace SIGE.Services.Services {
-    public class BaseService<T, M>(AppDbContext appDbContext, IMapper mapper) : IBaseInterface<T, M> where M : class where T : class {
+    public class BaseService<T, M>(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger) : IBaseInterface<T, M> where M : class where T : class {
         protected readonly AppDbContext _appDbContext = appDbContext;
         protected readonly IMapper _mapper = mapper;
+        protected readonly IAppLogger _appLogger = appLogger;
 
         /// <summary>
         /// Altera o registro com base no ID da entidade.
@@ -37,6 +39,8 @@ namespace SIGE.Services.Services {
             _mapper.Map(req, entity);
             await _appDbContext.SaveChangesAsync();
 
+            _appLogger.LogInformation($"Registro {typeof(M).Name} com Id {id} alterado com sucesso.");
+
             return new Response().SetOk().SetMessage("Registro alterado com sucesso.");
         }
 
@@ -51,6 +55,8 @@ namespace SIGE.Services.Services {
 
             _appDbContext.Set<M>().Remove(entity);
             await _appDbContext.SaveChangesAsync();
+
+            _appLogger.LogDeleteObject($"Registro {typeof(M).Name} excluído com sucesso.", id);
 
             return new Response().SetOk().SetMessage("Registro excluído com sucesso.");
         }
@@ -73,6 +79,8 @@ namespace SIGE.Services.Services {
             var entity = _mapper.Map<M>(req);
             await _appDbContext.AddAsync(entity);
             await _appDbContext.SaveChangesAsync();
+
+            _appLogger.LogInformation($"Registro {typeof(M).Name} incluído com sucesso.");
 
             return new Response().SetOk()
                 .SetData(_mapper.Map<T>(entity))
@@ -230,6 +238,8 @@ namespace SIGE.Services.Services {
             ativoPropEntity.SetValue(entity, valorAtivo);
 
             await _appDbContext.SaveChangesAsync();
+
+            _appLogger.LogInformation($"Registro {typeof(M).Name} com Id {id} ToogleAtivo com sucesso.");
 
             return new Response().SetOk().SetMessage("Registro alterado com sucesso.");
         }

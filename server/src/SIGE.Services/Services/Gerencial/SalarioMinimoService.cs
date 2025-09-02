@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
+using SIGE.Core.AppLogger;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Gerencial;
@@ -9,7 +10,7 @@ using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 
 namespace SIGE.Services.Services.Gerencial {
-    public class SalarioMinimoService(AppDbContext appDbContext, IMapper mapper) : BaseService<SalarioMinimoDto, SalarioMinimoModel>(appDbContext, mapper) {
+    public class SalarioMinimoService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger) : BaseService<SalarioMinimoDto, SalarioMinimoModel>(appDbContext, mapper, appLogger) {
 
         /// <summary>
         /// Inclui o registro no banco de dados, verificando se a vigência não conflita com outros registros existentes.

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MySqlConnector;
+using SIGE.Core.AppLogger;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Extensions;
 using SIGE.Core.Models.Defaults;
@@ -13,7 +14,7 @@ using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
 
 namespace SIGE.Services.Services.Geral {
-    public class FaturaEnergiaService(AppDbContext appDbContext, IMapper mapper) : BaseService<FaturaEnergiaDto, FaturaEnergiaModel>(appDbContext, mapper), IFaturaEnergiaService {
+    public class FaturaEnergiaService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger) : BaseService<FaturaEnergiaDto, FaturaEnergiaModel>(appDbContext, mapper, appLogger), IFaturaEnergiaService {
         public override async Task<Response> Alterar(FaturaEnergiaDto req) {
             var fornecedor = await _appDbContext.FaturasEnergia.Include(f => f.LancamentosAdicionais).FirstOrDefaultAsync(f => f.Id == req.Id);
             var lancamentos = fornecedor.LancamentosAdicionais;
@@ -28,6 +29,8 @@ namespace SIGE.Services.Services.Geral {
                 await _appDbContext.AddRangeAsync(lancamentos);
                 _ = await _appDbContext.SaveChangesAsync();
             }
+
+            _appLogger.LogInformation($"Fatura de Energia alterada para o ponto de medição {req.PontoMedicaoDesc}", req.Id);
 
             return new Response().SetOk().SetMessage("Dados alterados com sucesso.");
         }

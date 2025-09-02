@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
+using SIGE.Core.AppLogger;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Geral.RelatorioEconomia;
@@ -10,7 +11,7 @@ using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 
 namespace SIGE.Services.Services.Gerencial {
-    public class EnergiaAcumuladaService(AppDbContext appDbContext, IMapper mapper) : BaseService<EnergiaAcumuladaDto, EnergiaAcumuladaModel>(appDbContext, mapper) {
+    public class EnergiaAcumuladaService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger) : BaseService<EnergiaAcumuladaDto, EnergiaAcumuladaModel>(appDbContext, mapper, appLogger) {
         /// <summary>
         /// Inclui o registro no banco de dados, verificando se a vigência não conflita com outros registros existentes.
         /// </summary>

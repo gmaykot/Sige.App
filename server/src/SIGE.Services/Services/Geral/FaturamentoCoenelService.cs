@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using SIGE.Core.AppLogger;
 using SIGE.Core.Enumerators;
 using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Geral;
@@ -8,17 +9,14 @@ using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Geral;
 
-namespace SIGE.Services.Services.Geral
-{
-    public class FaturamentoCoenelService(AppDbContext appDbContext, IMapper mapper) : BaseService<FaturamentoCoenelDto, FaturamentoCoenelModel>(appDbContext, mapper), IFaturamentoCoenelService
-    {
+namespace SIGE.Services.Services.Geral {
+    public class FaturamentoCoenelService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger) : BaseService<FaturamentoCoenelDto, FaturamentoCoenelModel>(appDbContext, mapper, appLogger), IFaturamentoCoenelService {
+
         /// <summary>
         /// Inclui o registro no banco de dados, verificando se a vigência não conflita com outros registros existentes.
         /// </summary>
-        public override async Task<Response> Incluir(FaturamentoCoenelDto req)
-        {
-            if (req.VigenciaFinal != null && req.VigenciaFinal < req.VigenciaInicial)
-            {
+        public override async Task<Response> Incluir(FaturamentoCoenelDto req) {
+            if (req.VigenciaFinal != null && req.VigenciaFinal < req.VigenciaInicial) {
                 return new Response().SetBadRequest()
                     .AddError(ETipoErro.INFORMATIVO, "A Vigência Final não pode ser menor que a Vigência Inicial.");
             }
@@ -34,8 +32,7 @@ namespace SIGE.Services.Services.Geral
                     x.PontoMedicaoId == req.PontoMedicaoId
                 );
 
-            if (haConflito)
-            {
+            if (haConflito) {
                 return new Response().SetBadRequest()
                     .AddError(ETipoErro.INFORMATIVO, "Já existe um registro com vigência que se sobrepõe ao período informado.");
             }
@@ -43,6 +40,8 @@ namespace SIGE.Services.Services.Geral
             var res = _mapper.Map<FaturamentoCoenelModel>(req);
             await _appDbContext.AddAsync(res);
             await _appDbContext.SaveChangesAsync();
+
+            _appLogger.LogInformation($"Faturamento COENEL cadastrado para o ponto de medição {req.PontoMedicaoId}", res.Id);
 
             return new Response().SetOk()
                 .SetData(_mapper.Map<FaturamentoCoenelDto>(res))
@@ -52,17 +51,14 @@ namespace SIGE.Services.Services.Geral
         /// <summary>
         /// Altera o registro no banco de dados, verificando se a vigência não conflita com outros registros existentes.
         /// </summary>
-        public override async Task<Response> Alterar(FaturamentoCoenelDto req)
-        {
-            if (req.VigenciaFinal != null && req.VigenciaFinal < req.VigenciaInicial)
-            {
+        public override async Task<Response> Alterar(FaturamentoCoenelDto req) {
+            if (req.VigenciaFinal != null && req.VigenciaFinal < req.VigenciaInicial) {
                 return new Response().SetBadRequest()
                     .AddError(ETipoErro.INFORMATIVO, "A Vigência Final não pode ser menor que a Vigência Inicial.");
             }
 
             var entity = await _appDbContext.FaturamentosCoenel.FindAsync(req.Id);
-            if (entity is null)
-            {
+            if (entity is null) {
                 return new Response().SetNotFound()
                     .AddError(ETipoErro.INFORMATIVO, $"Registro com Id {req.Id} não encontrado.");
             }
@@ -79,8 +75,7 @@ namespace SIGE.Services.Services.Geral
                     x.PontoMedicaoId == req.PontoMedicaoId
                 );
 
-            if (haConflito)
-            {
+            if (haConflito) {
                 return new Response().SetBadRequest()
                     .AddError(ETipoErro.INFORMATIVO, "Já existe um registro com vigência que se sobrepõe ao período informado.");
             }
@@ -90,12 +85,13 @@ namespace SIGE.Services.Services.Geral
 
             await _appDbContext.SaveChangesAsync();
 
+            _appLogger.LogInformation($"Faturamento COENEL alterado para o ponto de medição {req.PontoMedicaoId}", req.Id);
+
             return new Response().SetOk().SetData(req)
                 .SetMessage("Registro alterado com sucesso.");
         }
 
-        public async Task<Response> ObterPorPontoMedicao(Guid Id)
-        {
+        public async Task<Response> ObterPorPontoMedicao(Guid Id) {
             var ret = new Response();
             var res = await _appDbContext.FaturamentosCoenel.Include(f => f.PontoMedicao).ThenInclude(p => p.AgenteMedicao).ThenInclude(a => a.Empresa).Where(f => f.PontoMedicaoId.Equals(Id)).ToListAsync();
             if (res != null)
@@ -105,8 +101,7 @@ namespace SIGE.Services.Services.Geral
                 .AddError(ETipoErro.INFORMATIVO, $"Não existe registro com o ponto de medição {Id}.");
         }
 
-        public override async Task<Response> ObterSource()
-        {
+        public override async Task<Response> ObterSource() {
             return await ExecutarSource(SourceFactory.FaturamentosCoenel());
         }
     }
