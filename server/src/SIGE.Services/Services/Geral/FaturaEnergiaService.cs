@@ -30,7 +30,7 @@ namespace SIGE.Services.Services.Geral {
                 _ = await _appDbContext.SaveChangesAsync();
             }
 
-            _appLogger.LogInformation($"Fatura de Energia alterada para o ponto de medição {req.PontoMedicaoDesc}", req.Id);
+            _appLogger.LogUpdateObject($"Fatura de Energia alterada para o ponto de medição {req.PontoMedicaoDesc}", req.Id);
 
             return new Response().SetOk().SetMessage("Dados alterados com sucesso.");
         }

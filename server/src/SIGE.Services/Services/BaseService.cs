@@ -39,7 +39,7 @@ namespace SIGE.Services.Services {
             _mapper.Map(req, entity);
             await _appDbContext.SaveChangesAsync();
 
-            _appLogger.LogInformation($"Registro {typeof(M).Name} com Id {id} alterado com sucesso.");
+            _appLogger.LogUpdateObject($"Registro {typeof(M).Name} alterado com sucesso.", (Guid)id);
 
             return new Response().SetOk().SetMessage("Registro alterado com sucesso.");
         }

@@ -41,7 +41,7 @@ namespace SIGE.Services.Services.Geral {
             await _appDbContext.AddAsync(res);
             await _appDbContext.SaveChangesAsync();
 
-            _appLogger.LogInformation($"Faturamento COENEL cadastrado para o ponto de medição {req.PontoMedicaoId}", res.Id);
+            _appLogger.LogInformation($"Faturamento COENEL cadastrado para o ponto de medição {req.DescPontoMedicao}", res.Id);
 
             return new Response().SetOk()
                 .SetData(_mapper.Map<FaturamentoCoenelDto>(res))
@@ -85,7 +85,7 @@ namespace SIGE.Services.Services.Geral {
 
             await _appDbContext.SaveChangesAsync();
 
-            _appLogger.LogInformation($"Faturamento COENEL alterado para o ponto de medição {req.PontoMedicaoId}", req.Id);
+            _appLogger.LogUpdateObject($"Faturamento COENEL {req.VigenciaFinal} alterado para o ponto de medição {req.DescPontoMedicao}", req.Id);
 
             return new Response().SetOk().SetData(req)
                 .SetMessage("Registro alterado com sucesso.");

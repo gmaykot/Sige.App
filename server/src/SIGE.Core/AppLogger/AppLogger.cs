@@ -76,5 +76,14 @@ namespace SIGE.Core.AppLogger {
 
             logger.Write(LogEventLevel.Warning, "{Icon} {Message}", LogIcons.Delete, message);
         }
+
+        public void LogUpdateObject(string message, Guid? objectId) {
+            var logger = _log.ForContext("Usuario", _requestContext.Usuario);
+
+            if (objectId.HasValue)
+                logger = logger.ForContext("ObjectId", objectId.Value);
+
+            logger.Write(LogEventLevel.Warning, "{Icon} {Message}", LogIcons.Update, message);
+        }
     }
 }

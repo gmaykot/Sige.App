@@ -6,6 +6,7 @@
         void LogDeleteObject(string message, Guid? objectId);
         void LogError(string message, Guid? objectId = null);
         void LogInformation(string message, Guid? objectId = null);
+        void LogUpdateObject(string message, Guid? objectId);
         void LogWarning(string message, Guid? objectId = null);
         void LoginSuccess(string usuario, bool success = true, string motivo = "");
     }
