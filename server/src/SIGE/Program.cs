@@ -22,13 +22,22 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Seq(seqUrl)
     .CreateLogger();
 
-builder.Host.UseSerilog();
+// Serilog
+builder.Host.UseSerilog((ctx, svcs, lc) => {
+    lc.ReadFrom.Configuration(ctx.Configuration)
+      .Enrich.FromLogContext();
+});
 
 var app = builder.Build();
 
 // 1) Logs de request (ok manter aqui)
 app.UseSerilogRequestLogging(opts => {
-    opts.GetLevel = (ctx, elapsed, ex) => ex != null ? LogEventLevel.Error : LogEventLevel.Information;
+    opts.GetLevel = (httpContext, elapsed, ex) =>
+    ex != null ? LogEventLevel.Error
+        : httpContext.Request.Method.Equals(HttpMethods.Options, StringComparison.OrdinalIgnoreCase)
+        ? LogEventLevel.Debug
+        : LogEventLevel.Information;
+
     opts.EnrichDiagnosticContext = (diag, http) => {
         diag.Set("TraceId", Activity.Current?.Id ?? http.TraceIdentifier);
         diag.Set("Path", http.Request.Path);
@@ -57,10 +66,23 @@ app.UseSerilogRequestLogging(opts => {
 });
 
 // 2) Proxy awareness (Traefik/Coolify)
-app.UseForwardedHeaders(new ForwardedHeadersOptions {
+var fwd = new ForwardedHeadersOptions {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    // Para cadeias com 1 proxy (Traefik)
+    ForwardLimit = 1,
+    // Evita warnings quando faltar simetria de cabeçalhos em alguns hops
     RequireHeaderSymmetry = false
-});
+};
+
+// IPv4: 10.0.1.0/24
+fwd.KnownNetworks.Add(new IPNetwork(System.Net.IPAddress.Parse("10.0.1.0"), 24));
+
+// (Opcional) IPv6: fd8a:97fb:1029::/64
+fwd.KnownNetworks.Add(new IPNetwork(System.Net.IPAddress.Parse("fd8a:97fb:1029::"), 64));
+
+
+app.UseForwardedHeaders(fwd);
+
 app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<ForwardedHeadersOptions>>()
     .Value.KnownNetworks.Clear();
 app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<ForwardedHeadersOptions>>()
