@@ -9,8 +9,8 @@ import {
 @Injectable({ providedIn: "root" })
 export class CalculoEconomiaService {
   private relatorio: IRelatorioMedicao;
-  private consumoTotal: number = 0;
-  private multiplicadorPerda: number = 1.03;
+  private consumoTotal = 0;
+  private multiplicadorPerda = 1.03;
 
   public calcular(relatorio: IRelatorioMedicao): IValoresMedicao {
     if (!relatorio) return null;
@@ -39,11 +39,11 @@ export class CalculoEconomiaService {
     try {
       var retorno: IValoresMedicaoAnalitico[] = [];
       var valores = this.calcular(relatorio);
-      var total3Porcento = this.relatorio.totalMedido * 1.03;
+      // var total3Porcento = this.relatorio.totalMedido * 1.03;
       relatorio.valoresAnaliticos.forEach((val) => {
         if (!val.totalMedido || val.totalMedido == null) val.totalMedido = 0;
-        var unitario3Porcento =
-          +(val.totalMedido * (3 / 100)) + val.totalMedido;
+        // var unitario3Porcento =
+        //   +(val.totalMedido * (3 / 100)) + val.totalMedido;
         var total = this.calculaConsumoTotalUnitario(
           val.totalMedido,
           val.proinfa
