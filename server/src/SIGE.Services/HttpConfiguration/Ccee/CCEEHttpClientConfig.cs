@@ -61,6 +61,7 @@ namespace SIGE.Services.HttpConfiguration.Ccee {
 
                     return handler;
                 })
+                .AddHttpMessageHandler<UserScopeHandler>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5))
                 .ConfigureHttpClient((sp, client) => {
                     client.Timeout = TimeSpan.FromMinutes(5);
