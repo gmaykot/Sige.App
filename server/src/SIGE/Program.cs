@@ -22,11 +22,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Seq(seqUrl)
     .CreateLogger();
 
-// Serilog
-builder.Host.UseSerilog((ctx, svcs, lc) => {
-    lc.ReadFrom.Configuration(ctx.Configuration)
-      .Enrich.FromLogContext();
-});
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 
@@ -34,10 +30,9 @@ var app = builder.Build();
 app.UseSerilogRequestLogging(opts => {
     opts.GetLevel = (httpContext, elapsed, ex) =>
     ex != null ? LogEventLevel.Error
-        : httpContext.Request.Method.Equals(HttpMethods.Options, StringComparison.OrdinalIgnoreCase)
-        ? LogEventLevel.Debug
-        : LogEventLevel.Information;
-
+    : httpContext.Request.Method.Equals(HttpMethods.Options, StringComparison.OrdinalIgnoreCase)
+    ? LogEventLevel.Debug
+    : LogEventLevel.Information;
     opts.EnrichDiagnosticContext = (diag, http) => {
         diag.Set("TraceId", Activity.Current?.Id ?? http.TraceIdentifier);
         diag.Set("Path", http.Request.Path);
@@ -66,23 +61,10 @@ app.UseSerilogRequestLogging(opts => {
 });
 
 // 2) Proxy awareness (Traefik/Coolify)
-var fwd = new ForwardedHeadersOptions {
+app.UseForwardedHeaders(new ForwardedHeadersOptions {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-    // Para cadeias com 1 proxy (Traefik)
-    ForwardLimit = 1,
-    // Evita warnings quando faltar simetria de cabeçalhos em alguns hops
     RequireHeaderSymmetry = false
-};
-
-// IPv4: 10.0.1.0/24
-fwd.KnownNetworks.Add(new IPNetwork(System.Net.IPAddress.Parse("10.0.1.0"), 24));
-
-// (Opcional) IPv6: fd8a:97fb:1029::/64
-fwd.KnownNetworks.Add(new IPNetwork(System.Net.IPAddress.Parse("fd8a:97fb:1029::"), 64));
-
-
-app.UseForwardedHeaders(fwd);
-
+});
 app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<ForwardedHeadersOptions>>()
     .Value.KnownNetworks.Clear();
 app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<ForwardedHeadersOptions>>()
@@ -147,17 +129,22 @@ void ConfigureServices(WebApplicationBuilder builder) {
 void ConfigureMiddlewares(WebApplication app) { }
 
 void ConfigureEnvironmentSpecific(WebApplication app) {
-    // Só use URLs do appsettings em Dev, para não interferir no container
-    if (app.Environment.IsDevelopment()) {
-        var urls = app.Configuration.GetSection("Urls").Get<Dictionary<string, string>>();
-        if (urls != null && urls.TryGetValue(app.Environment.EnvironmentName, out var environmentUrl)) {
-            Log.Information("Configurando URL (Dev): {Url}", environmentUrl);
-            app.Urls.Add(environmentUrl);
-        }
+    switch (appEnv) {
+        case "DEV":
+            var urls = app.Configuration.GetSection("Urls").Get<Dictionary<string, string>>();
+            if (urls != null && urls.TryGetValue(app.Environment.EnvironmentName, out var environmentUrl)) {
+                Log.Information("🚀 Aplicação rodando em DESENVOLVIMENTO: {Url}", environmentUrl);
+                app.Urls.Add(environmentUrl);
+            }
+            break;
+        case "PRD":
+            Log.Information("🚀 Aplicação rodando em PRODUÇÃO: https://app.coenel-de.com.br");
+            break;
+        case "HMG":
+            Log.Information("🚀 Aplicação rodando em HOMOLOGAÇÃO: https://hmg.faturesimples.space");
+            break;
+        default:
+            Log.Information("🚀 Aplicação rodando em AMBIENTE DESCONHECIDO");
+            break;
     }
-
-    if (app.Environment.IsProduction())
-        Log.Information("Aplicação rodando em produção por trás de proxy (Traefik).");
-    else
-        Log.Information("Aplicação rodando em homologação.");
 }
