@@ -38,6 +38,7 @@ namespace SIGE.Configuration {
             services.TryAddSingleton<ICacheManager, CacheManager>();
             services.TryAddScoped<IAppLogger, AppLogger>();
             services.TryAddScoped<RequestContext>();
+            services.AddTransient<UserScopeHandler>();
 
             return services;
         }

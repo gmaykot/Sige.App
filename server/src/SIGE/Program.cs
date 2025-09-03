@@ -1,21 +1,25 @@
 ﻿using System.Diagnostics;
+using System.Net;
+using System.Security.Claims;
 using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
 using SIGE.Configuration;
+using AspNetIPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Configurar serviços
-ConfigureServices(builder);
 
 var seqUrl = Environment.GetEnvironmentVariable("SEQ_URL");
 var appEnv = Environment.GetEnvironmentVariable("APP_ENV") ?? "DEV";
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", appEnv.Equals("PRD") ? LogEventLevel.Error : LogEventLevel.Warning)
+    .MinimumLevel.Override(
+        "Microsoft.EntityFrameworkCore",
+        appEnv.Equals("PRD", StringComparison.OrdinalIgnoreCase)
+            ? LogEventLevel.Error
+            : LogEventLevel.Warning)
     .Enrich.WithProperty("Environment", appEnv)
     .Enrich.FromLogContext()
     .WriteTo.Console()
@@ -24,53 +28,70 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+ConfigureServices(builder);
+
 var app = builder.Build();
 
-// 1) Logs de request (ok manter aqui)
+var fwd = new ForwardedHeadersOptions {
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    ForwardLimit = 1,
+    RequireHeaderSymmetry = false
+};
+
+fwd.KnownNetworks.Add(new AspNetIPNetwork(IPAddress.Parse("10.0.1.0"), 24));
+fwd.KnownNetworks.Add(new AspNetIPNetwork(IPAddress.Parse("fd8a:97fb:1029::"), 64));
+app.UseForwardedHeaders(fwd);
+
+app.UseRouting();
+
 app.UseSerilogRequestLogging(opts => {
     opts.GetLevel = (httpContext, elapsed, ex) =>
-    ex != null ? LogEventLevel.Error
-    : httpContext.Request.Method.Equals(HttpMethods.Options, StringComparison.OrdinalIgnoreCase)
-    ? LogEventLevel.Debug
-    : LogEventLevel.Information;
+        ex != null
+            ? LogEventLevel.Error
+            : httpContext.Request.Method.Equals(HttpMethods.Options, StringComparison.OrdinalIgnoreCase)
+                ? LogEventLevel.Debug
+                : LogEventLevel.Information;
+
     opts.EnrichDiagnosticContext = (diag, http) => {
         diag.Set("TraceId", Activity.Current?.Id ?? http.TraceIdentifier);
-        diag.Set("Path", http.Request.Path);
+        diag.Set("Path", http.Request.Path.ToString());
         diag.Set("Method", http.Request.Method);
         diag.Set("UserAgent", http.Request.Headers.UserAgent.ToString());
+
         diag.Set("ClientIP", http.Connection.RemoteIpAddress?.ToString());
 
-        var user = http.User?.FindFirst("usuario_login")?.Value ??
-                   (http.Items.TryGetValue("UsuarioLogin", out var u) ? u?.ToString() : null);
+        string? usuario =
+            http.User?.FindFirst("usuario_login")?.Value
+            ?? http.User?.Identity?.Name
+            ?? http.User?.FindFirst("preferred_username")?.Value
+            ?? http.User?.FindFirst("email")?.Value
+            ?? (http.Items.TryGetValue("UsuarioLogin", out var u) ? u?.ToString() : null);
 
-        if (!string.IsNullOrEmpty(user))
-            diag.Set("Usuario", user);
+        if (!string.IsNullOrWhiteSpace(usuario))
+            diag.Set("Usuario", usuario);
 
-        var userId =
-            http.User?.FindFirst("usuario_id")?.Value ??
-            (http.Items.TryGetValue("UsuarioId", out var v) ? v?.ToString() : null);
+        string? usuarioId =
+            http.User?.FindFirst("usuario_id")?.Value
+            ?? http.User?.FindFirst("sub")?.Value
+            ?? http.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            ?? (http.Items.TryGetValue("UsuarioId", out var v) ? v?.ToString() : null);
 
-        if (!string.IsNullOrEmpty(userId))
-            diag.Set("UsuarioId", userId);
+        if (!string.IsNullOrWhiteSpace(usuarioId))
+            diag.Set("UsuarioId", usuarioId);
 
         diag.Set("StatusCode", http.Response.StatusCode);
-
         if (http.Items.TryGetValue("PayloadStatus", out var s))
             diag.Set("PayloadStatus", s);
+
+        var endpoint = http.GetEndpoint();
+        var routePattern = endpoint is Microsoft.AspNetCore.Routing.RouteEndpoint re
+            ? re.RoutePattern?.RawText
+            : endpoint?.DisplayName;
+        if (!string.IsNullOrWhiteSpace(routePattern))
+            diag.Set("Route", routePattern);
     };
 });
 
-// 2) Proxy awareness (Traefik/Coolify)
-app.UseForwardedHeaders(new ForwardedHeadersOptions {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-    RequireHeaderSymmetry = false
-});
-app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<ForwardedHeadersOptions>>()
-    .Value.KnownNetworks.Clear();
-app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<ForwardedHeadersOptions>>()
-    .Value.KnownProxies.Clear();
-
-// 3) Middlewares na ordem recomendada
 app.UseMyExceptionHandler(app.Environment);
 app.UseMyMiddlewares(app.Environment);
 app.UseMyCors();
@@ -79,37 +100,31 @@ if (!app.Environment.IsDevelopment()) {
     app.UseHttpsRedirection();
 }
 
-app.UseRouting();
 app.UseMyRequestLocalization();
 
-// Coloque compressão ANTES dos endpoints para pegar as respostas
 app.UseResponseCompression();
 
-app.UseMySwagger(app.Configuration);
-app.UseMyEndpoints();
-
-// 4) Escopo de log com UsuarioId
 app.Use(async (ctx, next) => {
     var userId =
-        ctx.User?.FindFirst("usuario_id")?.Value ??
-        ctx.User?.FindFirst("sub")?.Value ??
-        (ctx.Items.TryGetValue("UsuarioId", out var v) && v is string strValue ? strValue : null);
+        ctx.User?.FindFirst("usuario_id")?.Value
+        ?? ctx.User?.FindFirst("sub")?.Value
+        ?? (ctx.Items.TryGetValue("UsuarioId", out var v) ? v?.ToString() : null);
 
-    using (LogContext.PushProperty("UsuarioId", userId ?? "anonimo")) {
-        await next();
-    }
+    var userLogin =
+        ctx.User?.FindFirst("usuario_login")?.Value
+        ?? ctx.User?.Identity?.Name
+        ?? (ctx.Items.TryGetValue("UsuarioLogin", out var vu) ? vu?.ToString() : null);
 
-    var usuario =
-       ctx.User?.FindFirst("usuario_login")?.Value ??
-       (ctx.Items.TryGetValue("UsuarioLogin", out var vu) && vu is string strValueUser ? strValueUser : null);
-
-    using (LogContext.PushProperty("UsuarioLogin", usuario ?? "anonimo")) {
+    using (LogContext.PushProperty("UsuarioId", userId ?? "anonimo"))
+    using (LogContext.PushProperty("UsuarioLogin", userLogin ?? "anonimo")) {
         await next();
     }
 });
 
-// 5) Não adicione URLs manualmente em produção (evita conflito com --urls do Dockerfile)
-ConfigureEnvironmentSpecific(app);
+app.UseMySwagger(app.Configuration);
+app.UseMyEndpoints();
+
+ConfigureEnvironmentSpecific(app, appEnv);
 
 app.Run();
 
@@ -126,10 +141,8 @@ void ConfigureServices(WebApplicationBuilder builder) {
     builder.Services.AddMyCompression();
 }
 
-void ConfigureMiddlewares(WebApplication app) { }
-
-void ConfigureEnvironmentSpecific(WebApplication app) {
-    switch (appEnv) {
+void ConfigureEnvironmentSpecific(WebApplication app, string appEnv) {
+    switch (appEnv?.ToUpperInvariant()) {
         case "DEV":
             var urls = app.Configuration.GetSection("Urls").Get<Dictionary<string, string>>();
             if (urls != null && urls.TryGetValue(app.Environment.EnvironmentName, out var environmentUrl)) {
