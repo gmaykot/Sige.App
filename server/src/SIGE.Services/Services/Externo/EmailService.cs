@@ -142,6 +142,92 @@ namespace SIGE.Services.Services.Externo {
             }
         }
 
+        public async Task<Response> SendEmailEconomia(EmailDataDto req) {
+            var ret = new Response();
+            try {
+                using (var mensagem = new MimeMessage()) {
+                    mensagem.Subject = string.Format("Relatório de Economia - {0} - {1}", req.DescMesReferencia, req.DescEmpresa);
+                    mensagem.InReplyTo = _opt.ContactMail;
+
+                    var emailFrom = new MailboxAddress(_opt.SenderName, _opt.SenderEmail);
+                    mensagem.From.Add(emailFrom);
+                    var emailTo = new MailboxAddress(req.Contato.NomeContato, req.Contato.EmailContato);
+                    mensagem.To.Add(emailTo);
+
+                    req.ContatosCCO?.ForEach(c => mensagem.Cc.Add(new MailboxAddress(c.NomeContato, c.EmailContato)));
+
+                    var request = _httpContextAccessor.HttpContext?.Request;
+                    var baseUrl = $"{request?.Scheme}://{request?.Host}";
+                    var pixelUrl = $"{baseUrl}/email/open/economia/{req.RelatorioEconomiaId}";
+
+                    var builder = new BodyBuilder {
+                        HtmlBody = EmailExtensions.GetEmailTemplateEconomia(req.Contato.NomeContato, req.DescMesReferencia, _opt.ContactPhone, _opt.ContactMail, req.DescEmpresa, pixelUrl, baseUrl)
+                    };
+
+                    req.Relatorios?.ForEach(async r => {
+                        byte[] byteArray = Convert.FromBase64String(r.Split("base64,")[1]);
+                        builder.Attachments.Add(string.Format("relatorio_economia_{0}_{1}.pdf", req.DescMesReferencia.Replace("/", "_"), req.DescEmpresa).ToLower(), byteArray);
+                    });
+
+
+                    mensagem.Body = builder.ToMessageBody();
+
+                    var logEmail = await _appDbContext.LogsEnvioEmails.FirstOrDefaultAsync(l => l.RelatorioEconomiaId == req.RelatorioEconomiaId) ?? new LogEnvioEmail {
+                        Email = req.Contato.EmailContato,
+                        CcoEmail = req.ContatosCCO.Count != 0 ? string.Join(",", req.ContatosCCO.Select(c => c.EmailContato)) : null,
+                        RelatorioEconomiaId = req.RelatorioEconomiaId,
+                        UsuarioEnvioId = _requestContext.UsuarioId
+                    };
+
+                    try {
+                        using var mailClient = new SmtpClient();
+                        await mailClient.ConnectAsync(_opt.Server, _opt.Port, SecureSocketOptions.Auto);
+                        await mailClient.AuthenticateAsync(_opt.UserName, _opt.Password);
+                        logEmail.Response = await mailClient.SendAsync(mensagem);
+                    }
+                    catch (Exception e) {
+                        logEmail.InnerException = e.InnerException?.Message ?? e.Message;
+                    }
+
+                    if (logEmail?.Id != null)
+                        _ = _appDbContext.LogsEnvioEmails.Update(logEmail);
+                    else
+                        _ = await _appDbContext.LogsEnvioEmails.AddAsync(logEmail);
+
+                    _ = await _appDbContext.SaveChangesAsync();
+
+                    if (!_opt.Imap.IsNullOrEmpty()) {
+                        using var imapClient = new ImapClient();
+
+                        // Conecte ao servidor IMAP
+                        imapClient.Connect(_opt.Imap, _opt.ImapPort.NullToInt(), SecureSocketOptions.SslOnConnect);
+                        imapClient.Authenticate(_opt.UserName, _opt.Password);
+
+                        // Selecione a pasta de "Itens Enviados"
+                        var sentFolder = imapClient.GetFolder(SpecialFolder.Sent);
+                        sentFolder.Open(FolderAccess.ReadWrite);
+
+                        // Copie o e-mail para a pasta
+                        sentFolder.Append(mensagem);
+
+                        imapClient.Disconnect(true);
+                    }
+                }
+
+                //var relatorio = await _appDbContext.RelatoriosEconomia.FindAsync(req.RelatorioEconomiaId);
+                //if (relatorio != null) {
+                //    relatorio.Fase = EFaseMedicao.ENVIO_EMAIL;
+                //    _appDbContext.RelatoriosMedicao.Update(relatorio);
+                //    _ = await _appDbContext.SaveChangesAsync();
+                //}
+
+                return ret.SetOk();
+            }
+            catch (Exception ex) {
+                return ret.SetInternalServerError().AddError("Message", ex.Message).AddError("InnerException", ex.InnerException?.Message);
+            }
+        }
+
         public async Task<Response> SendFullEmail(EmailFullDataDto req) {
             var ret = new Response();
             try {
@@ -175,10 +261,10 @@ namespace SIGE.Services.Services.Externo {
             }
         }
 
-        public async Task<Response> OpenEmail(Guid req) {
+        public async Task<Response> OpenEmail(Guid? relatorioMedicaoId = null, Guid? relatorioEconomiaId = null) {
             var ret = new Response();
 
-            var logEmail = await _appDbContext.LogsEnvioEmails.FirstOrDefaultAsync(l => l.RelatorioMedicaoId == req);
+            var logEmail = await _appDbContext.LogsEnvioEmails.FirstOrDefaultAsync(l => l.RelatorioMedicaoId == relatorioMedicaoId || l.RelatorioEconomiaId == relatorioEconomiaId);
             if (logEmail != null) {
                 logEmail.Aberto = true;
                 logEmail.DataAbertura = DataSige.Hoje();

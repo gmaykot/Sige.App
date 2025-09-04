@@ -17,6 +17,11 @@ import { BANDEIRAS } from "../../../@core/enum/const-dropbox";
 export class RelatorioEconomiaPdfService {
   constructor(private pdfConfig: PdfConfigService) {}
 
+  public blobPDF(response: IRelatorioFinal, graficoImagem: string): any {
+    const pdf = this.createPDF(response, graficoImagem);
+    return pdf.output("blob");
+  }
+
   public downloadPDF(response: IRelatorioFinal, graficoImagem: string) {
     const pdf = this.createPDF(response, graficoImagem);
     pdf.save(
@@ -32,7 +37,7 @@ export class RelatorioEconomiaPdfService {
   private createPDF(response?: IRelatorioFinal, graficoImagem?: string): jsPDF {
     // TAMANHO A4 EM PT: 595.35 x 841.995
     const doc = new jsPDF("p", "pt", "a4");
-    let pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfWidth = doc.internal.pageSize.getWidth();
     let graficoPdfHeight = 0;
 
     if (graficoImagem) {

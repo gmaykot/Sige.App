@@ -1,13 +1,12 @@
 ﻿using SIGE.Core.Models.Defaults;
 using SIGE.Core.Models.Dto.Administrativo.Email;
 
-namespace SIGE.Services.Interfaces.Externo
-{
-    public interface IEmailService
-    {
+namespace SIGE.Services.Interfaces.Externo {
+    public interface IEmailService {
         Task<Response> SendEmail(EmailDataDto req);
+        Task<Response> SendEmailEconomia(EmailDataDto req);
         Task<Response> SendFullEmail(EmailFullDataDto req);
-        Task<Response> OpenEmail(Guid req);
+        Task<Response> OpenEmail(Guid? relatorioMedicaoId = null, Guid? relatorioEconomiaId = null);
         Task<Response> ObterHistorico();
     }
 }
