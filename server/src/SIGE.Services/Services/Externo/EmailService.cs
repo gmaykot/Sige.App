@@ -194,10 +194,10 @@ namespace SIGE.Services.Services.Externo {
             var res = await _appDbContext.LogsEnvioEmails.Include(l => l.UsuarioEnvio).Include(l => l.RelatorioMedicao).ThenInclude(r => r.Contrato).OrderByDescending(l => l.RelatorioMedicao.MesReferencia).ToListAsync();
             if (res != null) {
                 var resultado = res
-                    .GroupBy(a => a.RelatorioMedicao.MesReferencia)
+                    .GroupBy(a => a.RelatorioMedicao?.MesReferencia)
                     .Select(g => new {
                         data = new {
-                            mesReferencia = g.Key.ToString("MM/yyyy"),
+                            mesReferencia = g.Key.Value.ToString("MM/yyyy"),
                             tipo = "group",
                             qtdItens = g.Count()
                         },
