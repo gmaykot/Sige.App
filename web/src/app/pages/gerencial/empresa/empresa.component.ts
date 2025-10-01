@@ -569,14 +569,16 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit {
           contato: { empresaId: empresa.id, fornecedorId: null } as IContato,
         },
       })
-      .onClose.subscribe(async (contato) => {
-        if (contato) {
+      .onClose.subscribe(async (ret) => {
+        if (ret.contato) {
           await this.contatoService
-            .post(contato)
+            .post(ret.contato)
             .then(async (res: IResponseInterface<IContato>) => {
-              contato.id = res.data.id;
-              this.contatos = this.contatos.filter((a) => a.id != contato.id);
-              this.contatos.push(contato);
+              ret.contato.id = res.data.id;
+              this.contatos = this.contatos.filter(
+                (a) => a.id != ret.contato.id
+              );
+              this.contatos.push(ret.contato);
               this.sourceContato.load(this.contatos);
               this.alertService.showSuccess("Contato cadastrado com sucesso.");
               this.getEmpresas();
@@ -592,14 +594,16 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit {
         .open(ContatoComponent, {
           context: { contato: this.contatosChecked[0] },
         })
-        .onClose.subscribe(async (contato) => {
-          if (contato) {
-            contato.empresaId = this.getEmpresa().id;
-            contato.fornecedorId = null;
-            await this.contatoService.put(contato).then();
+        .onClose.subscribe(async (ret) => {
+          if (ret.contato) {
+            ret.contato.empresaId = this.getEmpresa().id;
+            ret.contato.fornecedorId = null;
+            await this.contatoService.put(ret.contato).then();
             {
-              this.contatos = this.contatos.filter((a) => a.id != contato.id);
-              this.contatos.push(contato);
+              this.contatos = this.contatos.filter(
+                (a) => a.id != ret.contato.id
+              );
+              this.contatos.push(ret.contato);
               this.sourceContato.load(this.contatos);
               this.alertService.showSuccess("Contato aterado com sucesso.");
               this.getEmpresas();

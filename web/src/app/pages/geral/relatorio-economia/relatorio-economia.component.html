@@ -120,8 +120,10 @@
                                             </tr>
                                             <tr *ngFor="let lanc of relatorioFinal?.comparativo?.lancamentos" [ngClass]="lanc.subTotal ? 'sub-total-linha' : lanc.total ? 'total-linha' : ''">
                                                 <td>{{lanc.descricao}}</td>
-                                                <td style="text-align: center; {{lanc.percentual && lanc.percentual < 0 ? 'color: red' : ''}}">{{lanc.percentual | number:'1.2-2'}}{{lanc.percentual && lanc.percentual > 0 ? '%' : ''}}</td>
-                                                <td style="text-align: center; {{lanc.valor && lanc.valor < 0 ? 'color: red' : ''}}">{{lanc.valor | currency:'BRL':'symbol':'1.2-2'}}</td>
+                                                <td [ngStyle]="{'text-align': 'center', 'color': lanc.percentual && lanc.percentual < 0 ? 'red' : ''}">
+                                                  {{lanc.percentual | number:'1.2-2'}}{{lanc.percentual && lanc.percentual > 0 ? '%' : ''}}
+                                                </td>
+                                                <td [ngStyle]="{'text-align': 'center', 'color': lanc.valor && lanc.valor < 0 ? 'red' : ''}">{{lanc.valor | currency:'BRL':'symbol':'1.2-2'}}</td>
                                                 <td>{{lanc.observacao}}</td>
                                             </tr>
                                         </table>
@@ -161,11 +163,11 @@
                                     </tr>
 
                                     <ng-container *ngFor="let lanc of grupo?.subGrupos[0]?.lancamentos">
-                                      <tr [ngClass]="lanc.totalizador === true ? 'total-linha' : lanc.subTotalizador === true ? 'sub-total-linha' : ''" *ngIf="lanc.observacao == null && (lanc.montante && lanc.montante !== 0) || (lanc.total && lanc.total !== 0)">
+                                      <tr [ngClass]="lanc.totalizador === true ? 'total-linha' : lanc.subTotalizador === true ? 'sub-total-linha' : ''" *ngIf="lanc.observacao === null && (lanc.montante && lanc.montante !== 0) || (lanc.total && lanc.total !== 0)">
                                         <td style="text-align: left;">{{ lanc.descricao }}</td>
                                         <td style="text-align: center;">{{ !lanc.montante || lanc.montante === 0 ? lanc.totalizador === true ? '' : '-' : lanc.montante | number:'1.2-3' }} {{getTipo(lanc.tipoMontante, lanc.montante)}}</td>
                                         <td style="text-align: center;">{{ !lanc.tarifa || lanc.tarifa === 0 ? lanc.totalizador === true ? '' : '-' : lanc.tarifa | currency:'BRL':'symbol':'1.2-8' }} {{getTipo(lanc.tipoTarifa, lanc.tarifa)}}</td>
-                                        <td style="text-align: center; {{lanc.total && lanc.total < 0 ? 'color: red' : ''}}">{{ !lanc.total || lanc?.total === 0 ? lanc?.totalizador === true ? '' : '-' : lanc?.total | moedaParenteses }}</td>
+                                        <td [ngStyle]="{'text-align': 'center', 'color': lanc.total && lanc.total < 0 ? 'red' : ''}">{{ !lanc.total || lanc?.total === 0 ? lanc?.totalizador === true ? '' : '-' : lanc?.total | moedaParenteses }}</td>
                                       </tr>
                                       <tr [ngClass]="lanc.totalizador === true ? 'total-linha' : lanc.subTotalizador === true ? 'sub-total-linha' : ''" *ngIf="lanc.observacao && lanc.observacao !== null">
                                         <td colspan="2">{{ lanc.descricao }}</td>
@@ -189,6 +191,7 @@
                     <button *ngIf="habilitaOperacoes" [disabled]="!habilitaPdf()" type="submit" nbButton (click)="validar()" status="danger" style="margin-left: 0.5rem;">Validar</button>
 
                     <button [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="downloadAsPdf()">Gerar PDF</button>
+                    <button hidden [disabled]="!habilitaPdf()" type="submit" nbButton status="warning" style="margin-left: 0.5rem;" (click)="onSendEmail()">Enviar E-mail</button>
                 </nb-card-footer>                
             </nb-card>
         </div>

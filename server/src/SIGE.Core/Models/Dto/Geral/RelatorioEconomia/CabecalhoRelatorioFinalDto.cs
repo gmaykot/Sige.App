@@ -6,6 +6,7 @@ namespace SIGE.Core.Models.Dto.Geral.RelatorioEconomia {
         [NotMapped]
         public string? Titulo { get; set; }
         public Guid? ContratoId { get; set; }
+        public Guid? FornecedorId { get; set; }
         [NotMapped]
         public string? SubTitulo { get; set; }
         [NotMapped]

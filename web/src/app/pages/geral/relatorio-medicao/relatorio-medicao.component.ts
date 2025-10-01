@@ -63,8 +63,8 @@ export class RelatorioMedicaoComponent implements OnInit {
   public sourceResultado: LocalDataSource = new LocalDataSource();
   public sourceResultadoAnalitico: LocalDataSource = new LocalDataSource();
 
-  public selected: boolean = false;
-  public loading: boolean = false;
+  public selected = false;
+  public loading = false;
 
   public dataAtual = new Date();
   public mesReferencia = null;
@@ -74,8 +74,8 @@ export class RelatorioMedicaoComponent implements OnInit {
   public resultadoAnalitico: IValoresMedicaoAnalitico[];
   public contatos: Array<IContato> = [];
   public positions = NbGlobalPhysicalPosition;
-  public habilitaValidar: boolean = false;
-  public habilitaOperacoes: boolean = false;
+  public habilitaValidar = false;
+  public habilitaOperacoes = false;
 
   public control = this.formBuilder.group({
     observacao: ["", Validators.required],

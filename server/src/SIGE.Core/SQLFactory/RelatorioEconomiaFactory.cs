@@ -40,7 +40,9 @@ namespace SIGE.Core.SQLFactory {
 
             builder.AppendLine("SELECT");
             builder.AppendLine("    contratoEmpresa.ContratoId AS 'ContratoId',");
+            builder.AppendLine("    contrato.FornecedorId AS 'FornecedorId',");
             builder.AppendLine("    null AS 'Id',");
+            builder.AppendLine("    null AS 'Titulo',");
             builder.AppendLine("    ponto.Nome AS 'Unidade',");
             builder.AppendLine("    ponto.Segmento AS 'Segmento',");
             builder.AppendLine("    'Sul' AS 'SubMercado',");
