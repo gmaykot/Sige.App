@@ -215,7 +215,6 @@ import { NumberEditorComponent } from "./custom-component/number-editor.componen
     ChartRendererComponent,
     NumberEditorComponent,
   ],
-  entryComponents: [StatusIconComponent],
   providers: [
     DecimalPipe,
     CurrencyPipe,
