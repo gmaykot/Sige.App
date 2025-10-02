@@ -134,24 +134,24 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "sige:build"
+            "buildTarget": "sige:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "sige:build:production"
+              "buildTarget": "sige:build:production"
             },
             "staging": {
-              "browserTarget": "sige:build:staging"
+              "buildTarget": "sige:build:staging"
             },
             "hmg": {
-              "browserTarget": "sige:build:hmg"
+              "buildTarget": "sige:build:hmg"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "sige:build"
+            "buildTarget": "sige:build"
           }
         },
         "test": {
