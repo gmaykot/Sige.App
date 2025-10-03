@@ -39,15 +39,13 @@ export class CalculoEconomiaService {
     try {
       var retorno: IValoresMedicaoAnalitico[] = [];
       var valores = this.calcular(relatorio);
-      // var total3Porcento = this.relatorio.totalMedido * 1.03;
       relatorio.valoresAnaliticos.forEach((val) => {
         if (!val.totalMedido || val.totalMedido == null) val.totalMedido = 0;
-        // var unitario3Porcento =
-        //   +(val.totalMedido * (3 / 100)) + val.totalMedido;
         var total = this.calculaConsumoTotalUnitario(
           val.totalMedido,
           val.proinfa
         );
+        var percentualTotal = val.totalMedido / relatorio.totalMedido;
         var totalComTake =
           (total / this.consumoTotal) * valores.resultadoFaturamento.quantidade;
         var valorProduto = totalComTake * relatorio.valorUnitarioKwh;
@@ -63,8 +61,8 @@ export class CalculoEconomiaService {
           valorICMS: totalIcms,
           valorProduto: valorProduto,
           valorNota: totalNota,
-          qtdeComprarCurtoPrazo: valores.comprarCurtoPrazo,
-          qtdeVenderCurtoPrazo: valores.venderCurtoPrazo,
+          qtdeComprarCurtoPrazo: valores.comprarCurtoPrazo * percentualTotal,
+          qtdeVenderCurtoPrazo: valores.venderCurtoPrazo * percentualTotal,
           comprarCurtoPrazo: this.curtoPrazoUnitario(
             valores.comprarCurtoPrazo,
             relatorio.valorCompraCurtoPrazo,

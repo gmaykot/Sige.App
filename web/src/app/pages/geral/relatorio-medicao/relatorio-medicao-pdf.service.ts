@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import jsPDF, { TextOptionsLight } from "jspdf";
+import jsPDF from "jspdf";
 import autoTable, { RowInput } from "jspdf-autotable";
 import {
   IRelatorioMedicao,
@@ -87,28 +87,6 @@ export class RelatorioMedicaoPdfService {
         src: "assets/images/logo.png",
         marginLeft: margins.marginLeft,
       });
-
-      const cabecalhoInfo = `Bento Gonçalves, ${new Date().toLocaleDateString(
-        "pt",
-        {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        }
-      )}`;
-
-      const cabecalhoInfoMarginTop = this.pdfConfig.addTextoUnico(
-        doc,
-        margins?.marginLeft + 350,
-        [
-          {
-            text: cabecalhoInfo,
-            marginTop: margins?.marginTop + 815,
-            align: "left",
-            fontSize: 10,
-          },
-        ]
-      )[0]?.marginTop;
 
       const tituloCabecalho = `Relatório de Medição ${globalValues.mesReferencia}`;
 
@@ -263,17 +241,9 @@ export class RelatorioMedicaoPdfService {
       );
 
       const totalCurtoPrazo =
-        resultadoAnalitico[0].qtdeComprarCurtoPrazo > 0
-          ? this.decimalPipe.transform(
-              resultadoAnalitico[0].qtdeComprarCurtoPrazo,
-              "2.3-3",
-              "pt"
-            )
-          : this.decimalPipe.transform(
-              resultadoAnalitico[0].qtdeVenderCurtoPrazo,
-              "2.3-3",
-              "pt"
-            );
+        valores.comprarCurtoPrazo > 0
+          ? this.decimalPipe.transform(valores.comprarCurtoPrazo, "2.3-3", "pt")
+          : this.decimalPipe.transform(valores.venderCurtoPrazo, "2.3-3", "pt");
 
       const consumoPdfData: { [key: string]: PdfTextoType[] } = {
         medido: [
@@ -549,25 +519,6 @@ export class RelatorioMedicaoPdfService {
         ...desenharBordasPersonalizadas,
       };
 
-      const resetEstilosTabela = {
-        headStyles: {
-          fontSize: 9,
-          fontStyle: "bold" as const,
-          halign: "center" as const,
-          valign: "middle" as const,
-          cellPadding: 1,
-          lineColor: "#FFFFFF",
-        },
-        bodyStyles: {
-          fontSize: 6,
-          fontStyle: "normal" as const,
-          halign: "center" as const,
-          valign: "middle" as const,
-          cellPadding: 1,
-          lineColor: "#FFFFFF",
-        },
-      };
-
       autoTable(doc, {
         head: [
           [
@@ -775,21 +726,21 @@ export class RelatorioMedicaoPdfService {
       resultadoAnalitico[0].qtdeComprarCurtoPrazo > 0 ? "Comprar" : "Vender";
 
     const comprarVenderPrazo = (values): string => {
-      return resultadoAnalitico[0].qtdeComprarCurtoPrazo > 0
+      return values.qtdeComprarCurtoPrazo > 0
         ? this.decimalPipe.transform(
-            resultadoAnalitico[0].qtdeComprarCurtoPrazo,
+            values.qtdeComprarCurtoPrazo,
             "1.3-3",
             "pt"
           )
         : this.decimalPipe.transform(
-            resultadoAnalitico[0].qtdeVenderCurtoPrazo,
+            values.qtdeVenderCurtoPrazo,
             "1.3-3",
             "pt"
           );
     };
 
     const comprarVenderReal = (values): string => {
-      return resultadoAnalitico[0].comprarCurtoPrazo > 0
+      return values.comprarCurtoPrazo > 0
         ? this.decimalPipe.transform(
             values?.quantidade + values.comprarCurtoPrazo,
             "1.3-3",
