@@ -39,13 +39,14 @@ export class CalculoEconomiaService {
     try {
       var retorno: IValoresMedicaoAnalitico[] = [];
       var valores = this.calcular(relatorio);
+
       relatorio.valoresAnaliticos.forEach((val) => {
         if (!val.totalMedido || val.totalMedido == null) val.totalMedido = 0;
         var total = this.calculaConsumoTotalUnitario(
           val.totalMedido,
           val.proinfa
         );
-        var percentualTotal = val.totalMedido / relatorio.totalMedido;
+        var percentualTotal = total / valores.valorConsumoTotal;
         var totalComTake =
           (total / this.consumoTotal) * valores.resultadoFaturamento.quantidade;
         var valorProduto = totalComTake * relatorio.valorUnitarioKwh;

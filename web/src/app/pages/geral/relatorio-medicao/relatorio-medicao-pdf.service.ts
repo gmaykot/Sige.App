@@ -740,14 +740,14 @@ export class RelatorioMedicaoPdfService {
     };
 
     const comprarVenderReal = (values): string => {
-      return values.comprarCurtoPrazo > 0
+      return values.qtdeComprarCurtoPrazo > 0
         ? this.decimalPipe.transform(
-            values?.quantidade + values.comprarCurtoPrazo,
+            values?.quantidade + values.qtdeComprarCurtoPrazo,
             "1.3-3",
             "pt"
           )
         : this.decimalPipe.transform(
-            values?.quantidade - values.venderCurtoPrazo,
+            values?.quantidade - values.qtdeVenderCurtoPrazo,
             "1.3-3",
             "pt"
           );
