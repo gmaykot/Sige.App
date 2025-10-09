@@ -54,7 +54,6 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit {
   cepSelected: any;
   public control = this.formBuilder.group({
     id: "",
-    gestorId: "",
     empresaMatrizId: "",
     ativo: false,
     tipoFilial: false,
@@ -188,7 +187,6 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit {
     this.cepSelected = emp.cep;
     this.control = this.formBuilder.group({
       id: emp.id,
-      gestorId: emp.gestorId,
       empresaMatrizId: emp.empresaMatrizId,
       tipoFilial: emp.empresaMatrizId != null && emp.empresaMatrizId != "",
       ativo: emp.ativo,
@@ -222,7 +220,6 @@ export class EmpresaComponent extends EmpresaConfigSettings implements OnInit {
         const emp = this.control.value as IEmpresa;
         this.control = this.formBuilder.group({
           id: emp.id,
-          gestorId: emp.gestorId,
           empresaMatrizId: emp.empresaMatrizId,
           tipoFilial: emp.empresaMatrizId != null && emp.empresaMatrizId != "",
           ativo: emp.ativo,

@@ -17,14 +17,26 @@ using SIGE.Core.Models.Sistema.Gerencial.Empresa;
 using SIGE.Core.Models.Sistema.Gerencial.GerenciamentoMensal;
 
 namespace SIGE.DataAccess.Context {
+
     public class AppDbContext : DbContext {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<MenuUsuarioModel>().Property(p => p.TipoPerfil).HasConversion(new ETipoPerfilConverter());
-            modelBuilder.Entity<EmpresaModel>().Property(c => c.Estado).HasConversion(new ETipoEstadoConverter());
-            modelBuilder.Entity<ConcessionariaModel>().Property(c => c.Estado).HasConversion(new ETipoEstadoConverter());
+            modelBuilder
+                .Entity<MenuUsuarioModel>()
+                .Property(p => p.TipoPerfil)
+                .HasConversion(new ETipoPerfilConverter());
+            modelBuilder
+                .Entity<EmpresaModel>()
+                .Property(c => c.Estado)
+                .HasConversion(new ETipoEstadoConverter());
+            modelBuilder
+                .Entity<ConcessionariaModel>()
+                .Property(c => c.Estado)
+                .HasConversion(new ETipoEstadoConverter());
 
             var assembly = typeof(AppDbContext).Assembly;
             modelBuilder.ApplyConfigurationsFromAssembly(assembly);
@@ -33,7 +45,10 @@ namespace SIGE.DataAccess.Context {
             foreach (var entityType in modelBuilder.Model.GetEntityTypes()) {
                 if (typeof(BaseModel).IsAssignableFrom(entityType.ClrType)) {
                     var parameter = Expression.Parameter(entityType.ClrType, "e");
-                    var propertyMethod = Expression.Property(parameter, nameof(BaseModel.DataExclusao));
+                    var propertyMethod = Expression.Property(
+                        parameter,
+                        nameof(BaseModel.DataExclusao)
+                    );
                     var nullConstant = Expression.Constant(null, typeof(DateTime?));
                     var body = Expression.Equal(propertyMethod, nullConstant);
                     var lambda = Expression.Lambda(body, parameter);
@@ -44,12 +59,14 @@ namespace SIGE.DataAccess.Context {
         }
 
         // Método para obter um DbSet genérico
-        public DbSet<T> Set<T>() where T : class {
+        public DbSet<T> Set<T>()
+            where T : class {
             return base.Set<T>();
         }
 
         // Propriedades padrão para DbSets específicos
         public DbSet<AgenteMedicaoModel> AgentesMedicao { get; set; }
+
         public DbSet<BandeiraTarifariaModel> BandeirasTarifarias { get; set; }
         public DbSet<BandeiraTarifariaVigenteModel> BandeiraTarifariaVigente { get; set; }
         public DbSet<ConcessionariaModel> Concessionarias { get; set; }
@@ -65,7 +82,6 @@ namespace SIGE.DataAccess.Context {
         public DbSet<FaturamentoCoenelModel> FaturamentosCoenel { get; set; }
         public DbSet<FaturaEnergiaModel> FaturasEnergia { get; set; }
         public DbSet<FornecedorModel> Fornecedores { get; set; }
-        public DbSet<GestorModel> Gestores { get; set; }
         public DbSet<ImpostoConcessionariaModel> ImpostosConcessionarias { get; set; }
         public DbSet<LancamentoAdicionalModel> LancamentosAdicionais { get; set; }
         public DbSet<LogEnvioEmail> LogsEnvioEmails { get; set; }

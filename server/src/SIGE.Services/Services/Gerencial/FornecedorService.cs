@@ -12,7 +12,10 @@ using SIGE.Core.SQLFactory;
 using SIGE.DataAccess.Context;
 
 namespace SIGE.Services.Services.Gerencial {
-    public class FornecedorService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger) : BaseService<FornecedorDto, FornecedorModel>(appDbContext, mapper, appLogger) {
+
+    public class FornecedorService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger)
+        : BaseService<FornecedorDto, FornecedorModel>(appDbContext, mapper, appLogger) {
+
         public override async Task<Response> Alterar(FornecedorDto req) {
             var fornecedor = await _appDbContext.Fornecedores.FindAsync(req.Id);
 
@@ -21,7 +24,6 @@ namespace SIGE.Services.Services.Gerencial {
 
             if (!req.TelefoneAlternativo.IsNullOrEmpty())
                 req.TelefoneAlternativo = req.TelefoneAlternativo.FormataTelefone();
-            req.GestorId = fornecedor.GestorId;
             _mapper.Map(req, fornecedor);
             _ = await _appDbContext.SaveChangesAsync();
 
@@ -29,9 +31,17 @@ namespace SIGE.Services.Services.Gerencial {
         }
 
         public override async Task<Response> Excluir(Guid Id) {
-            var ret = await _appDbContext.Fornecedores.Include(f => f.Contatos).Include(f => f.Contratos).FirstOrDefaultAsync(f => f.Id.Equals(Id));
+            var ret = await _appDbContext
+                .Fornecedores.Include(f => f.Contatos)
+                .Include(f => f.Contratos)
+                .FirstOrDefaultAsync(f => f.Id.Equals(Id));
             if (!ret.Contatos.IsNullOrEmpty() || !ret.Contratos.IsNullOrEmpty())
-                return new Response().SetServiceUnavailable().AddError("Entity", "Existem contatos ou contratos vinculados que impossibilitam a exclusão.");
+                return new Response()
+                    .SetServiceUnavailable()
+                    .AddError(
+                        "Entity",
+                        "Existem contatos ou contratos vinculados que impossibilitam a exclusão."
+                    );
 
             _appDbContext.Fornecedores.Remove(ret);
             _ = await _appDbContext.SaveChangesAsync();
@@ -44,11 +54,11 @@ namespace SIGE.Services.Services.Gerencial {
         }
 
         public override async Task<Response> Load(Guid id) {
-            var parameters = new MySqlParameter[]
-            {
-                new("@Id", MySqlDbType.Guid) { Value = id },
-            };
-            return await ExecutarSource<FornecedorSourceDto>(CarregarFactory.Fornecedores(), parameters);
+            var parameters = new MySqlParameter[] { new("@Id", MySqlDbType.Guid) { Value = id }, };
+            return await ExecutarSource<FornecedorSourceDto>(
+                CarregarFactory.Fornecedores(),
+                parameters
+            );
         }
     }
 }

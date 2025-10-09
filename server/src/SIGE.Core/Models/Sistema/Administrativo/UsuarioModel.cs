@@ -1,17 +1,14 @@
 ﻿using SIGE.Core.Models.Defaults;
 
-namespace SIGE.Core.Models.Sistema.Administrativo
-{
-    public class UsuarioModel : BaseModel
-    {
-        public required string Nome { get; set; }
-        public required string Apelido { get; set; }
-        public required string Email { get; set; }
-        public required byte[] PasswordHash { get; set; }
-        public required byte[] PasswordSalt { get; set; }
-        public Guid GestorId { get; set; }
-        public required bool SysAdm { get; set; } = false;
-        public virtual GestorModel? Gestor { get; set; }
+namespace SIGE.Core.Models.Sistema.Administrativo {
+
+    public class UsuarioModel : BaseModel {
+        public string Nome { get; set; }
+        public string Apelido { get; set; }
+        public string Email { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
+        public bool SysAdm { get; set; } = false;
         public IEnumerable<MenuUsuarioModel>? MenusUsuario { get; set; }
     }
 }

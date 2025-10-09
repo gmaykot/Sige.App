@@ -8,11 +8,18 @@ using SIGE.Core.Models.Requests;
 using SIGE.Services.Interfaces.Administrativo;
 
 namespace SIGE.Configuration {
-    public class CustomAuthorizationFilter(RequestContext requestContext, IOAuth2Service service) : IAsyncAuthorizationFilter {
+
+    public class CustomAuthorizationFilter(RequestContext requestContext, IOAuth2Service service)
+        : IAsyncAuthorizationFilter {
         private readonly RequestContext _requestContext = requestContext;
         private readonly IOAuth2Service _service = service;
 
-        public void SetAuthorizationBody<T>(AuthorizationFilterContext filterContext, HttpStatusCode httpStatus, string message = "", string erroMessage = "") {
+        public void SetAuthorizationBody<T>(
+            AuthorizationFilterContext filterContext,
+            HttpStatusCode httpStatus,
+            string message = "",
+            string erroMessage = ""
+        ) {
             filterContext.HttpContext.Response.StatusCode = httpStatus.GetHashCode();
             filterContext.HttpContext.Response.ContentType = "application/json";
             var body = new Response(httpStatus, message);
@@ -31,27 +38,44 @@ namespace SIGE.Configuration {
             if (filterContext.HttpContext?.GetEndpoint() == null)
                 return;
 
-            if (filterContext.ActionDescriptor.EndpointMetadata
-                    .Any(em => em.GetType() == typeof(AllowAnonymousAttribute)))
+            if (
+                filterContext.ActionDescriptor.EndpointMetadata.Any(em =>
+                    em.GetType() == typeof(AllowAnonymousAttribute)
+                )
+            )
                 return;
 
             if (!filterContext.HttpContext.Request.Headers.ContainsKey("Authorization")) {
-                SetAuthorizationBody<BadRequestObjectResult>(filterContext, HttpStatusCode.BadRequest, string.Empty, "Token inexistente na requisição.");
+                SetAuthorizationBody<BadRequestObjectResult>(
+                    filterContext,
+                    HttpStatusCode.BadRequest,
+                    string.Empty,
+                    "Token inexistente na requisição."
+                );
                 return;
             }
 
             if (!ExtractToken(filterContext.HttpContext, out var token)) {
-                SetAuthorizationBody<UnauthorizedObjectResult>(filterContext, HttpStatusCode.Unauthorized, string.Empty, "O token fornecido é inválido.");
+                SetAuthorizationBody<UnauthorizedObjectResult>(
+                    filterContext,
+                    HttpStatusCode.Unauthorized,
+                    string.Empty,
+                    "O token fornecido é inválido."
+                );
                 return;
             }
 
             var introspect = await _service.Introspect(token);
             if (introspect == null || !introspect.Ativo) {
-                SetAuthorizationBody<UnauthorizedObjectResult>(filterContext, HttpStatusCode.Unauthorized, string.Empty, "O token fornecido é inválido.");
+                SetAuthorizationBody<UnauthorizedObjectResult>(
+                    filterContext,
+                    HttpStatusCode.Unauthorized,
+                    string.Empty,
+                    "O token fornecido é inválido."
+                );
                 return;
             }
 
-            _requestContext.GestorId = introspect.GestorId;
             _requestContext.UsuarioId = introspect.UsuarioId;
             _requestContext.Usuario = introspect.Usuario;
 

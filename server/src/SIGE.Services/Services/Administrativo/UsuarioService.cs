@@ -12,7 +12,10 @@ using SIGE.DataAccess.Context;
 using SIGE.Services.Interfaces.Administrativo;
 
 namespace SIGE.Services.Services.Administrativo {
-    public class UsuarioService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger) : BaseService<UsuarioDto, UsuarioModel>(appDbContext, mapper, appLogger), IUsuarioService {
+
+    public class UsuarioService(AppDbContext appDbContext, IMapper mapper, IAppLogger appLogger)
+        : BaseService<UsuarioDto, UsuarioModel>(appDbContext, mapper, appLogger),
+            IUsuarioService {
         private readonly AppDbContext _appDbContext = appDbContext;
         private readonly IMapper _mapper = mapper;
 
@@ -37,7 +40,11 @@ namespace SIGE.Services.Services.Administrativo {
             return new Response().SetOk().SetMessage("Dados alterados com sucesso.");
         }
 
-        private static bool ValidarSenha(string senhaInput, byte[] hashArmazenado, byte[] saltArmazenado) {
+        private static bool ValidarSenha(
+            string senhaInput,
+            byte[] hashArmazenado,
+            byte[] saltArmazenado
+        ) {
             using var hmac = new HMACSHA512(saltArmazenado);
             var hashSenha = hmac.ComputeHash(Encoding.UTF8.GetBytes(senhaInput));
 
@@ -60,14 +67,20 @@ namespace SIGE.Services.Services.Administrativo {
                 _ = await _appDbContext.SaveChangesAsync();
             }
             else {
-                return ret.SetBadRequest().AddError("Negócio", "O campo Senha Antiga não confere com a senha atual do usuário.");
+                return ret.SetBadRequest()
+                    .AddError(
+                        "Negócio",
+                        "O campo Senha Antiga não confere com a senha atual do usuário."
+                    );
             }
 
             return ret.SetOk().SetMessage("Senha alterada com sucesso.");
         }
 
         public async Task<Response> Excluir(Guid Id) {
-            var ret = await _appDbContext.Usuarios.Include(e => e.MenusUsuario).FirstOrDefaultAsync(e => e.Id.Equals(Id));
+            var ret = await _appDbContext
+                .Usuarios.Include(e => e.MenusUsuario)
+                .FirstOrDefaultAsync(e => e.Id.Equals(Id));
 
             _appDbContext.Usuarios.Remove(ret);
             _ = await _appDbContext.SaveChangesAsync();
@@ -77,31 +90,36 @@ namespace SIGE.Services.Services.Administrativo {
 
         public async Task<Response> Incluir(UsuarioDto req) {
             var ret = new Response();
-            var res = await _appDbContext.Usuarios.Include(u => u.MenusUsuario).FirstOrDefaultAsync(e => e.Email.Equals("coenel"));
+            var res = await _appDbContext
+                .Usuarios.Include(u => u.MenusUsuario)
+                .FirstOrDefaultAsync(e => e.Email.Equals("coenel"));
             if (res != null) {
                 var hmac = new HMACSHA512();
                 var user = _mapper.Map<UsuarioModel>(req);
-                user.GestorId = res.GestorId;
                 user.Ativo = true;
                 user.PasswordSalt = hmac.Key;
                 user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(req.Senha));
                 _ = await _appDbContext.AddAsync(user);
 
-
                 var menusUsuario = new List<MenuUsuarioModel>();
                 var menus = await _appDbContext.MenusSistema.Where(m => m.Ativo).ToListAsync();
                 menus.ForEach(m => {
-                    menusUsuario.Add(new MenuUsuarioModel {
-                        MenuSistemaId = m.Id,
-                        TipoPerfil = req.TipoPerfil,
-                        UsuarioId = user.Id
-                    });
+                    menusUsuario.Add(
+                        new MenuUsuarioModel {
+                            MenuSistemaId = m.Id,
+                            TipoPerfil = req.TipoPerfil,
+                            UsuarioId = user.Id
+                        }
+                    );
                 });
 
                 await _appDbContext.MenusUsuarios.AddRangeAsync(menusUsuario);
                 _ = await _appDbContext.SaveChangesAsync();
 
-                return new Response().SetOk().SetData(_mapper.Map<UsuarioDto>(user)).SetMessage("Dados cadastrados com sucesso.");
+                return new Response()
+                    .SetOk()
+                    .SetData(_mapper.Map<UsuarioDto>(user))
+                    .SetMessage("Dados cadastrados com sucesso.");
             }
 
             return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Não existe usuário base");
@@ -113,7 +131,8 @@ namespace SIGE.Services.Services.Administrativo {
             if (res != null)
                 return ret.SetOk().SetData(_mapper.Map<UsuarioDto>(res));
 
-            return ret.SetNotFound().AddError(ETipoErro.INFORMATIVO, $"Não existe usuário com o id {Id}.");
+            return ret.SetNotFound()
+                .AddError(ETipoErro.INFORMATIVO, $"Não existe usuário com o id {Id}.");
         }
 
         public async Task<Response> Obter() {
