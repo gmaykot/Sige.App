@@ -41,8 +41,7 @@ namespace SIGE.Services.Services.Externo {
 
             var credenciais = await _appDbContext
                 .CredenciaisCcee.AsNoTracking()
-                .Include(c => c.Gestor)
-                .FirstOrDefaultAsync(c => c.GestorId == empresa.GestorId);
+                .FirstOrDefaultAsync();
             if (credenciais == null)
                 return ret.SetBadRequest()
                     .AddError(ETipoErro.ATENCAO, "Sem credenciais cadastradas no sistema.");
@@ -258,8 +257,7 @@ namespace SIGE.Services.Services.Externo {
 
             var credenciais = await _appDbContext
                 .CredenciaisCcee.AsNoTracking()
-                .Include(c => c.Gestor)
-                .FirstOrDefaultAsync(c => c.GestorId == empresa.GestorId);
+                .FirstOrDefaultAsync();
             if (credenciais == null)
                 return ret.SetBadRequest()
                     .AddError(ETipoErro.ATENCAO, "Sem credenciais cadastradas no sistema.");
