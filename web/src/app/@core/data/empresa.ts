@@ -3,7 +3,6 @@ import { IContato } from "./contato";
 
 export interface IEmpresa {
   id: string;
-  gestorId: string;
   empresaMatrizId: string;
   ativo: boolean;
   cnpj: string;

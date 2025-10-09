@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Sistema\NovaPasta\**" />
+    <EmbeddedResource Remove="Models\Sistema\NovaPasta\**" />
+    <None Remove="Models\Sistema\NovaPasta\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Enumerators\ETipoSegmentoContrato.cs" />
   </ItemGroup>
 
@@ -22,10 +28,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog" Version="4.2.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Sistema\NovaPasta\" />
   </ItemGroup>
 
 </Project>
