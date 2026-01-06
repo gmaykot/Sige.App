@@ -9,6 +9,8 @@ import { GerenciamentoMensalConfigSettings } from "./gerenciamento-mensal.config
 import { IResponseInterface } from "../../../@core/data/response.interface";
 import { FormBuilder } from "@angular/forms";
 import { TIPO_ENERGIA } from "../../../@core/enum/status-contrato";
+import { SessionStorageService } from "../../../@core/services/util/session-storage.service";
+import { CustomDeleteConfirmationComponent } from "../../../@shared/custom-component/custom-delete-confirmation.component";
 
 @Component({
   selector: "ngx-gerenciamento-mensal",
@@ -76,6 +78,7 @@ export class GerenciamentoMensalComponent
   });
 
   public mesReferencia = "";
+  isSuperUsuario: boolean;
 
   constructor(
     protected service: GerenciamentoMensalService,
@@ -89,6 +92,7 @@ export class GerenciamentoMensalComponent
   }
 
   async ngOnInit() {
+    this.isSuperUsuario = SessionStorageService.isSuperUsuario();
     this.mesReferencia = this.dateService.getMesesReferencia(6)[1].id;
     this.control.patchValue({
       mesReferencia: this.mesReferencia,
@@ -343,6 +347,38 @@ export class GerenciamentoMensalComponent
   onCloseProinfaIcms() {
     this.proinfaIcmsSelected = false;
     this.resetFormProinfaIcms();
+  }
+
+  async onDeleteProinfaIcms() {
+    const proinfaIcms = this.control.get("proinfaIcms")?.value;
+    if (proinfaIcms != null && proinfaIcms.id != null) {
+      this.dialogService
+        .open(CustomDeleteConfirmationComponent, {
+          context: {
+            mesage: `Deseja realmente excluir o registro?`,
+          },
+        })
+        .onClose.subscribe(async (excluir) => {
+          if (excluir) {
+            this.loading = true;
+            await this.service
+              .deleteProinfaIcms(proinfaIcms.id)
+              .then((response: IResponseInterface<any>) => {
+                if (response.success) {
+                  this.alertService.showSuccess(
+                    "Proinfa / ICMS excluída com sucesso!"
+                  );
+                  this.loadDadosMensais();
+                  this.proinfaIcmsSelected = false;
+                  this.resetFormProinfaIcms();
+                }
+              })
+              .finally(() => {
+                this.loading = false;
+              });
+          }
+        });
+    }
   }
 
   onSubmitEncargosCcee() {

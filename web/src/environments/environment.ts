@@ -2,6 +2,6 @@
 
 export const environment = {
   production: false,
-  base_api_url: "http://localhost:5000",
+  base_api_url: "https://api.faturesimples.space",
   base_cep_url: "https://viacep.com.br/ws/{cep}/json/",
 };

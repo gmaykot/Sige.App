@@ -40,6 +40,7 @@ dist/
 .angular/
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+.vscode/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -68,6 +69,7 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 launchSettings.json
+launch.json
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -405,3 +407,4 @@ FodyWeavers.xsd
 *.sln.iml
 web/src/environments/environment.hmg.ts
 /server/src/SIGE/appsettings.Development.json
+server/.vscode/launch.json

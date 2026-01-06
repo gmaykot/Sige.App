@@ -225,5 +225,22 @@ namespace SIGE.Services.Services {
 
             return ret.SetOk();
         }
+
+        public async Task<Response> ExluirProinfaIcms(Guid req) {
+            var ret = new Response();
+            if (req == Guid.Empty) {
+                return ret.SetBadRequest().SetMessage("Identificador inválido para exclusão.");
+            }
+            else {
+                var valor = await _appDbContext.ValoresMensaisPontoMedicao.FirstOrDefaultAsync(b => b.Id == req);
+                if (valor == null) {
+                    return ret.SetNotFound().SetMessage("Registro não encontrado para exclusão.");
+                }
+                _ = _appDbContext.Remove(valor);
+                _ = await _appDbContext.SaveChangesAsync();
+            }
+            
+            return ret.SetOk();
+        }
     }
 }
