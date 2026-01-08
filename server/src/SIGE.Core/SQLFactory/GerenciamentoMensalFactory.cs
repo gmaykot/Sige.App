@@ -18,14 +18,32 @@ namespace SIGE.Core.SQLFactory {
             sql.AppendLine("    PontosMedicao ponto");
             sql.AppendLine("INNER JOIN AgentesMedicao agente ON agente.Id = ponto.AgenteMedicaoId");
             sql.AppendLine("INNER JOIN Empresas empresa ON empresa.Id = agente.EmpresaId");
-            sql.AppendLine("LEFT JOIN ValoresMensaisPontoMedicao valor ON valor.PontoMedicaoId = ponto.Id AND valor.MesReferencia = @MesReferencia AND valor.Ativo IS true");
+            sql.AppendLine("LEFT JOIN (");
+            sql.AppendLine("    SELECT * FROM (");
+            sql.AppendLine("        SELECT");
+            sql.AppendLine("            v.Id,");
+            sql.AppendLine("            v.Proinfa,");
+            sql.AppendLine("            v.Icms,");
+            sql.AppendLine("            v.MesReferencia,");
+            sql.AppendLine("            v.ValorDescontoRETUSD,");
+            sql.AppendLine("            v.PontoMedicaoId,");
+            sql.AppendLine("            ROW_NUMBER() OVER (");
+            sql.AppendLine("                PARTITION BY v.PontoMedicaoId, v.MesReferencia");
+            sql.AppendLine("                ORDER BY v.Id DESC");
+            sql.AppendLine("            ) AS rn");
+            sql.AppendLine("        FROM ValoresMensaisPontoMedicao v");
+            sql.AppendLine("        WHERE v.MesReferencia = @MesReferencia");
+            sql.AppendLine("          AND v.Ativo = TRUE");
+            sql.AppendLine("    ) x");
+            sql.AppendLine("    WHERE x.rn = 1");
+            sql.AppendLine(") valor ON valor.PontoMedicaoId = ponto.Id");
             sql.AppendLine("WHERE");
-            sql.AppendLine("    ponto.Ativo IS true");
+            sql.AppendLine("    ponto.Ativo = TRUE");
             sql.AppendLine("    AND (@EmpresaId IS NULL OR empresa.Id = @EmpresaId)");
-            sql.AppendLine("    AND ponto.DataExclusao IS null");
+            sql.AppendLine("    AND ponto.DataExclusao IS NULL");
             sql.AppendLine("ORDER BY");
-            sql.AppendLine("    ponto.nome,");
-            sql.AppendLine("    empresa.nome;");
+            sql.AppendLine("    ponto.Nome,");
+            sql.AppendLine("    empresa.Nome;");
 
             string query = sql.ToString();
 

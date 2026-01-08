@@ -123,9 +123,10 @@
                                                 <div class="col-sm-3">
                                                     <button type="submit" nbButton status="warning" (click)="onSubmitProinfaIcms()">{{control.get('proinfaIcms')?.value === undefined ? 'Alterar' : 'Alterar'}}</button>
                                                     <button type="submit" nbButton style="margin-left: 0.5rem;" (click)="onCloseProinfaIcms()">Sair</button>
+                                                    <button type="submit" [hidden]="!isSuperUsuario" nbButton status="danger" style="margin-left: 0.5rem;" (click)="onDeleteProinfaIcms()">Excluir</button>
                                                 </div>
                                             </div>                                            
-                                            <ng2-smart-table [settings]="proinfaSettings" [source]="sourceProinfaIcms" (deleteConfirm)="onSelectProinfaIcms($event)">
+                                            <ng2-smart-table style="margin-top: 1.7rem; margin-left: 0.5rem;" [settings]="proinfaSettings" [source]="sourceProinfaIcms" (deleteConfirm)="onSelectProinfaIcms($event)">
                                             </ng2-smart-table>
                                         </nb-card-body>
                                     </nb-card>

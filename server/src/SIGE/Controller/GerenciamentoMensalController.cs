@@ -49,6 +49,15 @@ namespace SIGE.Controller
         public async Task<IActionResult> IncluirProinfaIcms([FromBody] ProinfaIcmsMensalDto req) =>
             Ok(await _service.IncluirProinfaIcms(req));
 
+        [HttpDelete("proinfa-icms")]
+        [SwaggerOperation(Description = "Exclui do sistema.")]
+        [ProducesResponseType(typeof(Response), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        [ProducesResponseType(typeof(Response), 401)]
+        [ProducesResponseType(typeof(Response), 500)]
+        public async Task<IActionResult> ExcluirProinfaIcms([FromRoute] Guid req) =>
+            Ok(await _service.ExluirProinfaIcms(req));
+
         [HttpPost("desconto-tusd")]
         [SwaggerOperation(Description = "Inclui no sistema.")]
         [ProducesResponseType(typeof(Response), 200)]

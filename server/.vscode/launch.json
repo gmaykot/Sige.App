@@ -1,35 +1,42 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            // Use IntelliSense to find out which attributes exist for C# debugging
-            // Use hover for the description of the existing attributes
-            // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
-            "name": ".NET Core Launch (web)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/SIGE/bin/Debug/net8.0/SIGE.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/src/SIGE",
-            "stopAtEntry": false,
-            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            }
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
+      "name": ".NET Core Launch (web)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/src/SIGE/bin/Debug/net8.0/SIGE.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/SIGE",
+      "stopAtEntry": false,
+      // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "SEQ_URL": "http://62.72.8.4:5341",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_FORWARDEDHEADERS_ENABLED=true": "null",
+        "EMail__Password": "Tdfr564wq@@@",
+        "Services__Ccee__CertificateValue": "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",
+        "Services__Ccee__CertificatePass": "MindSet2025",
+        "System__JwtSecurityToken": "HMGIcXazeQruoonmbPToTamforbComUrevf",
+        "ConnectionStrings__DefaultConnection": "Server=62.72.8.4; Port=33306;User ID=mariadb; Password=4s1cvT0hvaclk1YKDSlBKTWFFHa5lvxrkXHKP8iPwHSLloQKSfTB8nmmAvr2Htgj; Database=coenel-hmg"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    }
+  ]
 }

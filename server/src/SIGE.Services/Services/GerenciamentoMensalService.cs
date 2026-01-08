@@ -115,7 +115,7 @@ namespace SIGE.Services.Services {
         public async Task<Response> IncluirEncargoCCEE(EncargosCCEEDto req) {
             var ret = new Response();
 
-            var encargo = await _appDbContext.EncargosCCEE.FirstOrDefaultAsync(b => b.Id == req.Id);
+            var encargo = await _appDbContext.EncargosCCEE.FirstOrDefaultAsync(b => b.Id == req.Id || (b.MesReferencia == req.MesReferencia && b.PontoMedicaoId == req.PontoMedicaoId));
             encargo ??= new EncargosCCEEModel {
                 PontoMedicaoId = req.PontoMedicaoId.Value,
                 MesReferencia = req.MesReferencia.Value,
@@ -133,7 +133,7 @@ namespace SIGE.Services.Services {
         public async Task<Response> IncluirBandeiraVigente(BandeiraTarifariaVigenteDto req) {
             var ret = new Response();
 
-            var bandeira = await _appDbContext.BandeiraTarifariaVigente.FirstOrDefaultAsync(b => b.Id == req.Id);
+            var bandeira = await _appDbContext.BandeiraTarifariaVigente.FirstOrDefaultAsync(b => b.Id == req.Id || (b.MesReferencia == req.MesReferencia && b.BandeiraTarifariaId == req.BandeiraTarifariaId));
             bandeira ??= new BandeiraTarifariaVigenteModel {
                 BandeiraTarifariaId = req.BandeiraTarifariaId,
                 MesReferencia = req.MesReferencia.Value
@@ -149,7 +149,7 @@ namespace SIGE.Services.Services {
         public async Task<Response> IncluirPisCofins(PisCofinsMensalDto req) {
             var ret = new Response();
 
-            var bandeira = await _appDbContext.ImpostosConcessionarias.FirstOrDefaultAsync(b => b.Id == req.Id);
+            var bandeira = await _appDbContext.ImpostosConcessionarias.FirstOrDefaultAsync(b => b.Id == req.Id || (b.MesReferencia == req.MesReferencia && b.ConcessionariaId == req.ConcessionariaId));
             bandeira ??= new ImpostoConcessionariaModel {
                 ConcessionariaId = req.ConcessionariaId,
                 MesReferencia = req.MesReferencia.Value,
@@ -188,7 +188,7 @@ namespace SIGE.Services.Services {
         public async Task<Response> IncluirProinfaIcms(ProinfaIcmsMensalDto req) {
             var ret = new Response();
 
-            var valor = await _appDbContext.ValoresMensaisPontoMedicao.FirstOrDefaultAsync(b => b.Id == req.Id);
+            var valor = await _appDbContext.ValoresMensaisPontoMedicao.FirstOrDefaultAsync(b => b.Id == req.Id || (b.MesReferencia == req.MesReferencia && b.PontoMedicaoId == req.PontoMedicaoId));
             valor ??= new ValorMensalPontoMedicaoModel {
                 Proinfa = req.Proinfa ?? 0,
                 Icms = req.Icms ?? 0,
@@ -210,7 +210,7 @@ namespace SIGE.Services.Services {
         public async Task<Response> IncluirDescontoTusd(DescontoTUSDDto req) {
             var ret = new Response();
 
-            var desconto = await _appDbContext.DescontosTusd.FirstOrDefaultAsync(b => b.Id == req.Id);
+            var desconto = await _appDbContext.DescontosTusd.FirstOrDefaultAsync(b => b.Id == req.Id || (b.MesReferencia == req.MesReferencia && b.FornecedorId == req.FornecedorId));
             desconto ??= new DescontoTusdModel {
                 MesReferencia = req.MesReferencia,
                 FornecedorId = req.FornecedorId,
@@ -223,6 +223,23 @@ namespace SIGE.Services.Services {
             _ = _appDbContext.Update(desconto);
             _ = await _appDbContext.SaveChangesAsync();
 
+            return ret.SetOk();
+        }
+
+        public async Task<Response> ExluirProinfaIcms(Guid req) {
+            var ret = new Response();
+            if (req == Guid.Empty) {
+                return ret.SetBadRequest().SetMessage("Identificador inválido para exclusão.");
+            }
+            else {
+                var valor = await _appDbContext.ValoresMensaisPontoMedicao.FirstOrDefaultAsync(b => b.Id == req);
+                if (valor == null) {
+                    return ret.SetNotFound().SetMessage("Registro não encontrado para exclusão.");
+                }
+                _ = _appDbContext.Remove(valor);
+                _ = await _appDbContext.SaveChangesAsync();
+            }
+            
             return ret.SetOk();
         }
     }
