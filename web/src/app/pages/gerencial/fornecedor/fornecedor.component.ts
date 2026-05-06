@@ -56,6 +56,10 @@ export class FornecedorComponent extends DefaultComponent<FornecedorEntity> impl
     this.loading = false;
   }
 
+  onDeleteConfirm(): void {
+    void this.onDelete();
+  }
+
   async onActivateSubscribe(){
     this.statusSubscription = this.statusEventService.click$.subscribe(async (dado) => {
       await this.onRefresh(dado.service);
