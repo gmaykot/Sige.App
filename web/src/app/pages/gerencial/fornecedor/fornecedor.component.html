@@ -53,7 +53,7 @@
                   </nb-card-footer>          
                 </nb-card>                
               </nb-tab>
-            <nb-tab tabTitle="Grupo de Contatos" *ngIf="selected && contatos?.length > 0">
+            <nb-tab tabTitle="Grupo de Contatos" *ngIf="selected">
               <ngx-subcontato-component [contatos]="contatos" [fornecedorId]="selectedObject.id" (refreshEvent)="onRefresh($event)" (alertEvent)="onAlert($event)"></ngx-subcontato-component>             
             </nb-tab>
             </nb-tabset>
